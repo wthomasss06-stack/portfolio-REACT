@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>linkedin banner pro — Générateur de bannières LinkedIn</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='lnGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1'/%3E%3Cstop offset='100%25' style='stop-color:%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23lnGrad)'/%3E%3Crect x='20' y='35' width='60' height='8' rx='2' fill='white'/%3E%3Crect x='20' y='50' width='45' height='6' rx='2' fill='white' opacity='0.8'/%3E%3Crect x='20' y='62' width='35' height='5' rx='2' fill='white' opacity='0.6'/%3E%3Ccircle cx='75' cy='28' r='6' fill='%23fbbf24'/%3E%3C/svg%3E">
+    <style>
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-out {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        .animate-fade-in { animation: fade-in 0.3s ease-out; }
+        .animate-fade-out { animation: fade-out 0.3s ease-out; }
+        
+        .material-icons, .material-symbols-outlined {
+            vertical-align: middle;
+        }
+        
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .tech-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 60px;
+}
+
+.tech-icon:hover {
+    border-color: #6366f1;
+    background: #eef2ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tech-icon.selected {
+    border-color: #6366f1;
+    background: #eef2ff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.tech-icon span.text-xs {
+    margin-top: 0.25rem;
+    font-weight: 500;
+    color: #374151;
+}
+        /* Améliorations responsivité mobile complète */
+@media (max-width: 640px) {
+    /* Header */
+    header h1 {
+        font-size: 1rem !important;
+    }
+    
+    header .material-symbols-outlined {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Sidebar sections */
+    .sidebar-section {
+        max-height: none !important;
+        padding: 1rem !important;
+    }
+    
+    /* Templates Grid */
+    #templatesGrid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        max-height: 400px;
+        gap: 0.5rem !important;
+    }
+    
+    .template-btn {
+        height: 3.5rem !important;
+    }
+    
+    /* Banner Preview */
+    #bannerPreview {
+        padding-right: 0.5rem !important;
+        padding-left: 0.5rem !important;
+    }
+    
+    #previewName {
+        font-size: 1.25rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    #previewTitle {
+        font-size: 0.875rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    #previewTagline {
+        font-size: 0.75rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Safe Zone */
+    #safeZone {
+        width: 4rem !important;
+        height: 4rem !important;
+        font-size: 0.5rem !important;
+    }
+    
+    #safeZone .material-icons {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem;
+    }
+    
+    /* Input fields */
+    input[type="text"] {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Buttons */
+    button {
+        font-size: 0.875rem !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    /* Category buttons */
+    .category-btn {
+        font-size: 0.625rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    /* Footer */
+    footer p {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .grid.lg\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Amélioration des inputs sur mobile */
+@media (hover: none) and (pointer: coarse) {
+    input[type="text"], 
+    input[type="color"] {
+        font-size: 16px !important; /* Évite le zoom automatique sur iOS */
+    }
+}
+/* AJOUTER CECI DANS VOTRE BALISE <STYLE> */
+.tech-icon img {
+    object-fit: contain;
+    width: 2rem; /* Taille de l'image */
+    height: 2rem;
+}
+
+.tech-icon span.text-xs {
+    margin-top: 0.25rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Ajustement pour mobile */
+@media (max-width: 640px) {
+    .tech-icon {
+        min-width: 50px !important;
+        padding: 0.375rem !important;
+    }
+    .tech-icon img {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+}
+
+/* AJOUTER pour gérer les images dans le slogan */
+#previewTagline {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Aligne à droite comme le texte */
+    gap: 1rem; /* Espacement entre les logos */
+    height: 40px; /* Hauteur fixe pour éviter les sauts */
+}
+
+#previewTagline img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); /* Ombre pour lisibilité */
+}
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center space-x-3">
+                <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1"/>
+                            <stop offset="100%" style="stop-color:#8b5cf6"/>
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <rect width="100" height="100" rx="20" fill="url(#headerGrad)"/>
+                    
+                    <!-- Lignes de bannière -->
+                    <rect x="15" y="30" width="70" height="10" rx="3" fill="white" filter="url(#glow)"/>
+                    <rect x="15" y="48" width="55" height="8" rx="3" fill="white" opacity="0.85"/>
+                    <rect x="15" y="62" width="40" height="6" rx="3" fill="white" opacity="0.7"/>
+                    
+                    <!-- Étoile magique -->
+                    <circle cx="80" cy="25" r="8" fill="#fbbf24" filter="url(#glow)"/>
+                    <path d="M80 20 L81 23 L84 23 L82 25 L83 28 L80 26 L77 28 L78 25 L76 23 L79 23 Z" fill="white"/>
+                </svg>
+                <h1 class="text-xl font-bold text-gray-900">linkedin banner pro</h1>
+            </div>
+            <!-- ... reste du header ... -->
+                <nav class="flex space-x-3">
+                    <button id="editBtn" class="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 flex items-center space-x-1">
+                        <span class="material-icons text-sm">edit</span>
+                        <span class="hidden sm:inline">Modifier</span>
+                    </button>
+                    <button id="previewBtn" class="px-4 py-2 rounded-lg text-gray-600 hover:text-gray-900 flex items-center space-x-1">
+                        <span class="material-icons text-sm">visibility</span>
+                        <span class="hidden sm:inline">Voir</span>
+                    </button>
+                    <button id="downloadBtn" class="px-4 sm:px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center space-x-2">
+                        <span class="material-icons text-sm">download</span>
+                        <span>Télécharger</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                
+                <!-- Profile Section -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="material-icons text-gray-600">person</span>
+                        <h2 class="text-lg font-semibold text-gray-900">Profil</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">
+                                <span class="material-icons text-sm">badge</span> Nom
+                            </label>
+                            <input type="text" id="userName" value="Votre Nom" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="userTitle" class="block text-sm font-medium text-gray-700 mb-1">
+                                <span class="material-icons text-sm">work</span> Titre
+                            </label>
+                            <input type="text" id="userTitle" value=" ex Développeur Full-Stack" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="userTagline" class="block text-sm font-medium text-gray-700 mb-1">
+                                <span class="material-icons text-sm">format_quote</span> Slogan
+                            </label>
+                            <input type="text" id="userTagline" value="ex Django • React • MySQL" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Templates Section -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="material-icons text-gray-600">dashboard</span>
+                            <h2 class="text-lg font-semibold text-gray-900">Templates</h2>
+                        </div>
+                        <span class="text-xs text-gray-500" id="templateCount">20 disponibles</span>
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2">
+                            <button class="category-btn active px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700" data-category="all">
+                                Tous
+                            </button>
+                            <button class="category-btn px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200" data-category="business">
+                                Business
+                            </button>
+                            <button class="category-btn px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200" data-category="creative">
+                                Créatif
+                            </button>
+                            <button class="category-btn px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200" data-category="tech">
+                                Tech
+                            </button>
+                            <button class="category-btn px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200" data-category="minimal">
+                                Minimal
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto" id="templatesGrid"></div>
+                </div>
+
+                <!-- Tech Stack Section -->
+<div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 sidebar-section">
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+            <span class="material-icons text-gray-600">code</span>
+            <h2 class="text-lg font-semibold text-gray-900">Stack Technique</h2>
+        </div>
+        <button id="clearTechs" class="text-xs text-red-600 hover:text-red-700 flex items-center space-x-1">
+            <span class="material-icons text-sm">close</span>
+            <span>Effacer</span>
+        </button>
+    </div>
+    
+    <div class="space-y-3 max-h-96 overflow-y-auto">
+        <div>
+            <label class="block text-xs font-medium text-gray-500 mb-2">Frontend</label>
+            <div class="flex flex-wrap gap-2" id="frontendIcons">
+                <button class="tech-icon" data-tech="React">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">
+                    <span class="text-xs">React</span>
+                </button>
+                <button class="tech-icon" data-tech="Vue.js">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" alt="Vue">
+                    <span class="text-xs">Vue</span>
+                </button>
+                <button class="tech-icon" data-tech="Angular">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" alt="Angular">
+                    <span class="text-xs">Angular</span>
+                </button>
+                <button class="tech-icon" data-tech="Next.js">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="Next.js">
+                    <span class="text-xs">Next.js</span>
+                </button>
+                <button class="tech-icon" data-tech="TypeScript">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
+                    <span class="text-xs">TypeScript</span>
+                </button>
+                <button class="tech-icon" data-tech="JavaScript">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+                    <span class="text-xs">JavaScript</span>
+                </button>
+                <button class="tech-icon" data-tech="Tailwind">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind">
+                    <span class="text-xs">Tailwind</span>
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-gray-500 mb-2">Backend</label>
+            <div class="flex flex-wrap gap-2" id="backendIcons">
+                <button class="tech-icon" data-tech="Node.js">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
+                    <span class="text-xs">Node.js</span>
+                </button>
+                <button class="tech-icon" data-tech="Python">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+                    <span class="text-xs">Python</span>
+                </button>
+                <button class="tech-icon" data-tech="Django">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" alt="Django">
+                    <span class="text-xs">Django</span>
+                </button>
+                <button class="tech-icon" data-tech="Flask">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" alt="Flask">
+                    <span class="text-xs">Flask</span>
+                </button>
+                <button class="tech-icon" data-tech="PHP">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" alt="PHP">
+                    <span class="text-xs">PHP</span>
+                </button>
+                <button class="tech-icon" data-tech="Laravel">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg" alt="Laravel">
+                    <span class="text-xs">Laravel</span>
+                </button>
+                <button class="tech-icon" data-tech="Java">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+                    <span class="text-xs">Java</span>
+                </button>
+                <button class="tech-icon" data-tech="Go">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" alt="Go">
+                    <span class="text-xs">Go</span>
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-gray-500 mb-2">Base de données</label>
+            <div class="flex flex-wrap gap-2" id="databaseIcons">
+                <button class="tech-icon" data-tech="MongoDB">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" alt="MongoDB">
+                    <span class="text-xs">MongoDB</span>
+                </button>
+                <button class="tech-icon" data-tech="MySQL">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
+                    <span class="text-xs">MySQL</span>
+                </button>
+                <button class="tech-icon" data-tech="PostgreSQL">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL">
+                    <span class="text-xs">PostgreSQL</span>
+                </button>
+                <button class="tech-icon" data-tech="Redis">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" alt="Redis">
+                    <span class="text-xs">Redis</span>
+                </button>
+                <button class="tech-icon" data-tech="Firebase">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" alt="Firebase">
+                    <span class="text-xs">Firebase</span>
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            <label class="block text-xs font-medium text-gray-500 mb-2">Cloud & DevOps</label>
+            <div class="flex flex-wrap gap-2" id="cloudIcons">
+                <button class="tech-icon" data-tech="AWS">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS">
+                    <span class="text-xs">AWS</span>
+                </button>
+                <button class="tech-icon" data-tech="Azure">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="Azure">
+                    <span class="text-xs">Azure</span>
+                </button>
+                <button class="tech-icon" data-tech="Google Cloud">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="GCP">
+                    <span class="text-xs">GCP</span>
+                </button>
+                <button class="tech-icon" data-tech="Docker">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
+                    <span class="text-xs">Docker</span>
+                </button>
+                <button class="tech-icon" data-tech="Kubernetes">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="K8s">
+                    <span class="text-xs">K8s</span>
+                </button>
+                <button class="tech-icon" data-tech="Git">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+                    <span class="text-xs">Git</span>
+                </button>
+                <button class="tech-icon" data-tech="GitHub">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+                    <span class="text-xs">GitHub</span>
+                </button>
+                <button class="tech-icon" data-tech="Jenkins">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins">
+                    <span class="text-xs">Jenkins</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+        <p class="text-xs text-indigo-800 flex items-start space-x-1">
+            <span class="material-icons text-sm">info</span>
+            <span>Cliquez sur les logos pour ajouter les technologies à votre slogan</span>
+        </p>
+    </div>
+</div>
+
+                
+
+                <!-- Custom Color Picker -->
+                <div id="customColorPicker" class="hidden bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="material-icons text-gray-600">colorize</span>
+                        <h2 class="text-lg font-semibold text-gray-900">Couleur Personnalisée</h2>
+                    </div>
+                    <input type="color" id="customColor" value="#6366f1" 
+                           class="w-full h-12 rounded-lg cursor-pointer border-2 border-gray-300">
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+                            <span class="material-icons">visibility</span>
+                            <span>Aperçu</span>
+                        </h2>
+                        <span class="text-sm text-gray-500 flex items-center space-x-1">
+                            <span class="material-icons text-sm">aspect_ratio</span>
+                            <span>1584 × 396 px</span>
+                        </span>
+                    </div>
+                    
+                    <!-- Banner Preview -->
+                    <div class="relative w-full rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                        <div id="bannerPreview" class="w-full aspect-[1584/396] flex items-center justify-end pr-8 sm:pr-16 md:pr-20" 
+                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <div class="text-right max-w-2xl">
+                                <h3 id="previewName" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2 text-white">
+                                    Votre Nom
+                                </h3>
+                                <p id="previewTitle" class="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-1 sm:mb-2 text-white">
+                                    Développeur Full-Stack
+                                </p>
+                                <p id="previewTagline" class="text-base sm:text-lg md:text-xl lg:text-2xl italic opacity-90 text-white">
+                                    Django • React • MySQL
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Safe Zone Guide -->
+                        <div id="safeZone" class="absolute top-2 sm:top-4 left-2 sm:left-4 w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed border-yellow-400 rounded-full flex items-center justify-center bg-yellow-50 bg-opacity-50">
+                            <span class="text-xs font-medium text-yellow-700">
+                                <span class="material-icons text-sm">verified_user</span>
+                                Zone Sûre
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Tips -->
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <p class="text-sm text-blue-800 flex items-start space-x-2">
+                            <span class="material-icons text-blue-600">lightbulb</span>
+                            <span>
+                                <strong>Astuce:</strong> Votre texte est positionné à droite pour éviter de chevaucher votre photo de profil LinkedIn (côté gauche).
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="mt-4 grid grid-cols-3 gap-4">
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <span class="material-icons text-indigo-600">download</span>
+                            <p class="text-sm font-semibold text-gray-700">Format PNG</p>
+                            <p class="text-xs text-gray-500">Haute qualité</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <span class="material-icons text-green-600">check_circle</span>
+                            <p class="text-sm font-semibold text-gray-700">100% Gratuit</p>
+                            <p class="text-xs text-gray-500">Sans filigrane</p>
+                        </div>
+                        <div class="text-center p-3 bg-gray-50 rounded-lg">
+                            <span class="material-icons text-purple-600">flash_on</span>
+                            <p class="text-sm font-semibold text-gray-700">Ultra rapide</p>
+                            <p class="text-xs text-gray-500">< 60 secondes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Export -->
+    <canvas id="exportCanvas" class="hidden"></canvas>
+
+    <!-- Footer -->
+    <footer class="mt-16 bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-sm text-gray-600">
+                <p class="font-semibold flex items-center justify-center space-x-2">
+                    <span class="material-icons text-green-600">check_circle</span>
+                    <span>100% Gratuit • Sans Inscription • Sans Filigrane</span>
+                </p>
+                <p class="mt-2 flex items-center justify-center space-x-1">
+                    <span>Made with</span>
+                    <span class="material-icons text-red-500 text-sm">favorite</span>
+                    <span>pour les professionnels LinkedIn</span>
+                </p>
+                <p class="mt-4 text-xs text-gray-500">
+                    <span class="material-icons text-xs">keyboard</span>
+                    Raccourcis: Ctrl+S (Télécharger) • Ctrl+E (Edit) • Ctrl+P (Preview)
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // --- DONNÉES DES TEMPLATES (20 templates) ---
+    const templates = [
+        // Business
+        { name: 'Purple Dream', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Professional Blue', gradient: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Corporate Gray', gradient: 'linear-gradient(135deg, #374151 0%, #1f2937 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Navy Elite', gradient: 'linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Burgundy Pro', gradient: 'linear-gradient(135deg, #991b1b 0%, #7c2d12 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Emerald Class', gradient: 'linear-gradient(135deg, #065f46 0%, #064e3b 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Royal Purple', gradient: 'linear-gradient(135deg, #581c87 0%, #3b0764 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Steel Blue', gradient: 'linear-gradient(135deg, #0c4a6e 0%, #075985 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Charcoal', gradient: 'linear-gradient(135deg, #27272a 0%, #18181b 100%)', textColor: '#ffffff', category: 'business' },
+        { name: 'Midnight', gradient: 'linear-gradient(135deg, #312e81 0%, #1e1b4b 100%)', textColor: '#ffffff', category: 'business' },
+        
+        // Creative
+        { name: 'Sunset Vibes', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Warm Sunset', gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Purple Pink', gradient: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Fire Orange', gradient: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Rainbow', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #fee140 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Peach Passion', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)', textColor: '#1f2937', category: 'creative' },
+        { name: 'Cotton Candy', gradient: 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)', textColor: '#1f2937', category: 'creative' },
+        { name: 'Tropical', gradient: 'linear-gradient(135deg, #f857a6 0%, #ff5858 100%)', textColor: '#ffffff', category: 'creative' },
+        { name: 'Aurora', gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', textColor: '#1f2937', category: 'creative' },
+        { name: 'Neon Nights', gradient: 'linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)', textColor: '#1f2937', category: 'creative' },
+        
+        // Tech
+        { name: 'Ocean Blue', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Mint Fresh', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Tech Green', gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Cyber Blue', gradient: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Matrix Green', gradient: 'linear-gradient(135deg, #065f46 0%, #047857 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Electric Blue', gradient: 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Neon Green', gradient: 'linear-gradient(135deg, #84cc16 0%, #22c55e 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Digital Purple', gradient: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Aqua Tech', gradient: 'linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)', textColor: '#ffffff', category: 'tech' },
+        { name: 'Code Orange', gradient: 'linear-gradient(135deg, #fb923c 0%, #f59e0b 100%)', textColor: '#ffffff', category: 'tech' },
+        
+        // Minimal
+        { name: 'Dark Minimal', gradient: '#1f2937', textColor: '#ffffff', category: 'minimal' },
+        { name: 'Light Clean', gradient: '#f3f4f6', textColor: '#1f2937', category: 'minimal' },
+        { name: 'Pure White', gradient: '#ffffff', textColor: '#1f2937', category: 'minimal' },
+        { name: 'Deep Black', gradient: '#000000', textColor: '#ffffff', category: 'minimal' },
+        { name: 'Soft Beige', gradient: '#fef3c7', textColor: '#92400e', category: 'minimal' },
+        { name: 'Slate Gray', gradient: '#64748b', textColor: '#ffffff', category: 'minimal' },
+        { name: 'Cream', gradient: '#fffbeb', textColor: '#78350f', category: 'minimal' },
+        { name: 'Navy Solid', gradient: '#1e40af', textColor: '#ffffff', category: 'minimal' },
+        { name: 'Forest Green', gradient: '#166534', textColor: '#ffffff', category: 'minimal' },
+        { name: 'Burgundy', gradient: '#881337', textColor: '#ffffff', category: 'minimal' },
+        
+        // Custom
+        { name: 'Custom Color', gradient: 'custom', textColor: '#ffffff', category: 'all' }
+    ];
+
+    // --- VARIABLES D'ÉTAT ---
+    let currentGradient = templates[0].gradient;
+    let currentTextColor = templates[0].textColor;
+    let isEditMode = true;
+    let currentCategory = 'all';
+    let selectedTechs = []; // Liste des technologies sélectionnées
+
+    // --- ÉLÉMENTS DU DOM ---
+    const userName = document.getElementById('userName');
+    const userTitle = document.getElementById('userTitle');
+    const userTagline = document.getElementById('userTagline');
+    const previewName = document.getElementById('previewName');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewTagline = document.getElementById('previewTagline');
+    const bannerPreview = document.getElementById('bannerPreview');
+    const editBtn = document.getElementById('editBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const safeZone = document.getElementById('safeZone');
+    const templatesGrid = document.getElementById('templatesGrid');
+    const customColorPicker = document.getElementById('customColorPicker');
+    const customColor = document.getElementById('customColor');
+    const exportCanvas = document.getElementById('exportCanvas');
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const templateCount = document.getElementById('templateCount');
+    const clearTechs = document.getElementById('clearTechs');
+
+    // --- RENDU DES TEMPLATES ---
+    function renderTemplates(category = 'all') {
+        templatesGrid.innerHTML = '';
+        const filtered = category === 'all' 
+            ? templates 
+            : templates.filter(t => t.category === category || t.gradient === 'custom');
+        
+        templateCount.textContent = `${filtered.length} disponible${filtered.length > 1 ? 's' : ''}`;
+        
+        filtered.forEach((template, index) => {
+            const btn = document.createElement('button');
+            btn.className = `template-btn relative h-16 rounded-lg overflow-hidden border-2 ${index === 0 && category === currentCategory ? 'border-indigo-600 ring-2 ring-indigo-200' : 'border-gray-200 hover:border-gray-300'} transition-all`;
+            btn.innerHTML = `
+                <div class="absolute inset-0" style="background: ${template.gradient !== 'custom' ? template.gradient : 'linear-gradient(to br, #a855f7, #ec4899)'}">
+                    <div class="absolute inset-0 hover:bg-black hover:bg-opacity-10 flex items-end p-2">
+                        <span class="text-xs font-medium ${template.textColor === '#ffffff' ? 'text-white' : 'text-gray-700'} drop-shadow-lg">${template.name}</span>
+                    </div>
+                </div>
+            `;
+            btn.addEventListener('click', () => selectTemplate(template, btn));
+            templatesGrid.appendChild(btn);
+        });
+    }
+
+    // --- GESTION DU FILTRE DE CATÉGORIE ---
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            categoryBtns.forEach(b => {
+                b.classList.remove('active', 'bg-indigo-100', 'text-indigo-700');
+                b.classList.add('bg-gray-100', 'text-gray-700');
+            });
+            this.classList.add('active', 'bg-indigo-100', 'text-indigo-700');
+            this.classList.remove('bg-gray-100', 'text-gray-700');
+            
+            currentCategory = this.dataset.category;
+            renderTemplates(currentCategory);
+        });
+    });
+
+    // --- FONCTION PRINCIPALE DE MISE À JOUR (APERÇU) ---
+    function updatePreview() {
+        previewName.textContent = userName.value || 'Votre Nom';
+        previewTitle.textContent = userTitle.value || 'Votre Titre';
+        
+        // Gestion spéciale pour le slogan : Affiche les IMAGES si sélectionnées
+        if (selectedTechs.length > 0) {
+            previewTagline.innerHTML = ''; // Vide le texte existant
+            
+            // Pour chaque tech sélectionnée, on clone l'image du bouton
+            selectedTechs.forEach(tech => {
+                const btn = document.querySelector(`.tech-icon[data-tech="${tech}"]`);
+                const originalImg = btn ? btn.querySelector('img') : null;
+                
+                if (originalImg) {
+                    const img = document.createElement('img');
+                    img.src = originalImg.src;
+                    img.alt = tech;
+                    // Styles spécifiques pour l'aperçu HTML
+                    img.className = "h-8 w-auto inline-block mx-1 shadow-sm"; 
+                    previewTagline.appendChild(img);
+                } else {
+                    // Fallback texte si l'image n'est pas trouvée
+                    const span = document.createElement('span');
+                    span.textContent = tech + " ";
+                    previewTagline.appendChild(span);
+                }
+            });
+        } else {
+            // Si aucune tech sélectionnée, on affiche le texte du champ input
+            previewTagline.innerHTML = ''; // Sécurité
+            previewTagline.textContent = userTagline.value || 'Votre slogan';
+        }
+    }
+
+    // --- SÉLECTION DU TEMPLATE ---
+    function selectTemplate(template, btn) {
+        document.querySelectorAll('.template-btn').forEach(b => {
+            b.classList.remove('border-indigo-600', 'ring-2', 'ring-indigo-200');
+            b.classList.add('border-gray-200');
+        });
+        btn.classList.add('border-indigo-600', 'ring-2', 'ring-indigo-200');
+        btn.classList.remove('border-gray-200');
+
+        if (template.gradient === 'custom') {
+            customColorPicker.classList.remove('hidden');
+            currentGradient = customColor.value;
+            bannerPreview.style.background = customColor.value;
+            updateTextColor(customColor.value);
+        } else {
+            customColorPicker.classList.add('hidden');
+            currentGradient = template.gradient;
+            currentTextColor = template.textColor;
+            bannerPreview.style.background = template.gradient;
+            previewName.style.color = currentTextColor;
+            previewTitle.style.color = currentTextColor;
+            previewTagline.style.color = currentTextColor;
+        }
+    }
+
+    // --- COULEUR DU TEXTE AUTO (Contrast) ---
+    function updateTextColor(hex) {
+        const r = parseInt(hex.substr(1, 2), 16);
+        const g = parseInt(hex.substr(3, 2), 16);
+        const b = parseInt(hex.substr(5, 2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        currentTextColor = brightness > 128 ? '#1f2937' : '#ffffff';
+        previewName.style.color = currentTextColor;
+        previewTitle.style.color = currentTextColor;
+        previewTagline.style.color = currentTextColor;
+    }
+
+    // --- LISTENERS SIMPLES ---
+    customColor.addEventListener('input', function() {
+        currentGradient = this.value;
+        bannerPreview.style.background = this.value;
+        updateTextColor(this.value);
+    });
+
+    editBtn.addEventListener('click', () => {
+        isEditMode = true;
+        editBtn.classList.add('bg-indigo-100', 'text-indigo-700');
+        editBtn.classList.remove('text-gray-600');
+        previewBtn.classList.remove('bg-indigo-100', 'text-indigo-700');
+        previewBtn.classList.add('text-gray-600');
+        safeZone.style.opacity = '1';
+    });
+
+    previewBtn.addEventListener('click', () => {
+        isEditMode = false;
+        previewBtn.classList.add('bg-indigo-100', 'text-indigo-700');
+        previewBtn.classList.remove('text-gray-600');
+        editBtn.classList.remove('bg-indigo-100', 'text-indigo-700');
+        editBtn.classList.add('text-gray-600');
+        safeZone.style.opacity = '0';
+    });
+
+    userName.addEventListener('input', () => { updatePreview(); autoSave(); });
+    userTitle.addEventListener('input', () => { updatePreview(); autoSave(); });
+    userTagline.addEventListener('input', () => { updatePreview(); autoSave(); });
+
+    // --- LOGIQUE DE TÉLÉCHARGEMENT (CANVAS) ---
+    downloadBtn.addEventListener('click', async () => {
+        const canvas = exportCanvas;
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = 1584;
+        canvas.height = 396;
+
+        // 1. DESSIN DU FOND
+        if (currentGradient.startsWith('linear-gradient')) {
+            const match = currentGradient.match(/linear-gradient\((\d+)deg, (#[0-9a-f]+) \d+%(?:, (#[0-9a-f]+) \d+%)?(?:, (#[0-9a-f]+) \d+%)?\)/i);
+            if (match) {
+                const angle = parseInt(match[1]);
+                const colors = [match[2], match[3], match[4]].filter(Boolean);
+                
+                const angleRad = (angle - 90) * Math.PI / 180;
+                const x1 = canvas.width / 2 - Math.cos(angleRad) * canvas.width / 2;
+                const y1 = canvas.height / 2 - Math.sin(angleRad) * canvas.height / 2;
+                const x2 = canvas.width / 2 + Math.cos(angleRad) * canvas.width / 2;
+                const y2 = canvas.height / 2 + Math.sin(angleRad) * canvas.height / 2;
+                
+                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+                colors.forEach((color, i) => {
+                    gradient.addColorStop(i / (colors.length - 1), color);
+                });
+                ctx.fillStyle = gradient;
+            }
+        } else {
+            ctx.fillStyle = currentGradient;
+        }
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 2. DESSIN DU TEXTE (Nom et Titre)
+        ctx.fillStyle = currentTextColor;
+        ctx.textAlign = 'right';
+        
+        // Nom
+        ctx.font = 'bold 72px -apple-system, sans-serif';
+        ctx.fillText(userName.value || 'Votre Nom', canvas.width - 80, 140);
+        
+        // Titre
+        ctx.font = '48px -apple-system, sans-serif';
+        ctx.fillText(userTitle.value || 'Votre Titre', canvas.width - 80, 210);
+
+        // 3. DESSIN DES LOGOS OU DU SLOGAN (Partie importante)
+        if (selectedTechs.length > 0) {
+            const iconSize = 48; // Taille sur l'image finale
+            const gap = 24;      // Espace entre les icônes
+            let currentX = canvas.width - 80; // On commence à droite
+
+            // On charge toutes les images
+            const imagePromises = selectedTechs.slice().reverse().map(tech => {
+                return new Promise((resolve) => {
+                    const btn = document.querySelector(`.tech-icon[data-tech="${tech}"]`);
+                    const src = btn ? btn.querySelector('img').src : null;
+                    
+                    if (src) {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous"; // Permet le téléchargement sans erreur de sécurité
+                        img.onload = () => resolve(img);
+                        img.onerror = () => resolve(null);
+                        img.src = src;
+                    } else {
+                        resolve(null);
+                    }
+                });
+            });
+
+            const loadedImages = await Promise.all(imagePromises);
+
+            // On dessine les images
+            loadedImages.forEach(img => {
+                if (img) {
+                    // Centré verticalement autour de Y=270
+                    ctx.drawImage(img, currentX - iconSize, 270 - (iconSize/2), iconSize, iconSize);
+                    currentX -= (iconSize + gap);
+                }
+            });
+
+        } else {
+            // Fallback: Texte slogan classique
+            ctx.font = 'italic 36px -apple-system, sans-serif';
+            ctx.globalAlpha = 0.9;
+            ctx.fillText(userTagline.value || 'Votre slogan', canvas.width - 80, 270);
+        }
+
+        // 4. LANCER LE TÉLÉCHARGEMENT
+        const link = document.createElement('a');
+        link.download = `linkedin-banner-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+
+        showNotification('✅ Bannière téléchargée avec succès !');
+    });
+
+    // --- GESTION DE LA STACK TECHNIQUE ---
+    document.querySelectorAll('.tech-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const tech = this.dataset.tech;
+            
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                selectedTechs = selectedTechs.filter(t => t !== tech);
+            } else {
+                this.classList.add('selected');
+                selectedTechs.push(tech);
+            }
+            
+            // Met à jour le champ texte pour le fallback, mais updatePreview utilisera les images
+            userTagline.value = selectedTechs.join(' • ');
+            updatePreview();
+            autoSave();
+        });
+    });
+
+    // Bouton Effacer
+    if (clearTechs) {
+        clearTechs.addEventListener('click', () => {
+            selectedTechs = [];
+            document.querySelectorAll('.tech-icon').forEach(icon => {
+                icon.classList.remove('selected');
+            });
+            userTagline.value = ''; 
+            updatePreview();
+            autoSave();
+            showNotification('✅ Technologies effacées');
+        });
+    }
+
+    // --- UTILITAIRES ---
+    function showNotification(message) {
+        const notif = document.createElement('div');
+        notif.className = 'fixed bottom-8 right-8 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in flex items-center space-x-2';
+        notif.innerHTML = `<span class="material-icons">check_circle</span><span>${message}</span>`;
+        document.body.appendChild(notif);
+        setTimeout(() => {
+            notif.classList.add('animate-fade-out');
+            setTimeout(() => notif.remove(), 300);
+        }, 3000);
+    }
+
+    function autoSave() {
+        const data = {
+            name: userName.value,
+            title: userTitle.value,
+            tagline: userTagline.value,
+            selectedTechs: selectedTechs // On sauvegarde aussi la sélection
+        };
+        localStorage.setItem('bannerquick', JSON.stringify(data));
+    }
+
+    // --- INITIALISATION ---
+    renderTemplates();
+
+    // Raccourcis clavier
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); downloadBtn.click(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') { e.preventDefault(); editBtn.click(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') { e.preventDefault(); previewBtn.click(); }
+    });
+
+    // Chargement des données sauvegardées
+    const saved = localStorage.getItem('bannerquick');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            userName.value = data.name || 'Votre Nom';
+            userTitle.value = data.title || 'Développeur Full-Stack';
+            userTagline.value = data.tagline || 'Cliquez sur les technologies ci-dessous';
+            
+            if (data.selectedTechs && Array.isArray(data.selectedTechs)) {
+                selectedTechs = data.selectedTechs;
+                // Restaurer l'état visuel des boutons
+                selectedTechs.forEach(tech => {
+                    const btn = document.querySelector(`.tech-icon[data-tech="${tech}"]`);
+                    if (btn) btn.classList.add('selected');
+                });
+            }
+            updatePreview();
+        } catch(e) {
+            console.error("Erreur chargement sauvegarde", e);
+        }
+    } else {
+        // Premier chargement
+        updatePreview();
+    }
+</script>
+</body>
+</html>

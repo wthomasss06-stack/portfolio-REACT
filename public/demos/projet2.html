@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElvisMarket | Marketplace Locale Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    --shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ==================== AUTH SCREEN ==================== */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-container::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+    top: -300px;
+    left: -300px;
+    animation: pulse 8s ease-in-out infinite;
+}
+
+.auth-container::after {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+    bottom: -300px;
+    right: -300px;
+    animation: pulse 8s ease-in-out infinite 4s;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.auth-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 30px;
+    padding: 50px 40px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    animation: fadeInUp 0.6s ease;
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.auth-logo h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.auth-logo p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.95rem;
+}
+
+.auth-step-indicator {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.step-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.step-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.3s;
+}
+
+.step-dot.active {
+    background: var(--gradient);
+    width: 30px;
+    border-radius: 6px;
+}
+
+/* ==================== FORMS ==================== */
+.form-control, .form-select {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 15px;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--primary);
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+    color: #fff;
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.form-label {
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    display: block;
+}
+
+/* ==================== ROLE SELECTOR ==================== */
+.role-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.role-option {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.role-option:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.role-option.selected {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.2);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.role-option i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.role-option h5 {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.role-option p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn-auth, .btn-custom {
+    padding: 15px 30px;
+    border-radius: 15px;
+    font-weight: 700;
+    border: none;
+    transition: all 0.3s;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-auth::before, .btn-custom::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-auth:hover::before, .btn-custom:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.btn-primary-auth, .btn-primary-custom {
+    background: var(--gradient);
+    color: #fff;
+}
+
+.btn-primary-auth:hover, .btn-primary-custom:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+}
+
+.btn-success-custom {
+    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+    color: #fff;
+}
+
+.btn-danger-custom {
+    background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+    color: #fff;
+}
+
+.btn-outline-custom {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-custom:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ==================== NAVBAR ==================== */
+.navbar {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 1.2rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.05);
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    transition: all 0.3s;
+}
+
+.user-profile:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-2px);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.user-info h6 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.user-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.role-badge-nav {
+    background: rgba(245, 158, 11, 0.2);
+    border: 2px solid var(--secondary);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-badge-nav.buyer {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--success);
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+    top: -250px;
+    left: -250px;
+    animation: pulse 8s ease-in-out infinite;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+    bottom: -250px;
+    right: -250px;
+    animation: pulse 8s ease-in-out infinite 4s;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    position: relative;
+    z-index: 1;
+}
+
+.hero .highlight {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ==================== STATS SECTION ==================== */
+.stats-section {
+    padding: 60px 0;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    text-align: center;
+}
+
+.stat-item {
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s;
+}
+
+.stat-item:hover {
+    transform: translateY(-10px);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.95rem;
+}
+
+/* ==================== FILTER BAR ==================== */
+.filter-bar {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ==================== PRODUCT CARDS ==================== */
+.product-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 25px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    z-index: 1;
+}
+
+.product-card:hover::before {
+    transform: scaleX(1);
+}
+
+.product-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 25px 50px rgba(99, 102, 241, 0.4);
+}
+
+.product-img-container {
+    position: relative;
+    overflow: hidden;
+    height: 250px;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.1);
+}
+
+.product-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--gradient);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.product-seller-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(245, 158, 11, 0.9);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 10;
+}
+
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* ==================== CART SIDEBAR ==================== */
+.cart-offcanvas {
+    width: 450px !important;
+    background: rgba(15, 23, 42, 0.98) !important;
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.cart-item {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: all 0.3s;
+}
+
+.cart-item:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(-5px);
+}
+
+.cart-item-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.cart-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255,255,255,0.5);
+}
+
+.cart-empty i {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+/* ==================== MODAL ==================== */
+.modal-content {
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 25px;
+    color: #fff;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-close-white {
+    filter: invert(1);
+}
+
+/* ==================== TOAST NOTIFICATIONS ==================== */
+.toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast-custom {
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: slideInRight 0.3s ease;
+    min-width: 300px;
+}
+
+@keyframes slideInRight {
+    from { 
+        transform: translateX(400px); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+}
+
+.badge-count {
+    background: var(--danger);
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    animation: bounceIn 0.5s;
+}
+
+@keyframes bounceIn {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-item {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ==================== UTILITIES ==================== */
+.hidden { 
+    display: none !important; 
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: rgba(255,255,255,0.5);
+}
+
+.empty-state i {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+/* ==================== LOADER SCREEN ==================== */
+.loader-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+    animation: fadeInUp 0.6s ease;
+}
+
+.loader-spinner {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 30px;
+    border: 4px solid rgba(99, 102, 241, 0.2);
+    border-top: 4px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-title {
+    font-size: 3rem;
+    font-weight: 900;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+}
+
+.loader-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.loader-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.loader-progress-bar {
+    height: 100%;
+    background: var(--gradient);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.loader-description {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .hero h1 { 
+        font-size: 2rem; 
+    }
+    
+    .cart-offcanvas { 
+        width: 100% !important; 
+    }
+    
+    .auth-card { 
+        padding: 40px 25px; 
+    }
+    
+    .stats-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+    }
+    
+    .product-img-container { 
+        height: 200px; 
+    }
+    
+    .user-profile {
+        padding: 8px 12px;
+    }
+    
+    .user-info {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .role-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .navbar-brand {
+        font-size: 1.4rem;
+    }
+}
+    </style>
+</head>
+<body>
+<!-- LOADER SCREEN -->
+<div id="loaderScreen" class="loader-screen">
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+
+        <h2 class="loader-title">ElvisMarket</h2>
+        <p class="loader-text">Initialisation de la marketplace…</p>
+
+        <div class="loader-progress">
+            <div class="loader-progress-bar" id="loaderProgress"></div>
+        </div>
+
+        <p class="loader-description">
+            <strong>ElvisMarket</strong> est une marketplace locale développée en 
+            <strong>JavaScript</strong> et <strong>Bootstrap</strong>, conçue pour illustrer
+            la gestion des rôles utilisateurs (acheteur / vendeur), la publication dynamique
+            de produits, le filtrage en temps réel, la gestion du panier et
+            l’optimisation de l’expérience utilisateur.
+        </p>
+
+        <p class="loader-description" style="opacity:0.8; font-size:0.9rem;">
+            Cette application est une démonstration front-end visant à présenter la logique,
+            l’architecture et l’UX d’une plateforme e-commerce moderne.
+        </p>
+    </div>
+</div>
+
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ==================== AUTH SCREEN ==================== -->
+<div id="authScreen" class="auth-container hidden">
+        <div class="auth-card">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <h1><i class="fas fa-store-alt"></i> ElvisMarket</h1>
+                <p>Votre marketplace locale de confiance</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="auth-step-indicator">
+                <div class="step-dots">
+                    <div class="step-dot active" id="stepDot1"></div>
+                    <div class="step-dot" id="stepDot2"></div>
+                </div>
+                <p class="text-white-50 small mb-0" id="stepLabel">Étape 1 sur 2</p>
+            </div>
+
+            <!-- Step 1: Login Form -->
+            <div id="loginStep">
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>Prénom
+                        </label>
+                        <input type="text" id="firstName" class="form-control" placeholder="Ex: Elvis" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user-tag me-2"></i>Nom
+                        </label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Ex: Kouassi" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-lock me-2"></i>Mot de passe
+                        </label>
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6">
+                        <small class="text-white-50">Minimum 6 caractères</small>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth btn-primary-auth w-100">
+                        <i class="fas fa-arrow-right"></i>
+                        Continuer
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: Role Selection -->
+            <div id="roleStep" class="hidden">
+                <h4 class="text-center mb-4 fw-bold">Choisissez votre rôle</h4>
+                <p class="text-center text-white-50 mb-4">Comment souhaitez-vous utiliser ElvisMarket ?</p>
+                
+                <div class="role-selector">
+                    <div class="role-option" data-role="buyer" onclick="selectRole('buyer')">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h5>Acheteur</h5>
+                        <p>Parcourir et acheter des produits</p>
+                    </div>
+                    
+                    <div class="role-option" data-role="seller" onclick="selectRole('seller')">
+                        <i class="fas fa-store"></i>
+                        <h5>Vendeur</h5>
+                        <p>Publier et vendre vos articles</p>
+                    </div>
+                </div>
+                
+                <button class="btn-auth btn-primary-auth w-100 mt-4" onclick="confirmRole()" disabled id="confirmRoleBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Valider et Commencer
+                </button>
+                
+                <button class="btn btn-outline-custom w-100 mt-2" onclick="backToLogin()">
+                    <i class="fas fa-arrow-left"></i>
+                    Retour
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="mainApp" class="hidden">
+        
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3">
+                    
+                    <!-- Brand -->
+                    <a class="navbar-brand" href="#" onclick="event.preventDefault()">
+                        <i class="fas fa-store-alt me-2"></i>ElvisMarket
+                    </a>
+                    
+                    <!-- Right Side -->
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        
+                        <!-- Search Bar -->
+                        <div class="d-none d-md-block">
+                            <input type="text" id="quickSearch" class="form-control" 
+                                   placeholder="🔍 Recherche rapide..." 
+                                   style="min-width: 300px;">
+                        </div>
+
+                        <!-- User Profile -->
+                        <div class="user-profile">
+                            <div class="user-avatar" id="userAvatar"></div>
+                            <div class="user-info">
+                                <h6 id="userName"></h6>
+                                <p id="userRole"></p>
+                            </div>
+                        </div>
+
+                        <!-- Cart Button (Buyer Only) -->
+                        <button id="cartBtn" class="btn btn-outline-custom position-relative" 
+                                data-bs-toggle="offcanvas" data-bs-target="#cartSidebar">
+                            <i class="fas fa-shopping-cart fs-5"></i>
+                            <span id="cartCount" class="position-absolute top-0 start-100 translate-middle badge-count">0</span>
+                        </button>
+
+                        <!-- Logout -->
+                        <button class="btn btn-outline-custom" onclick="logout()" title="Déconnexion">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="container">
+                <h1>
+                    <span id="heroGreeting"></span><br>
+                    <span class="highlight" id="heroRole"></span>
+                </h1>
+                
+                <!-- Seller Actions -->
+                <div id="sellerActions" class="mt-4 hidden">
+                    <button class="btn-custom btn-primary-custom" data-bs-toggle="modal" data-bs-target="#postModal">
+                        <i class="fas fa-plus-circle"></i>
+                        Publier un Nouvel Article
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="statProducts">0</div>
+                        <div class="stat-label">Articles Disponibles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="statCategories">3</div>
+                        <div class="stat-label">Catégories</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="statSellers">0</div>
+                        <div class="stat-label">Vendeurs Actifs</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="statSales">0</div>
+                        <div class="stat-label">Ventes Réussies</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <main class="container my-5">
+            
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">
+                            <i class="fas fa-filter me-2"></i>Catégorie
+                        </label>
+                        <select class="form-select" id="filterCategory" onchange="applyFilters()">
+                            <option value="all">Toutes les catégories</option>
+                            <option value="Électronique">📱 Électronique</option>
+                            <option value="Mode">👗 Mode</option>
+                            <option value="Maison">🏠 Maison</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fas fa-money-bill-wave me-2"></i>Prix Min (FCFA)
+                        </label>
+                        <input type="number" class="form-control" id="filterPriceMin" 
+                               placeholder="0" min="0" onchange="applyFilters()">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label">
+                            <i class="fas fa-money-bill-wave me-2"></i>Prix Max (FCFA)
+                        </label>
+                        <input type="number" class="form-control" id="filterPriceMax" 
+                               placeholder="∞" min="0" onchange="applyFilters()">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-custom w-100" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i>
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row g-4" id="productsGrid">
+                <!-- Products will be dynamically loaded here -->
+            </div>
+            
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-4" style="background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.1);">
+            <div class="container">
+                <p class="mb-0 text-white-50">
+                    &copy; 2024 ElvisMarket - Tous droits réservés
+                </p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ==================== POST PRODUCT MODAL ==================== -->
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="postModalLabel">
+                        <i class="fas fa-tag me-2"></i>
+                        Publier un Nouvel Article
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <form id="postForm" class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="fas fa-heading me-2"></i>Titre de l'article *
+                            </label>
+                            <input type="text" id="pTitle" class="form-control" 
+                                   placeholder="Ex: iPhone 15 Pro Max" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-money-bill-wave me-2"></i>Prix (FCFA) *
+                            </label>
+                            <input type="number" id="pPrice" class="form-control" 
+                                   placeholder="100000" min="0" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-list me-2"></i>Catégorie *
+                            </label>
+                            <select id="pCategory" class="form-select" required>
+                                <option value="">Choisir...</option>
+                                <option value="Électronique">📱 Électronique</option>
+                                <option value="Mode">👗 Mode</option>
+                                <option value="Maison">🏠 Maison</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="fas fa-align-left me-2"></i>Description
+                            </label>
+                            <textarea id="pDescription" class="form-control" rows="3" 
+                                      placeholder="Décrivez votre article en détail..."></textarea>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="fas fa-image me-2"></i>Photo de l'article *
+                            </label>
+                            <input type="file" id="pImage" class="form-control" 
+                                   accept="image/*" required>
+                            <small class="text-white-50">Formats acceptés: JPG, PNG, GIF (Max 5MB)</small>
+                        </div>
+                        
+                        <div class="col-12">
+                            <button type="submit" class="btn-custom btn-primary-custom w-100">
+                                <i class="fas fa-rocket"></i>
+                                Publier Maintenant
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CART SIDEBAR ==================== -->
+    <div class="offcanvas offcanvas-end cart-offcanvas" id="cartSidebar" tabindex="-1" aria-labelledby="cartSidebarLabel">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="fw-bold mb-0" id="cartSidebarLabel">
+                <i class="fas fa-shopping-bag me-2"></i>
+                Mon Panier
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        
+        <div class="offcanvas-body p-4">
+            <!-- Cart Items List -->
+            <div id="cartItemsList">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="border-top border-secondary pt-4 mt-4" id="cartSummary">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-white-50">Sous-total</span>
+                    <h5 class="fw-bold mb-0" id="cartSubtotal">0 FCFA</h5>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="text-white-50">Livraison</span>
+                    <h5 class="fw-bold text-success mb-0">Gratuite</h5>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-4 pb-4 border-bottom border-secondary">
+                    <span class="fs-5 fw-bold">Total</span>
+                    <h4 class="fw-bold mb-0" style="background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="cartTotal">0 FCFA</h4>
+                </div>
+                
+                <button class="btn-custom btn-success-custom w-100 mb-2" onclick="checkout()">
+                    <i class="fas fa-check-circle"></i>
+                    Finaliser l'Achat
+                </button>
+                
+                <button class="btn-custom btn-danger-custom w-100" onclick="clearCart()">
+                    <i class="fas fa-trash"></i>
+                    Vider le Panier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+// ==================== STATE MANAGEMENT ====================
+let currentUser = null;
+let selectedRole = null;
+let products = [];
+let cart = [];
+let stats = { totalSales: 0, sellers: new Set() };
+
+// ==================== INITIALIZATION ====================
+function init() {
+    // Load data from storage FIRST
+    loadDataFromStorage();
+    
+    const loaderScreen = document.getElementById('loaderScreen');
+    const loaderProgress = document.getElementById('loaderProgress');
+    
+    // Faster progress animation (2 seconds instead of 10)
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += 5;
+        loaderProgress.style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+        }
+    }, 50);
+    
+    // After 2 seconds, hide loader and check session
+    setTimeout(() => {
+        loaderScreen.classList.add('hidden');
+        
+        // Check for existing session
+        const session = localStorage.getItem('ems_session');
+        if (session) {
+            try {
+                const parsed = JSON.parse(session);
+                if (parsed && parsed.user && parsed.role) {
+                    currentUser = parsed.user;
+                    selectedRole = parsed.role;
+                    showMainApp();
+                    return;
+                }
+            } catch (e) {
+                console.error('Session parse error:', e);
+            }
+        }
+        
+        // Show auth screen if no session
+        document.getElementById('authScreen').classList.remove('hidden');
+    }, 2000);
+}
+
+// ==================== SESSION MANAGEMENT ====================
+function saveSession() {
+    localStorage.setItem('ems_session', JSON.stringify({
+        user: currentUser,
+        role: selectedRole
+    }));
+}
+
+// ==================== AUTHENTICATION ====================
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!firstName || !lastName || password.length < 6) {
+        showToast('Veuillez remplir tous les champs correctement', 'warning');
+        return;
+    }
+
+    currentUser = {
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`,
+        initials: firstName[0].toUpperCase() + lastName[0].toUpperCase()
+    };
+
+    // Move to role selection
+    document.getElementById('loginStep').classList.add('hidden');
+    document.getElementById('roleStep').classList.remove('hidden');
+    
+    // Update step indicator
+    document.getElementById('stepDot1').classList.remove('active');
+    document.getElementById('stepDot2').classList.add('active');
+    document.getElementById('stepLabel').textContent = 'Étape 2 sur 2';
+    
+    showToast(`Bienvenue ${firstName} ! 👋`, 'success');
+}
+
+function backToLogin() {
+    document.getElementById('roleStep').classList.add('hidden');
+    document.getElementById('loginStep').classList.remove('hidden');
+    
+    // Update step indicator
+    document.getElementById('stepDot1').classList.add('active');
+    document.getElementById('stepDot2').classList.remove('active');
+    document.getElementById('stepLabel').textContent = 'Étape 1 sur 2';
+    
+    // Reset role selection
+    selectedRole = null;
+    document.querySelectorAll('.role-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    document.getElementById('confirmRoleBtn').disabled = true;
+}
+
+function selectRole(role) {
+    selectedRole = role;
+    
+    // Update UI
+    document.querySelectorAll('.role-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    document.querySelector(`.role-option[data-role="${role}"]`).classList.add('selected');
+    document.getElementById('confirmRoleBtn').disabled = false;
+}
+
+function confirmRole() {
+    if (!selectedRole) {
+        showToast('Veuillez sélectionner un rôle', 'warning');
+        return;
+    }
+
+    saveSession();
+    showMainApp();
+    showToast(`Vous êtes maintenant ${selectedRole === 'buyer' ? 'Acheteur' : 'Vendeur'} ! 🎉`, 'success');
+}
+
+function logout() {
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        localStorage.removeItem('ems_session');
+        currentUser = null;
+        selectedRole = null;
+        cart = [];
+        
+        document.getElementById('mainApp').classList.add('hidden');
+        document.getElementById('authScreen').classList.remove('hidden');
+        
+        // Reset forms
+        document.getElementById('loginForm').reset();
+        document.getElementById('loginStep').classList.remove('hidden');
+        document.getElementById('roleStep').classList.add('hidden');
+        document.getElementById('stepDot1').classList.add('active');
+        document.getElementById('stepDot2').classList.remove('active');
+        
+        showToast('Déconnexion réussie ! À bientôt 👋', 'info');
+    }
+}
+
+// ==================== MAIN APP ====================
+function showMainApp() {
+    document.getElementById('authScreen').classList.add('hidden');
+    document.getElementById('mainApp').classList.remove('hidden');
+    
+    // Update user info in navbar
+    document.getElementById('userAvatar').textContent = currentUser.initials;
+    document.getElementById('userName').textContent = currentUser.fullName;
+    document.getElementById('userRole').textContent = selectedRole === 'buyer' ? '🛒 Acheteur' : '🪙 Vendeur';
+    
+    // Update hero section
+    const greetings = ['Bienvenue', 'Salut', 'Bonjour', 'Hey'];
+    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+    document.getElementById('heroGreeting').textContent = `${randomGreeting} ${currentUser.firstName} !`;
+    document.getElementById('heroRole').textContent = selectedRole === 'buyer' ? 'Découvrez nos Produits' : 'Gérez vos Articles';
+    
+    // Show/hide elements based on role
+    if (selectedRole === 'seller') {
+        document.getElementById('sellerActions').classList.remove('hidden');
+        document.getElementById('cartBtn').classList.add('hidden');
+        document.body.style.background = 'linear-gradient(135deg, #78350f 0%, #92400e 100%)';
+    } else {
+        document.getElementById('sellerActions').classList.add('hidden');
+        document.getElementById('cartBtn').classList.remove('hidden');
+        document.body.style.background = 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
+    }
+    
+    // Setup event listeners for main app NOW
+    setupMainAppListeners();
+    
+    renderProducts();
+    renderCart();
+    updateStats();
+}
+
+// ==================== DATA MANAGEMENT ====================
+function loadDataFromStorage() {
+    products = JSON.parse(localStorage.getItem('ems_products')) || getDefaultProducts();
+    cart = JSON.parse(localStorage.getItem('ems_cart')) || [];
+    stats = JSON.parse(localStorage.getItem('ems_stats')) || { totalSales: 0, sellers: new Set() };
+    
+    // Convert sellers back to Set
+    if (Array.isArray(stats.sellers)) {
+        stats.sellers = new Set(stats.sellers);
+    }
+}
+
+function saveToStorage() {
+    localStorage.setItem('ems_products', JSON.stringify(products));
+    localStorage.setItem('ems_cart', JSON.stringify(cart));
+    
+    // Convert Set to Array for storage
+    const statsToSave = {
+        ...stats,
+        sellers: Array.from(stats.sellers)
+    };
+    localStorage.setItem('ems_stats', JSON.stringify(statsToSave));
+}
+
+function getDefaultProducts() {
+    return [
+        {
+            id: Date.now() + 1,
+            title: "MacBook Pro M3 Max",
+            price: 1800000,
+            category: "Électronique",
+            description: "Dernier modèle avec puce M3 Max, 32GB RAM, 1TB SSD. État neuf, sous garantie.",
+            image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
+            seller: "TechStore CI",
+            date: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 2,
+            title: "Nike Air Jordan 1 Retro",
+            price: 125000,
+            category: "Mode",
+            description: "Authentiques, taille 42, état neuf dans la boîte. Jamais portées.",
+            image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+            seller: "Sneakers Pro",
+            date: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 3,
+            title: "Canapé 3 Places Luxe",
+            price: 450000,
+            category: "Maison",
+            description: "Cuir véritable, design moderne, très confortable. Parfait état.",
+            image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500",
+            seller: "HomeDeco",
+            date: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 4,
+            title: "iPhone 15 Pro Max",
+            price: 950000,
+            category: "Électronique",
+            description: "256GB, Titane Naturel, sous garantie Apple. Acheté il y a 2 mois.",
+            image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500",
+            seller: "MobileHub",
+            date: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 5,
+            title: "Sac à Main Louis Vuitton",
+            price: 850000,
+            category: "Mode",
+            description: "Authentique, modèle Neverfull MM. Certificat d'authenticité inclus.",
+            image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500",
+            seller: "LuxuryBags CI",
+            date: new Date().toISOString()
+        },
+        {
+            id: Date.now() + 6,
+            title: "Table à Manger Design",
+            price: 280000,
+            category: "Maison",
+            description: "Bois massif, 6-8 personnes. Design scandinave moderne.",
+            image: "https://images.unsplash.com/photo-1617806118233-18e1de247200?w=500",
+            seller: "FurniturePlus",
+            date: new Date().toISOString()
+        }
+    ];
+}
+
+// ==================== PRODUCTS ====================
+function renderProducts(filtered = products) {
+    const grid = document.getElementById('productsGrid');
+    
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="col-12 empty-state">
+                <i class="fas fa-box-open"></i>
+                <h3>Aucun produit trouvé</h3>
+                <p>Essayez de modifier vos filtres de recherche</p>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map((p, i) => {
+        const isMyProduct = selectedRole === 'seller' && p.seller === currentUser.fullName;
+        
+        return `
+            <div class="col-lg-4 col-md-6 animate-item" style="animation-delay: ${i * 0.1}s">
+                <div class="product-card">
+                    <div class="product-img-container">
+                        <img src="${p.image}" class="product-img" alt="${p.title}" 
+                             onerror="this.src='https://via.placeholder.com/300x250?text=Image+Non+Disponible'">
+                        <span class="product-badge">${p.category}</span>
+                        ${isMyProduct ? `<span class="product-seller-badge">✨ Votre Article</span>` : ''}
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <small class="text-white-50">
+                                <i class="fas fa-store me-1"></i>${p.seller}
+                            </small>
+                            ${isMyProduct ? 
+                                `<button class="btn btn-sm btn-danger-custom" onclick="deleteProduct(${p.id})" title="Supprimer">
+                                    <i class="fas fa-trash"></i>
+                                </button>` : ''}
+                        </div>
+                        
+                        <h6 class="fw-bold mb-2">${p.title}</h6>
+                        
+                        <p class="text-white-50 small mb-3" style="min-height: 40px">
+                            ${(p.description || '').substring(0, 80)}${p.description && p.description.length > 80 ? '...' : ''}
+                        </p>
+                        
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fs-5 fw-bold" style="background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                    ${formatPrice(p.price)}
+                                </span>
+                                <small class="text-white-50">
+                                    <i class="far fa-clock me-1"></i>${getTimeAgo(p.date)}
+                                </small>
+                            </div>
+                            
+                            ${selectedRole === 'buyer' ? 
+                                `<button class="btn-custom btn-success-custom w-100" onclick="addToCart(${p.id})">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Ajouter au Panier
+                                </button>` :
+                                `<button class="btn-custom btn-outline-custom w-100" disabled>
+                                    <i class="fas fa-lock"></i>
+                                    Mode Vendeur
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function applyFilters() {
+    const category = document.getElementById('filterCategory').value;
+    const priceMin = parseInt(document.getElementById('filterPriceMin').value) || 0;
+    const priceMax = parseInt(document.getElementById('filterPriceMax').value) || Infinity;
+    const search = document.getElementById('quickSearch') ? document.getElementById('quickSearch').value.toLowerCase() : '';
+
+    let filtered = products.filter(p => {
+        const matchCategory = category === 'all' || p.category === category;
+        const matchPrice = p.price >= priceMin && p.price <= priceMax;
+        const matchSearch = !search || 
+            p.title.toLowerCase().includes(search) || 
+            p.description?.toLowerCase().includes(search) ||
+            p.seller.toLowerCase().includes(search);
+        
+        return matchCategory && matchPrice && matchSearch;
+    });
+
+    renderProducts(filtered);
+    
+    // Show filter result count
+    if (filtered.length < products.length) {
+        showToast(`${filtered.length} article(s) trouvé(s)`, 'info');
+    }
+}
+
+function resetFilters() {
+    document.getElementById('filterCategory').value = 'all';
+    document.getElementById('filterPriceMin').value = '';
+    document.getElementById('filterPriceMax').value = '';
+    if (document.getElementById('quickSearch')) {
+        document.getElementById('quickSearch').value = '';
+    }
+    renderProducts(products);
+    showToast('Filtres réinitialisés', 'info');
+}
+
+function deleteProduct(id) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) return;
+    
+    const product = products.find(p => p.id === id);
+    products = products.filter(p => p.id !== id);
+    
+    saveToStorage();
+    renderProducts();
+    updateStats();
+    
+    showToast(`"${product.title}" supprimé avec succès`, 'success');
+}
+
+// ==================== POST PRODUCT ====================
+function handlePostProduct(e) {
+    e.preventDefault();
+
+    const title = document.getElementById('pTitle').value.trim();
+    const price = parseInt(document.getElementById('pPrice').value);
+    const category = document.getElementById('pCategory').value;
+    const description = document.getElementById('pDescription').value.trim();
+    const imageFile = document.getElementById('pImage').files[0];
+
+    // Validation
+    if (!title || !price || !category || !imageFile) {
+        showToast('Veuillez remplir tous les champs obligatoires', 'warning');
+        return;
+    }
+
+    if (price <= 0) {
+        showToast('Le prix doit être supérieur à 0', 'warning');
+        return;
+    }
+
+    if (imageFile.size > 5 * 1024 * 1024) {
+        showToast('L\'image ne doit pas dépasser 5MB', 'warning');
+        return;
+    }
+
+    // Read image
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const newProduct = {
+            id: Date.now(),
+            title,
+            price,
+            category,
+            description,
+            image: event.target.result,
+            seller: currentUser.fullName,
+            date: new Date().toISOString()
+        };
+
+        products.unshift(newProduct);
+        saveToStorage();
+        renderProducts();
+        updateStats();
+
+        // Close modal and reset form
+        const modal = bootstrap.Modal.getInstance(document.getElementById('postModal'));
+        modal.hide();
+        document.getElementById('postForm').reset();
+        
+        showToast(`"${title}" publié avec succès ! 🎉`, 'success');
+    };
+
+    reader.readAsDataURL(imageFile);
+}
+
+// ==================== CART ====================
+function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const existing = cart.find(item => item.id === id);
+
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...product, qty: 1 });
+    }
+
+    saveToStorage();
+    renderCart();
+    animateCartBadge();
+    showToast(`"${product.title}" ajouté au panier ! 🛒`, 'success');
+}
+
+function renderCart() {
+    const list = document.getElementById('cartItemsList');
+    const countBadge = document.getElementById('cartCount');
+    const summary = document.getElementById('cartSummary');
+    
+    if (cart.length === 0) {
+        list.innerHTML = `
+            <div class="cart-empty">
+                <i class="fas fa-shopping-cart"></i>
+                <h5>Panier Vide</h5>
+                <p>Commencez vos achats maintenant !</p>
+            </div>`;
+        countBadge.textContent = '0';
+        summary.style.display = 'none';
+        return;
+    }
+
+    summary.style.display = 'block';
+    let total = 0;
+    
+    list.innerHTML = cart.map(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        
+        return `
+            <div class="cart-item">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="${item.image}" class="cart-item-img" alt="${item.title}"
+                         onerror="this.src='https://via.placeholder.com/80?text=IMG'">
+                    
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">${item.title}</h6>
+                        
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <button class="btn btn-sm btn-outline-custom" onclick="updateQty(${item.id}, -1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="fw-bold mx-2">${item.qty}</span>
+                            <button class="btn btn-sm btn-outline-custom" onclick="updateQty(${item.id}, 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="small text-white-50 mb-1">
+                            ${formatPrice(item.price)} × ${item.qty}
+                        </div>
+                        <div class="fw-bold" style="color: var(--success)">
+                            ${formatPrice(subtotal)}
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-sm btn-danger-custom" onclick="removeFromCart(${item.id})" title="Retirer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+    countBadge.textContent = totalItems;
+    updateCartTotals(total);
+}
+
+function updateCartTotals(total) {
+    document.getElementById('cartSubtotal').textContent = formatPrice(total);
+    document.getElementById('cartTotal').textContent = formatPrice(total);
+}
+
+function updateQty(id, change) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+
+    item.qty += change;
+    
+    if (item.qty <= 0) {
+        removeFromCart(id);
+    } else {
+        saveToStorage();
+        renderCart();
+    }
+}
+
+function removeFromCart(id) {
+    const item = cart.find(i => i.id === id);
+    cart = cart.filter(i => i.id !== id);
+    
+    saveToStorage();
+    renderCart();
+    showToast(`"${item.title}" retiré du panier`, 'info');
+}
+
+function clearCart() {
+    if (!confirm('Êtes-vous sûr de vouloir vider complètement le panier ?')) return;
+    
+    cart = [];
+    saveToStorage();
+    renderCart();
+    showToast('Panier vidé', 'info');
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        showToast('Votre panier est vide !', 'warning');
+        return;
+    }
+
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    
+    // Update stats
+    stats.totalSales++;
+    cart.forEach(item => stats.sellers.add(item.seller));
+    
+    // Clear cart
+    cart = [];
+    saveToStorage();
+    renderCart();
+    updateStats();
+
+    showToast(`✅ Achat réussi ! ${itemCount} article(s) - Total: ${formatPrice(total)}`, 'success');
+    
+    // Close cart sidebar
+    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('cartSidebar'));
+    if (offcanvas) offcanvas.hide();
+    
+    // Show success animation
+    setTimeout(() => {
+        showToast('🎉 Merci pour votre confiance !', 'success');
+    }, 1500);
+}
+
+function animateCartBadge() {
+    const badge = document.getElementById('cartCount');
+    badge.style.transform = 'scale(1.5)';
+    setTimeout(() => badge.style.transform = 'scale(1)', 300);
+}
+
+// ==================== STATS ====================
+function updateStats() {
+    document.getElementById('statProducts').textContent = products.length;
+    document.getElementById('statSellers').textContent = new Set(products.map(p => p.seller)).size;
+    document.getElementById('statSales').textContent = stats.totalSales;
+}
+
+// ==================== UTILITIES ====================
+function formatPrice(price) {
+    return new Intl.NumberFormat('fr-FR').format(price) + ' FCFA';
+}
+
+function getTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+    
+    if (seconds < 60) return 'À l\'instant';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}j`;
+    return `${Math.floor(seconds / 604800)}sem`;
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    
+    const colors = {
+        success: '#10b981',
+        danger: '#ef4444',
+        warning: '#f59e0b',
+        info: '#6366f1'
+    };
+    
+    const icons = {
+        success: 'check-circle',
+        danger: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-custom';
+    toast.style.borderLeft = `4px solid ${colors[type]}`;
+    toast.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-${icons[type]}" style="color: ${colors[type]}; font-size: 1.5rem;"></i>
+            <span>${message}</span>
+        </div>
+    `;
+
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ==================== EVENT LISTENERS ====================
+function setupMainAppListeners() {
+    // Quick search
+    const quickSearch = document.getElementById('quickSearch');
+    if (quickSearch) {
+        quickSearch.addEventListener('input', applyFilters);
+    }
+    
+    // Post form
+    const postForm = document.getElementById('postForm');
+    if (postForm) {
+        postForm.addEventListener('submit', handlePostProduct);
+    }
+    
+    // Form validation
+    const priceInputs = document.querySelectorAll('input[type="number"]');
+    priceInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+        });
+    });
+}
+
+// ==================== INITIALIZE APP ====================
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup login form listener immediately
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Initialize app
+    init();
+});
+
+// Save data before page unload
+window.addEventListener('beforeunload', saveToStorage);
+</script>

@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TontineSafe CI - Gestion Moderne de Tontines</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding-bottom: 2rem;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            border-radius: 0 0 20px 20px;
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            transform: scale(1.1);
+            animation: ring 0.5s ease;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .container-main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card.primary::before { background: var(--gradient-1); }
+        .stat-card.success::before { background: var(--gradient-4); }
+        .stat-card.warning::before { background: var(--gradient-2); }
+        .stat-card.info::before { background: var(--gradient-3); }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card.primary .stat-icon { background: var(--gradient-1); }
+        .stat-card.success .stat-icon { background: var(--gradient-4); }
+        .stat-card.warning .stat-icon { background: var(--gradient-2); }
+        .stat-card.info .stat-icon { background: var(--gradient-3); }
+
+        .nav-pills {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .nav-pills .nav-link:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .nav-pills .nav-link.active {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .group-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .group-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-1);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .group-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .progress-modern {
+            height: 8px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-modern .progress-bar {
+            background: var(--gradient-4);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-modern .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .btn-modern {
+            border-radius: 12px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-modern:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary-modern {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-success-modern {
+            background: var(--gradient-4);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .badge-modern {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .badge-paid {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .badge-pending {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding: 2rem 2rem 1rem;
+        }
+
+        .modal-body {
+            padding: 1rem 2rem 2rem;
+        }
+
+        .form-control-modern, .form-select-modern {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-modern:focus, .form-select-modern:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .member-row {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .member-row:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .alert-modern {
+            border-radius: 15px;
+            border: none;
+            padding: 1rem 1.5rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .detail-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+
+        .table-modern {
+            border-collapse: separate;
+            border-spacing: 0 0.5rem;
+        }
+
+        .table-modern thead th {
+            background: #f8fafc;
+            border: none;
+            padding: 1rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table-modern tbody tr {
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .table-modern tbody tr:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+
+        .table-modern tbody td {
+            padding: 1rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .stat-card { margin-bottom: 1rem; }
+            .group-card { margin-bottom: 1rem; }
+            .navbar-brand { font-size: 1.2rem; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <span class="navbar-brand">
+                    <i class="fas fa-hand-holding-usd me-2"></i>TontineSafe CI
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="notification-bell" onclick="showNotifications()">
+                    <i class="fas fa-bell fs-4" style="color: var(--primary);"></i>
+                    <span id="notif-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: var(--gradient-2);">0</span>
+                </div>
+                <button class="btn btn-modern btn-primary-modern btn-sm" onclick="showProfile()">
+                    <i class="fas fa-user me-2"></i>Mon Compte
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-main">
+        <div id="notification-area"></div>
+
+        <ul class="nav nav-pills" id="mainTabs">
+            <li class="nav-item flex-fill">
+                <button class="nav-link active w-100" onclick="switchTab('dashboard')">
+                    <i class="fas fa-chart-line me-2"></i>Tableau de Bord
+                </button>
+            </li>
+            <li class="nav-item flex-fill">
+                <button class="nav-link w-100" id="tab-details" onclick="switchTab('details')">
+                    <i class="fas fa-users me-2"></i>Détails Groupe
+                </button>
+            </li>
+            <li class="nav-item flex-fill">
+                <button class="nav-link w-100" onclick="switchTab('history')">
+                    <i class="fas fa-history me-2"></i>Historique
+                </button>
+            </li>
+        </ul>
+
+        <div id="view-dashboard" class="fade-in">
+            <div class="row g-4 mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="text-muted mb-1">Groupes Actifs</div>
+                        <h2 class="fw-bold mb-0" id="stat-groups">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="text-muted mb-1">Total Membres</div>
+                        <h2 class="fw-bold mb-0" id="stat-members">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="text-muted mb-1">Cotisations Mois</div>
+                        <h2 class="fw-bold mb-0" id="stat-money">0 F</h2>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="text-muted mb-1">Tours Actifs</div>
+                        <h2 class="fw-bold mb-0" id="stat-rounds">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0" style="color: white;">
+                    <i class="fas fa-layer-group me-2"></i>Mes Groupes de Tontine
+                </h4>
+                <button class="btn btn-modern btn-success-modern" data-bs-toggle="modal" data-bs-target="#modalGroup">
+                    <i class="fas fa-plus me-2"></i>Nouveau Groupe
+                </button>
+            </div>
+
+            <div class="row g-4" id="groups-list">
+                <div class="col-12">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>Aucun groupe pour le moment</h5>
+                        <p>Créez votre premier groupe de tontine pour commencer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-details" class="hidden fade-in">
+            <div id="group-content"></div>
+        </div>
+
+        <div id="view-history" class="hidden fade-in">
+            <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: var(--shadow-md);">
+                <h4 class="fw-bold mb-4">
+                    <i class="fas fa-history me-2" style="color: var(--primary);"></i>Historique des Transactions
+                </h4>
+                <div id="history-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalGroup" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-plus-circle me-2" style="color: var(--primary);"></i>Créer un Nouveau Groupe
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nom du Groupe</label>
+                        <input type="text" id="g-name" class="form-control form-control-modern" placeholder="Ex: Les Amis de Yopougon">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Montant par Membre (FCFA)</label>
+                        <input type="number" id="g-amount" class="form-control form-control-modern" value="10000" step="1000">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Fréquence des Cotisations</label>
+                        <select id="g-freq" class="form-select form-select-modern">
+                            <option value="Hebdomadaire">Hebdomadaire</option>
+                            <option value="Mensuel" selected>Mensuel</option>
+                            <option value="Bimensuel">Bimensuel</option>
+                        </select>
+                    </div>
+                    <button onclick="createGroup()" class="btn btn-modern btn-primary-modern w-100 py-3">
+                        <i class="fas fa-check-circle me-2"></i>Créer le Groupe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalMember" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-user-plus me-2" style="color: var(--success);"></i>Ajouter un Membre
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nom Complet</label>
+                        <input type="text" id="m-name" class="form-control form-control-modern" placeholder="Kouassi Jean">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Téléphone</label>
+                        <input type="tel" id="m-phone" class="form-control form-control-modern" placeholder="+225 01 02 03 04 05">
+                    </div>
+                    <button onclick="addMember()" class="btn btn-modern btn-success-modern w-100 py-3">
+                        <i class="fas fa-user-check me-2"></i>Ajouter au Groupe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalContribution" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-money-bill-wave me-2" style="color: var(--success);"></i>Enregistrer une Cotisation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Membre</label>
+                        <select id="c-member" class="form-select form-select-modern"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Montant (FCFA)</label>
+                        <input type="number" id="c-amount" class="form-control form-control-modern">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Méthode de Paiement</label>
+                        <select id="c-method" class="form-select form-select-modern">
+                            <option value="Orange Money">Orange Money</option>
+                            <option value="MTN Money">MTN Money</option>
+                            <option value="Wave">Wave</option>
+                            <option value="Moov Money">Moov Money</option>
+                            <option value="Espèces">Espèces</option>
+                        </select>
+                    </div>
+                    <button onclick="saveContribution()" class="btn btn-modern btn-success-modern w-100 py-3">
+                        <i class="fas fa-check-double me-2"></i>Confirmer le Paiement
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let groups = [];
+        let selectedGroupId = null;
+
+        // LocalStorage Management
+        function saveToStorage() {
+            const data = { groups, lastUpdate: new Date().toISOString() };
+            localStorage.setItem('tontineData', JSON.stringify(data));
+        }
+
+        function loadFromStorage() {
+            const data = localStorage.getItem('tontineData');
+            if (data) {
+                const parsed = JSON.parse(data);
+                groups = parsed.groups || [];
+            } else {
+                groups = [
+                    {
+                        id: 1,
+                        name: 'Groupe des Amis',
+                        amount: 50000,
+                        frequency: 'Mensuel',
+                        members: [
+                            { id: 101, name: 'Kouassi Jean', phone: '+225 07 01 02 03 04', hasPaid: true, totalPaid: 150000 },
+                            { id: 102, name: 'Aya Marie', phone: '+225 05 05 06 07 08', hasPaid: true, totalPaid: 150000 },
+                            { id: 103, name: 'Koné Ibrahim', phone: '+225 01 01 01 01 01', hasPaid: false, totalPaid: 100000 }
+                        ],
+                        currentRound: 2,
+                        totalRounds: 3,
+                        beneficiary: 'Aya Marie',
+                        contributions: [
+                            { date: '2024-12-01', member: 'Kouassi Jean', amount: 50000, method: 'Orange Money' }
+                        ]
+                    }
+                ];
+                saveToStorage();
+            }
+        }
+
+        // Navigation
+        function switchTab(view) {
+            document.getElementById('view-dashboard').classList.toggle('hidden', view !== 'dashboard');
+            document.getElementById('view-details').classList.toggle('hidden', view !== 'details');
+            document.getElementById('view-history').classList.toggle('hidden', view !== 'history');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            if(view === 'dashboard') {
+                document.querySelector('.nav-link').classList.add('active');
+            } else if(view === 'details') {
+                document.getElementById('tab-details').classList.add('active');
+            } else if(view === 'history') {
+                document.querySelectorAll('.nav-link')[2].classList.add('active');
+                renderHistory();
+            }
+        }
+
+        // Utility Functions
+        function formatCFA(amt) {
+            return new Intl.NumberFormat('fr-FR').format(amt) + ' FCFA';
+        }
+
+        function showNotification(message, type = 'success') {
+            const area = document.getElementById('notification-area');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-modern alert-dismissible fade show`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            area.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // Statistics
+        function renderStats() {
+            document.getElementById('stat-groups').innerText = groups.length;
+            const totalM = groups.reduce((acc, g) => acc + g.members.length, 0);
+            document.getElementById('stat-members').innerText = totalM;
+            
+            const currentMonth = new Date().getMonth();
+            const totalMoney = groups.reduce((acc, g) => {
+                const monthContributions = g.contributions.filter(c => new Date(c.date).getMonth() === currentMonth);
+                return acc + monthContributions.reduce((s, c) => s + c.amount, 0);
+            }, 0);
+            document.getElementById('stat-money').innerText = formatCFA(totalMoney);
+            
+            document.getElementById('stat-rounds').innerText = groups.filter(g => g.currentRound <= g.totalRounds).length;
+            
+            const pending = groups.reduce((acc, g) => {
+                return acc + g.members.filter(m => !m.hasPaid).length;
+            }, 0);
+            document.getElementById('notif-count').innerText = pending;
+            document.getElementById('notif-count').style.display = pending > 0 ? 'inline-block' : 'none';
+        }
+
+        // Groups Management
+        function renderGroups() {
+            const list = document.getElementById('groups-list');
+            
+            if(groups.length === 0) {
+                list.innerHTML = `
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h5>Aucun groupe pour le moment</h5>
+                            <p>Créez votre premier groupe de tontine pour commencer</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = '';
+            groups.forEach(g => {
+                const progress = (g.currentRound / g.totalRounds) * 100;
+                const paidCount = g.members.filter(m => m.hasPaid).length;
+                const totalPot = g.amount * g.members.length;
+                
+                list.innerHTML += `
+                    <div class="col-lg-6">
+                        <div class="group-card" onclick="viewGroup(${g.id})">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">${g.name}</h5>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-users me-1"></i>${g.members.length} membres • 
+                                        <i class="fas fa-coins ms-2 me-1"></i>${formatCFA(g.amount)}/membre
+                                    </p>
+                                </div>
+                                <span class="badge badge-modern" style="background: var(--gradient-3);">
+                                    Tour ${g.currentRound}/${g.totalRounds}
+                                </span>
+                            </div>
+                            
+                            <div class="progress-modern mb-3">
+                                <div class="progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted d-block">Bénéficiaire actuel</small>
+                                    <strong>${g.beneficiary || 'En attente'}</strong>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted d-block">Cagnotte</small>
+                                    <strong style="color: var(--success);">${formatCFA(totalPot)}</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 pt-3 border-top">
+                                <small class="text-muted">
+                                    <i class="fas fa-check-circle me-1" style="color: var(--success);"></i>
+                                    ${paidCount}/${g.members.length} ont cotisé ce tour
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function createGroup() {
+            const name = document.getElementById('g-name').value.trim();
+            const amount = parseInt(document.getElementById('g-amount').value);
+            
+            if(!name) {
+                showNotification('Veuillez entrer un nom de groupe', 'danger');
+                return;
+            }
+            
+            if(!amount || amount < 1000) {
+                showNotification('Le montant doit être au moins 1000 FCFA', 'danger');
+                return;
+            }
+            
+            groups.push({
+                id: Date.now(),
+                name,
+                amount,
+                frequency: document.getElementById('g-freq').value,
+                members: [],
+                currentRound: 1,
+                totalRounds: 0,
+                beneficiary: '',
+                contributions: []
+            });
+            
+            saveToStorage();
+            bootstrap.Modal.getInstance(document.getElementById('modalGroup')).hide();
+            document.getElementById('g-name').value = '';
+            document.getElementById('g-amount').value = '10000';
+            
+            renderStats();
+            renderGroups();
+            showNotification('Groupe créé avec succès !');
+        }
+
+        // Group Details
+        function viewGroup(id) {
+            selectedGroupId = id;
+            const g = groups.find(x => x.id === id);
+            const content = document.getElementById('group-content');
+            
+            const totalPot = g.amount * g.members.length;
+            const paidCount = g.members.filter(m => m.hasPaid).length;
+            
+            content.innerHTML = `
+                <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: var(--shadow-md);" class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold mb-1">${g.name}</h3>
+                            <p class="text-muted mb-0">
+                                ${formatCFA(g.amount)} • ${g.frequency}
+                            </p>
+                        </div>
+                        <button class="btn btn-modern btn-primary-modern" onclick="switchTab('dashboard')">
+                            <i class="fas fa-arrow-left me-2"></i>Retour
+                        </button>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="detail-box">
+                                <h6 class="text-muted mb-2">Tour Actuel</h6>
+                                <h2 class="fw-bold mb-0">${g.currentRound}/${g.totalRounds}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-box">
+                                <h6 class="text-muted mb-2">Bénéficiaire</h6>
+                                <h4 class="fw-bold mb-0">${g.beneficiary || 'En attente'}</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-box">
+                                <h6 class="text-muted mb-2">Cagnotte Totale</h6>
+                                <h3 class="fw-bold mb-0" style="color: var(--success);">${formatCFA(totalPot)}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mb-4 flex-wrap">
+                        <button class="btn btn-modern btn-primary-modern" data-bs-toggle="modal" data-bs-target="#modalMember">
+                            <i class="fas fa-user-plus me-2"></i>Ajouter Membre
+                        </button>
+                        <button class="btn btn-modern btn-success-modern" onclick="prepareContributionModal(${g.id})">
+                            <i class="fas fa-money-bill-wave me-2"></i>Enregistrer Cotisation
+                        </button>
+                        <button class="btn btn-modern" style="background: var(--gradient-2); color: white;" onclick="nextRound(${g.id})">
+                            <i class="fas fa-forward me-2"></i>Prochain Tour
+                        </button>
+                    </div>
+                    
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-users me-2" style="color: var(--primary);"></i>
+                        Membres (${paidCount}/${g.members.length} ont cotisé)
+                    </h5>
+                    
+                    ${g.members.length === 0 ? `
+                        <div class="empty-state py-4">
+                            <i class="fas fa-user-friends"></i>
+                            <h6>Aucun membre dans ce groupe</h6>
+                            <p class="small">Ajoutez des membres pour commencer la tontine</p>
+                        </div>
+                    ` : `
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-user me-2"></i>Membre</th>
+                                        <th><i class="fas fa-check-circle me-2"></i>Statut</th>
+                                        <th><i class="fas fa-wallet me-2"></i>Total Cotisé</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${g.members.map(m => `
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">${m.name}</div>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-phone me-1"></i>${m.phone}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <span class="badge-modern ${m.hasPaid ? 'badge-paid' : 'badge-pending'}">
+                                                    <i class="fas fa-${m.hasPaid ? 'check' : 'clock'} me-1"></i>
+                                                    ${m.hasPaid ? 'Payé' : 'En attente'}
+                                                </span>
+                                            </td>
+                                            <td class="fw-bold" style="color: var(--success);">
+                                                ${formatCFA(m.totalPaid)}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `}
+                </div>
+            `;
+            
+            switchTab('details');
+        }
+
+        // Members Management
+        function addMember() {
+            const g = groups.find(x => x.id === selectedGroupId);
+            const name = document.getElementById('m-name').value.trim();
+            const phone = document.getElementById('m-phone').value.trim();
+            
+            if(!name) {
+                showNotification('Veuillez entrer un nom', 'danger');
+                return;
+            }
+            
+            g.members.push({
+                id: Date.now(),
+                name,
+                phone: phone || 'Non renseigné',
+                hasPaid: false,
+                totalPaid: 0
+            });
+            
+            g.totalRounds = g.members.length;
+            if(!g.beneficiary && g.members.length > 0) {
+                g.beneficiary = g.members[0].name;
+            }
+            
+            saveToStorage();
+            bootstrap.Modal.getInstance(document.getElementById('modalMember')).hide();
+            document.getElementById('m-name').value = '';
+            document.getElementById('m-phone').value = '';
+            
+            viewGroup(selectedGroupId);
+            renderStats();
+            renderGroups();
+            showNotification('Membre ajouté avec succès !');
+        }
+
+        // Contributions
+        function prepareContributionModal(id) {
+            const g = groups.find(x => x.id === id);
+            const select = document.getElementById('c-member');
+            
+            const unpaidMembers = g.members.filter(m => !m.hasPaid);
+            if(unpaidMembers.length === 0) {
+                showNotification('Tous les membres ont déjà cotisé pour ce tour', 'info');
+                return;
+            }
+            
+            select.innerHTML = unpaidMembers.map(m => 
+                `<option value="${m.id}">${m.name}</option>`
+            ).join('');
+            
+            document.getElementById('c-amount').value = g.amount;
+            new bootstrap.Modal(document.getElementById('modalContribution')).show();
+        }
+
+        function saveContribution() {
+            const g = groups.find(x => x.id === selectedGroupId);
+            const memberId = parseInt(document.getElementById('c-member').value);
+            const amount = parseInt(document.getElementById('c-amount').value);
+            const method = document.getElementById('c-method').value;
+            const member = g.members.find(m => m.id === memberId);
+            
+            if(!amount || amount < 1000) {
+                showNotification('Le montant doit être au moins 1000 FCFA', 'danger');
+                return;
+            }
+            
+            member.hasPaid = true;
+            member.totalPaid += amount;
+            
+            g.contributions.push({
+                date: new Date().toISOString(),
+                member: member.name,
+                amount,
+                method
+            });
+            
+            saveToStorage();
+            bootstrap.Modal.getInstance(document.getElementById('modalContribution')).hide();
+            
+            viewGroup(selectedGroupId);
+            renderStats();
+            renderGroups();
+            showNotification(`Cotisation de ${member.name} enregistrée avec succès !`);
+        }
+
+        // Rounds Management
+        function nextRound(id) {
+            const g = groups.find(x => x.id === id);
+            
+            const unpaidCount = g.members.filter(m => !m.hasPaid).length;
+            if(unpaidCount > 0) {
+                if(!confirm(`${unpaidCount} membre(s) n'ont pas encore cotisé. Voulez-vous vraiment passer au tour suivant ?`)) {
+                    return;
+                }
+            }
+            
+            if(g.currentRound < g.totalRounds) {
+                g.currentRound++;
+                g.beneficiary = g.members[g.currentRound - 1]?.name || 'À définir';
+                g.members.forEach(m => m.hasPaid = false);
+                
+                saveToStorage();
+                viewGroup(id);
+                renderStats();
+                renderGroups();
+                showNotification('Passage au tour suivant effectué !');
+            } else {
+                showNotification('Cette tontine est terminée ! Tous les tours ont été complétés.', 'info');
+            }
+        }
+
+        // History
+        function renderHistory() {
+            const content = document.getElementById('history-content');
+            const allContributions = [];
+            
+            groups.forEach(g => {
+                g.contributions.forEach(c => {
+                    allContributions.push({
+                        ...c,
+                        groupName: g.name
+                    });
+                });
+            });
+            
+            allContributions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            if(allContributions.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state py-4">
+                        <i class="fas fa-history"></i>
+                        <h6>Aucune transaction pour le moment</h6>
+                        <p class="small">Les cotisations apparaîtront ici</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            content.innerHTML = `
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-calendar me-2"></i>Date</th>
+                                <th><i class="fas fa-layer-group me-2"></i>Groupe</th>
+                                <th><i class="fas fa-user me-2"></i>Membre</th>
+                                <th><i class="fas fa-money-bill me-2"></i>Montant</th>
+                                <th><i class="fas fa-credit-card me-2"></i>Méthode</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${allContributions.map(c => `
+                                <tr>
+                                    <td>${new Date(c.date).toLocaleDateString('fr-FR', { 
+                                        day: '2-digit', 
+                                        month: 'short', 
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</td>
+                                    <td class="fw-semibold">${c.groupName}</td>
+                                    <td>${c.member}</td>
+                                    <td class="fw-bold" style="color: var(--success);">
+                                        ${formatCFA(c.amount)}
+                                    </td>
+                                    <td>
+                                        <span class="badge-modern" style="background: var(--gradient-3);">
+                                            ${c.method}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Notifications
+        function showNotifications() {
+            const pending = [];
+            groups.forEach(g => {
+                g.members.forEach(m => {
+                    if(!m.hasPaid) {
+                        pending.push({
+                            group: g.name,
+                            member: m.name
+                        });
+                    }
+                });
+            });
+            
+            if(pending.length === 0) {
+                showNotification('Aucune cotisation en attente ! 🎉', 'success');
+                return;
+            }
+            
+            let message = `<strong>${pending.length} cotisation(s) en attente :</strong><br>`;
+            pending.slice(0, 5).forEach(p => {
+                message += `<small>• ${p.member} (${p.group})</small><br>`;
+            });
+            
+            if(pending.length > 5) {
+                message += `<small>...et ${pending.length - 5} autre(s)</small>`;
+            }
+            
+            showNotification(message, 'warning');
+        }
+
+        function showProfile() {
+            const totalGroups = groups.length;
+            const totalMembers = groups.reduce((acc, g) => acc + g.members.length, 0);
+            const totalContributed = groups.reduce((acc, g) => 
+                acc + g.contributions.reduce((s, c) => s + c.amount, 0), 0);
+            
+            showNotification(`
+                <strong>Votre Profil TontineSafe</strong><br>
+                <small>• ${totalGroups} groupe(s) géré(s)</small><br>
+                <small>• ${totalMembers} membre(s) total</small><br>
+                <small>• ${formatCFA(totalContributed)} cotisés</small>
+            `, 'info');
+        }
+
+        // Initialize
+        loadFromStorage();
+        renderStats();
+        renderGroups();
+    </script>
+</body>
+</html>

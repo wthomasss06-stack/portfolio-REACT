@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonCashJour Pro - Gestion Commerciale Avancée</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========== VARIABLES ========== */
+:root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #d1fae5;
+    --secondary: #3b82f6;
+    --secondary-dark: #2563eb;
+    --secondary-light: #dbeafe;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --purple: #a855f7;
+    --dark: #0f172a;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --white: #ffffff;
+    
+    --gradient-primary: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+    --gradient-purple: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+    --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-2xl: 24px;
+    --radius-full: 9999px;
+    
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== RESET & BASE ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+    color: var(--gray-900);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ========== LOGIN SCREEN ========== */
+#login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+#login-screen::before,
+#login-screen::after {
+    content: '';
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    animation: pulse 10s ease-in-out infinite;
+}
+
+#login-screen::before {
+    top: -400px;
+    left: -400px;
+}
+
+#login-screen::after {
+    bottom: -400px;
+    right: -400px;
+    animation-delay: 5s;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.4;
+    }
+    50% {
+        transform: scale(1.3) rotate(180deg);
+        opacity: 0.7;
+    }
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: var(--radius-2xl);
+    padding: 48px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 1;
+    max-width: 460px;
+    width: 100%;
+    animation: slideUp 0.6s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-logo {
+    width: 90px;
+    height: 90px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.login-logo i {
+    font-size: 2.5rem;
+    color: var(--white);
+}
+
+/* ========== APP HEADER ========== */
+.app-header {
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: 24px 0;
+    box-shadow: var(--shadow-xl);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.stats-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+.stats-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+/* ========== ACTION BUTTONS ========== */
+.action-btn {
+    background: var(--white);
+    border: none;
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: var(--shadow-2xl);
+}
+
+.action-btn:hover::before {
+    transform: scaleX(1);
+}
+
+.action-btn:active {
+    transform: translateY(-8px) scale(0.98);
+}
+
+.action-btn i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    transition: transform 0.3s;
+}
+
+.action-btn:hover i {
+    transform: scale(1.1) rotateZ(5deg);
+}
+
+.action-btn span {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--gray-700);
+}
+
+/* ========== CARDS ========== */
+.card-custom {
+    background: var(--white);
+    border: none;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card-custom:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+}
+
+.card-custom .card-header {
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border: none;
+    padding: 24px;
+    font-weight: 700;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.card-custom .card-body {
+    padding: 24px;
+}
+
+/* ========== VENTE ITEMS ========== */
+.vente-item {
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.vente-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--gradient-primary);
+    transition: width 0.3s;
+}
+
+.vente-item:hover {
+    transform: translateX(8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.vente-item:hover::before {
+    width: 8px;
+}
+
+.vente-item.cash::before {
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+
+.vente-item.mobile::before {
+    background: linear-gradient(180deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+}
+
+/* ========== PAYMENT MODE ========== */
+.payment-mode {
+    background: var(--gray-50);
+    border: 3px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-mode::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.payment-mode:hover {
+    transform: scale(1.05);
+    border-color: var(--primary);
+}
+
+.payment-mode.active-cash {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+}
+
+.payment-mode.active-mm {
+    background: var(--secondary-light);
+    border-color: var(--secondary);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+}
+
+.payment-mode i {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.payment-mode div {
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== FORMS ========== */
+.form-control,
+.form-select {
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    font-size: 15px;
+    transition: var(--transition);
+    background: var(--white);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    outline: none;
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: var(--gray-300);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========== BUTTONS ========== */
+.btn-custom {
+    padding: 14px 32px;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    border: none;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-gradient {
+    background: var(--gradient-primary);
+    color: var(--white);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+}
+
+.btn-gradient:active {
+    transform: translateY(-1px);
+}
+
+/* ========== STAT CARDS ========== */
+.stat-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-2xl);
+    border-color: var(--primary);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    transition: var(--transition);
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotateZ(5deg);
+}
+
+/* ========== CHARTS ========== */
+.chart-container {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+}
+
+.chart-bar {
+    background: var(--gradient-primary);
+    height: 36px;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.chart-bar:hover {
+    transform: scaleX(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========== BADGES ========== */
+.badge-custom {
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+/* ========== MODALS ========== */
+.modal-content {
+    border: none;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-2xl);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    border: none;
+    padding: 24px 28px;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.modal-body {
+    padding: 28px;
+}
+
+.modal-footer {
+    border: none;
+    padding: 20px 28px;
+}
+
+/* ========== TABS ========== */
+.nav-tabs-custom {
+    border: none;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.nav-tabs-custom .nav-link {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 14px 28px;
+    color: var(--gray-600);
+    font-weight: 600;
+    transition: var(--transition);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-tabs-custom .nav-link:hover {
+    background: var(--gray-100);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-tabs-custom .nav-link.active {
+    background: var(--gradient-primary);
+    color: var(--white);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========== TOAST ========== */
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+.toast-custom {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-2xl);
+    margin-bottom: 12px;
+    animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 5px solid var(--primary);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--gray-600);
+}
+
+.empty-state i {
+    font-size: 6rem;
+    margin-bottom: 24px;
+    opacity: 0.2;
+    color: var(--gray-300);
+}
+
+.empty-state h5 {
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+}
+
+/* ========== UTILITIES ========== */
+.hidden {
+    display: none !important;
+}
+
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ========== LOADING SPINNER ========== */
+.loading-spinner {
+    border: 5px solid var(--gray-100);
+    border-top: 5px solid var(--primary);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* ========== PAGE LOADER ========== */
+.page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-2xl);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+}
+
+.loader-logo {
+    width: 120px;
+    height: 120px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    animation: pulse-logo 2s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 60px rgba(16, 185, 129, 0.6);
+    }
+}
+
+.loader-text {
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 2px;
+}
+
+.loader-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.loader-progress {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    animation: loading 10s ease-out forwards;
+}
+
+@keyframes loading {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.loader-message {
+    font-size: 16px;
+    color: var(--gray-700);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.tutorial-content {
+    text-align: left;
+    background: var(--gray-50);
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.tutorial-section {
+    opacity: 0;
+    animation: fadeInSection 0.5s ease forwards;
+}
+
+.tutorial-section:nth-child(1) { animation-delay: 0s; }
+.tutorial-section:nth-child(2) { animation-delay: 1.5s; }
+.tutorial-section:nth-child(3) { animation-delay: 3s; }
+.tutorial-section:nth-child(4) { animation-delay: 4.5s; }
+.tutorial-section:nth-child(5) { animation-delay: 6s; }
+
+@keyframes fadeInSection {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tutorial-section h6 {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.tutorial-section p {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .login-card {
+        padding: 32px 24px;
+    }
+    
+    .action-btn {
+        height: 130px;
+        padding: 20px;
+    }
+    
+    .action-btn i {
+        font-size: 2.5rem;
+    }
+    
+    .stats-card {
+        padding: 20px;
+    }
+    
+    .vente-item {
+        padding: 20px;
+    }
+    
+    .payment-mode {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .action-btn {
+        height: 110px;
+        padding: 16px;
+    }
+    
+    .action-btn i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    
+    .action-btn span {
+        font-size: 0.9rem;
+    }
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+    </style>
+</head>
+<body>
+    <!-- ========== PAGE LOADER ========== -->
+<div class="page-loader">
+    <div class="loader-content">
+        <div class="loader-logo">
+            <span class="loader-text">MCJ</span>
+        </div>
+
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+
+        <p class="loader-message">Initialisation de MonCashJour Pro…</p>
+
+        <div class="tutorial-content">
+
+            <div class="tutorial-section">
+                <h6>🎯 À propos de cette démonstration</h6>
+                <p>
+                    <strong>MonCashJour Pro</strong> est une application de démonstration conçue pour illustrer
+                    ma capacité à imaginer, structurer et développer une solution de gestion commerciale complète,
+                    de l’expérience utilisateur à la logique métier, sans dépendance backend.
+                </p>
+            </div>
+
+            <div class="tutorial-section">
+                <h6>🔐 Connexion simplifiée (simulation)</h6>
+                <p>
+                    Saisissez un numéro de téléphone → Un code OTP est généré et affiché à l’écran →
+                    Connexion immédiate.
+                    <br>
+                    <span style="opacity:0.8">
+                        Ce mécanisme simule un système d’authentification pour la démonstration UX.
+                    </span>
+                </p>
+            </div>
+
+            <div class="tutorial-section">
+                <h6>💼 Fonctionnalités clés</h6>
+                <p>
+                    ✅ Enregistrement des ventes (Cash / Mobile Money)<br>
+                    📦 Gestion du catalogue produits<br>
+                    👥 Suivi des clients<br>
+                    📊 Statistiques dynamiques et indicateurs de performance
+                </p>
+            </div>
+
+            <div class="tutorial-section">
+                <h6>📈 Analyse & suivi d’activité</h6>
+                <p>
+                    Visualisation de l’évolution des ventes sur 7 jours, classement des produits les plus vendus,
+                    répartition des moyens de paiement, historique des journées clôturées
+                    et export des données au format JSON.
+                </p>
+            </div>
+
+            <div class="tutorial-section">
+                <h6>🔒 Stockage local & sécurité</h6>
+                <p>
+                    Les données sont stockées localement via <strong>LocalStorage</strong>.
+                    Aucune information n’est transmise vers un serveur externe.
+                    <br>
+                    Application <strong>100% offline</strong>, pensée pour la démonstration technique et UX.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <!-- ========== TOAST CONTAINER ========== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ========== LOGIN SCREEN ========== -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            
+            <div class="text-center mb-4">
+                <h2 class="fw-bold mb-2">MonCashJour Pro</h2>
+                <p class="text-muted mb-0">Gestion commerciale intelligente</p>
+            </div>
+
+            <!-- Étape 1: Saisie du numéro -->
+            <div id="phone-step">
+                <div class="mb-3">
+                    <label class="form-label fw-600">Numéro de téléphone</label>
+                    <input type="tel" id="login-phone" class="form-control form-control-lg" placeholder="Ex: 0749123456">
+                </div>
+                <button onclick="sendOTP()" class="btn btn-gradient w-100 py-3">
+                    <i class="fas fa-paper-plane"></i>
+                    Recevoir le code OTP
+                </button>
+            </div>
+
+            <!-- Étape 2: Saisie OTP -->
+            <div id="otp-step" class="hidden">
+                <div class="mb-3">
+                    <label class="form-label fw-600">Code OTP (SAISI LE CODE ENVOYER EN HAUT A DROITE)</label>
+                    <input type="text" id="login-otp" class="form-control form-control-lg text-center" placeholder="exemple 1234" maxlength="4">
+                </div>
+                <button onclick="login()" class="btn btn-gradient w-100 py-3 mb-2">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </button>
+                <button onclick="resetLogin()" class="btn btn-link w-100 text-muted">
+                    <i class="fas fa-arrow-left"></i>
+                    Changer de numéro
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MAIN APP ========== -->
+    <div id="main-app" class="hidden">
+        
+        <!-- ========== HEADER ========== -->
+        <div class="app-header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="mb-0 fw-bold">MonCashJour Pro</h4>
+                        <small id="user-info" class="opacity-75"></small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button onclick="exportData()" class="btn btn-light btn-sm" title="Exporter les données">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button onclick="logout()" class="btn btn-light btn-sm" title="Se déconnecter">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats header -->
+                <div class="stats-card">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="small opacity-75 mb-1">Aujourd'hui</div>
+                            <h3 id="total-display" class="fw-bold mb-0">0 FCFA</h3>
+                        </div>
+                        <div class="col-4">
+                            <div class="small opacity-75 mb-1">Ventes</div>
+                            <h3 id="count-display" class="fw-bold mb-0">0</h3>
+                        </div>
+                        <div class="col-4">
+                            <div class="small opacity-75 mb-1">Moyenne</div>
+                            <h3 id="avg-display" class="fw-bold mb-0">0 FCFA</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <div class="container my-4">
+            
+            <!-- ========== ACTION BUTTONS ========== -->
+            <div class="row g-3 mb-4">
+                <div class="col-4">
+                    <button class="action-btn w-100" data-bs-toggle="modal" data-bs-target="#modalVente">
+                        <i class="fas fa-plus text-success"></i>
+                        <span>Vente</span>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button class="action-btn w-100" onclick="showTab('produits')">
+                        <i class="fas fa-box text-primary"></i>
+                        <span>Produits</span>
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button class="action-btn w-100" onclick="showTab('stats')">
+                        <i class="fas fa-chart-pie" style="color: var(--purple);"></i>
+                        <span>Stats</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== TABS NAVIGATION ========== -->
+            <ul class="nav nav-tabs-custom" id="mainTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" onclick="showTab('ventes'); return false;">
+                        <i class="fas fa-receipt me-2"></i>Ventes du jour
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showTab('historique'); return false;">
+                        <i class="fas fa-history me-2"></i>Historique
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showTab('clients'); return false;">
+                        <i class="fas fa-users me-2"></i>Clients
+                    </a>
+                </li>
+            </ul>
+
+            <!-- ========== TAB: VENTES DU JOUR ========== -->
+            <div id="tab-ventes" class="tab-content">
+                <div class="card-custom">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar-day me-2"></i>
+                            Ventes d'aujourd'hui
+                        </h5>
+                        <button onclick="cloturerJournee()" class="btn btn-gradient btn-sm">
+                            <i class="fas fa-check-circle"></i>
+                            Clôturer
+                        </button>
+                    </div>
+                    <div class="card-body p-3">
+                        <div id="ventes-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== TAB: PRODUITS ========== -->
+            <div id="tab-produits" class="tab-content hidden">
+                <div class="card-custom">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-box me-2"></i>
+                            Catalogue Produits
+                        </h5>
+                        <button data-bs-toggle="modal" data-bs-target="#modalProduit" class="btn btn-gradient btn-sm">
+                            <i class="fas fa-plus"></i>
+                            Ajouter
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="produits-list" class="row g-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== TAB: STATISTIQUES ========== -->
+            <div id="tab-stats" class="tab-content hidden">
+                <!-- Stat Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <h3 id="stat-total-month" class="fw-bold mb-1">0 FCFA</h3>
+                            <small class="text-muted">Ventes du mois</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--secondary);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 id="stat-avg-day" class="fw-bold mb-1">0 FCFA</h3>
+                            <small class="text-muted">Moyenne/jour</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(168, 85, 247, 0.1); color: var(--purple);">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <h3 id="stat-best-day" class="fw-bold mb-1">0 FCFA</h3>
+                            <small class="text-muted">Meilleur jour</small>
+                        </div>
+                    </div>
+
+                <!-- Courbe des gains sur 7 jours -->
+                <div class="chart-container mb-3">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Évolution des gains (7 derniers jours)
+                    </h6>
+                    <div style="position: relative; height: 300px;">
+                        <canvas id="gainsChart"></canvas>
+                    </div>
+                </div>
+
+                    <div class="col-md-3 col-6">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <h3 id="stat-products" class="fw-bold mb-1">0</h3>
+                            <small class="text-muted">Produits</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-container mb-3">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Répartition des ventes
+                    </h6>
+                    <div id="payment-chart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-star me-2"></i>
+                        Top Produits
+                    </h6>
+                    <div id="products-chart"></div>
+                </div>
+            </div>
+
+            <!-- ========== TAB: HISTORIQUE ========== -->
+            <div id="tab-historique" class="tab-content hidden">
+                <div class="card-custom">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            Historique des journées
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="historique-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== TAB: CLIENTS ========== -->
+            <div id="tab-clients" class="tab-content hidden">
+                <div class="card-custom">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Gestion Clients
+                        </h5>
+                        <button data-bs-toggle="modal" data-bs-target="#modalClient" class="btn btn-gradient btn-sm">
+                            <i class="fas fa-user-plus"></i>
+                            Nouveau
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="clients-list"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========== MODALS ========== -->
+
+    <!-- Modal: Nouvelle Vente -->
+    <div class="modal fade" id="modalVente" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Nouvelle Vente
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Article / Produit</label>
+                        <select id="v-article-select" class="form-select mb-2" onchange="selectProduct()">
+                            <option value="">-- Sélectionner un produit --</option>
+                        </select>
+                        <input type="text" id="v-article" class="form-control" placeholder="Ou saisir un nouvel article">
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-600">Quantité</label>
+                            <input type="number" id="v-qte" class="form-control" value="1" min="1" oninput="updatePreview()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-600">Prix unitaire</label>
+                            <input type="number" id="v-prix" class="form-control" value="0" min="0" oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Client (optionnel)</label>
+                        <select id="v-client" class="form-select">
+                            <option value="">-- Aucun --</option>
+                        </select>
+                    </div>
+
+                    <label class="form-label fw-600">Mode de paiement</label>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div id="pay-cash" class="payment-mode active-cash" onclick="setMode('cash')">
+                                <i class="fas fa-money-bill-wave text-success"></i>
+                                <div class="fw-bold mt-2">Cash</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div id="pay-mm" class="payment-mode" onclick="setMode('mobilemoney')">
+                                <i class="fas fa-mobile-alt text-primary"></i>
+                                <div class="fw-bold mt-2">Mobile Money</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded-3 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">Total</span>
+                        <h3 id="v-total-preview" class="fw-bold mb-0 text-gradient">0 FCFA</h3>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="saveVente()" class="btn btn-gradient w-100 py-3">
+                        <i class="fas fa-check"></i>
+                        Enregistrer la vente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nouveau Produit -->
+    <div class="modal fade" id="modalProduit" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-box me-2"></i>
+                        Nouveau Produit
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Nom du produit</label>
+                        <input type="text" id="p-nom" class="form-control" placeholder="Ex: Sac de riz 50kg">
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-600">Prix de vente</label>
+                            <input type="number" id="p-prix" class="form-control" placeholder="25000">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-600">Stock initial</label>
+                            <input type="number" id="p-stock" class="form-control" placeholder="100">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Catégorie</label>
+                        <input type="text" id="p-categorie" class="form-control" placeholder="Ex: Alimentaire">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="saveProduit()" class="btn btn-gradient w-100 py-3">
+                        <i class="fas fa-save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nouveau Client -->
+    <div class="modal fade" id="modalClient" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Nouveau Client
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Nom complet</label>
+                        <input type="text" id="c-nom" class="form-control" placeholder="Ex: Kouadio Jean">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Téléphone</label>
+                        <input type="tel" id="c-phone" class="form-control" placeholder="0749123456">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-600">Email (optionnel)</label>
+                        <input type="email" id="c-email" class="form-control" placeholder="client@email.com">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="saveClient()" class="btn btn-gradient w-100 py-3">
+                        <i class="fas fa-save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+let currentUser = null;
+let ventes = [];
+let historique = [];
+let produits = [];
+let clients = [];
+let currentMode = 'cash';
+let currentTab = 'ventes';
+
+// ==================== AUTHENTICATION ====================
+// Variable globale pour stocker l'OTP
+let generatedOTP = '';
+
+function sendOTP() {
+    const phone = document.getElementById('login-phone').value.trim();
+    
+    if (phone.length < 8) {
+        showToast('Numéro de téléphone invalide', 'danger');
+        return;
+    }
+    
+    // Générer un code OTP aléatoire de 4 chiffres
+    generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+    
+    document.getElementById('phone-step').classList.add('hidden');
+    document.getElementById('otp-step').classList.remove('hidden');
+    
+    // Afficher le code dans la console (en production, il serait envoyé par SMS)
+    console.log('%c🔐 CODE OTP: ' + generatedOTP, 'color: #10b981; font-size: 20px; font-weight: bold;');
+    showToast(`Code OTP généré: ${generatedOTP} (vérifiez la console)`, 'success');
+}
+function login() {
+    const otp = document.getElementById('login-otp').value;
+    const phone = document.getElementById('login-phone').value;
+    
+    if (otp === generatedOTP) {
+        currentUser = { phone, nom: 'Commerçant' };
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('user-info').innerText = phone;
+        
+        generatedOTP = ''; // Réinitialiser l'OTP
+        
+        loadData();
+        renderAll();
+        showToast('Connexion réussie! Bienvenue 🎉', 'success');
+    } else {
+        showToast('Code OTP incorrect', 'danger');
+    }
+}
+
+function resetLogin() {
+    document.getElementById('phone-step').classList.remove('hidden');
+    document.getElementById('otp-step').classList.add('hidden');
+    document.getElementById('login-otp').value = '';
+}
+
+function logout() {
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+        currentUser = null;
+        location.reload();
+    }
+}
+
+// ==================== LOCAL STORAGE ====================
+function loadData() {
+    const key = `moncashjour_${currentUser.phone}`;
+    const saved = JSON.parse(localStorage.getItem(key)) || {};
+    
+    ventes = saved.ventes || [];
+    historique = saved.historique || [];
+    produits = saved.produits || [
+        { id: 1, nom: 'Sac de riz 50kg', prix: 25000, stock: 100, categorie: 'Alimentaire', ventes: 0 },
+        { id: 2, nom: 'Huile 5L', prix: 8000, stock: 50, categorie: 'Alimentaire', ventes: 0 },
+        { id: 3, nom: 'Sucre 1kg', prix: 1000, stock: 200, categorie: 'Alimentaire', ventes: 0 }
+    ];
+    clients = saved.clients || [];
+}
+
+function saveData() {
+    const key = `moncashjour_${currentUser.phone}`;
+    localStorage.setItem(key, JSON.stringify({
+        ventes,
+        historique,
+        produits,
+        clients
+    }));
+}
+
+// ==================== VENTES ====================
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('pay-cash').className = `payment-mode ${mode === 'cash' ? 'active-cash' : ''}`;
+    document.getElementById('pay-mm').className = `payment-mode ${mode === 'mobilemoney' ? 'active-mm' : ''}`;
+}
+
+function updatePreview() {
+    const q = parseInt(document.getElementById('v-qte').value) || 0;
+    const p = parseInt(document.getElementById('v-prix').value) || 0;
+    document.getElementById('v-total-preview').innerText = formatMontant(q * p);
+}
+
+function selectProduct() {
+    const select = document.getElementById('v-article-select');
+    if (select.value) {
+        const produit = produits.find(p => p.id == select.value);
+        if (produit) {
+            document.getElementById('v-article').value = produit.nom;
+            document.getElementById('v-prix').value = produit.prix;
+            updatePreview();
+        }
+    }
+}
+
+function saveVente() {
+    const article = document.getElementById('v-article').value.trim();
+    const qte = parseInt(document.getElementById('v-qte').value);
+    const prix = parseInt(document.getElementById('v-prix').value);
+    const clientId = document.getElementById('v-client').value;
+
+    if (!article || prix <= 0) {
+        showToast('Veuillez remplir tous les champs', 'warning');
+        return;
+    }
+
+    const vente = {
+        id: Date.now(),
+        article,
+        quantite: qte,
+        prixUnitaire: prix,
+        typePaiement: currentMode,
+        montantTotal: qte * prix,
+        clientId,
+        heure: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toISOString()
+    };
+
+    ventes.push(vente);
+    
+    // Update product stock and sales
+    const produit = produits.find(p => p.nom === article);
+    if (produit) {
+        produit.stock -= qte;
+        produit.ventes = (produit.ventes || 0) + qte;
+    }
+
+    saveData();
+    renderAll();
+
+    // Reset form
+    document.getElementById('v-article').value = '';
+    document.getElementById('v-article-select').value = '';
+    document.getElementById('v-prix').value = 0;
+    document.getElementById('v-qte').value = 1;
+    document.getElementById('v-client').value = '';
+    updatePreview();
+
+    bootstrap.Modal.getInstance(document.getElementById('modalVente')).hide();
+    showToast('Vente enregistrée avec succès! 💰', 'success');
+}
+
+function deleteVente(id) {
+    if (confirm('Supprimer cette vente?')) {
+        const vente = ventes.find(v => v.id === id);
+        
+        // Restore product stock
+        if (vente) {
+            const produit = produits.find(p => p.nom === vente.article);
+            if (produit) {
+                produit.stock += vente.quantite;
+                produit.ventes = Math.max(0, (produit.ventes || 0) - vente.quantite);
+            }
+        }
+        
+        ventes = ventes.filter(v => v.id !== id);
+        saveData();
+        renderVentes();
+        updateHeader();
+        showToast('Vente supprimée', 'info');
+    }
+}
+
+function renderVentes() {
+    const list = document.getElementById('ventes-list');
+    
+    if (ventes.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-receipt"></i>
+                <h5>Aucune vente aujourd'hui</h5>
+                <p class="mb-0">Cliquez sur "Vente" pour commencer</p>
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = ventes.map(v => {
+        const client = clients.find(c => c.id == v.clientId);
+        return `
+            <div class="vente-item ${v.typePaiement === 'cash' ? 'cash' : 'mobile'} animate-in">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">${v.article}</h6>
+                        <div class="small text-muted mb-2">
+                            ${v.quantite} × ${formatMontant(v.prixUnitaire)}
+                            ${client ? `<span class="badge badge-custom bg-secondary ms-2">${client.nom}</span>` : ''}
+                        </div>
+                        <div class="small">
+                            <i class="fas ${v.typePaiement === 'cash' ? 'fa-money-bill text-success' : 'fa-mobile-alt text-primary'}"></i>
+                            ${v.typePaiement === 'cash' ? 'Cash' : 'Mobile Money'} • ${v.heure}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <h5 class="fw-bold mb-2 text-gradient">${formatMontant(v.montantTotal)}</h5>
+                        <button onclick="deleteVente(${v.id})" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ==================== PRODUITS ====================
+function saveProduit() {
+    const nom = document.getElementById('p-nom').value.trim();
+    const prix = parseInt(document.getElementById('p-prix').value);
+    const stock = parseInt(document.getElementById('p-stock').value) || 0;
+    const categorie = document.getElementById('p-categorie').value.trim();
+
+    if (!nom || prix <= 0) {
+        showToast('Veuillez remplir tous les champs obligatoires', 'warning');
+        return;
+    }
+
+    produits.push({
+        id: Date.now(),
+        nom,
+        prix,
+        stock,
+        categorie,
+        ventes: 0
+    });
+
+    saveData();
+    renderProduits();
+
+    // Reset form
+    document.getElementById('p-nom').value = '';
+    document.getElementById('p-prix').value = '';
+    document.getElementById('p-stock').value = '';
+    document.getElementById('p-categorie').value = '';
+
+    bootstrap.Modal.getInstance(document.getElementById('modalProduit')).hide();
+    showToast('Produit ajouté avec succès! 📦', 'success');
+}
+
+function deleteProduit(id) {
+    if (confirm('Supprimer ce produit?')) {
+        produits = produits.filter(p => p.id !== id);
+        saveData();
+        renderProduits();
+        showToast('Produit supprimé', 'info');
+    }
+}
+
+function renderProduits() {
+    const list = document.getElementById('produits-list');
+    const select = document.getElementById('v-article-select');
+
+    // Render product cards
+    if (produits.length === 0) {
+        list.innerHTML = `
+            <div class="col-12 empty-state">
+                <i class="fas fa-box"></i>
+                <h5>Aucun produit</h5>
+                <p class="mb-0">Créez votre catalogue de produits</p>
+            </div>`;
+    } else {
+        list.innerHTML = produits.map(p => `
+            <div class="col-md-4 col-sm-6">
+                <div class="card-custom p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge badge-custom" style="background: var(--gradient-primary); color: white;">
+                            ${p.categorie}
+                        </span>
+                        <button onclick="deleteProduit(${p.id})" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <h6 class="fw-bold mb-2">${p.nom}</h6>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <div>
+                            <div class="small text-muted">Prix</div>
+                            <div class="fw-bold text-gradient">${formatMontant(p.prix)}</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="small text-muted">Stock</div>
+                            <div class="fw-bold ${p.stock < 10 ? 'text-danger' : ''}">${p.stock}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update select in vente modal
+    select.innerHTML = '<option value="">-- Sélectionner un produit --</option>' +
+        produits.map(p => `<option value="${p.id}">${p.nom} - ${formatMontant(p.prix)}</option>`).join('');
+}
+
+// ==================== CLIENTS ====================
+function saveClient() {
+    const nom = document.getElementById('c-nom').value.trim();
+    const phone = document.getElementById('c-phone').value.trim();
+    const email = document.getElementById('c-email').value.trim();
+
+    if (!nom || !phone) {
+        showToast('Veuillez remplir les champs obligatoires', 'warning');
+        return;
+    }
+
+    clients.push({
+        id: Date.now(),
+        nom,
+        phone,
+        email,
+        totalAchats: 0
+    });
+
+    saveData();
+    renderClients();
+
+    // Reset form
+    document.getElementById('c-nom').value = '';
+    document.getElementById('c-phone').value = '';
+    document.getElementById('c-email').value = '';
+
+    bootstrap.Modal.getInstance(document.getElementById('modalClient')).hide();
+    showToast('Client ajouté avec succès! 👤', 'success');
+}
+
+function deleteClient(id) {
+    if (confirm('Supprimer ce client?')) {
+        clients = clients.filter(c => c.id !== id);
+        saveData();
+        renderClients();
+        showToast('Client supprimé', 'info');
+    }
+}
+
+function renderClients() {
+    const list = document.getElementById('clients-list');
+    const select = document.getElementById('v-client');
+
+    // Calculate total purchases per client
+    clients.forEach(client => {
+        client.totalAchats = ventes
+            .filter(v => v.clientId == client.id)
+            .reduce((sum, v) => sum + v.montantTotal, 0);
+    });
+
+    // Sort by total purchases
+    const sortedClients = [...clients].sort((a, b) => b.totalAchats - a.totalAchats);
+
+    if (sortedClients.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-users"></i>
+                <h5>Aucun client</h5>
+                <p class="mb-0">Commencez à enregistrer vos clients</p>
+            </div>`;
+    } else {
+        list.innerHTML = sortedClients.map(c => `
+            <div class="vente-item animate-in">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="fw-bold mb-1">${c.nom}</h6>
+                        <div class="small text-muted">
+                            <i class="fas fa-phone me-1"></i>${c.phone}
+                            ${c.email ? `<br><i class="fas fa-envelope me-1"></i>${c.email}` : ''}
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold text-gradient mb-2">${formatMontant(c.totalAchats)}</div>
+                        <button onclick="deleteClient(${c.id})" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update select in vente modal
+    select.innerHTML = '<option value="">-- Aucun --</option>' +
+        clients.map(c => `<option value="${c.id}">${c.nom}</option>`).join('');
+}
+
+// ==================== HISTORIQUE ====================
+function cloturerJournee() {
+    if (ventes.length === 0) {
+        showToast('Aucune vente à clôturer', 'warning');
+        return;
+    }
+
+    const journee = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR'),
+        ventes: [...ventes],
+        totalJour: ventes.reduce((s, v) => s + v.montantTotal, 0),
+        totalCash: ventes.filter(v => v.typePaiement === 'cash').reduce((s, v) => s + v.montantTotal, 0),
+        totalMM: ventes.filter(v => v.typePaiement === 'mobilemoney').reduce((s, v) => s + v.montantTotal, 0),
+        nombreVentes: ventes.length
+    };
+
+    historique.unshift(journee);
+    ventes = [];
+    saveData();
+    renderAll();
+    showToast('Journée clôturée avec succès! ✅', 'success');
+}
+
+function renderHistorique() {
+    const list = document.getElementById('historique-list');
+
+    if (historique.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-calendar-alt"></i>
+                <h5>Aucun historique</h5>
+                <p class="mb-0">Clôturez votre première journée</p>
+            </div>`;
+        return;
+    }
+
+    list.innerHTML = historique.map(j => `
+        <div class="card-custom p-3 mb-3 animate-in">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                    <h6 class="fw-bold mb-1">
+                        <i class="fas fa-calendar me-2"></i>
+                        ${j.date}
+                    </h6>
+                    <small class="text-muted">${j.nombreVentes} vente(s)</small>
+                </div>
+                <h4 class="fw-bold text-gradient mb-0">${formatMontant(j.totalJour)}</h4>
+            </div>
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="small text-muted mb-1">
+                        <i class="fas fa-money-bill me-1"></i>
+                        Cash
+                    </div>
+                    <div class="fw-bold text-success">${formatMontant(j.totalCash)}</div>
+                </div>
+                <div class="col-6">
+                    <div class="small text-muted mb-1">
+                        <i class="fas fa-mobile-alt me-1"></i>
+                        Mobile Money
+                    </div>
+                    <div class="fw-bold text-primary">${formatMontant(j.totalMM)}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==================== STATISTICS ====================
+function renderStats() {
+    // Calculate stats
+    const totalMonth = historique.reduce((sum, j) => sum + j.totalJour, 0) + ventes.reduce((sum, v) => sum + v.montantTotal, 0);
+    const avgDay = historique.length > 0 ? totalMonth / historique.length : 0;
+    const bestDay = historique.length > 0 ? Math.max(...historique.map(j => j.totalJour)) : 0;
+
+    document.getElementById('stat-total-month').textContent = formatMontant(totalMonth);
+    document.getElementById('stat-avg-day').textContent = formatMontant(Math.round(avgDay));
+    document.getElementById('stat-best-day').textContent = formatMontant(bestDay);
+    document.getElementById('stat-products').textContent = produits.length;
+
+    // Payment chart
+    const totalCash = ventes.filter(v => v.typePaiement === 'cash').reduce((s, v) => s + v.montantTotal, 0);
+    const totalMM = ventes.filter(v => v.typePaiement === 'mobilemoney').reduce((s, v) => s + v.montantTotal, 0);
+    const total = totalCash + totalMM;
+
+    const paymentChart = document.getElementById('payment-chart');
+    paymentChart.innerHTML = `
+        <div class="mb-3">
+            <div class="d-flex justify-content-between mb-2">
+                <span><i class="fas fa-money-bill text-success me-2"></i>Cash</span>
+                <strong>${formatMontant(totalCash)} (${total ? Math.round(totalCash/total*100) : 0}%)</strong>
+            </div>
+            <div class="chart-bar" style="width: ${total ? (totalCash/total*100) : 0}%"></div>
+        </div>
+        <div>
+            <div class="d-flex justify-content-between mb-2">
+                <span><i class="fas fa-mobile-alt text-primary me-2"></i>Mobile Money</span>
+                <strong>${formatMontant(totalMM)} (${total ? Math.round(totalMM/total*100) : 0}%)</strong>
+            </div>
+            <div class="chart-bar" style="width: ${total ? (totalMM/total*100) : 0}%; background: linear-gradient(90deg, var(--secondary) 0%, var(--purple) 100%);"></div>
+        </div>
+    `;
+
+    // Products chart
+    const topProducts = [...produits]
+        .sort((a, b) => (b.ventes || 0) - (a.ventes || 0))
+        .slice(0, 5);
+    
+    const maxVentes = topProducts.length > 0 ? topProducts[0].ventes || 1 : 1;
+    
+    const productsChart = document.getElementById('products-chart');
+    productsChart.innerHTML = topProducts.length === 0 || maxVentes === 0 ? 
+        '<p class="text-muted text-center">Aucune donnée disponible</p>' :
+        topProducts.map((p, index) => {
+            const colors = [
+                'var(--gradient-primary)',
+                'var(--gradient-purple)',
+                'var(--gradient-orange)',
+                'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)',
+                'linear-gradient(90deg, #10b981 0%, #06b6d4 100%)'
+            ];
+            return `
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>${p.nom}</span>
+                        <strong>${p.ventes || 0} vente(s)</strong>
+                    </div>
+                    <div class="chart-bar" style="width: ${((p.ventes || 0)/maxVentes*100)}%; background: ${colors[index]};"></div>
+                </div>
+            `;
+        }).join('');
+
+    // ===== NOUVELLE COURBE DES GAINS SUR 7 JOURS =====
+    renderGainsChart();
+}
+
+// Nouvelle fonction pour la courbe des gains
+function renderGainsChart() {
+    const canvas = document.getElementById('gainsChart');
+    if (!canvas) return;
+
+    // Obtenir les 7 derniers jours
+    const last7Days = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        last7Days.push({
+            date: date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }),
+            fullDate: date.toLocaleDateString('fr-FR'),
+            total: 0
+        });
+    }
+
+    // Ajouter les totaux de l'historique
+    historique.forEach(j => {
+        const dayData = last7Days.find(d => d.fullDate === j.date);
+        if (dayData) {
+            dayData.total = j.totalJour;
+        }
+    });
+
+    // Ajouter les ventes du jour en cours si c'est aujourd'hui
+    const todayStr = today.toLocaleDateString('fr-FR');
+    const todayData = last7Days.find(d => d.fullDate === todayStr);
+    if (todayData && ventes.length > 0) {
+        todayData.total = ventes.reduce((sum, v) => sum + v.montantTotal, 0);
+    }
+
+    // Détruire le graphique existant s'il existe
+    if (window.gainsChartInstance) {
+        window.gainsChartInstance.destroy();
+    }
+
+    // Créer le graphique
+    const ctx = canvas.getContext('2d');
+    window.gainsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: last7Days.map(d => d.date),
+            datasets: [{
+                label: 'Gains (FCFA)',
+                data: last7Days.map(d => d.total),
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#10b981',
+                pointHoverBorderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    padding: 12,
+                    titleColor: '#f8fafc',
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyColor: '#94a3b8',
+                    bodyFont: { size: 13 },
+                    borderColor: '#334155',
+                    borderWidth: 1,
+                    displayColors: false,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return formatMontant(context.parsed.y);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(209, 213, 219, 0.3)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: { size: 11 },
+                        callback: function(value) {
+                            if (value >= 1000000) return (value / 1000000) + 'M';
+                            if (value >= 1000) return (value / 1000) + 'k';
+                            return value;
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: { size: 11 }
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+}
+// ==================== HEADER ====================
+function updateHeader() {
+    const total = ventes.reduce((sum, v) => sum + v.montantTotal, 0);
+    const avg = ventes.length > 0 ? total / ventes.length : 0;
+
+    document.getElementById('total-display').textContent = formatMontant(total);
+    document.getElementById('count-display').textContent = ventes.length;
+    document.getElementById('avg-display').textContent = formatMontant(Math.round(avg));
+}
+
+// ==================== TABS ====================
+function showTab(tab) {
+    currentTab = tab;
+    
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    
+    // Show selected tab
+    document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    
+    // Update nav
+    document.querySelectorAll('.nav-tabs-custom .nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Find and activate the clicked link
+    const clickedLink = event?.target?.closest('.nav-link');
+    if (clickedLink) {
+        clickedLink.classList.add('active');
+    }
+
+    // Render based on tab
+    if (tab === 'stats') renderStats();
+    if (tab === 'historique') renderHistorique();
+    if (tab === 'clients') renderClients();
+    if (tab === 'produits') renderProduits();
+}
+
+// ==================== EXPORT ====================
+function exportData() {
+    const data = {
+        ventes,
+        historique,
+        produits,
+        clients,
+        user: currentUser,
+        exportDate: new Date().toISOString()
+    };
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `moncashjour_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+    showToast('Données exportées avec succès! 📥', 'success');
+}
+
+// ==================== UTILITIES ====================
+function formatMontant(m) {
+    return new Intl.NumberFormat('fr-FR').format(m) + ' FCFA';
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const colors = {
+        success: '#10b981',
+        danger: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+    const icons = {
+        success: 'check-circle',
+        danger: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-custom';
+    toast.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+            <i class="fas fa-${icons[type]}" style="color: ${colors[type]}; font-size: 1.5rem;"></i>
+            <span class="fw-600">${message}</span>
+        </div>
+    `;
+
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.3s reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// ==================== RENDER ALL ====================
+function renderAll() {
+    renderVentes();
+    renderProduits();
+    renderClients();
+    renderHistorique();
+    updateHeader();
+}
+
+// ==================== INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('%c🚀 MonCashJour Pro initialisé avec succès!', 'color: #10b981; font-size: 16px; font-weight: bold;');
+    console.log('%c💼 Version: 2.0 Premium', 'color: #3b82f6; font-size: 12px;');
+});
+
+// ==================== LOADER ANIMATION ====================
+window.addEventListener('load', () => {
+    const loader = document.querySelector('.page-loader');
+    
+    setTimeout(() => {
+        loader.classList.add('hidden');
+        setTimeout(() => {
+            loader.remove();
+        }, 500);
+    }, 10000); // 10 secondes de chargement avec tutoriel
+});
+
+// ==================== KEYBOARD SHORTCUTS ====================
+document.addEventListener('keydown', function(e) {
+    // Ctrl/Cmd + N : Nouvelle vente
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        const modal = new bootstrap.Modal(document.getElementById('modalVente'));
+        modal.show();
+    }
+    
+    // Ctrl/Cmd + P : Produits
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        showTab('produits');
+    }
+    
+    // Ctrl/Cmd + S : Stats
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        showTab('stats');
+    }
+});
+    </script>
+</body>
+</html>
