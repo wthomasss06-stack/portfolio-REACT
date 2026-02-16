@@ -187,6 +187,10 @@ html {
 
 /* ============================================================
    5. NAVBAR VERTICALE COMPACTE
+   Z-INDEX HIERARCHY:
+   - Page Loader: 10000 (au-dessus de tout pendant le chargement)
+   - Navbar: 10001 (toujours visible)
+   - Scroll to top: 9998 (en dessous de la navbar)
    ============================================================ */
 
 .navbar-vertical {
@@ -204,7 +208,7 @@ html {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    z-index: 1000;
+    z-index: 10001;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
@@ -2951,7 +2955,7 @@ section {
     align-items: center;
     justify-content: center;
     font-size: 1.8rem;
-    z-index: 9999;
+    z-index: 9998;
     box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
     transition: all 0.3s ease;
     
