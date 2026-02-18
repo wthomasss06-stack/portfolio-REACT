@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import useAnimations from './useAnimations'; 
 // ============================================================
@@ -1143,13 +1144,16 @@ const About = () => {
         />
         <div className="about-grid">
           <div className="about-images">
-            <div className="about-quote-card">
-              <div className="quote-icon">
-                <i className="fas fa-quote-left"></i>
-              </div>
+            <motion.div
+              className="about-quote-card"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
               <p className="quote-text">"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p>
-              <p className="quote-author">— Kevin Ressegaire</p>
-            </div>
+              <p className="quote-author">Kevin Ressegaire</p>
+            </motion.div>
           </div>
           <div className="about-content">
             <h3>Développeur Web Full-Stack</h3>
@@ -1336,6 +1340,16 @@ const Services = () => {
               key={index} 
               className={`pricing-card ${pricing.isPopular ? 'pricing-card-popular' : ''}`}
             >
+              {/* Electric border SVG */}
+              <svg className="electric-border" aria-hidden="true">
+                <rect
+                  className={`electric-rect ${pricing.isPopular ? 'electric-rect-popular' : ''}`}
+                  x="1" y="1"
+                  width="calc(100% - 2px)" height="calc(100% - 2px)"
+                  rx="19" ry="19"
+                />
+              </svg>
+
               <div className={`pricing-badge ${pricing.badgeClass}`}>
                 {pricing.badge}
               </div>
@@ -1388,122 +1402,220 @@ const Services = () => {
 };
 
 // ============================================================
-// PAGE SKILLS - VERSION CORRIGÉE
+// SKILLS — VERSION ÉPOUSTOUFLANTE
 // ============================================================
-const Skills = () => {
-  useEffect(() => {
-    // Attendre que le DOM soit complètement chargé
-    const timer = setTimeout(() => {
-      const wrappers = document.querySelectorAll('.skill-category-wrapper');
-      
-      wrappers.forEach((wrapper, wrapperIndex) => {
-        const skillLogos = wrapper.querySelector('.skill-logos');
-        if (!skillLogos) {
-          console.warn('skill-logos non trouvé dans wrapper', wrapperIndex);
-          return;
-        }
-        
-        // Dupliquer les logos pour l'effet infinite scroll
-        const logos = Array.from(skillLogos.children);
-        if (logos.length === 0) {
-          console.warn('Aucun logo trouvé dans', wrapperIndex);
-          return;
-        }
-        
-        // Dupliquer 2 fois pour un scroll fluide
-        logos.forEach(logo => {
-          const clone = logo.cloneNode(true);
-          skillLogos.appendChild(clone);
-        });
-        
-        // Appliquer l'animation
-        const direction = wrapperIndex % 2 === 0 ? 'scroll-left' : 'scroll-right';
-        skillLogos.style.animation = `${direction} 30s linear infinite`;
-        
-        // Pause au survol
-        const handleMouseEnter = () => {
-          skillLogos.style.animationPlayState = 'paused';
-        };
-        
-        const handleMouseLeave = () => {
-          skillLogos.style.animationPlayState = 'running';
-        };
-        
-        wrapper.addEventListener('mouseenter', handleMouseEnter);
-        wrapper.addEventListener('mouseleave', handleMouseLeave);
-      });
 
-      // Observer pour faire apparaître les catégories
-      const skillObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateX(0)';
-          }
-        });
-      }, { threshold: 0.2 });
+// Mini SVG ring de progression
+const SkillRing = ({ level, size = 52 }) => {
+  const r = (size - 6) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = (level / 100) * circ;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="skill-ring-svg">
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--surface-3)" strokeWidth="3"/>
+      <circle
+        cx={size/2} cy={size/2} r={r} fill="none"
+        stroke="var(--accent)" strokeWidth="3"
+        strokeLinecap="round"
+        strokeDasharray={`${dash} ${circ}`}
+        strokeDashoffset={circ / 4}
+        className="skill-ring-progress"
+        style={{ '--dash': dash, '--circ': circ }}
+      />
+      <text x="50%" y="50%" textAnchor="middle" dy=".35em"
+        fontSize={size < 48 ? "9" : "10"} fill="var(--accent)" fontFamily="var(--font-mono)" fontWeight="600">
+        {level}%
+      </text>
+    </svg>
+  );
+};
 
-      wrappers.forEach(wrapper => {
-        const category = wrapper.querySelector('.skill-category');
-        if (category) {
-          category.style.opacity = '0';
-          category.style.transform = 'translateX(-50px)';
-          category.style.transition = 'all 0.8s ease';
-          skillObserver.observe(category);
-        }
-      });
-      
-      return () => {
-        skillObserver.disconnect();
-      };
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, []);
+// Carrousel infini pur CSS — items suffisamment dupliqués pour éviter tout trou
+const SkillTrack = ({ skills, direction = 'left', speed = 18 }) => {
+  const needsInvert = (icon) =>
+    icon.includes('flask') || icon.includes('django') || icon.includes('OpenAI') || icon.includes('github');
 
-  const SkillCategory = ({ title, icon, skills, index }) => {
-    return (
-      <div className="skill-category-wrapper">
-        <h3 className="skill-category-title">
-          <i className={`fas fa-${icon}`}></i> {title}
-        </h3>
-        <div className="skill-category">
-          <div className="skill-logos">
-            {skills.map((skill, i) => (
-              <div key={i} className="skill-logo-item">
-                <img 
-                  src={skill.icon} 
-                  alt={skill.name}
-                  loading="lazy"
-                  style={
-                    skill.icon.includes('flask') || skill.icon.includes('django') || skill.icon.includes('OpenAI') ? 
-                    { filter: 'brightness(0) invert(1)' } : {}
-                  } 
-                />
-                <span>{skill.name}</span>
-              </div>
-            ))}
+  // Quadrupler pour garantir un remplissage sans trou sur tous les écrans
+  const MIN_ITEMS = 16;
+  const times = Math.max(4, Math.ceil(MIN_ITEMS / skills.length));
+  const items = Array.from({ length: times }, () => skills).flat();
+  // La première moitié anime, la seconde est le clone invisible pour le loop
+  const half = items.length / 2;
+
+  return (
+    <div className="skill-track-viewport">
+      <div
+        className={`skill-track skill-track-${direction}`}
+        style={{ '--speed': `${speed}s` }}
+      >
+        {items.map((skill, i) => (
+          <div
+            key={i}
+            className="skill-chip"
+            aria-hidden={i >= half ? 'true' : undefined}
+          >
+            <div className="skill-chip-inner">
+              <img
+                src={skill.icon}
+                alt={skill.name}
+                loading="lazy"
+                width="38" height="38"
+                style={needsInvert(skill.icon) ? { filter: 'brightness(0) invert(1)' } : {}}
+              />
+              <span>{skill.name}</span>
+              {skill.level && (
+                <div className="skill-chip-level">
+                  <div className="skill-chip-bar" style={{ '--w': `${skill.level}%` }}></div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
+};
+
+// Catégorie avec header animé + track
+const SkillBand = ({ title, icon, label, skills, direction, speed, index }) => (
+  <motion.div
+    className="skill-band"
+    initial={{ opacity: 0, x: direction === 'left' ? -40 : 40 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true, margin: '-60px' }}
+    transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+  >
+    <div className="skill-band-header">
+      <span className="skill-band-label">
+        <i className={`fas fa-${icon}`}></i>
+        <span className="skill-band-label-text">{title}</span>
+      </span>
+      <span className="skill-band-count">{skills.length} technos</span>
+    </div>
+    <SkillTrack skills={skills} direction={direction} speed={speed} />
+  </motion.div>
+);
+
+// Stats globales
+const skillStats = [
+  { value: '2+', label: 'Ans d\'expérience', icon: 'calendar-alt' },
+  { value: '20+', label: 'Technologies', icon: 'layer-group' },
+  { value: '8+', label: 'Projets livrés', icon: 'rocket' },
+];
+
+const Skills = () => {
+  // Enrichir les données avec niveaux de maîtrise
+  const frontendWithLevels = [
+    { ...skillsData.frontend[0], level: 85 }, // React
+    { ...skillsData.frontend[1], level: 90 }, // JS
+    { ...skillsData.frontend[2], level: 70 }, // TS
+    { ...skillsData.frontend[3], level: 65 }, // Vue
+    { ...skillsData.frontend[4], level: 88 }, // Tailwind
+    { ...skillsData.frontend[5], level: 95 }, // HTML5
+    { ...skillsData.frontend[6], level: 88 }, // CSS3
+    { ...skillsData.frontend[7], level: 80 }, // Bootstrap
+  ];
+  const backendWithLevels = [
+    { ...skillsData.backend[1], level: 80 }, // Flask
+    { ...skillsData.backend[2], level: 72 }, // Django
+    { ...skillsData.backend[4], level: 82 }, // MySQL
+  ];
 
   return (
     <section id="skills">
-      <SectionHeader 
-        tag="Compétences"
-        title="&lt;Skills & <span class='highlight'>Experience/&gt;</span>"
-        description="Technologies et outils que je maîtrise"
+      {/* ── HEADER ── */}
+      <motion.div
+        className="skills-hero-header"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <p className="skills-quote">"Le web est comme une toile, et le code est ma peinture. Avec je crée mon chef-d'œuvre."</p>
-      </SectionHeader>
+        <span className="section-tag">Compétences</span>
+        <h2 className="section-title">
+          {'<'}Skills &amp; <span className="highlight">Experience{'/>'}</span>
+        </h2>
 
-      <SkillCategory title="Frontend" icon="laptop-code" skills={skillsData.frontend} index={0} />
-      <SkillCategory title="Backend" icon="server" skills={skillsData.backend} index={1} />
-      <SkillCategory title="Design & Outils" icon="tools" skills={skillsData.tools} index={2} />
-      <SkillCategory title="Autres Compétences" icon="plus-circle" skills={skillsData.autres} index={3} />
+        {/* Stats rapides */}
+        <div className="skills-stats-row">
+          {skillStats.map((s, i) => (
+            <motion.div
+              key={i} className="skills-stat-pill"
+              initial={{ opacity: 0, scale: 0.85 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.1, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+            >
+              <i className={`fas fa-${s.icon}`}></i>
+              <strong>{s.value}</strong>
+              <span>{s.label}</span>
+            </motion.div>
+          ))}
+        </div>
 
+        {/* Quote */}
+        <motion.div
+          className="skills-quote-wrapper"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <p className="skills-quote">
+            "Le web est comme une toile, et le code est ma peinture. Avec lui, je crée mon chef-d'œuvre."
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* ── MAÎTRISE PRINCIPALE — cards avec ring ── */}
+      <motion.div
+        className="skills-mastery-grid"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="skills-mastery-label">
+          <span className="section-tag" style={{ marginBottom: 0 }}>// maîtrise principale</span>
+        </div>
+        <div className="skills-mastery-cards">
+          {[...frontendWithLevels.slice(0,4), ...backendWithLevels.slice(0,3)].map((skill, i) => (
+            <motion.div
+              key={i}
+              className="mastery-card"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07, duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+            >
+              <SkillRing level={skill.level} size={56} />
+              <img
+                src={skill.icon} alt={skill.name} width="32" height="32"
+                style={
+                  skill.icon.includes('flask') || skill.icon.includes('django')
+                    ? { filter: 'brightness(0) invert(1)' } : {}
+                }
+              />
+              <span className="mastery-name">{skill.name}</span>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* ── BANDES CARROUSEL ── */}
+      <div className="skills-bands">
+        <SkillBand title="Frontend" icon="laptop-code" skills={frontendWithLevels}
+          direction="left" speed={16} index={0} />
+        <SkillBand title="Backend" icon="server" skills={backendWithLevels}
+          direction="right" speed={13} index={1} />
+        <SkillBand title="Outils & IA" icon="tools" skills={skillsData.tools}
+          direction="left" speed={15} index={2} />
+        <SkillBand title="Autres" icon="plus-circle" skills={skillsData.autres}
+          direction="right" speed={18} index={3} />
+      </div>
+
+      {/* ── CTA ── */}
       <section id="cta-section">
         <div className="cta-container">
           <h2>Besoin de ces compétences ?</h2>
@@ -1553,21 +1665,66 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="page-loader">
-        <div className="loader-content">
-          <div className="loader-logo">
-            <span className="loader-text">&lt;BIENVENU(E)!/&gt;</span>
-          </div>
-          <div className="loader-bar">
-            <div className="loader-progress"></div>
-          </div>
-          <p className="loader-message">Chargement du portfolio...</p>
+  return (
+    <div className="page-loader">
+      <div className="loader-content">
+
+        {/* Logo SVG — terminal bracket propre */}
+        <svg className="loader-logo" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#58A6FF" />
+              <stop offset="100%" stopColor="#7EE787" />
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          {/* Bracket gauche < */}
+          <path
+            className="loader-bracket loader-bracket-left"
+            d="M28 18 L10 40 L28 62"
+            stroke="url(#g1)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+            filter="url(#glow)"
+          />
+
+          {/* Bracket droit /> */}
+          <path
+            className="loader-bracket loader-bracket-right"
+            d="M92 18 L110 40 L92 62"
+            stroke="url(#g1)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
+            filter="url(#glow)"
+          />
+
+          {/* Slash central */}
+          <path
+            className="loader-slash"
+            d="M68 15 L52 65"
+            stroke="#7EE787" strokeWidth="2.5" strokeLinecap="round"
+            filter="url(#glow)"
+          />
+
+          {/* Points décoratifs */}
+          <circle className="loader-dot loader-dot-1" cx="42" cy="40" r="2.5" fill="#58A6FF" />
+          <circle className="loader-dot loader-dot-2" cx="78" cy="40" r="2.5" fill="#7EE787" />
+        </svg>
+
+        {/* Barre de chargement */}
+        <div className="loader-track">
+          <div className="loader-fill"></div>
+        </div>
+
+        <div className="loader-text-container">
+          <span className="loading-text">ATTEND UN PEU</span>
+          <span className="loading-dots">...</span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  return <Portfolio />;  // Plus besoin de Router !
+  return <Portfolio />;
 }
 export default App;
