@@ -623,6 +623,165 @@ section {
 .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-top: 16px; }
 
 /* ============================================================
+   11b. PROJECTS 3D CAROUSEL
+   ============================================================ */
+
+/* Stage 3D — preserve-3d sur le conteneur parent */
+#projects {
+  overflow: hidden;
+}
+
+#projects .section-header {
+  text-align: center;
+}
+
+/* La scène de perspective */
+.proj3d-stage {
+  position: relative;
+  height: 510px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Glow ambiant derrière la carte centrale */
+.proj3d-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(126,231,135,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: proj3d-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes proj3d-pulse {
+  from { opacity: 0.4; transform: scale(0.93); }
+  to   { opacity: 1;   transform: scale(1.07); }
+}
+
+/* Conteneur 3D inner */
+.proj3d-inner {
+  position: relative;
+  width: 320px;
+  height: 430px;
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+/* Flèches de navigation */
+.proj3d-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(126,231,135,0.25);
+  background: rgba(13,17,23,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #7EE787;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.proj3d-arrow:hover {
+  background: rgba(126,231,135,0.15) !important;
+  transform: translateY(-50%) scale(1.12) !important;
+  box-shadow: 0 6px 24px rgba(126,231,135,0.2);
+}
+
+.proj3d-arrow--left  { left:  calc(50% - 340px); }
+.proj3d-arrow--right { right: calc(50% - 340px); }
+
+/* Dots + counter bar */
+.proj3d-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.proj3d-counter {
+  font-size: 0.75rem;
+  color: #555;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.proj3d-counter span {
+  color: #7EE787;
+}
+
+.proj3d-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.proj3d-dot {
+  height: 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.15);
+}
+
+.proj3d-dot--active {
+  background: linear-gradient(90deg, #7EE787, #58A6FF);
+}
+
+.proj3d-hint {
+  font-size: 0.7rem;
+  color: #3a3f47;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+/* Filter overrides pour le carousel 3D */
+.proj3d-filter {
+  font-family: var(--font-sans) !important;
+  min-height: auto !important;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+  .proj3d-stage {
+    height: 470px;
+  }
+
+  .proj3d-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 0.85rem;
+  }
+
+  .proj3d-arrow--left  { left:  8px; }
+  .proj3d-arrow--right { right: 8px; }
+}
+
+@media (max-width: 480px) {
+  .proj3d-arrow--left,
+  .proj3d-arrow--right {
+    display: none;
+  }
+}
+
+/* ============================================================
    12. ABOUT
    ============================================================ */
 .about-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 70px; align-items: center; }

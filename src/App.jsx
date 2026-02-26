@@ -440,29 +440,217 @@ const Footer = () => (
 // ============================================================
 
 const ScrollToTop = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible]     = useState(false);
   const [launching, setLaunching] = useState(false);
-  const buttonRef = useRef(null);
-  
+  const buttonRef   = useRef(null);
+  const audioCtxRef = useRef(null);
+  // Nœuds du moteur en veille — gardés pour fade-out au mouseLeave
+  const engineRef   = useRef(null);
+
   useEffect(() => {
     const handleScroll = () => {
       const footer = document.querySelector('footer');
-      if (footer) {
-        const footerRect = footer.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        setVisible(footerRect.top < windowHeight);
-      }
+      if (footer) setVisible(footer.getBoundingClientRect().top < window.innerHeight);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
+  // ── Contexte audio ────────────────────────────────────────────
+  const getCtx = () => {
+    if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+      audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = audioCtxRef.current;
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  };
+
+  // ── Génère un buffer de bruit infini (loopé) ─────────────────
+  const makeNoiseSource = (ctx, loop = true) => {
+    // 2 secondes de bruit blanc — suffisant pour looper de façon imperceptible
+    const bufSz  = ctx.sampleRate * 2;
+    const buf    = ctx.createBuffer(1, bufSz, ctx.sampleRate);
+    const data   = buf.getChannelData(0);
+    for (let i = 0; i < bufSz; i++) data[i] = Math.random() * 2 - 1;
+    const src    = ctx.createBufferSource();
+    src.buffer   = buf;
+    src.loop     = loop;
+    return src;
+  };
+
+  // ── HOVER : moteur de fusée continu qui dure tant que le curseur reste ──
+  const startEngineHover = () => {
+    // Ne pas démarrer si déjà actif
+    if (engineRef.current) return;
+    try {
+      const ctx = getCtx();
+      const now = ctx.currentTime;
+
+      // Master gain — pour le fade-in/out global
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0, now);
+      master.gain.linearRampToValueAtTime(1, now + 0.25); // fade-in 250ms
+      master.connect(ctx.destination);
+
+      // ── Couche 1 : grondement grave (bruit rose filtré passe-bas) ──
+      const noiseGrave = makeNoiseSource(ctx);
+      const filtGrave  = ctx.createBiquadFilter();
+      filtGrave.type   = 'lowpass';
+      filtGrave.frequency.value = 140;
+      filtGrave.Q.value = 0.9;
+      const gainGrave  = ctx.createGain();
+      gainGrave.gain.value = 0.55;
+      noiseGrave.connect(filtGrave); filtGrave.connect(gainGrave); gainGrave.connect(master);
+      noiseGrave.start();
+
+      // ── Couche 2 : jet de gaz chaud (bruit passe-bande médium) ──
+      const noiseJet  = makeNoiseSource(ctx);
+      const filtJet   = ctx.createBiquadFilter();
+      filtJet.type    = 'bandpass';
+      filtJet.frequency.value = 480;
+      filtJet.Q.value = 0.7;
+      const gainJet   = ctx.createGain();
+      gainJet.gain.value = 0.40;
+      noiseJet.connect(filtJet); filtJet.connect(gainJet); gainJet.connect(master);
+      noiseJet.start();
+
+      // ── Couche 3 : sifflement haute pression (bruit passe-haut) ──
+      const noiseHigh  = makeNoiseSource(ctx);
+      const filtHigh   = ctx.createBiquadFilter();
+      filtHigh.type    = 'highpass';
+      filtHigh.frequency.value = 1800;
+      const gainHigh   = ctx.createGain();
+      gainHigh.gain.value = 0.18;
+      noiseHigh.connect(filtHigh); filtHigh.connect(gainHigh); gainHigh.connect(master);
+      noiseHigh.start();
+
+      // ── Couche 4 : oscillateur de chambre de combustion (rumble tonique) ──
+      const osc1 = ctx.createOscillator();
+      osc1.type  = 'sawtooth';
+      osc1.frequency.value = 48;
+      // Légère modulation de fréquence pour donner une texture vivante
+      const lfo  = ctx.createOscillator();
+      lfo.type   = 'sine';
+      lfo.frequency.value = 3.5;
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = 7;
+      lfo.connect(lfoGain); lfoGain.connect(osc1.frequency);
+      lfo.start();
+
+      const ws = ctx.createWaveShaper();
+      const curve = new Float32Array(512);
+      for (let i = 0; i < 512; i++) {
+        const x = (i * 2) / 512 - 1;
+        // Saturation douce type "tube"
+        curve[i] = (3 + 200) * x / (Math.PI + 200 * Math.abs(x));
+      }
+      ws.curve = curve;
+      ws.oversample = '4x';
+
+      const oscGain = ctx.createGain();
+      oscGain.gain.value = 0.32;
+      osc1.connect(ws); ws.connect(oscGain); oscGain.connect(master);
+      osc1.start();
+
+      // ── Couche 5 : vibration basse fréquence (sub) ──
+      const sub = ctx.createOscillator();
+      sub.type  = 'sine';
+      sub.frequency.value = 28;
+      const subGain = ctx.createGain();
+      subGain.gain.value = 0.38;
+      sub.connect(subGain); subGain.connect(master);
+      sub.start();
+
+      // Stocker tous les noeuds pour les arrêter proprement
+      engineRef.current = { master, nodes: [noiseGrave, noiseJet, noiseHigh, osc1, lfo, sub] };
+
+    } catch (e) { console.warn('Web Audio engine:', e); }
+  };
+
+  const stopEngineHover = () => {
+    if (!engineRef.current) return;
+    try {
+      const ctx    = getCtx();
+      const now    = ctx.currentTime;
+      const { master, nodes } = engineRef.current;
+
+      // Fade-out rapide puis stop
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(master.gain.value, now);
+      master.gain.linearRampToValueAtTime(0, now + 0.3);
+
+      setTimeout(() => {
+        nodes.forEach(n => { try { n.stop(); } catch(_) {} });
+        engineRef.current = null;
+      }, 350);
+    } catch (e) {
+      engineRef.current = null;
+    }
+  };
+
+  // ── CLICK : décollage (whoosh qui monte + boom initial) ───────
+  const playLaunchSound = () => {
+    // Couper le moteur hover d'abord pour pas superposer
+    stopEngineHover();
+    try {
+      const ctx = getCtx();
+      const now = ctx.currentTime;
+
+      // 1. BOOM d'allumage (impact grave)
+      const boom = ctx.createOscillator();
+      boom.type  = 'sine';
+      boom.frequency.setValueAtTime(120, now);
+      boom.frequency.exponentialRampToValueAtTime(22, now + 0.18);
+      const boomGain = ctx.createGain();
+      boomGain.gain.setValueAtTime(0.7, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      boom.connect(boomGain); boomGain.connect(ctx.destination);
+      boom.start(now); boom.stop(now + 0.25);
+
+      // 2. WHOOSH bruit filtré qui sweep vers le haut (jet qui s'éloigne)
+      const bufSz  = Math.floor(ctx.sampleRate * 2.2);
+      const nBuf   = ctx.createBuffer(1, bufSz, ctx.sampleRate);
+      const nData  = nBuf.getChannelData(0);
+      for (let i = 0; i < bufSz; i++) nData[i] = Math.random() * 2 - 1;
+      const nSrc   = ctx.createBufferSource();
+      nSrc.buffer  = nBuf;
+      const filt   = ctx.createBiquadFilter();
+      filt.type    = 'bandpass';
+      filt.frequency.setValueAtTime(100, now);
+      filt.frequency.exponentialRampToValueAtTime(4000, now + 1.8);
+      filt.Q.value = 1.0;
+      const nGain  = ctx.createGain();
+      nGain.gain.setValueAtTime(0, now);
+      nGain.gain.linearRampToValueAtTime(0.65, now + 0.06);
+      nGain.gain.setValueAtTime(0.65, now + 0.5);
+      nGain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+      nSrc.connect(filt); filt.connect(nGain); nGain.connect(ctx.destination);
+      nSrc.start(now); nSrc.stop(now + 2.2);
+
+      // 3. GRONDEMENT moteur puissant qui monte puis s'estompe (fusée qui monte)
+      const rumble = ctx.createOscillator();
+      rumble.type  = 'sawtooth';
+      rumble.frequency.setValueAtTime(60, now);
+      rumble.frequency.linearRampToValueAtTime(42, now + 1.5);
+      const rGain  = ctx.createGain();
+      rGain.gain.setValueAtTime(0, now);
+      rGain.gain.linearRampToValueAtTime(0.35, now + 0.08);
+      rGain.gain.setValueAtTime(0.35, now + 0.6);
+      rGain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+      const rWs    = ctx.createWaveShaper();
+      const rCurve = new Float32Array(256);
+      for (let i = 0; i < 256; i++) { const x=(i*2)/256-1; rCurve[i]=(Math.PI+180)*x/(Math.PI+180*Math.abs(x)); }
+      rWs.curve = rCurve;
+      rumble.connect(rWs); rWs.connect(rGain); rGain.connect(ctx.destination);
+      rumble.start(now); rumble.stop(now + 1.6);
+
+    } catch (e) { console.warn('Web Audio launch:', e); }
+  };
+
   const scrollToTop = () => {
-    // Déclencher l'animation de décollage
+    playLaunchSound();
     setLaunching(true);
-    
-    // Créer des particules de feu
     if (buttonRef.current) {
       for (let i = 0; i < 8; i++) {
         const particle = document.createElement('div');
@@ -470,27 +658,22 @@ const ScrollToTop = () => {
         particle.style.setProperty('--x-offset', `${(Math.random() - 0.5) * 30}px`);
         particle.style.animationDelay = `${i * 0.1}s`;
         buttonRef.current.appendChild(particle);
-        
         setTimeout(() => particle.remove(), 1000);
       }
     }
-    
-    // Attendre un peu avant de scroller (pour voir le décollage)
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Réinitialiser après le scroll
-      setTimeout(() => {
-        setLaunching(false);
-      }, 800);
+      setTimeout(() => setLaunching(false), 800);
     }, 300);
   };
-  
+
   return (
-    <button 
+    <button
       ref={buttonRef}
       className={`scroll-top-btn ${visible ? 'visible' : ''} ${launching ? 'launching' : ''}`}
       onClick={scrollToTop}
+      onMouseEnter={startEngineHover}
+      onMouseLeave={stopEngineHover}
       title="Décollage vers le haut !"
     >
       <i className="fas fa-rocket"></i>
@@ -695,127 +878,334 @@ const Home = () => {
 };
 
 // ============================================================
-// PAGE PROJECTS
+// PAGE PROJECTS — 3D CAROUSEL
 // ============================================================
 
-const Projects = () => {
-  const [filter, setFilter] = useState('tous');
-  
-  const filteredProjects = filter === 'tous' 
-    ? projectsData 
-    : projectsData.filter(p => p.category === filter);
-  
-  const counts = {
-    tous: projectsData.length,
-    'en-ligne': projectsData.filter(p => p.category === 'en-ligne').length,
-    demo: projectsData.filter(p => p.category === 'demo').length,
-    'en-cours': projectsData.filter(p => p.category === 'en-cours').length
+const CARD_WIDTH  = 320;
+const CARD_HEIGHT = 430;
+
+const techColor = (tech) => {
+  const map = {
+    React: '#61DAFB', Python: '#3776AB', Django: '#092E20', Flask: '#555',
+    JavaScript: '#F7DF1E', TypeScript: '#3178C6', 'Tailwind CSS': '#38BDF8',
+    'Bootstrap 5': '#7952B3', MySQL: '#4479A1', 'HTML / Tailwind CSS': '#E34F26',
+    Netlify: '#00C7B7', 'Leaflet.js': '#199900', 'Chart.js': '#FF6384',
+    'Canvas API': '#FF7F50', LocalStorage: '#aaa', 'Camera API': '#EF4444',
   };
-  
+  for (const [k, v] of Object.entries(map)) {
+    if (tech.includes(k)) return v;
+  }
+  return '#7EE787';
+};
+
+const ProgressRing = ({ value }) => {
+  const r = 18, c = 2 * Math.PI * r;
+  const dash  = (value / 100) * c;
+  const color = value >= 90 ? '#7EE787' : value >= 60 ? '#58A6FF' : '#F7A25E';
   return (
-    <section id="projects">
-      <SectionHeader 
-        tag="Portfolio"
-        title="&lt;Projets <span class='highlight'>Réalisés/&gt;</span>"
-        description="Applications web fonctionnelles et projets en production"
-      />
-      
-      <div className="projects-filters">
-        {Object.entries(counts).map(([key, count]) => (
-          <button
-            key={key}
-            className={`filter-btn ${filter === key ? 'active' : ''}`}
-            onClick={() => setFilter(key)}
-          >
-            <span className="material-symbols-outlined">
-              {key === 'tous' ? 'apps' : key === 'en-ligne' ? 'public' : key === 'demo' ? 'visibility' : 'pending'}
+    <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: 'rotate(-90deg)' }}>
+      <circle cx="22" cy="22" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3.5" />
+      <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="3.5"
+        strokeDasharray={`${dash} ${c}`} strokeLinecap="round"
+        style={{ transition: 'stroke-dasharray 0.8s ease' }} />
+      <text x="22" y="22" textAnchor="middle" dominantBaseline="central"
+        fill={color} fontSize="9" fontWeight="700"
+        style={{ transform: 'rotate(90deg)', transformOrigin: '22px 22px' }}>
+        {value}%
+      </text>
+    </svg>
+  );
+};
+
+const CategoryBadge3D = ({ cat }) => {
+  const cfg = {
+    'en-ligne': { label: 'EN LIGNE', color: '#7EE787', icon: '🌐' },
+    'demo':     { label: 'DÉMO',     color: '#58A6FF', icon: '🧪' },
+    'en-cours': { label: 'EN COURS', color: '#F7A25E', icon: '⚙️' },
+  };
+  const { label, color, icon } = cfg[cat] || { label: cat, color: '#aaa', icon: '📁' };
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '5px',
+      padding: '3px 10px', borderRadius: '20px',
+      fontSize: '0.62rem', fontWeight: '700', letterSpacing: '0.08em',
+      color, border: `1px solid ${color}40`, background: `${color}12`,
+    }}>{icon} {label}</span>
+  );
+};
+
+const ProjectCard3D = ({ project, position, onClick }) => {
+  const [hovered, setHovered] = React.useState(false);
+  const [tilt,    setTilt]    = React.useState({ x: 0, y: 0 });
+  const cardRef = React.useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current || position !== 0) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setTilt({
+      x: ((e.clientY - rect.top)  / rect.height - 0.5) * -12,
+      y: ((e.clientX - rect.left) / rect.width  - 0.5) *  14,
+    });
+  };
+
+  const absPos  = Math.abs(position);
+  const scale   = position === 0 ? 1 : absPos === 1 ? 0.82 : 0.66;
+  const tx      = position * (CARD_WIDTH * 0.68);
+  const tz      = position === 0 ? 0 : absPos === 1 ? -120 : -240;
+  const ry      = position * -30;
+  const opacity = position === 0 ? 1 : absPos === 1 ? 0.75 : 0.45;
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { setTilt({ x:0, y:0 }); setHovered(false); }}
+      onMouseEnter={() => setHovered(true)}
+      onClick={() => position !== 0 && onClick(position)}
+      style={{
+        position: 'absolute',
+        width: CARD_WIDTH, height: CARD_HEIGHT,
+        borderRadius: '20px', overflow: 'hidden',
+        cursor: position === 0 ? 'default' : 'pointer',
+        transition: hovered && position === 0
+          ? 'transform 0.08s ease, opacity 0.4s ease'
+          : 'transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s ease',
+        transform: `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry + (position===0?tilt.y:0)}deg) rotateX(${position===0?tilt.x:0}deg) scale(${scale})`,
+        opacity,
+        zIndex: 10 - absPos,
+        boxShadow: position === 0
+          ? '0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.1)'
+          : '0 15px 40px rgba(0,0,0,0.35)',
+        background: 'linear-gradient(160deg, rgba(22,27,34,0.97) 0%, rgba(13,17,23,0.99) 100%)',
+        border: position === 0 ? '1px solid rgba(126,231,135,0.2)' : '1px solid rgba(255,255,255,0.06)',
+        pointerEvents: absPos <= 2 ? 'auto' : 'none',
+      }}
+    >
+      {/* ── Image ── */}
+      <div style={{ position:'relative', height:175, overflow:'hidden' }}>
+        <img src={project.image} alt={project.title} style={{
+          width:'100%', height:'100%', objectFit:'cover', filter:'brightness(0.85)',
+          transition:'transform 0.5s ease',
+          transform: hovered && position===0 ? 'scale(1.06)' : 'scale(1)',
+        }} onError={e=>{e.target.style.display='none'; e.target.parentElement.style.background='linear-gradient(135deg,#0d1117,#161b22)';}} />
+        <div style={{ position:'absolute', inset:0, background:'linear-gradient(to bottom, transparent 40%, rgba(13,17,23,0.95) 100%)' }} />
+        <div style={{ position:'absolute', top:12, left:12, right:12, display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+          <CategoryBadge3D cat={project.category} />
+          {project.isPremium && (
+            <span style={{ background:'linear-gradient(135deg,#F7A25E,#FF6B35)', color:'#fff', fontSize:'0.6rem', fontWeight:'800', padding:'3px 8px', borderRadius:'20px' }}>
+              👑 PROD
             </span>
-            <span>{key === 'tous' ? 'Tous' : key === 'en-ligne' ? 'En ligne' : key === 'demo' ? 'Démo' : 'En cours'}</span>
-            <span className="filter-count">{count}</span>
+          )}
+        </div>
+        <div style={{ position:'absolute', bottom:12, left:14, right:14, display:'flex', justifyContent:'space-between', alignItems:'flex-end' }}>
+          <div style={{ display:'flex', gap:6 }}>
+            {project.tech?.slice(0,2).map((t,i)=>(
+              <span key={i} style={{ fontSize:'0.6rem', fontWeight:'600', background:`${techColor(t)}20`, border:`1px solid ${techColor(t)}50`, color:techColor(t), padding:'2px 7px', borderRadius:'10px' }}>
+                {t.split('/')[0].trim()}
+              </span>
+            ))}
+          </div>
+          <ProgressRing value={project.progress} />
+        </div>
+      </div>
+
+      {/* ── Contenu ── */}
+      <div style={{ padding:'16px 18px 14px', display:'flex', flexDirection:'column', gap:9, height: CARD_HEIGHT-175-2, boxSizing:'border-box' }}>
+        <h3 style={{ fontSize:'0.95rem', fontWeight:'700', color:'#e6edf3', lineHeight:1.35, margin:0, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
+          {project.title}
+        </h3>
+        <p style={{ fontSize:'0.78rem', color:'#8b949e', lineHeight:1.5, margin:0, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
+          {project.description}
+        </p>
+        {project.stats && (
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+            {project.stats.slice(0,3).map((s,i)=>(
+              <span key={i} style={{ fontSize:'0.62rem', color:'#7EE787', background:'rgba(126,231,135,0.08)', border:'1px solid rgba(126,231,135,0.15)', padding:'2px 7px', borderRadius:'12px', display:'flex', alignItems:'center', gap:4 }}>
+                <i className={`fas fa-${s.icon}`} style={{ fontSize:'0.55rem' }} />{s.label}
+              </span>
+            ))}
+          </div>
+        )}
+        <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
+          {project.tech?.slice(2).map((t,i)=>(
+            <span key={i} style={{ fontSize:'0.57rem', fontWeight:'600', background:`${techColor(t)}15`, border:`1px solid ${techColor(t)}35`, color:techColor(t), padding:'1px 6px', borderRadius:'8px' }}>
+              {t.split('/')[0].trim()}
+            </span>
+          ))}
+        </div>
+        <div style={{ display:'flex', gap:8, marginTop:'auto' }}>
+          {project.liveUrl && (
+            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" onClick={e=>e.stopPropagation()}
+              style={{ flex:1, padding:'8px 0', borderRadius:'10px', fontSize:'0.72rem', fontWeight:'700', background:'linear-gradient(135deg,#7EE787,#58A6FF)', color:'#0d1117', textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:5, boxShadow:'0 4px 14px rgba(126,231,135,0.25)' }}>
+              <i className="fas fa-external-link-alt" style={{ fontSize:'0.65rem' }} />Voir le site
+            </a>
+          )}
+          {project.demoUrl && (
+            <a href={project.demoUrl} onClick={e=>e.stopPropagation()}
+              style={{ flex:1, padding:'8px 0', borderRadius:'10px', fontSize:'0.72rem', fontWeight:'700', background:'rgba(88,166,255,0.12)', border:'1px solid rgba(88,166,255,0.3)', color:'#58A6FF', textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:5 }}>
+              <i className="fas fa-play-circle" style={{ fontSize:'0.65rem' }} />Démo
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Shine tilt */}
+      {position === 0 && (
+        <div style={{ position:'absolute', inset:0, pointerEvents:'none', borderRadius:'20px',
+          background:`radial-gradient(circle at ${50+tilt.y*2}% ${50+tilt.x*2}%, rgba(255,255,255,0.04) 0%, transparent 60%)`,
+          transition:'background 0.1s ease' }} />
+      )}
+    </div>
+  );
+};
+
+const Projects = () => {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [filter,      setFilter]      = React.useState('all');
+  const isDragging  = React.useRef(false);
+  const dragStartX  = React.useRef(0);
+  const autoRef     = React.useRef(null);
+
+  const categories = [
+    { key:'all',      label:'Tous',     icon:'apps' },
+    { key:'en-ligne', label:'En ligne', icon:'public' },
+    { key:'demo',     label:'Démos',    icon:'visibility' },
+    { key:'en-cours', label:'En cours', icon:'pending' },
+  ];
+
+  const filtered = filter === 'all' ? projectsData : projectsData.filter(p => p.category === filter);
+
+  React.useEffect(() => { setActiveIndex(0); }, [filter]);
+
+  const resetAuto = React.useCallback(() => {
+    clearInterval(autoRef.current);
+    autoRef.current = setInterval(() =>
+      setActiveIndex(prev => (prev + 1) % filtered.length), 4500);
+  }, [filtered.length]);
+
+  React.useEffect(() => { resetAuto(); return () => clearInterval(autoRef.current); }, [resetAuto]);
+
+  const go = (dir) => {
+    setActiveIndex(prev => (prev + dir + filtered.length) % filtered.length);
+    resetAuto();
+  };
+
+  React.useEffect(() => {
+    const fn = e => { if (e.key==='ArrowRight') go(1); if (e.key==='ArrowLeft') go(-1); };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [filtered.length]);
+
+  const onDragStart = e => { dragStartX.current = e.clientX ?? e.touches?.[0]?.clientX; isDragging.current = true; };
+  const onDragEnd   = e => {
+    if (!isDragging.current) return;
+    const dx = (e.clientX ?? e.changedTouches?.[0]?.clientX) - dragStartX.current;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+    isDragging.current = false;
+  };
+
+  return (
+    <section id="projects" style={{ padding:'100px 0', minHeight:'100vh', position:'relative' }}>
+      <style>{`
+        @keyframes proj3d-pulse {
+          from { opacity:.4; transform:scale(.93); }
+          to   { opacity:1;  transform:scale(1.07); }
+        }
+        .proj3d-arrow { transition: all .2s ease !important; }
+        .proj3d-arrow:hover { background: rgba(126,231,135,0.15) !important; transform: translateY(-50%) scale(1.12) !important; box-shadow: 0 6px 24px rgba(126,231,135,0.2) !important; }
+      `}</style>
+
+      {/* Header */}
+      <motion.div className="section-header"
+        initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }}
+        viewport={{ once:true }} transition={{ duration:.7 }}>
+        <span className="section-tag">Portfolio</span>
+        <h2 className="section-title">{'<'}Projets <span className="highlight">Réalisés{'/>'}</span></h2>
+        <p className="section-description">Applications web fonctionnelles et projets en production</p>
+      </motion.div>
+
+      {/* Filtres */}
+      <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
+        viewport={{ once:true }} transition={{ delay:.15 }}
+        style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap', marginBottom:55 }}>
+        {categories.map(cat => {
+          const count  = cat.key==='all' ? projectsData.length : projectsData.filter(p=>p.category===cat.key).length;
+          const active = filter === cat.key;
+          return (
+            <button key={cat.key} className="filter-btn"
+              onClick={() => { setFilter(cat.key); resetAuto(); }}
+              style={{
+                padding:'8px 20px', borderRadius:'30px', cursor:'pointer',
+                fontSize:'0.82rem', fontWeight:'600', display:'flex', alignItems:'center', gap:7,
+                transition:'all 0.25s ease',
+                background: active ? 'linear-gradient(135deg,rgba(126,231,135,0.18),rgba(88,166,255,0.18))' : 'rgba(255,255,255,0.05)',
+                color:  active ? '#7EE787' : '#8b949e',
+                border: `1px solid ${active ? 'rgba(126,231,135,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                boxShadow: active ? '0 0 20px rgba(126,231,135,0.15)' : 'none',
+              }}>
+              <span className="material-symbols-outlined" style={{ fontSize:'1rem' }}>{cat.icon}</span>
+              {cat.label}
+              <span style={{ background: active?'rgba(126,231,135,0.2)':'rgba(255,255,255,0.07)', color:active?'#7EE787':'#555', borderRadius:'50%', width:20, height:20, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.65rem', fontWeight:'800' }}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </motion.div>
+
+      {/* Scène 3D */}
+      <div style={{ position:'relative', height: CARD_HEIGHT+80, display:'flex', alignItems:'center', justifyContent:'center' }}
+        onMouseDown={onDragStart} onMouseUp={onDragEnd}
+        onTouchStart={onDragStart} onTouchEnd={onDragEnd}>
+
+        {/* Halo */}
+        <div style={{ position:'absolute', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle,rgba(126,231,135,0.08) 0%,transparent 70%)', pointerEvents:'none', zIndex:0, animation:'proj3d-pulse 3s ease-in-out infinite alternate' }} />
+
+        {/* Conteneur perspective */}
+        <div style={{ position:'relative', width:CARD_WIDTH, height:CARD_HEIGHT, perspective:'1100px', transformStyle:'preserve-3d' }}>
+          {[-2,-1,0,1,2].map(pos => {
+            const idx = ((activeIndex + pos) % filtered.length + filtered.length) % filtered.length;
+            return <ProjectCard3D key={`${filter}-${idx}-${pos}`} project={filtered[idx]} position={pos} onClick={dir=>go(dir)} />;
+          })}
+        </div>
+
+        {/* Flèches */}
+        {[{dir:-1,side:'left',icon:'chevron-left'},{dir:1,side:'right',icon:'chevron-right'}].map(({dir,side,icon})=>(
+          <button key={side} className="proj3d-arrow"
+            onClick={() => go(dir)}
+            style={{
+              position:'absolute', top:'50%', transform:'translateY(-50%)',
+              [side]: 'calc(50% - 340px)',
+              width:48, height:48, borderRadius:'50%',
+              border:'1px solid rgba(126,231,135,0.25)',
+              background:'rgba(13,17,23,0.85)', backdropFilter:'blur(12px)',
+              color:'#7EE787', fontSize:'1rem', cursor:'pointer',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              zIndex:50, boxShadow:'0 4px 20px rgba(0,0,0,0.4)',
+            }}>
+            <i className={`fas fa-${icon}`} />
           </button>
         ))}
       </div>
-      
-      <div className="projects-grid">
-        {filteredProjects.map(project => (
-          <div key={project.id} className={`project-card ${project.isPremium ? 'project-card-premium' : ''}`}>
-            {project.isPremium && (
-              <div className="premium-badge">
-                <i className="fas fa-crown"></i>
-                <span>En production</span>
-              </div>
-            )}
-            <div className="project-image-screenshot">
-              <img src={project.image} alt={project.title} loading="lazy" />
-              {project.isPremium && (
-                <div className="project-overlay">
-                  <div className="live-badge">
-                    <i className="fas fa-circle"></i> EN LIGNE
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="project-content">
-              <h3 className="project-title">
-                {project.title}
-                {!project.isPremium && project.progress === 100 && (
-                  <span className="badge badge-completed">Démo fonctionnelle</span>
-                )}
-                {project.category === 'en-cours' && (
-                  <span className="badge badge-progress">En développement</span>
-                )}
-              </h3>
-              <p className="project-description">{project.description}</p>
-              <div className="project-stats">
-                {project.stats.map((stat, i) => (
-                  <div key={i} className="stat">
-                    <i className={`fas fa-${stat.icon}`}></i>
-                    <span>{stat.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="project-progress">
-                <div className="progress-bar-container">
-                  <div className="progress-bar" style={{ width: `${project.progress}%` }}>
-                    {project.progress === 100 ? 'Complété' : `Avancement : ${project.progress}%`}
-                  </div>
-                </div>
-              </div>
-              <div className="project-tech">
-                {project.tech.map((tech, i) => (
-                  <span key={i} className={project.isPremium ? "tech-tag tech-tag-premium" : "tech-tag"}>
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              {project.liveUrl ? (
-                <div className="project-links-premium">
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="project-link-primary">
-                    <i className="fas fa-globe"></i>
-                    Voir le site
-                    <i className="fas fa-arrow-right"></i>
-                  </a>
-                </div>
-              ) : project.demoUrl ? (
-                <a href={project.demoUrl} className="project-link">
-                  Voir la démo
-                  <i className="fas fa-arrow-right"></i>
-                </a>
-              ) : null}
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {filteredProjects.length === 0 && (
-        <div className="no-projects-message">
-          <span className="material-symbols-outlined">search_off</span>
-          <p>Aucun projet dans cette catégorie</p>
+
+      {/* Dots + compteur */}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:14, marginTop:10 }}>
+        <span style={{ fontSize:'0.75rem', color:'#555', letterSpacing:'0.1em', fontWeight:'600', fontFamily:'var(--font-mono)' }}>
+          <span style={{ color:'#7EE787' }}>{String(activeIndex+1).padStart(2,'0')}</span> / {String(filtered.length).padStart(2,'0')}
+        </span>
+        <div style={{ display:'flex', gap:8 }}>
+          {filtered.map((_,i)=>(
+            <button key={i} onClick={()=>{ setActiveIndex(i); resetAuto(); }}
+              style={{ width:i===activeIndex?24:8, height:8, borderRadius:4, border:'none', cursor:'pointer', padding:0, transition:'all 0.3s ease',
+                background:i===activeIndex?'linear-gradient(90deg,#7EE787,#58A6FF)':'rgba(255,255,255,0.15)' }} />
+          ))}
         </div>
-      )}
+        <p style={{ fontSize:'0.7rem', color:'#3a3f47', margin:0, fontFamily:'var(--font-mono)' }}>← glissez ou utilisez les touches ← →</p>
+      </div>
     </section>
   );
 };
+
 
 // ============================================================
 // PAGE CONTACT
