@@ -2059,50 +2059,86 @@ function App() {
     <div className="page-loader">
       <div className="loader-content">
 
-        {/* Logo SVG — terminal bracket propre */}
-        <svg className="loader-logo" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#58A6FF" />
-              <stop offset="100%" stopColor="#7EE787" />
-            </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
+        {/* Cyclist crossing the screen */}
+        <div className="cyclist-scene">
+          <div className="cyclist-wrapper">
+            <svg className="cyclist-svg" viewBox="0 0 160 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#58A6FF"/>
+                  <stop offset="100%" stopColor="#7EE787"/>
+                </linearGradient>
+                <filter id="cglow">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
 
-          {/* Bracket gauche < */}
-          <path
-            className="loader-bracket loader-bracket-left"
-            d="M28 18 L10 40 L28 62"
-            stroke="url(#g1)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
-            filter="url(#glow)"
-          />
+              {/* === WHEELS === */}
+              {/* Rear wheel */}
+              <g className="wheel-rear">
+                <circle cx="38" cy="80" r="24" stroke="url(#cg1)" strokeWidth="3" fill="none" filter="url(#cglow)"/>
+                <circle cx="38" cy="80" r="4"  stroke="url(#cg1)" strokeWidth="2" fill="none"/>
+                <line x1="38" y1="56" x2="38" y2="104" stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="14" y1="80" x2="62" y2="80"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="21" y1="63" x2="55" y2="97"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="55" y1="63" x2="21" y2="97"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+              </g>
 
-          {/* Bracket droit /> */}
-          <path
-            className="loader-bracket loader-bracket-right"
-            d="M92 18 L110 40 L92 62"
-            stroke="url(#g1)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"
-            filter="url(#glow)"
-          />
+              {/* Front wheel */}
+              <g className="wheel-front">
+                <circle cx="122" cy="80" r="24" stroke="url(#cg1)" strokeWidth="3" fill="none" filter="url(#cglow)"/>
+                <circle cx="122" cy="80" r="4"  stroke="url(#cg1)" strokeWidth="2" fill="none"/>
+                <line x1="122" y1="56" x2="122" y2="104" stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="98"  y1="80" x2="146" y2="80"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="105" y1="63" x2="139" y2="97"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="139" y1="63" x2="105" y2="97"  stroke="url(#cg1)" strokeWidth="1.5" strokeLinecap="round"/>
+              </g>
 
-          {/* Slash central */}
-          <path
-            className="loader-slash"
-            d="M68 15 L52 65"
-            stroke="#7EE787" strokeWidth="2.5" strokeLinecap="round"
-            filter="url(#glow)"
-          />
+              {/* === FRAME === */}
+              {/* Chain stay rear axle → bottom bracket */}
+              <line x1="38" y1="80" x2="80" y2="72" stroke="#C9D1D9" strokeWidth="2.5" strokeLinecap="round"/>
+              {/* Seat tube */}
+              <line x1="80" y1="72" x2="72" y2="44" stroke="#C9D1D9" strokeWidth="2.5" strokeLinecap="round"/>
+              {/* Down tube bottom bracket → head tube */}
+              <line x1="80" y1="72" x2="112" y2="55" stroke="#C9D1D9" strokeWidth="2.5" strokeLinecap="round"/>
+              {/* Top tube */}
+              <line x1="72" y1="44" x2="112" y2="52" stroke="#C9D1D9" strokeWidth="2" strokeLinecap="round"/>
+              {/* Fork front wheel */}
+              <line x1="112" y1="55" x2="122" y2="80" stroke="#C9D1D9" strokeWidth="2.5" strokeLinecap="round"/>
+              {/* Seat post */}
+              <line x1="72" y1="44" x2="74" y2="33" stroke="#C9D1D9" strokeWidth="2" strokeLinecap="round"/>
+              {/* Handlebar stem */}
+              <line x1="112" y1="52" x2="114" y2="42" stroke="#C9D1D9" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="110" y1="40" x2="120" y2="42" stroke="#C9D1D9" strokeWidth="2.5" strokeLinecap="round"/>
 
-          {/* Points décoratifs */}
-          <circle className="loader-dot loader-dot-1" cx="42" cy="40" r="2.5" fill="#58A6FF" />
-          <circle className="loader-dot loader-dot-2" cx="78" cy="40" r="2.5" fill="#7EE787" />
-        </svg>
+              {/* === RIDER === */}
+              {/* Head */}
+              <circle cx="102" cy="18" r="7" fill="#F0F6FC"/>
+              {/* Torso leaning forward */}
+              <line x1="102" y1="25" x2="112" y2="40" stroke="#F0F6FC" strokeWidth="3" strokeLinecap="round"/>
+              {/* Arms to handlebar */}
+              <line x1="106" y1="30" x2="116" y2="40" stroke="#F0F6FC" strokeWidth="2.5" strokeLinecap="round"/>
+              {/* Hips */}
+              <line x1="112" y1="40" x2="78" y2="36" stroke="#F0F6FC" strokeWidth="3" strokeLinecap="round"/>
+              {/* Seat */}
+              <line x1="70" y1="33" x2="80" y2="33" stroke="#8B949E" strokeWidth="3" strokeLinecap="round"/>
+              {/* Legs — pedaling */}
+              <line x1="78"  y1="36" x2="88"  y2="60" stroke="#F0F6FC" strokeWidth="2.5" strokeLinecap="round" className="leg-down"/>
+              <line x1="88"  y1="60" x2="80"  y2="72" stroke="#F0F6FC" strokeWidth="2.5" strokeLinecap="round" className="leg-down"/>
+              <line x1="78"  y1="36" x2="72"  y2="58" stroke="#F0F6FC" strokeWidth="2.5" strokeLinecap="round" className="leg-up"/>
+              <line x1="72"  y1="58" x2="80"  y2="72" stroke="#F0F6FC" strokeWidth="2.5" strokeLinecap="round" className="leg-up"/>
+            </svg>
+          </div>
 
-        {/* Barre de chargement */}
-        <div className="loader-track">
+          {/* Ground line */}
+          <div className="ground-line">
+            <div className="ground-scroll"></div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="loader-track" style={{marginTop: '24px'}}>
           <div className="loader-fill"></div>
         </div>
 
