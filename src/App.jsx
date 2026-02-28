@@ -9,13 +9,13 @@ import useAnimations from './useAnimations';
 const projectsData = [
   {
     id: 1,
-    title: "MonMarket CI — Marketplace E-commerce",
+    title: "ShopCI — Marketplace E-commerce",
     description: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
     category: "en-ligne",
     image: "/assets/images/projects/monmarket-preview.jpg",
-    progress: 60,
-    tech: ["React", "Python/Django", "Bootstrap 5", "Netlify + PythonAnywhere"],
-    liveUrl: "https://ecommerce-aka.netlify.app/",
+    progress: 65,
+    tech: ["React", "Django", "Bootstrap 5", "Vercel + PythonAnywhere"],
+    liveUrl: "https://shop-ci.vercel.app/",
     isPremium: true,
     stats: [
       { icon: "users", label: "Multi-vendeurs" },
@@ -129,6 +129,38 @@ const projectsData = [
       { icon: "eye", label: "Preview temps réel" },
       { icon: "download", label: "Export PNG" }
     ]
+  },
+  {
+    id: 9,
+    title: "Tati — Portfolio & Vitrine Moderne",
+    description: "Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair, design 100% responsive et identité visuelle soignée.",
+    category: "en-ligne",
+    image: "/assets/images/projects/tati-preview.jpg",
+    progress: 100,
+    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"],
+    liveUrl: "https://tatii.vercel.app/",
+    isPremium: true,
+    stats: [
+      { icon: "user", label: "Portfolio & Vitrine" },
+      { icon: "adjust", label: "Thème sombre/clair" },
+      { icon: "mobile-alt", label: "100% Responsive" }
+    ]
+  },
+  {
+    id: 10,
+    title: "MK — Portfolio Graphiste Client",
+    description: "Portfolio professionnel sur-mesure pour un client graphiste. Mise en valeur des créations visuelles avec galerie immersive, animations soignées et thème sombre élégant.",
+    category: "en-ligne",
+    image: "/assets/images/projects/mk-preview.jpg",
+    progress: 100,
+    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"],
+    liveUrl: "https://mory01ff.vercel.app/",
+    isPremium: true,
+    stats: [
+      { icon: "paint-brush", label: "Galerie créative" },
+      { icon: "star", label: "Design sur-mesure" },
+      { icon: "globe", label: "En production" }
+    ]
   }
 ];
 
@@ -221,6 +253,7 @@ const skillsData = {
     { name: "Gemini", icon: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" },
     { name: "Claude AI", icon: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.svg" },
     { name: "PythonAnywhere", icon: "https://www.pythonanywhere.com/static/anywhere/images/PA-logo.svg" },
+    { name: "Vercel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg" },
     { name: "Netlify", icon: "https://logo.svgcdn.com/logos/netlify.svg" }
   ],
   autres: [
@@ -743,7 +776,7 @@ const Home = () => {
             </div>
             <div className="hero-stats">
               <div className="stat-item">
-                <div className="stat-number">7<span>+</span></div>
+                <div className="stat-number">9<span>+</span></div>
                 <div className="stat-label">Projets</div>
               </div>
               <div className="stat-item">
@@ -889,7 +922,7 @@ const techColor = (tech) => {
     React: '#61DAFB', Python: '#3776AB', Django: '#092E20', Flask: '#555',
     JavaScript: '#F7DF1E', TypeScript: '#3178C6', 'Tailwind CSS': '#38BDF8',
     'Bootstrap 5': '#7952B3', MySQL: '#4479A1', 'HTML / Tailwind CSS': '#E34F26',
-    Netlify: '#00C7B7', 'Leaflet.js': '#199900', 'Chart.js': '#FF6384',
+    Netlify: '#00C7B7', Vercel: '#000000', 'Leaflet.js': '#199900', 'Chart.js': '#FF6384',
     'Canvas API': '#FF7F50', LocalStorage: '#aaa', 'Camera API': '#EF4444',
   };
   for (const [k, v] of Object.entries(map)) {
