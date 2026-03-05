@@ -71,7 +71,9 @@
    RESET
 ══════════════════════════════════════════ */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
-html { scroll-behavior:smooth; overflow-x:hidden }
+html { scroll-behavior:smooth; }
+/* overflow-x:hidden sur html bloque position:fixed sur Safari/Chrome mobile
+   — on le gère uniquement sur .app */
 body {
   background:var(--paper); color:var(--ink);
   font-family:var(--fb); line-height:1.6;
@@ -150,22 +152,22 @@ input,textarea,select { font-family:inherit }
 ══════════════════════════════════════════ */
 .nav-vertical {
   display:none;
-  position:fixed; right:14px; top:50%; transform:translateY(-50%);
+  position:fixed; right:0; top:50%; transform:translateY(-50%);
   z-index:10001;
   width:48px;
   background:rgba(7,10,13,.88);
   backdrop-filter:blur(16px);
   border:1px solid var(--border);
-  border-radius:100px;
+  border-radius:100px 0 0 100px;
   padding:14px 0;
   flex-direction:column;
   align-items:center;
   gap:2px;
-  box-shadow:0 8px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(126,231,135,.08);
+  box-shadow:-4px 8px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(126,231,135,.08);
 }
 .app--light .nav-vertical {
-  background:rgba(255,255,255,.9);
-  box-shadow:0 8px 32px rgba(13,10,8,.14), 0 0 0 1px rgba(13,10,8,.06);
+  background:rgba(255,255,255,.95);
+  box-shadow:-4px 8px 32px rgba(13,10,8,.14), 0 0 0 1px rgba(13,10,8,.06);
 }
 .nav-vertical-links { list-style:none; display:flex; flex-direction:column; gap:2px; padding:0; margin:0; }
 .nav-vertical-btn {
@@ -188,7 +190,9 @@ input,textarea,select { font-family:inherit }
   content:''; position:absolute; right:-6px; top:50%; transform:translateY(-50%);
   width:3px; height:3px; background:var(--neon); border-radius:50%;
 }
-.app--light .nav-vertical-btn--active::after { background:var(--acc); }
+.nav-vertical-btn--theme { margin-top:4px; border-top:1px solid var(--border); border-radius:0 0 10px 10px; padding-top:6px; }
+.nav-vertical-btn--theme .material-symbols-outlined { color:var(--neon); }
+.app--light .nav-vertical-btn--theme .material-symbols-outlined { color:var(--acc); }
 
 
 /* ══════════════════════════════════════════
@@ -723,10 +727,10 @@ section + section { border-top:1px solid var(--border) }
   .sk-row-lbl{display:none}
   /* Cacher la navbar horizontale sur mobile */
   .nav { display:none; }
-  /* Afficher la navbar verticale sur mobile */
+  /* Afficher la navbar verticale sur mobile — collée à droite pour éviter tout débordement */
   .nav-vertical { display:flex; }
-  /* Theme toggle visible en haut à droite */
-  .nav-right-mob { display:flex; position:fixed; top:14px; right:74px; z-index:10000; }
+  /* Theme toggle dans nav-right-mob : plus nécessaire, géré dans nav-vertical */
+  .nav-right-mob { display:none !important; }
   .footer-inner{flex-direction:column;text-align:center}
   .footer-links{justify-content:center}
   /* Fusée : déplacer à droite, laisser de la place à la nav verticale */
@@ -741,7 +745,7 @@ section + section { border-top:1px solid var(--border) }
   .c3d-glass{padding:12px 14px}
   .c3d-title{font-size:13px}
   .c3d-desc,.c3d-stats{display:none}
-  .nav-vertical { right:8px; width:44px; }
+  .nav-vertical { right:0; width:44px; border-radius:100px 0 0 100px; }
   .nav-vertical-btn { width:30px; height:30px; }
   .nav-vertical-btn .material-symbols-outlined { font-size:14px; }
   .scroll-top { right:60px; }

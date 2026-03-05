@@ -448,10 +448,7 @@ const Navbar = ({dark, onToggle}) => {
           ))}
           <ThemeToggle dark={dark} onToggle={onToggle}/>
         </div>
-        {/* Bouton burger visible seulement sur mobile — pour le theme toggle */}
-        <div className="nav-right-mob">
-          <ThemeToggle dark={dark} onToggle={onToggle}/>
-        </div>
+        {/* Bouton burger visible seulement sur mobile — supprimé car toggle dans nav-vertical */}
       </nav>
 
       {/* Navbar verticale compacte — mobile uniquement */}
@@ -468,6 +465,15 @@ const Navbar = ({dark, onToggle}) => {
               </button>
             </li>
           ))}
+          <li>
+            <button
+              className="nav-vertical-btn nav-vertical-btn--theme"
+              onClick={onToggle}
+              title={dark?"Mode clair":"Mode sombre néon"}
+            >
+              <span className="material-symbols-outlined">{dark?'light_mode':'dark_mode'}</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </>
