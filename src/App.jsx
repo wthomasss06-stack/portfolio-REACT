@@ -3,6 +3,101 @@ import { Monitor, Star, Cpu, Check, Globe, ShoppingCart, Zap, Wrench, Hammer, Br
 import './style.css';
 
 // ═══════════════════════════════════════════════════════════════
+// LOGO SVG ANIMÉ
+// ═══════════════════════════════════════════════════════════════
+const AkafolioLogo = ({ size = 48, dark = true, onClick, animate = true }) => {
+  const accent = dark ? '#00CC6A' : '#D94010';
+  const ink    = dark ? '#D4E8DC' : '#0D0A08';
+  const id     = `akf-${Math.random().toString(36).slice(2,7)}`; // unique per instance
+
+  return (
+    <svg onClick={onClick} width={size*4.2} height={size} viewBox="0 0 210 50"
+      fill="none" xmlns="http://www.w3.org/2000/svg"
+      style={{cursor:onClick?'pointer':'default',overflow:'visible'}} aria-label="AKAfolio">
+      <defs>
+        <filter id={`${id}-glow`} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id={`${id}-dot`} x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      {/* Barre gauche A */}
+      <line x1="4" y1="42" x2="16" y2="8" stroke={accent} strokeWidth="3.2"
+        strokeLinecap="round" strokeDasharray="60"
+        strokeDashoffset={animate?'60':'0'} filter={`url(#${id}-glow)`}>
+        {animate&&<animate attributeName="stroke-dashoffset" from="60" to="0"
+          dur="0.55s" fill="freeze" begin="0.1s" calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>}
+      </line>
+
+      {/* Barre droite A */}
+      <line x1="16" y1="8" x2="28" y2="42" stroke={accent} strokeWidth="3.2"
+        strokeLinecap="round" strokeDasharray="60"
+        strokeDashoffset={animate?'60':'0'} filter={`url(#${id}-glow)`}>
+        {animate&&<animate attributeName="stroke-dashoffset" from="60" to="0"
+          dur="0.55s" fill="freeze" begin="0.28s" calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>}
+      </line>
+
+      {/* Barre transversale A */}
+      <line x1="8" y1="28" x2="24" y2="28" stroke={accent} strokeWidth="2.8"
+        strokeLinecap="round" strokeDasharray="20"
+        strokeDashoffset={animate?'20':'0'} filter={`url(#${id}-glow)`}>
+        {animate&&<animate attributeName="stroke-dashoffset" from="20" to="0"
+          dur="0.28s" fill="freeze" begin="0.62s"/>}
+      </line>
+
+      {/* Point néon */}
+      <circle cx="31.5" cy="40" r={animate?'0':'3'} fill={accent} filter={`url(#${id}-dot)`}>
+        {animate&&<animate attributeName="r" values="0;4.5;3" keyTimes="0;0.6;1"
+          dur="0.45s" fill="freeze" begin="0.82s"
+          calcMode="spline" keySplines="0.34 1.56 0.64 1;0.25 0.46 0.45 0.94"/>}
+      </circle>
+
+      {/* KA */}
+      <g opacity={animate?'0':'1'}>
+        {animate&&<>
+          <animate attributeName="opacity" from="0" to="1" dur="0.01s" fill="freeze" begin="0.72s"/>
+          <animateTransform attributeName="transform" type="translate"
+            from="0 7" to="0 0" dur="0.4s" fill="freeze" begin="0.72s"
+            calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>
+        </>}
+        <text x="40" y="40" fontFamily="'Syne',sans-serif" fontWeight="800"
+          fontSize="28" letterSpacing="-0.04em" fill={ink}>KA</text>
+      </g>
+
+      {/* folio */}
+      <g opacity={animate?'0':'1'}>
+        {animate&&<>
+          <animate attributeName="opacity" from="0" to="1" dur="0.01s" fill="freeze" begin="0.98s"/>
+          <animateTransform attributeName="transform" type="translate"
+            from="0 9" to="0 0" dur="0.45s" fill="freeze" begin="0.98s"
+            calcMode="spline" keySplines="0.34 1.56 0.64 1"/>
+        </>}
+        <text x="91" y="40" fontFamily="'DM Sans',sans-serif" fontWeight="300"
+          fontSize="26" letterSpacing="-0.01em" fill={accent} opacity="0.9">folio</text>
+      </g>
+
+      {/* Ligne déco */}
+      <line x1="91" y1="44.5" x2="162" y2="44.5" stroke={accent} strokeWidth="1.2"
+        strokeLinecap="round" strokeDasharray="80"
+        strokeDashoffset={animate?'80':'0'} opacity="0.45">
+        {animate&&<animate attributeName="stroke-dashoffset" from="80" to="0"
+          dur="0.5s" fill="freeze" begin="1.35s"/>}
+      </line>
+
+      {/* Pulse continu */}
+      <circle cx="31.5" cy="40" r="3" fill="none" stroke={accent} strokeWidth="1.2" opacity="0">
+        <animate attributeName="r" values="3;10;3" dur="2.6s" repeatCount="indefinite" begin={animate?'2s':'0.5s'}/>
+        <animate attributeName="opacity" values="0.55;0;0.55" dur="2.6s" repeatCount="indefinite" begin={animate?'2s':'0.5s'}/>
+      </circle>
+    </svg>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════════════════
 const PROJECTS = [
@@ -204,71 +299,51 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
     const globalMouseMove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
     if (isGlobal) window.addEventListener('mousemove', globalMouseMove);
 
-    let tick = 0;
     const pts = Array.from({length:70},()=>({
       x: Math.random()*cv.width, y: Math.random()*cv.height,
-      r: Math.random()*2.5+0.8,
-      vx:(Math.random()-.5)*1.2, vy:(Math.random()-.5)*1.2,
+      r: Math.random()*2+0.5,
+      vx:(Math.random()-.5)*.5, vy:(Math.random()-.5)*.5,
       c: COLORS[Math.floor(Math.random()*COLORS.length)],
-      a: Math.random()*.55+.25,
-      // ondulation individuelle
-      waveAmp: Math.random()*0.35+0.1,
-      waveFreq: Math.random()*0.02+0.008,
-      waveOffset: Math.random()*Math.PI*2,
-      // pulsation du rayon
-      pulseFreq: Math.random()*0.03+0.01,
-      pulseOffset: Math.random()*Math.PI*2,
+      a: Math.random()*.5+.2,
     }));
 
     const draw = () => {
-      tick++;
       ctx.clearRect(0,0,cv.width,cv.height);
       pts.forEach(p=>{
-        // Ondulation fluide : chaque particule suit une trajectoire sinusoïdale
-        p.vx += Math.sin(tick * p.waveFreq + p.waveOffset) * p.waveAmp * 0.08;
-        p.vy += Math.cos(tick * p.waveFreq + p.waveOffset + 1.2) * p.waveAmp * 0.08;
-
         // Interaction curseur — répulsion douce
         if (mouse.x !== null) {
           const dx = mouse.x - p.x, dy = mouse.y - p.y;
           const d = Math.hypot(dx, dy);
-          if (d < 120) {
-            const force = (120 - d) / 120;
+          if (d < 100) {
+            const force = (100 - d) / 100;
             const angle = Math.atan2(dy, dx);
-            p.vx -= Math.cos(angle) * force * 1.1;
-            p.vy -= Math.sin(angle) * force * 1.1;
+            p.vx -= Math.cos(angle) * force * 0.6;
+            p.vy -= Math.sin(angle) * force * 0.6;
           }
         }
-        // Limite de vitesse + friction légère pour garder du mouvement
+        // Limite de vitesse + friction
         const spd = Math.hypot(p.vx, p.vy);
-        if (spd > 2.5) { p.vx = (p.vx/spd)*2.5; p.vy = (p.vy/spd)*2.5; }
-        p.vx *= 0.992; p.vy *= 0.992;
-        // Drift si trop lent
-        if (Math.abs(p.vx) < 0.1) p.vx += (Math.random()-.5)*0.3;
-        if (Math.abs(p.vy) < 0.1) p.vy += (Math.random()-.5)*0.3;
+        if (spd > 2) { p.vx = (p.vx/spd)*2; p.vy = (p.vy/spd)*2; }
+        p.vx *= 0.98; p.vy *= 0.98;
 
         p.x+=p.vx; p.y+=p.vy;
         if(p.x<0||p.x>cv.width)  p.vx*=-1;
         if(p.y<0||p.y>cv.height) p.vy*=-1;
-
-        // Rayon pulsant
-        const pulseR = p.r * (1 + 0.35 * Math.sin(tick * p.pulseFreq + p.pulseOffset));
-
         // glow halo
-        ctx.save(); ctx.globalAlpha=p.a*.3;
-        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,pulseR*12);
+        ctx.save(); ctx.globalAlpha=p.a*.25;
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10);
         g.addColorStop(0,p.c); g.addColorStop(1,'transparent');
-        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,pulseR*12,0,Math.PI*2); ctx.fill(); ctx.restore();
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*10,0,Math.PI*2); ctx.fill(); ctx.restore();
         // core dot
         ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
-        ctx.shadowBlur=16; ctx.shadowColor=p.c;
-        ctx.beginPath(); ctx.arc(p.x,p.y,pulseR,0,Math.PI*2); ctx.fill();
+        ctx.shadowBlur=14; ctx.shadowColor=p.c;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
         ctx.globalAlpha=1; ctx.shadowBlur=0;
       });
       // connexions
       for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
         const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
-        if(d<150){ ctx.globalAlpha=(1-d/150)*.22; ctx.strokeStyle=CONN_COLOR; ctx.lineWidth=.7;
+        if(d<130){ ctx.globalAlpha=(1-d/130)*.15; ctx.strokeStyle=CONN_COLOR; ctx.lineWidth=.5;
           ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); ctx.globalAlpha=1; }
       }
       raf=requestAnimationFrame(draw);
@@ -312,7 +387,7 @@ const Loader = ({onDone}) => {
     <div className="loader">
       <Noise/>
       <div className="loader-inner">
-        <div className="loader-eye">AKAFOLIO — Portfolio Dev Full-Stack</div>
+        <div className="loader-logo"><AkafolioLogo size={44} dark={true} animate={true}/></div>
         <div className="loader-num">{Math.min(100,Math.round(pct))}<span>%</span></div>
         <div className="loader-bar"><div className="loader-fill" style={{width:`${pct}%`}}/></div>
         <div className="loader-name">M'BOLLO AKA ELVIS</div>
@@ -366,7 +441,7 @@ const Navbar = ({dark, onToggle}) => {
     <>
       {/* Navbar horizontale — desktop uniquement */}
       <nav className={`nav ${scrolled?'nav--scrolled':''} ${dark?'nav--dark':''}`}>
-        <div className="nav-logo" onClick={()=>go('home')}>AKA<span>.</span></div>
+        <div className="nav-logo" onClick={()=>go('home')}><AkafolioLogo size={34} dark={dark} animate={false} onClick={()=>go('home')}/></div>
         <div className="nav-links">
           {NAV_LINKS.map(l=>(
             <button key={l.id} className={`nav-link ${active===l.id?'nav-link--active':''}`} onClick={()=>go(l.id)}>{l.label}</button>
@@ -1080,8 +1155,8 @@ const Contact = ({dark}) => {
             <div className="cinfo"><i className="fas fa-map-marker-alt"/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div></div>
           </div>
           <div className="contact-socials">
-            <a href="https://github.com/wthomasss06-stack/" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
-            <a href="https://www.linkedin.com/in/aka-thomas-6b5a742b8/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
+            <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
+            <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
           </div>
           <div className="contact-cv">
             <div className="cv-qr"><img src="/assets/images/qrcodeCV.png" alt="QR Code CV"/></div>
@@ -1136,16 +1211,16 @@ const Contact = ({dark}) => {
 // FOOTER
 // ═══════════════════════════════════════════════════════════════
 const Footer = ({dark}) => (
-  <footer className={`footer ${dark?'footer--dark':''}`}>
+  <footer className={`footer ${dark?'footer--dark':'footer--light'}`}>
     <div className="footer-inner">
-      <div className="footer-logo">AKA<span>.</span></div>
+      <div className="footer-logo"><AkafolioLogo size={28} dark={dark} animate={false}/></div>
       <div className="footer-mid">
         <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>
       </div>
       <div className="footer-links">
-        <a href="https://github.com/wthomasss06-stack/" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
-        <a href="https://www.linkedin.com/in/aka-thomas-6b5a742b8/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
+        <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
+        <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
         <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
       </div>
     </div>
