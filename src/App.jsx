@@ -1080,7 +1080,7 @@ const Contact = ({dark}) => {
             <div className="cinfo"><i className="fas fa-map-marker-alt"/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div></div>
           </div>
           <div className="contact-socials">
-            <a href="https://github.com/wThomas06" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
+            <a href="https://github.com/wthomasss06-stack/" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
             <a href="https://www.linkedin.com/in/aka-thomas-6b5a742b8/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
           </div>
           <div className="contact-cv">
@@ -1140,16 +1140,16 @@ const Footer = ({dark}) => (
     <div className="footer-inner">
       <div className="footer-logo">AKA<span>.</span></div>
       <div className="footer-mid">
-        <p>© 2025 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
+        <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>
       </div>
       <div className="footer-links">
-        <a href="https://github.com/wThomas06" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
+        <a href="https://github.com/wthomasss06-stack/" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
         <a href="https://www.linkedin.com/in/aka-thomas-6b5a742b8/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
         <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
       </div>
     </div>
-    <p className="footer-made">Fait avec React &amp; beaucoup de café <Coffee size={13} style={{display:'inline',verticalAlign:'middle'}}/></p>
+    
   </footer>
 );
 
