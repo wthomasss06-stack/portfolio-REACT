@@ -83,12 +83,8 @@ export default function useAnimations() {
     const resize = () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
     resize();
 
-    const getAccent = () => {
-      const b = document.body;
-      if (b.classList.contains('glass-mode'))   return { r:26,  g:127, b:55  };
-      if (b.classList.contains('glass-marron')) return { r:240, g:160, b:75  };
-      return { r:126, g:231, b:135 };
-    };
+    // ✅ Couleur fixe : VERT uniquement
+    const getAccent = () => ({ r:126, g:231, b:135 });
 
     class Pt {
       constructor() {
@@ -104,14 +100,14 @@ export default function useAnimations() {
         if (this.x>canvas.width||this.x<0)  this.vx*=-1;
         if (this.y>canvas.height||this.y<0) this.vy*=-1;
 
-        // Repulsion souris douce
+        // Repulsion souris forte
         if (mouse.x!==null) {
           const dx=mouse.x-this.x, dy=mouse.y-this.y;
           const d=Math.sqrt(dx*dx+dy*dy);
-          if (d<90) {
-            const f=(90-d)/90;
-            this.vx-=Math.cos(Math.atan2(dy,dx))*f*.35;
-            this.vy-=Math.sin(Math.atan2(dy,dx))*f*.35;
+          if (d<120) {
+            const f=(120-d)/120;
+            this.vx-=Math.cos(Math.atan2(dy,dx))*f*.7;
+            this.vy-=Math.sin(Math.atan2(dy,dx))*f*.7;
           }
         }
 
