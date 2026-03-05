@@ -301,10 +301,10 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
 
     const pts = Array.from({length:70},()=>({
       x: Math.random()*cv.width, y: Math.random()*cv.height,
-      r: Math.random()*2+0.5,
-      vx:(Math.random()-.5)*.5, vy:(Math.random()-.5)*.5,
+      r: Math.random()*1+0.3,
+      vx:(Math.random()-.5)*0.8, vy:(Math.random()-.5)*0.8,
       c: COLORS[Math.floor(Math.random()*COLORS.length)],
-      a: Math.random()*.5+.2,
+      a: Math.random()*.4+.15,
     }));
 
     const draw = () => {
@@ -321,22 +321,25 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
             p.vy -= Math.sin(angle) * force * 0.6;
           }
         }
-        // Limite de vitesse + friction
+        // Limite de vitesse + friction légère
         const spd = Math.hypot(p.vx, p.vy);
-        if (spd > 2) { p.vx = (p.vx/spd)*2; p.vy = (p.vy/spd)*2; }
-        p.vx *= 0.98; p.vy *= 0.98;
+        if (spd > 1.5) { p.vx = (p.vx/spd)*1.5; p.vy = (p.vy/spd)*1.5; }
+        p.vx *= 0.995; p.vy *= 0.995;
+        // Réinjection de drift si trop lent — garantit le mouvement permanent
+        if (Math.abs(p.vx) < 0.15) p.vx += (Math.random()-.5)*0.25;
+        if (Math.abs(p.vy) < 0.15) p.vy += (Math.random()-.5)*0.25;
 
         p.x+=p.vx; p.y+=p.vy;
         if(p.x<0||p.x>cv.width)  p.vx*=-1;
         if(p.y<0||p.y>cv.height) p.vy*=-1;
-        // glow halo
-        ctx.save(); ctx.globalAlpha=p.a*.25;
-        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10);
+        // glow halo subtil
+        ctx.save(); ctx.globalAlpha=p.a*.2;
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*8);
         g.addColorStop(0,p.c); g.addColorStop(1,'transparent');
-        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*10,0,Math.PI*2); ctx.fill(); ctx.restore();
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*8,0,Math.PI*2); ctx.fill(); ctx.restore();
         // core dot
         ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
-        ctx.shadowBlur=14; ctx.shadowColor=p.c;
+        ctx.shadowBlur=8; ctx.shadowColor=p.c;
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
         ctx.globalAlpha=1; ctx.shadowBlur=0;
       });
