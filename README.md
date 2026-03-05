@@ -22,30 +22,50 @@ Portfolio personnel interactif développé avec **React 18**, présentant mes co
 
 ### Projets phares en production :
 
-- **[MonMarket CI](https://ecommerce-aka.netlify.app/)** - Marketplace e-commerce multi-vendeurs (60% complété)
+- **[ShopCI](https://shop-ci.vercel.app/)** - Marketplace e-commerce multi-vendeurs (65% complété)
 - **[TechFlow](https://techflow-ten.vercel.app/)** - Site vitrine professionnel (97% complété)
 - **[TerraSafe](https://wthomassss06.pythonanywhere.com)** - Plateforme foncière sécurisée (85% complété)
+- **[Tati](https://tatii.vercel.app/)** - Portfolio & vitrine moderne (100% complété)
+- **[MK](https://mory01ff.vercel.app/)** - Portfolio graphiste client (100% complété)
 
 ---
 
-## ✨ Caractéristiques 
+## ✨ Caractéristiques
 
 ### 🎨 Design & Interface
 
 - **Architecture React** : Single Page Application (SPA) avec composants réutilisables
 - **Design moderne** avec effets glassmorphism et animations fluides
 - **2 modes d'affichage** :
-  - Mode Sombre (par défaut)
-  - Glass Clair (effet de verre transparent)
-- **2 thèmes de couleurs** : Vert Émeraude, Violet Mystique
+  - Mode Sombre (par défaut) — vert néon sur fond noir profond
+  - Mode Clair — rouge-orange bold sur fond blanc éditorial
 - **Responsive design** : adaptation complète mobile, tablette et desktop
-- **Animations avancées** : 
-  - Page loader avec barre de progression
+  - Photo de profil (section À Propos) visible sur mobile
+  - Layout adaptatif : côte à côte sur tablette, colonne sur mobile
+- **Logo SVG animé** `AkafolioLogo` intégré dans `App.jsx` :
+  - Dessin séquentiel du **"A"** trait par trait + point néon spring + pulse infini
+  - Texte **"KA"** et **"folio"** animés avec stagger · ligne déco tracée
+  - S'adapte aux 2 modes (vert néon / orange) · présent dans loader, navbar et footer
+- **Animations avancées** :
+  - Page loader avec logo SVG animé + barre de progression
   - Scroll animations avec Intersection Observer
   - Défilement infini des compétences
   - Transitions CSS3 optimisées
 - **Navigation fluide** : Scroll smooth vers les sections
-- **Icônes** : Font Awesome 6.x pour l'interface moderne
+- **Icônes** : Font Awesome 6.x + Material Symbols pour la navbar mobile
+- **Navbar verticale** sur mobile avec icônes Material Symbols
+
+### ✨ Système de particules
+
+- **Mouvement organique** : chaque particule suit une trajectoire sinusoïdale individuelle
+- **Rayon pulsant** : taille oscillante en continu pour un effet vivant
+- **Repulsion au curseur** renforcée (zone de 120px)
+- **Connexions dynamiques** entre particules voisines (seuil 150px)
+- **Mode sombre** : particules vertes néon (`#00ff88`, `#7EE787`, etc.)
+- **Mode clair** : particules oranges chaudes (`#ff8c00`, `#ff6b00`, etc.)
+- Drift automatique pour éviter les particules figées
+
+---
 
 ### 📱 Sections du portfolio
 
@@ -66,37 +86,40 @@ Portfolio personnel interactif développé avec **React 18**, présentant mes co
 - Support Technique (Maintenance, Support utilisateur)
 
 #### 3. **Offres de Services (Pricing)**
-3 packs de services détaillés avec pricing :
-- **Pack Starter** - Site Vitrine (7-10 jours) - 
-- **Pack Pro** - Site E-commerce (15-20 jours) - ⭐ POPULAIRE
+3 packs de services détaillés :
+- **Pack Starter** - Site Vitrine (7-10 jours)
+- **Pack Pro** - Site E-commerce (15-20 jours) ⭐ POPULAIRE
 - **Pack Premium** - Application Web Sur Mesure (sur devis)
 
 #### 4. **À Propos**
 - Citation inspirante de Kevin Ressegaire
+- Photo de profil visible sur **tous les appareils** (mobile inclus)
 - Présentation du parcours professionnel
 - Soft skills : Esprit d'équipe, Créativité, Rigueur, Adaptabilité, Innovation
 - Disponibilité pour opportunités
-- Timeline animée
+- Timeline animée (expériences & formation)
 
 #### 5. **Compétences (Skills)**
 **4 catégories avec défilement infini bidirectionnel** :
 - **Frontend** : React, JavaScript, TypeScript, Vue.js, Tailwind, HTML5, CSS3, Bootstrap
 - **Backend** : Python, Flask, Django, Node.js, MySQL
-- **Design & Outils** : Git, VS Code, GitHub, Figma, Adobe XD, Photoshop, ChatGPT, Claude AI, Gemini
-- **Autres** : Windows, Android, Suite MS Office, Community Management, Design, Peinture, Maintenance, Support Technique
+- **Design & Outils** : Git, VS Code, GitHub, ChatGPT, Claude AI, Gemini, PythonAnywhere, Vercel, Netlify
+- **Autres** : Windows, Android, Suite MS Office, Community Management, Peinture, Maintenance, Support Technique
 
 Animation de scroll automatique avec pause au survol.
 
 #### 6. **Projets**
-**8 projets présentés** avec filtres interactifs (Tous, En ligne, Démo, En cours) :
+**10 projets présentés** avec filtres interactifs (Tous, En ligne, Démos, En cours) :
 
 **🟢 En Production :**
-- **MonMarket CI** - Marketplace multi-vendeurs (React + Django) - 60%
+- **ShopCI** - Marketplace multi-vendeurs (React + Django) - 65%
 - **TechFlow** - Site vitrine professionnel (HTML/Tailwind + JavaScript) - 97%
 - **TerraSafe** - Plateforme foncière sécurisée (Flask + MySQL) - 85%
+- **Tati** - Portfolio & vitrine moderne (React + Framer Motion) - 100%
+- **MK** - Portfolio graphiste client (React + Framer Motion) - 100%
 
 **🔵 Démos Fonctionnelles :**
-- **chap-chapMAP** - Navigation GPS intelligente (JavaScript, Leaflet.js, OSRM API)
+- **Chap-chapMAP** - Navigation GPS intelligente (JavaScript, Leaflet.js, OSRM API)
 - **ElvisMarket** - Interface e-commerce avec panier dynamique (HTML, Tailwind, LocalStorage)
 - **MonCashJour** - Gestion de ventes + analytics (HTML, Tailwind, Chart.js)
 - **LivreurTrack Pro** - Système de suivi logistique (JavaScript, Bootstrap 5, Camera API)
@@ -104,13 +127,14 @@ Animation de scroll automatique avec pause au survol.
 **🟡 En Développement :**
 - **LinkedIn Banner Pro** - Générateur de bannières professionnelles (30% complété)
 
-Système de filtrage dynamique avec compteur de projets.
+Système de filtrage dynamique avec compteur de projets + carrousel 3D glassmorphism.
 
 #### 7. **Contact**
 - Formulaire de contact avec validation
-- Coordonnées complètes (téléphone, email, localisation)
-- Liens réseaux sociaux (GitHub, LinkedIn, WhatsApp)
-- Design glassmorphism avec effets de hover
+- Coordonnées complètes (téléphone, email, localisation Abidjan)
+- Liens réseaux sociaux (GitHub, LinkedIn)
+- QR Code pour téléchargement du CV
+- Intégration FormSubmit
 
 ---
 
@@ -125,6 +149,7 @@ Système de filtrage dynamique avec compteur de projets.
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
 ![Font Awesome](https://img.shields.io/badge/Font_Awesome-528DD7?style=flat&logo=fontawesome&logoColor=white)
+![Lucide React](https://img.shields.io/badge/Lucide_React-F56565?style=flat)
 
 ### Backend (Projets hébergés)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
@@ -133,21 +158,27 @@ Système de filtrage dynamique avec compteur de projets.
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
 
 ### Outils & Plateformes
-- **React Hooks** : useState, useEffect, useRef
+- **React Hooks** : useState, useEffect, useRef, useCallback
 - **Font Awesome 6.x** (icônes)
-- **Google Fonts** (Inter)
+- **Material Symbols** (navbar mobile)
+- **Google Fonts** — Syne + DM Sans
 - **Vercel** (hébergement portfolio)
 - **Devicon CDN** (icônes technos)
 - **Intersection Observer API** (scroll animations)
+- **Canvas API** (système de particules)
 
 ### Animations & Effets
-- Custom React Hooks pour animations
+- **Logo SVG animé** `AkafolioLogo` — composant natif React, sans dépendance externe
+- Custom React Hook `useAnimations` pour animations DOM avancées
+- Système de particules canvas full custom (ondulation sinusoïdale, rayon pulsant)
+- Carrousel 3D glassmorphism avec drag & swipe
 - Keyframes CSS personnalisées
-- Scroll-triggered animations
-- Infinite scroll bidirectionnel
+- Scroll-triggered animations (Intersection Observer)
+- Infinite scroll bidirectionnel (skills)
 - Glassmorphism effects
-- Page loader avec progression
+- Page loader avec logo animé + progression
 - Smooth scroll behavior
+- Curseur personnalisé (desktop)
 
 ---
 
@@ -159,7 +190,7 @@ portfolio-akafolio-react/
 ├── public/
 │   ├── assets/
 │   │   ├── images/
-│   │   │   ├── projects/          # Aperçus des projets
+│   │   │   ├── projects/
 │   │   │   │   ├── monmarket-preview.jpg
 │   │   │   │   ├── techflow-preview.jpg
 │   │   │   │   ├── terrasafe-preview.jpg
@@ -167,11 +198,13 @@ portfolio-akafolio-react/
 │   │   │   │   ├── elvismarket-preview.jpg
 │   │   │   │   ├── moncashjour-preview.jpg
 │   │   │   │   ├── livreurtrack-preview.jpg
-│   │   │   │   └── linkedin-banner-preview.jpg
-│   │   │   └── profile.jpg        # Photo professionnelle
-│   │   ├── CV_MBOLLO_AKA_ELVIS.pdf
-│   │   └── qrcodeCV.png
-│   ├── demos/                      # Démos HTML standalone
+│   │   │   │   ├── linkedin-banner-preview.jpg
+│   │   │   │   ├── tati-preview.jpg
+│   │   │   │   └── mk-preview.jpg
+│   │   │   ├── IMG_20250124_124101KK.jpg   # Photo de profil
+│   │   │   └── qrcodeCV.png
+│   │   └── CV_MBOLLO_AKA_ELVIS.pdf
+│   ├── demos/
 │   │   ├── projet1.html            # MonCashJour
 │   │   ├── projet2.html            # ElvisMarket
 │   │   ├── projet3.html            # LivreurTrack Pro
@@ -180,15 +213,15 @@ portfolio-akafolio-react/
 │   └── favicon.png
 │
 ├── src/
-│   ├── App.jsx                     # Composant principal
-│   ├── index.css                   # Styles globaux
-│   ├── useAnimations.js            # Hook custom pour animations
+│   ├── App.jsx                     # Composant principal + tous les composants React
+│   ├── style.css                   # Styles globaux + variables CSS + responsive
+│   ├── useAnimations.js            # Hook custom pour animations DOM (curseur, particules legacy, scroll reveal)
 │   └── main.jsx                    # Point d'entrée React
 │
-├── package.json                    # Dépendances npm
-├── vite.config.js                  # Configuration Vite
-├── index.html                      # Template HTML
-└── README.md                       # Documentation
+├── package.json
+├── vite.config.js
+├── index.html
+└── README.md
 ```
 
 ---
@@ -199,15 +232,17 @@ portfolio-akafolio-react/
 
 | Projet | Description | Technologies | Statut | Lien |
 |--------|-------------|--------------|--------|------|
-| **MonMarket CI** | Marketplace multi-vendeurs conçue pour résoudre les problèmes de fiabilité du e-commerce local ivoirien | React, Django, Bootstrap, Netlify | 60% | [Voir →](https://ecommerce-aka.netlify.app/) |
-| **TechFlow** | Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle | HTML/Tailwind CSS, JavaScript, Vercel | 97% | [Voir →](https://techflow-ten.vercel.app/) |
-| **TerraSafe** | Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains | Flask, MySQL, JavaScript, Bootstrap | 85% | [Voir →](https://wthomassss06.pythonanywhere.com) |
+| **ShopCI** | Marketplace multi-vendeurs pour le e-commerce local ivoirien | React, Django, Bootstrap, Vercel | 65% | [Voir →](https://shop-ci.vercel.app/) |
+| **TechFlow** | Site vitrine moderne pour activité technologique | HTML/Tailwind CSS, JavaScript, Vercel | 97% | [Voir →](https://techflow-ten.vercel.app/) |
+| **TerraSafe** | Plateforme foncière anti-arnaque avec recherche avancée | Flask, MySQL, JavaScript, Bootstrap | 85% | [Voir →](https://wthomassss06.pythonanywhere.com) |
+| **Tati** | Portfolio personnel double fonction vitrine/présentation | React, Tailwind, Framer Motion, Vercel | 100% | [Voir →](https://tatii.vercel.app/) |
+| **MK** | Portfolio sur-mesure pour graphiste avec galerie immersive | React, Tailwind, Framer Motion, Vercel | 100% | [Voir →](https://mory01ff.vercel.app/) |
 
 ### 🔵 Démos Fonctionnelles
 
 | Projet | Description | Technologies | Fonctionnalités |
 |--------|-------------|--------------|-----------------|
-| **chap-chapMAP** | Navigation GPS intelligente | JavaScript, Leaflet.js, OSRM API | GPS temps réel, Calcul d'itinéraires |
+| **Chap-chapMAP** | Navigation GPS intelligente | JavaScript, Leaflet.js, OSRM API | GPS temps réel, Calcul d'itinéraires |
 | **ElvisMarket** | E-commerce avec panier dynamique | HTML, Tailwind CSS, LocalStorage | Panier dynamique, Filtres avancés |
 | **MonCashJour** | Gestion de ventes + analytics | HTML, Tailwind CSS, Chart.js | Analytiques, Export CSV |
 | **LivreurTrack Pro** | Système de suivi logistique | JavaScript, Bootstrap 5, Camera API | Workflow 5 étapes, Validation photo |
@@ -216,8 +251,7 @@ portfolio-akafolio-react/
 
 | Projet | Description | Technologies | Statut |
 |--------|-------------|--------------|--------|
-| **LinkedIn Banner Pro** | Générateur de bannières professionnelles | JavaScript, Canvas API, Tailwind | 30% |
-
+| **LinkedIn Banner Pro** | Générateur SaaS de bannières professionnelles | JavaScript, Canvas API, Tailwind | 30% |
 
 ---
 
@@ -225,25 +259,44 @@ portfolio-akafolio-react/
 
 ### 1. Informations personnelles
 Modifiez les données dans `src/App.jsx` :
-- Section `projectsData` : vos projets
-- Section `servicesData` : vos services
-- Section `skillsData` : vos compétences
+- Tableau `PROJECTS` : vos projets (titre, description, tech, url, image…)
+- Tableau `SERVICES` : vos services proposés
+- Tableau `SKILLS` : vos compétences par catégorie
+- Tableau `PRICING` : vos offres tarifaires
+- Tableau `TIMELINE` : votre parcours / expériences
 
 ### 2. Styles et thèmes
-Modifiez les variables CSS dans `src/index.css` :
+Modifiez les variables CSS dans `src/style.css` :
 ```css
+/* Mode sombre (défaut) */
 :root {
-  --primary-color: #10b981;  /* Vert émeraude */
-  --secondary-color: #8b5cf6; /* Violet mystique */
-  /* ... */
+  --acc:  #00CC6A;   /* Vert néon */
+  --neon: #00CC6A;
+}
+/* Mode clair */
+.app--light {
+  --acc:  #D94010;   /* Rouge-orange bold */
+  --neon: #D94010;
 }
 ```
 
 ### 3. Images
 Remplacez les images dans `public/assets/images/`
 
-### 4. Animations
-Personnalisez les animations dans `src/useAnimations.js`
+### 4. Logo SVG
+Le composant `AkafolioLogo` est déclaré directement dans `src/App.jsx` :
+```jsx
+<AkafolioLogo size={48} dark={dark} animate={true} onClick={fn} />
+```
+- `size` : hauteur en px (largeur = size × 4.2)
+- `dark` : `true` = vert néon, `false` = orange
+- `animate` : `true` pour l'animation de dessin, `false` pour affichage statique
+
+### 5. Particules
+Personnalisez dans le composant `ParticleCanvas` de `src/App.jsx` :
+- `waveAmp` / `waveFreq` : amplitude et fréquence d'ondulation
+- `pulseFreq` : vitesse de pulsation du rayon
+- Vitesse de base : `vx/vy` initiaux (actuellement `±1.2`)
 
 ---
 
@@ -251,85 +304,47 @@ Personnalisez les animations dans `src/useAnimations.js`
 
 ### Optimisations appliquées
 
-- ✅ **React optimisé** : Utilisation de hooks pour performance optimale
+- ✅ **React optimisé** : Hooks pour performance optimale (useCallback, useRef)
 - ✅ **Lazy loading** : Images chargées à la demande
 - ✅ **Code splitting** : Build optimisé avec Vite
-- ✅ **SEO** : Meta tags, Open Graph, Schema.org
-- ✅ **Responsive** : Mobile-first approach
+- ✅ **SEO** : Meta tags, Open Graph
+- ✅ **Responsive** : Mobile-first, photo visible sur tous les appareils
 - ✅ **Accessibility** : Navigation au clavier, ARIA labels
-- ✅ **Performance** : Animations CSS natives, pas de bibliothèques lourdes
+- ✅ **Performance** : Animations canvas natives, cancelAnimationFrame propre
 
 ### Résultats
 
 - 🟢 **Lighthouse Score** : 90+ Performance
 - 🟢 **Mobile-Friendly** : 100% compatible
-- 🟢 **SEO Score** : Optimisé pour les moteurs de recherche
+- 🟢 **SEO Score** : Optimisé
 - 🟢 **Bundle size** : < 200KB (gzipped)
-
----
-
-## 🎮 Fonctionnalités
-
-### Navigation
-- ✅ Single Page Application (SPA)
-- ✅ Scroll fluide vers les sections
-- ✅ Menu responsive avec animations
-- ✅ Bouton scroll-to-top dynamique
-
-### Interactions
-- ✅ Filtres de projets en temps réel
-- ✅ Animations au scroll (Intersection Observer)
-- ✅ Pause/Play automatique du défilement des skills
-- ✅ Effet glassmorphism sur les cartes
-- ✅ Hover effects avancés
-
-### Formulaire de contact
-- ✅ Validation des champs
-- ✅ Design moderne avec glassmorphism
-- ✅ Intégration email (via FormSubmit.co)
 
 ---
 
 ## 📧 Contact
 
 **M'BOLLO AKA Elvis**  
-Développeur Web Full-Stack
+Développeur Web Full-Stack — Abidjan, Côte d'Ivoire
 
-- 📧 Email : [aka.mbollo@uvci.edu.ci](mailto:aka.mbollo@uvci.edu.ci)
-- 📧 Email alternatif : [wthomasss06@gmail.com](mailto:wthomasss06@gmail.com)
+- 📧 Email : [wthomasss06@gmail.com](mailto:wthomasss06@gmail.com)
 - 📱 Téléphone : [+225 01 42 50 77 50](tel:+2250142507750)
-- 💼 LinkedIn : [M'Bollo Aka](https://www.linkedin.com/in/aka-m-bollo-60a1b1340)
+- 💼 LinkedIn : [M'Bollo Aka](https://www.linkedin.com/in/m-bollo-aka-60a1b1340/)
 - 🐙 GitHub : [@wthomasss06-stack](https://github.com/wthomasss06-stack)
-- 📍 Localisation : Côte d'Ivoire
+- 📍 Localisation : Abidjan, Côte d'Ivoire
 
 ---
 
 ## 🔗 Liens utiles
 
 - 🌐 **Portfolio** : [https://akafolio160502.vercel.app/](https://akafolio160502.vercel.app/)
-- 🛒 **MonMarket CI** : [https://ecommerce-aka.netlify.app/](https://ecommerce-aka.netlify.app/)
+- 🛒 **ShopCI** : [https://shop-ci.vercel.app/](https://shop-ci.vercel.app/)
 - 🏠 **TechFlow** : [https://techflow-ten.vercel.app/](https://techflow-ten.vercel.app/)
 - 🏡 **TerraSafe** : [https://wthomassss06.pythonanywhere.com](https://wthomassss06.pythonanywhere.com)
+- 🎨 **Tati** : [https://tatii.vercel.app/](https://tatii.vercel.app/)
+- 🖌️ **MK** : [https://mory01ff.vercel.app/](https://mory01ff.vercel.app/)
 
 ---
 
-## 📝 Changelog
-
-### Version 2.0.0 (Février 2026) - Migration React
-- ✨ Migration complète vers React 18
-- ✨ Architecture SPA avec composants modulaires
-- ✨ Custom hooks pour animations
-- ✨ Page loader avec barre de progression
-- ✨ Infinite scroll bidirectionnel pour les skills
-- ✨ Ajout du projet TechFlow
-- 🎨 Refonte complète du design
-- ⚡ Optimisation des performances
-- 🐛 Corrections diverses
-
-### Version 1.0.0 (Janvier 2025)
-- 🎉 Version initiale HTML/CSS/JavaScript
-
----
 
 ## 📄 Licence
 
@@ -344,6 +359,3 @@ Ce portfolio est une vitrine technique démontrant mes compétences en développ
 ![GitHub repo size](https://img.shields.io/github/repo-size/wthomasss06-stack/portfolio-akafolio?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/wthomasss06-stack/portfolio-akafolio?style=flat-square)
 ![GitHub stars](https://img.shields.io/github/stars/wthomasss06-stack/portfolio-akafolio?style=social)
-
-
-
