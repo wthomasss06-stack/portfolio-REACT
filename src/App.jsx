@@ -728,6 +728,23 @@ const ScrollTop = ({dark}) => {
 const Hero = ({dark}) => {
   const phrases=["Full-Stack","React & Python","Django & Flask","orienté produit"];
   const [wi,setWi]=useState(0); const [typed,setTyped]=useState(''); const [del,setDel]=useState(false); const [ch,setCh]=useState(0);
+
+  // Horloge temps réel
+  const [now, setNow] = useState(new Date());
+  useEffect(()=>{
+    const tick = setInterval(()=>setNow(new Date()), 1000);
+    return ()=>clearInterval(tick);
+  },[]);
+
+  // Salutation selon l'heure
+  const hour = now.getHours();
+  const greeting = (hour >= 6 && hour < 18) ? 'Bonjour je suis' : 'Bonsoir je suis';
+
+  // Formatage horloge : jj hh mn ss
+  const DAYS = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const pad = n => String(n).padStart(2,'0');
+  const clockStr = `${DAYS[now.getDay()]} ${pad(now.getDate())} · ${pad(hour)}h ${pad(now.getMinutes())}mn ${pad(now.getSeconds())}s`;
+
   useEffect(()=>{
     const w=phrases[wi];
     const t=setTimeout(()=>{
@@ -738,6 +755,7 @@ const Hero = ({dark}) => {
     },del?45:90);
     return ()=>clearTimeout(t);
   },[ch,del,wi]);
+
   return (
     <section id="home" className={`hero ${dark?'hero--dark':''}`}>
 
@@ -747,26 +765,21 @@ const Hero = ({dark}) => {
       </div>
       <div className="hero-content">
         <div className="hero-eye">
-          <span className="hero-dot"/><span>Disponible — Abidjan, Côte d'Ivoire</span>
+          <span className="hero-dot"/>
+          <span>Disponible — Abidjan, Côte d'Ivoire</span>
+          <span className="hero-clock">{clockStr}</span>
         </div>
         <h1 className="hero-h1">
-          <span className="hero-wave">Saluuut <Hand size={Math.min(28, 0.45*28)} style={{display:'inline',verticalAlign:'middle',marginLeft:'4px'}}/></span>
+          <span className="hero-wave">{greeting} <Hand size={Math.min(28, 0.45*28)} style={{display:'inline',verticalAlign:'middle',marginLeft:'4px'}}/></span>
           <span className="hero-name">M'BOLLO<br/>AKA ELVIS</span>
         </h1>
         <p className="hero-typed">
           Développeur <span className="hero-word">{typed}</span><span className="cursor">|</span>
         </p>
-        <div className="hero-specialty-wrap">
-          <span className="hero-specialty-badge">Applications Web sur mesure</span>
-        </div>
         <p className="hero-desc">
-          Je développe des applications web adaptées aux besoins des entreprises et particuliers.
+          Développeur web orienté produits, spécialisé Django &amp; React.<br/>
+          Je construis des applications pensées pour des usages réels.
         </p>
-        <div className="hero-chips">
-          <span className="hero-chip"><i className="fas fa-chart-bar"/> Tableaux de bord</span>
-          <span className="hero-chip"><i className="fas fa-cogs"/> Systèmes de gestion</span>
-          <span className="hero-chip"><i className="fas fa-globe"/> Plateformes web</span>
-        </div>
         <div className="hero-ctas">
           <button className={`btn ${dark?'btn--neon':'btn--primary'}`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
             Voir mes projets <span>↗</span>

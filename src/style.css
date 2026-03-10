@@ -358,6 +358,7 @@ section + section { border-top:1px solid var(--border) }
 .app--light .hgc { border-color:rgba(217,64,16,.07) }
 .hero-content { position:relative; z-index:1; max-width:var(--max); margin:0 auto; width:100% }
 .hero-eye { display:flex; align-items:center; gap:10px; margin-bottom:36px; font-size:13px; color:var(--muted); font-weight:500 }
+.hero-clock { font-family:'DM Mono','Fira Mono',monospace; font-size:0.88em; opacity:0.85; letter-spacing:0.05em; margin-left:12px }
 .hero-dot { width:8px; height:8px; border-radius:50%; background:var(--acc); animation:dotPulse 2s ease-in-out infinite; flex-shrink:0; box-shadow:0 0 10px var(--neon) }
 .app--light .hero-dot { box-shadow:0 0 8px rgba(217,64,16,.4) }
 @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
@@ -711,10 +712,13 @@ section + section { border-top:1px solid var(--border) }
 .contact-socials a:hover { border-color:var(--neon); color:var(--neon); box-shadow:0 0 12px var(--neon-dim); transform:translateY(-2px) }
 .app--light .contact-socials a:hover { border-color:var(--acc); color:var(--acc); box-shadow:none }
 .contact-cv { display:flex; align-items:center; gap:16px; padding:18px; border:1px solid var(--border); border-radius:var(--r); background:var(--paper-2) }
-.cv-qr { width:76px; height:76px; flex-shrink:0 }
+.cv-qr { width:130px; height:130px; flex-shrink:0 }
 .cv-qr img { width:100%; height:100%; object-fit:contain; border-radius:6px }
 .contact-cv p { font-size:12px; color:var(--muted); font-weight:300 }
 .contact-cv p b { font-weight:700; color:var(--ink); font-size:13px; display:block; margin-bottom:2px }
+@media(max-width:900px){ .cv-qr { width:110px; height:110px } }
+@media(max-width:640px){ .cv-qr { width:90px; height:90px } .contact-cv { gap:12px; padding:14px } }
+@media(max-width:400px){ .cv-qr { width:72px; height:72px } }
 .contact-right h3 { font-family:var(--fd); font-size:22px; font-weight:800; letter-spacing:-.03em; margin-bottom:6px; color:var(--ink) }
 .contact-right > p { font-size:14px; color:var(--muted); font-weight:300; margin-bottom:24px }
 .cform { display:flex; flex-direction:column; gap:16px }
