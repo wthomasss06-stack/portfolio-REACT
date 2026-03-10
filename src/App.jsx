@@ -172,13 +172,59 @@ const SERVICES = [
   { n:"06", icon:"tools",      title:"Support Technique",       desc:"Maintenance informatique et assistance technique utilisateur.", features:["Maintenance matérielle","Support utilisateur","Résolution de problèmes"] },
 ];
 
-const PRICING = [
-  { icon:"Monitor", badge:"STARTER", title:"Site Vitrine", desc:"Pour démarrer votre présence en ligne",
-    features:["Design moderne responsive","Jusqu'à 5 pages","Formulaire de contact","SEO de base","Hébergement 1 an inclus","Livraison : 7-10 jours"] },
-  { icon:"Star", badge:"POPULAIRE", title:"Site E-commerce", desc:"Pour vendre vos produits en ligne", isPopular:true,
-    features:["Catalogue produits","Panier + paiement en ligne","Interface admin","Gestion des stocks","Intégration mobile money","Formation incluse","Livraison : 15-20 jours"] },
-  { icon:"Cpu", badge:"SUR MESURE", title:"Application Web", desc:"Projet spécifique adapté à vos besoins",
-    features:["Développement personnalisé","Backend Python/Flask","Base de données MySQL","Interface admin","Documentation complète","Support 3 mois inclus"] },
+const PRICING_TABS = [
+  {
+    key:"vitrine", label:"Site Vitrine", icon:"Globe",
+    plans:[
+      { badge:"STARTER",   price:"60 000 FCFA",  title:"Starter",  delivery:"5 à 7 jours",
+        features:["Design moderne responsive","Jusqu'à 3 pages","Formulaire de contact","Intégration WhatsApp","Liens réseaux sociaux","SEO de base","Mise en ligne incluse"] },
+      { badge:"STANDARD",  price:"120 000 FCFA", title:"Standard", delivery:"7 à 10 jours", isPopular:true,
+        features:["Design professionnel responsive","Jusqu'à 5 pages","Formulaire de contact","Google Maps intégré","Intégration WhatsApp","SEO optimisé","Optimisation vitesse"] },
+      { badge:"PREMIUM",   price:"200 000 FCFA", title:"Premium",  delivery:"10 à 14 jours",
+        features:["Jusqu'à 8 pages","Design personnalisé","Blog intégré","Optimisation SEO avancée","Formulaire avancé","Newsletter intégrée","Formation incluse"] },
+    ]
+  },
+  {
+    key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
+    plans:[
+      { badge:"STARTER",  price:"200 000 FCFA", title:"Starter",  delivery:"10 à 14 jours",
+        features:["Catalogue produits","Jusqu'à 20 produits","Panier d'achat","Paiement à la livraison","Interface admin","Gestion des commandes"] },
+      { badge:"STANDARD", price:"350 000 FCFA", title:"Standard", delivery:"15 à 20 jours", isPopular:true,
+        features:["Jusqu'à 50 produits","Paiement en ligne","Gestion des stocks","Filtres produits","SEO e-commerce","Formation incluse"] },
+      { badge:"PREMIUM",  price:"500 000 FCFA", title:"Premium",  delivery:"3 à 4 semaines",
+        features:["Jusqu'à 150 produits","Paiement sécurisé","Gestion commandes complète","Avis clients","Statistiques de vente","Optimisation performance"] },
+    ]
+  },
+  {
+    key:"saas", label:"Application SaaS", icon:"Cpu",
+    plans:[
+      { badge:"STARTER",  price:"500 000 FCFA",   title:"Starter",  delivery:"3 à 4 semaines",
+        features:["Backend Python / Flask","Base de données MySQL","Interface utilisateur","Dashboard admin","API REST"] },
+      { badge:"STANDARD", price:"800 000 FCFA",   title:"Standard", delivery:"4 à 6 semaines", isPopular:true,
+        features:["Backend Django / Flask","Authentification utilisateurs","Dashboard avancé","API REST sécurisée","Optimisation performance"] },
+      { badge:"PREMIUM",  price:"1 200 000 FCFA", title:"Premium",  delivery:"6 à 8 semaines",
+        features:["Architecture complète","Gestion des abonnements","Dashboard complet","API avancée","Documentation technique","Support 3 mois inclus"] },
+    ]
+  },
+  {
+    key:"portfolio", label:"Portfolio", icon:"Star",
+    plans:[
+      { badge:"STARTER",  price:"50 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
+        features:["Design responsive","3 pages","Section projets","Formulaire de contact"] },
+      { badge:"STANDARD", price:"100 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
+        features:["5 pages","Animations modernes","Section projets détaillés","SEO de base"] },
+      { badge:"PREMIUM",  price:"150 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
+        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance"] },
+    ]
+  },
+];
+
+const FAQ = [
+  { q:"Combien coûte un site web ?", a:"Les projets commencent à partir de 60 000 FCFA pour un site vitrine simple. Le prix final dépend des fonctionnalités demandées." },
+  { q:"Combien de temps prend la création d'un site ?", a:"Un site vitrine est livré en 5 à 10 jours. Un projet plus complexe (e-commerce, SaaS) peut prendre plusieurs semaines selon la complexité." },
+  { q:"Puis-je modifier mon site moi-même ?", a:"Oui. Une formation rapide est incluse dans la plupart des offres pour que vous puissiez gérer votre site facilement." },
+  { q:"Proposez-vous un support après la livraison ?", a:"Oui. Un support technique est disponible après la livraison pour vous accompagner si nécessaire." },
+  { q:"Les prix sont-ils fixes ?", a:"Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées. Un devis gratuit est établi après discussion." },
 ];
 
 const SKILLS = {
@@ -414,7 +460,8 @@ const ThemeToggle = ({dark, onToggle}) => (
 // NAVBAR
 // ═══════════════════════════════════════════════════════════════
 const NAV_LINKS = [
-  {id:"home",label:"Accueil"},{id:"services",label:"Services"},{id:"about",label:"À propos"},
+  {id:"home",label:"Accueil"},{id:"creations",label:"Vitrine"},{id:"services",label:"Services"},
+  {id:"about",label:"À propos"},{id:"experience",label:"Parcours"},
   {id:"projects",label:"Projets"},{id:"skills",label:"Skills"},{id:"contact",label:"Contact"}
 ];
 
@@ -432,53 +479,64 @@ const Navbar = ({dark, onToggle}) => {
     window.addEventListener('scroll',fn);
     return ()=>window.removeEventListener('scroll',fn);
   },[]);
-  const go=id=>{setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'});};
-
-  // Icônes Material Symbols pour la navbar verticale mobile
-  const NAV_ICONS = {
-    home:'home', services:'work', about:'person',
-    projects:'rocket_launch', skills:'bolt', contact:'mail'
-  };
+  const go=id=>{ setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };
 
   return (
     <>
-      {/* Navbar horizontale — desktop uniquement */}
+      {/* Overlay drawer */}
+      {open&&<div className="mob-overlay" onClick={()=>setOpen(false)}/>}
+
+      {/* Navbar top */}
       <nav className={`nav ${scrolled?'nav--scrolled':''} ${dark?'nav--dark':''}`}>
         <div className="nav-logo" onClick={()=>go('home')}><AkafolioLogo size={34} dark={dark} animate={false} onClick={()=>go('home')}/></div>
+
+        {/* Desktop links */}
         <div className="nav-links">
           {NAV_LINKS.map(l=>(
             <button key={l.id} className={`nav-link ${active===l.id?'nav-link--active':''}`} onClick={()=>go(l.id)}>{l.label}</button>
           ))}
           <ThemeToggle dark={dark} onToggle={onToggle}/>
         </div>
-        {/* Bouton burger visible seulement sur mobile — supprimé car toggle dans nav-vertical */}
+
+        {/* Mobile right — theme toggle + hamburger */}
+        <div className="nav-mob-right">
+          <ThemeToggle dark={dark} onToggle={onToggle}/>
+          <button
+            className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''}`}
+            onClick={()=>setOpen(o=>!o)}
+            aria-label="Menu"
+          >
+            <span/><span/><span/>
+          </button>
+        </div>
       </nav>
 
-      {/* Navbar verticale compacte — mobile uniquement */}
-      <nav className={`nav-vertical ${dark?'nav-vertical--dark':''}`}>
-        <ul className="nav-vertical-links">
-          {NAV_LINKS.map(l=>(
-            <li key={l.id}>
-              <button
-                className={`nav-vertical-btn ${active===l.id?'nav-vertical-btn--active':''}`}
-                onClick={()=>go(l.id)}
-                title={l.label}
-              >
-                <span className="material-symbols-outlined">{NAV_ICONS[l.id]}</span>
-              </button>
-            </li>
-          ))}
-          <li>
-            <button
-              className="nav-vertical-btn nav-vertical-btn--theme"
-              onClick={onToggle}
-              title={dark?"Mode clair":"Mode sombre néon"}
-            >
-              <span className="material-symbols-outlined">{dark?'light_mode':'dark_mode'}</span>
+      {/* Mobile drawer */}
+      <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`}>
+        <div className="mob-drawer-header">
+          <AkafolioLogo size={26} dark={dark} animate={false}/>
+          <button className="mob-drawer-close" onClick={()=>setOpen(false)}>
+            <i className="fas fa-times"/>
+          </button>
+        </div>
+        <nav className="mob-drawer-nav">
+          {NAV_LINKS.map((l,i)=>(
+            <button key={l.id}
+              className={`mob-drawer-link ${active===l.id?'mob-drawer-link--active':''}`}
+              style={{animationDelay:`${i*0.06}s`}}
+              onClick={()=>go(l.id)}>
+              <span className="mob-drawer-num">0{i+1}</span>
+              <span>{l.label}</span>
+              <ArrowRight size={14}/>
             </button>
-          </li>
-        </ul>
-      </nav>
+          ))}
+        </nav>
+        <div className="mob-drawer-footer">
+          <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
+          <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
+          <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
+        </div>
+      </div>
     </>
   );
 };
@@ -698,10 +756,17 @@ const Hero = ({dark}) => {
         <p className="hero-typed">
           Développeur <span className="hero-word">{typed}</span><span className="cursor">|</span>
         </p>
+        <div className="hero-specialty-wrap">
+          <span className="hero-specialty-badge">Applications Web sur mesure</span>
+        </div>
         <p className="hero-desc">
-          Développeur web orienté produits, spécialisé Django &amp; React.<br/>
-          Je construis des applications pensées pour des usages réels.
+          Je développe des applications web adaptées aux besoins des entreprises et particuliers.
         </p>
+        <div className="hero-chips">
+          <span className="hero-chip"><i className="fas fa-chart-bar"/> Tableaux de bord</span>
+          <span className="hero-chip"><i className="fas fa-cogs"/> Systèmes de gestion</span>
+          <span className="hero-chip"><i className="fas fa-globe"/> Plateformes web</span>
+        </div>
         <div className="hero-ctas">
           <button className={`btn ${dark?'btn--neon':'btn--primary'}`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
             Voir mes projets <span>↗</span>
@@ -737,69 +802,202 @@ const Marquee = ({dark}) => {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// DERNIÈRE CRÉATION — ShopCI vitrine
+// ═══════════════════════════════════════════════════════════════
+const FeaturedCreation = ({dark}) => {
+  const [ref,vis] = useInView(0.08);
+  const proj = PROJECTS.find(p => p.id === 1);
+  return (
+    <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}>
+        <span className="s-lbl">Vitrine</span>
+        <h2 className="s-ttl">Dernière<br/>création.</h2>
+      </div>
+      <div className="cr-showcase">
+        <div className="cr-mockups">
+          <div className="cr-desktop-wrap">
+            <div className="cr-desktop-shell">
+              <div className="cr-desktop-bar">
+                <span className="cr-dot cr-dot--r"/><span className="cr-dot cr-dot--y"/><span className="cr-dot cr-dot--g"/>
+                <span className="cr-bar-url">shop-ci.vercel.app</span>
+              </div>
+              <div className="cr-desktop-screen">
+                <img src={proj.image} alt="ShopCI desktop" className="cr-screen-img"
+                  onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
+                <div className="cr-screen-ph" style={{display:'none'}}><i className="fas fa-desktop"/></div>
+              </div>
+            </div>
+          </div>
+          <div className="cr-mobile-wrap">
+            <div className="cr-mobile-shell">
+              <div className="cr-mobile-notch"/>
+              <div className="cr-mobile-screen">
+                <img src="/assets/images/projects/shopci-responsive.jpg" alt="ShopCI mobile" className="cr-screen-img"
+                  onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
+                <div className="cr-screen-ph cr-screen-ph--sm" style={{display:'none'}}><i className="fas fa-mobile-alt"/></div>
+              </div>
+              <div className="cr-mobile-home"/>
+            </div>
+            <div className="cr-resp-badge"><i className="fas fa-check-circle"/> 100% Responsive</div>
+          </div>
+          <div className="cr-glow"/>
+        </div>
+        <div className="cr-info">
+          <div>
+            <h3 className="cr-title">ShopCI</h3>
+            <p className="cr-sub">Marketplace E-commerce</p>
+          </div>
+          <div className="cr-meta-block">
+            <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
+            <div className="cr-meta-row"><span className="cr-ml">Mon rôle</span><span className="cr-mv">Conception et développement</span></div>
+          </div>
+          <div className="cr-tags">{proj.tech.map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
+          <p className="cr-desc">{proj.description}</p>
+          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta`}>
+            <i className="fas fa-external-link-alt"/> Voir le site
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// PRICING TABS
+// ═══════════════════════════════════════════════════════════════
+const LUCIDE_TAB_ICONS = { Globe, ShoppingCart, Cpu, Star };
+
+const PricingTabs = ({dark}) => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [mobCard, setMobCard] = useState(0);
+  const tab = PRICING_TABS[activeTab];
+
+  // Reset carousel index when tab changes
+  const switchTab = (i) => { setActiveTab(i); setMobCard(0); };
+
+  return (
+    <div className={`ptabs ${dark?'ptabs--dark':''}`}>
+      {/* Tab buttons */}
+      <div className="ptabs-nav">
+        {PRICING_TABS.map((t,i)=>{
+          const Icon = LUCIDE_TAB_ICONS[t.icon];
+          return (
+            <button key={t.key}
+              className={`ptabs-btn ${i===activeTab?(dark?'ptabs-btn--dark-active':'ptabs-btn--active'):''} ${dark?'ptabs-btn--dark':''}`}
+              onClick={()=>switchTab(i)}>
+              {Icon&&<Icon size={15} strokeWidth={2}/>}{t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Desktop — grille 3 cartes */}
+      <div className="pricing-grid ptabs-grid ptabs-desk">
+        {tab.plans.map((p,i)=>(
+          <div key={i} className={`pricing-card ${p.isPopular?'pricing-card--pop':''}`}>
+            {p.isPopular&&<div className="pricing-pop-badge"><Star size={12} strokeWidth={2.5}/> Le plus choisi</div>}
+            <div className="pricing-badge">{p.badge}</div>
+            <h3 className="pricing-title">{p.title}</h3>
+            <div className="pricing-price">{p.price}</div>
+            <p className="pricing-delivery"><i className="fas fa-clock"/> ⏱ Livraison : {p.delivery}</p>
+            <ul className="pricing-feat">{p.features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
+            <button className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`}
+              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+              Me contacter <ArrowRight size={15}/>
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile — carousel 1 carte à la fois */}
+      <div className="ptabs-mob">
+        {(()=>{ const p=tab.plans[mobCard]; return (
+          <div className={`pricing-card ptabs-mob-card ${p.isPopular?'pricing-card--pop':''}`}>
+            {p.isPopular&&<div className="pricing-pop-badge"><Star size={12} strokeWidth={2.5}/> Le plus choisi</div>}
+            <div className="pricing-badge">{p.badge}</div>
+            <h3 className="pricing-title">{p.title}</h3>
+            <div className="pricing-price">{p.price}</div>
+            <p className="pricing-delivery"><i className="fas fa-clock"/> ⏱ Livraison : {p.delivery}</p>
+            <ul className="pricing-feat">{p.features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
+            <button className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`}
+              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+              Me contacter <ArrowRight size={15}/>
+            </button>
+          </div>
+        );})()}
+        <div className="mob-nav">
+          <button className="mob-arr" onClick={()=>setMobCard(i=>(i-1+tab.plans.length)%tab.plans.length)}><i className="fas fa-chevron-left"/></button>
+          <div className="mob-dots">{tab.plans.map((_,i)=><button key={i} className={`mob-dot${i===mobCard?' mob-dot--on':''}`} onClick={()=>setMobCard(i)}/>)}</div>
+          <button className="mob-arr" onClick={()=>setMobCard(i=>(i+1)%tab.plans.length)}><i className="fas fa-chevron-right"/></button>
+        </div>
+      </div>
+
+      <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}>
+        <i className="fas fa-info-circle"/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.
+      </p>
+    </div>
+  );
+};
+
+
+
+// ═══════════════════════════════════════════════════════════════
 // SERVICES
 // ═══════════════════════════════════════════════════════════════
-const LUCIDE_ICONS = { Monitor, Star, Cpu };
 
 const Services = ({dark}) => {
-  const [ref,vis]=useInView();
+  const [ref,vis] = useInView();
+  const [svcIdx, setSvcIdx] = useState(0);
+
   return (
     <section id="services" ref={ref} className={dark?'section--dark':''}>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
         <span className="s-lbl">Services</span>
         <h2 className="s-ttl">Ce que je<br/>fais bien.</h2>
       </div>
-      <div className={`svc-grid ${vis?'anim':''}`}>
+
+      {/* Desktop — grille originale inchangée */}
+      <div className={`svc-grid ${vis?'anim':''} svc-desk`}>
         {SERVICES.map((s,i)=>(
           <div key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
-            <div className="svc-top">
-              <span className="svc-n">{s.n}</span>
-              <div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div>
-            </div>
+            <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div></div>
             <h3 className="svc-title">{s.title}</h3>
             <p className="svc-desc">{s.desc}</p>
-            <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
+            <ul className="svc-feat">{SERVICES[i].features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
           </div>
         ))}
       </div>
 
-      {/* TARIFS — toujours visibles */}
+      {/* Mobile — une carte visible à la fois, rendu pricing-card */}
+      <div className="svc-mob">
+        <div className="pricing-grid" style={{gridTemplateColumns:'1fr',background:'none',border:'none',gap:'0'}}>
+          <div className="pricing-card">
+            <div className="svc-top" style={{marginBottom:'8px'}}>
+              <span className="svc-n">{SERVICES[svcIdx].n}</span>
+              <div className="svc-ico"><i className={`fas fa-${SERVICES[svcIdx].icon}`}/></div>
+            </div>
+            <h3 className="pricing-title">{SERVICES[svcIdx].title}</h3>
+            <p className="pricing-desc">{SERVICES[svcIdx].desc}</p>
+            <ul className="pricing-feat">
+              {SERVICES[svcIdx].features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div className="mob-nav">
+          <button className="mob-arr" onClick={()=>setSvcIdx(i=>(i-1+SERVICES.length)%SERVICES.length)}><i className="fas fa-chevron-left"/></button>
+          <div className="mob-dots">{SERVICES.map((_,i)=><button key={i} className={`mob-dot${i===svcIdx?' mob-dot--on':''}`} onClick={()=>setSvcIdx(i)}/>)}</div>
+          <button className="mob-arr" onClick={()=>setSvcIdx(i=>(i+1)%SERVICES.length)}><i className="fas fa-chevron-right"/></button>
+        </div>
+      </div>
+
+      {/* TARIFS */}
       <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginTop:'60px'}}>
         <span className="s-lbl">Tarifs</span>
-        <h2 className="s-ttl" style={{fontSize:'clamp(24px,3.5vw,44px)'}}>Nos offres.</h2>
+        <h2 className="s-ttl" style={{fontSize:'clamp(24px,3.5vw,44px)'}}>Mes offres.</h2>
       </div>
-      <div className="pricing-grid">
-        {PRICING.map((p,i)=>{
-          const Icon = LUCIDE_ICONS[p.icon];
-          return (
-            <div key={i} className={`pricing-card ${p.isPopular?'pricing-card--pop':''}`}>
-              {p.isPopular && (
-                <div className="pricing-pop-badge">
-                  <Star size={12} strokeWidth={2.5}/> Le plus choisi
-                </div>
-              )}
-              <div className="pricing-badge">
-                {Icon && <Icon size={16} strokeWidth={2}/>}
-                {p.badge}
-              </div>
-              <h3 className="pricing-title">{p.title}</h3>
-              <p className="pricing-desc">{p.desc}</p>
-              <ul className="pricing-feat">
-                {p.features.map((f,fi)=>(
-                  <li key={fi}>
-                    <Check size={13} strokeWidth={2.5}/>{f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`}
-                onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
-                Me contacter <ArrowRight size={15}/>
-              </button>
-            </div>
-          );
-        })}
-      </div>
+
+      <PricingTabs dark={dark}/>
+
     </section>
   );
 };
@@ -1263,6 +1461,7 @@ export default function App() {
       <main>
         <Hero dark={dark}/>
         <Marquee dark={dark}/>
+        <FeaturedCreation dark={dark}/>
         <Services dark={dark}/>
         <About dark={dark}/>
         <Projects dark={dark}/>
