@@ -313,6 +313,128 @@ function useInView(thr=0.1){
 }
 
 // ═══════════════════════════════════════════════════════════════
+// MICRO-INTERACTIONS LAYER
+// ═══════════════════════════════════════════════════════════════
+
+// 1. useRipple — attach to any clickable
+function useRipple() {
+  const ref = useRef(null);
+  const trigger = useCallback((e) => {
+    const el = ref.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.4;
+    const x = (e.clientX ?? e.touches?.[0]?.clientX ?? rect.left + rect.width/2) - rect.left - size/2;
+    const y = (e.clientY ?? e.touches?.[0]?.clientY ?? rect.top + rect.height/2) - rect.top  - size/2;
+    const wave = document.createElement('span');
+    wave.className = 'mi-ripple-wave';
+    wave.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+    el.classList.add('mi-ripple-host');
+    el.appendChild(wave);
+    setTimeout(() => wave.remove(), 600);
+  }, []);
+  return [ref, trigger];
+}
+
+// MagBtn — drop-in button wrapper with ripple + glint
+const MagBtn = ({ className='', onClick, children, ...rest }) => {
+  const [ref, ripple] = useRipple();
+  return (
+    <button
+      ref={ref}
+      className={`mi-ripple-host mi-glint ${className}`}
+      onClick={e => { ripple(e); onClick?.(e); }}
+      {...rest}
+    >{children}</button>
+  );
+};
+
+// 2. TiltCard — wraps any card element
+const TiltCard = ({ children, className='', style={}, onClick }) => {
+  const ref = useRef(null);
+  const onMove = useCallback(e => {
+    const el = ref.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    const mx = e.clientX ?? e.touches?.[0]?.clientX ?? cx;
+    const my = e.clientY ?? e.touches?.[0]?.clientY ?? cy;
+    const rx = ((my - cy) / (rect.height/2)) * -10;
+    const ry = ((mx - cx) / (rect.width/2))  *  10;
+    el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
+  }, []);
+  const onLeave = useCallback(() => {
+    if (ref.current) ref.current.style.transform = '';
+  }, []);
+  return (
+    <div
+      ref={ref} className={`mi-tilt ${className}`} style={style}
+      onMouseMove={onMove} onMouseLeave={onLeave} onTouchMove={onMove} onTouchEnd={onLeave}
+      onClick={onClick}
+    >{children}</div>
+  );
+};
+
+// 8. Spotlight — mouse-following radial glow layer
+const SpotlightCard = ({ children, className='', style={} }) => {
+  const ref = useRef(null);
+  const layerRef = useRef(null);
+  const onMove = useCallback(e => {
+    const el = ref.current; if (!el || !layerRef.current) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    layerRef.current.style.background =
+      `radial-gradient(320px circle at ${x}px ${y}px, rgba(0,204,106,.10) 0%, transparent 70%)`;
+  }, []);
+  return (
+    <div ref={ref} className={`mi-spotlight ${className}`} style={style} onMouseMove={onMove}>
+      <div ref={layerRef} className="mi-spotlight-layer"/>
+      {children}
+    </div>
+  );
+};
+
+// 9. useStagger — returns [ref, isVisible] and applies stagger class
+function useStagger(thr=0.08){
+  const [r,v] = useInView(thr);
+  return [r, v];
+}
+
+// 4+9 combined: useReveal — single element fade-up on scroll
+function useReveal(thr=0.1){
+  const ref = useRef(null);
+  useEffect(()=>{
+    const el = ref.current; if (!el) return;
+    el.classList.add('mi-reveal');
+    const o = new IntersectionObserver(([e])=>{
+      if (e.isIntersecting) { el.classList.add('mi-reveal--vis'); o.disconnect(); }
+    },{threshold:thr});
+    o.observe(el);
+    return ()=>o.disconnect();
+  },[thr]);
+  return ref;
+}
+
+// 7. ProgressBar component
+const ProgressBar = ({ value=0, label='', visible=false }) => {
+  const fillRef = useRef(null);
+  useEffect(()=>{
+    if (fillRef.current) {
+      fillRef.current.style.width = visible ? `${value}%` : '0%';
+    }
+  },[visible, value]);
+  return (
+    <div>
+      <div className="mi-progress-row">
+        {label && <span className="mi-progress-label">{label}</span>}
+        <span className="mi-progress-val">{value}%</span>
+      </div>
+      <div className="mi-progress-track">
+        <div ref={fillRef} className="mi-progress-fill"/>
+      </div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
 // PARTICLE CANVAS
 // ═══════════════════════════════════════════════════════════════
 const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
@@ -781,14 +903,14 @@ const Hero = ({dark}) => {
           Je construis des applications pensées pour des usages réels.
         </p>
         <div className="hero-ctas">
-          <button className={`btn ${dark?'btn--neon':'btn--primary'}`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-btn-grad-solid`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
             Voir mes projets <span>↗</span>
-          </button>
-          <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
+          </MagBtn>
+          <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
             <i className="fas fa-download"/> Télécharger CV
           </a>
         </div>
-        <div className="hero-stats">
+        <div className="hero-stats mi-stagger mi-stagger--vis">
           {[["9+","Projets"],["2+","Années exp."],["5","En production"],["9+","Outils"]].map(([n,l])=>(
             <div key={l} className="hstat"><span className="hstat-n">{n}</span><span className="hstat-l">{l}</span></div>
           ))}
@@ -866,7 +988,7 @@ const FeaturedCreation = ({dark}) => {
           </div>
           <div className="cr-tags">{proj.tech.map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
           <p className="cr-desc">{proj.description}</p>
-          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta`}>
+          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}>
             <i className="fas fa-external-link-alt"/> Voir le site
           </a>
         </div>
@@ -876,76 +998,123 @@ const FeaturedCreation = ({dark}) => {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// PRICING TABS
+// PRICING TABS — pill toggle (style capture)
 // ═══════════════════════════════════════════════════════════════
 const LUCIDE_TAB_ICONS = { Globe, ShoppingCart, Cpu, Star };
 
+const TAB_SUBTITLES = {
+  vitrine:   "Pour présenter votre activité avec élégance.",
+  ecommerce: "Pour vendre en ligne et gérer vos commandes.",
+  saas:      "Pour des applications web complètes sur-mesure.",
+  portfolio: "Pour mettre en valeur vos réalisations.",
+};
+
 const PricingTabs = ({dark}) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [mobCard, setMobCard] = useState(0);
+  const [mobCard,   setMobCard]   = useState(0);
+  const [animKey,   setAnimKey]   = useState(0);
+  const pillRef  = useRef(null);
+  const btnRefs  = useRef([]);
   const tab = PRICING_TABS[activeTab];
 
-  // Reset carousel index when tab changes
-  const switchTab = (i) => { setActiveTab(i); setMobCard(0); };
+  // Move the sliding pill indicator
+  useEffect(() => {
+    const pill = pillRef.current;
+    const btn  = btnRefs.current[activeTab];
+    if (!pill || !btn) return;
+    const parent = btn.parentElement.getBoundingClientRect();
+    const r      = btn.getBoundingClientRect();
+    pill.style.width  = `${r.width}px`;
+    pill.style.height = `${r.height}px`;
+    pill.style.transform = `translateX(${r.left - parent.left}px)`;
+  }, [activeTab]);
+
+  const switchTab = (i) => {
+    setActiveTab(i);
+    setMobCard(0);
+    setAnimKey(k => k + 1);
+  };
+
+  const PricingCard = ({ p, isMob }) => (
+    <div className={`ptabs2-card ${p.isPopular ? 'ptabs2-card--pop' : ''} ${dark ? 'ptabs2-card--dark' : ''}`}>
+      {p.isPopular && (
+        <div className={`ptabs2-pop-banner ${dark ? 'ptabs2-pop-banner--dark' : ''}`}>
+          <Star size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE
+        </div>
+      )}
+      <div className="ptabs2-card-body">
+        <div className="ptabs2-badge">{p.badge}</div>
+        <p className="ptabs2-tagline">{TAB_SUBTITLES[tab.key] || ''}</p>
+        <div className={`ptabs2-price ${dark ? 'ptabs2-price--dark' : ''}`}>
+          <span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span>
+          <span className="ptabs2-currency"> FCFA</span>
+        </div>
+        <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
+        <ul className="ptabs2-feat">
+          {p.features.map((f, fi) => (
+            <li key={fi}>
+              <span className={`ptabs2-check ${dark ? 'ptabs2-check--dark' : ''}`}><Check size={11} strokeWidth={3}/></span>
+              {f}
+            </li>
+          ))}
+        </ul>
+        <MagBtn
+          className={`btn ${dark ? 'btn--neon' : 'btn--primary'} btn--full mi-glint ptabs2-cta`}
+          onClick={() => document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+          Me contacter <ArrowRight size={14}/>
+        </MagBtn>
+      </div>
+    </div>
+  );
 
   return (
-    <div className={`ptabs ${dark?'ptabs--dark':''}`}>
-      {/* Tab buttons */}
-      <div className="ptabs-nav">
-        {PRICING_TABS.map((t,i)=>{
-          const Icon = LUCIDE_TAB_ICONS[t.icon];
-          return (
-            <button key={t.key}
-              className={`ptabs-btn ${i===activeTab?(dark?'ptabs-btn--dark-active':'ptabs-btn--active'):''} ${dark?'ptabs-btn--dark':''}`}
-              onClick={()=>switchTab(i)}>
-              {Icon&&<Icon size={15} strokeWidth={2}/>}{t.label}
-            </button>
-          );
-        })}
-      </div>
+    <div className={`ptabs2 ${dark ? 'ptabs2--dark' : ''}`}>
 
-      {/* Desktop — grille 3 cartes */}
-      <div className="pricing-grid ptabs-grid ptabs-desk">
-        {tab.plans.map((p,i)=>(
-          <div key={i} className={`pricing-card ${p.isPopular?'pricing-card--pop':''}`}>
-            {p.isPopular&&<div className="pricing-pop-badge"><Star size={12} strokeWidth={2.5}/> Le plus choisi</div>}
-            <div className="pricing-badge">{p.badge}</div>
-            <h3 className="pricing-title">{p.title}</h3>
-            <div className="pricing-price">{p.price}</div>
-            <p className="pricing-delivery"><i className="fas fa-clock"/> ⏱ Livraison : {p.delivery}</p>
-            <ul className="pricing-feat">{p.features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
-            <button className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`}
-              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
-              Me contacter <ArrowRight size={15}/>
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile — carousel 1 carte à la fois */}
-      <div className="ptabs-mob">
-        {(()=>{ const p=tab.plans[mobCard]; return (
-          <div className={`pricing-card ptabs-mob-card ${p.isPopular?'pricing-card--pop':''}`}>
-            {p.isPopular&&<div className="pricing-pop-badge"><Star size={12} strokeWidth={2.5}/> Le plus choisi</div>}
-            <div className="pricing-badge">{p.badge}</div>
-            <h3 className="pricing-title">{p.title}</h3>
-            <div className="pricing-price">{p.price}</div>
-            <p className="pricing-delivery"><i className="fas fa-clock"/> ⏱ Livraison : {p.delivery}</p>
-            <ul className="pricing-feat">{p.features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
-            <button className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`}
-              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
-              Me contacter <ArrowRight size={15}/>
-            </button>
-          </div>
-        );})()}
-        <div className="mob-nav">
-          <button className="mob-arr" onClick={()=>setMobCard(i=>(i-1+tab.plans.length)%tab.plans.length)}><i className="fas fa-chevron-left"/></button>
-          <div className="mob-dots">{tab.plans.map((_,i)=><button key={i} className={`mob-dot${i===mobCard?' mob-dot--on':''}`} onClick={()=>setMobCard(i)}/>)}</div>
-          <button className="mob-arr" onClick={()=>setMobCard(i=>(i+1)%tab.plans.length)}><i className="fas fa-chevron-right"/></button>
+      {/* ── Pill toggle ── */}
+      <div className={`ptabs2-toggle-wrap ${dark ? 'ptabs2-toggle-wrap--dark' : ''}`}>
+        <div className={`ptabs2-toggle ${dark ? 'ptabs2-toggle--dark' : ''}`}>
+          {/* Sliding indicator */}
+          <span ref={pillRef} className={`ptabs2-pill ${dark ? 'ptabs2-pill--dark' : ''}`}/>
+          {PRICING_TABS.map((t, i) => {
+            const Icon = LUCIDE_TAB_ICONS[t.icon];
+            return (
+              <button
+                key={t.key}
+                ref={el => btnRefs.current[i] = el}
+                className={`ptabs2-tab ${i === activeTab ? 'ptabs2-tab--active' : ''} ${dark ? 'ptabs2-tab--dark' : ''}`}
+                onClick={() => switchTab(i)}>
+                {Icon && <Icon size={14} strokeWidth={2}/>}
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}>
+      {/* ── Cards grid (desktop) ── */}
+      <div key={animKey} className="ptabs2-grid ptabs2-desk">
+        {tab.plans.map((p, i) => <PricingCard key={i} p={p}/>)}
+      </div>
+
+      {/* ── Carousel (mobile) ── */}
+      <div className="ptabs2-mob">
+        <PricingCard p={tab.plans[mobCard]}/>
+        <div className="mob-nav">
+          <button className="mob-arr" onClick={() => setMobCard(i => (i - 1 + tab.plans.length) % tab.plans.length)}>
+            <i className="fas fa-chevron-left"/>
+          </button>
+          <div className="mob-dots">
+            {tab.plans.map((_, i) => (
+              <button key={i} className={`mob-dot${i === mobCard ? ' mob-dot--on' : ''}`} onClick={() => setMobCard(i)}/>
+            ))}
+          </div>
+          <button className="mob-arr" onClick={() => setMobCard(i => (i + 1) % tab.plans.length)}>
+            <i className="fas fa-chevron-right"/>
+          </button>
+        </div>
+      </div>
+
+      <p className={`ptabs-note ${dark ? 'ptabs-note--dark' : ''}`}>
         <i className="fas fa-info-circle"/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.
       </p>
     </div>
@@ -970,14 +1139,16 @@ const Services = ({dark}) => {
       </div>
 
       {/* Desktop — grille originale inchangée */}
-      <div className={`svc-grid ${vis?'anim':''} svc-desk`}>
+      <div className={`svc-grid ${vis?'anim':''} svc-desk mi-stagger ${vis?'mi-stagger--vis':''}`}>
         {SERVICES.map((s,i)=>(
-          <div key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
-            <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div></div>
+          <TiltCard key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
+            <SpotlightCard className="svc-spotlight-inner" style={{height:'100%',width:'100%'}}>
+            <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico mi-pulse"><i className={`fas fa-${s.icon}`}/></div></div>
             <h3 className="svc-title">{s.title}</h3>
             <p className="svc-desc">{s.desc}</p>
             <ul className="svc-feat">{SERVICES[i].features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
-          </div>
+            </SpotlightCard>
+          </TiltCard>
         ))}
       </div>
 
@@ -1027,7 +1198,7 @@ const About = ({dark}) => {
           <span className="s-lbl">À Propos</span>
           <h2 className="s-ttl">Alors,<br/>c'est moi.</h2>
         </div>
-        <div className={`about-grid ${v1?'anim':''}`}>
+        <SpotlightCard className={`about-grid ${v1?'anim':''} mi-stagger ${v1?'mi-stagger--vis':''}`}>
           <div className="about-left">
             <div className={`about-quote ${dark?'about-quote--dark':''}`}>
               <p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p>
@@ -1050,19 +1221,19 @@ const About = ({dark}) => {
             <div className={`about-tags ${dark?'about-tags--dark':''}`}>
               {["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}
             </div>
-            <button className={`btn ${dark?'btn--neon':'btn--primary'}`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</button>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
           </div>
-        </div>
+        </SpotlightCard>
       </section>
       <section id="experience" ref={r2} className={dark?'section--dark':''}>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}>
           <span className="s-lbl">Parcours</span>
           <h2 className="s-ttl">Expérience &amp;<br/>Formation.</h2>
         </div>
-        <div className={`timeline ${v2?'anim':''} ${dark?'timeline--dark':''}`}>
+        <div className={`timeline ${v2?'anim':''} ${dark?'timeline--dark':''} mi-stagger ${v2?'mi-stagger--vis':''}`}>
           {TIMELINE.map((item,i)=>(
             <div key={i} className="tl-item" style={{animationDelay:`${i*0.12}s`}}>
-              <div className="tl-dot"><i className={`fas fa-${item.icon}`}/></div>
+              <div className="tl-dot mi-pulse"><i className={`fas fa-${item.icon}`}/></div>
               <div className="tl-body">
                 <span className="tl-date"><i className="far fa-calendar-alt"/> {item.date}</span>
                 <h4 className="tl-title">{item.title}</h4>
@@ -1078,8 +1249,8 @@ const About = ({dark}) => {
           <h3>Intéressé par mon profil ?</h3>
           <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
           <div className="cta-btns">
-            <button className={`btn ${dark?'btn--neon':'btn--cta-light'}`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</button>
-            <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'}`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><i className="fas fa-download"/> Télécharger CV</a>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
+            <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><i className="fas fa-download"/> Télécharger CV</a>
           </div>
         </div>
       </section>
@@ -1184,6 +1355,7 @@ const Carousel3D = ({items, dark}) => {
                   </div>
                   <h3 className="c3d-title">{proj.title}</h3>
                   <p className="c3d-sub">{proj.subtitle}</p>
+                  {rel===0&&<ProgressBar value={proj.progress} label="Avancement" visible={rel===0}/>}
                   {rel===0&&<p className="c3d-desc">{proj.description}</p>}
                   {proj.stats&&rel===0&&(
                     <div className="c3d-stats">
@@ -1242,21 +1414,50 @@ const Projects = ({dark}) => {
   const [filter,setFilter]=useState('all');
   const filtered=filter==='all'?PROJECTS:PROJECTS.filter(p=>p.cat===filter);
   const count=k=>k==='all'?PROJECTS.length:PROJECTS.filter(p=>p.cat===k).length;
+
+  const pillRef  = useRef(null);
+  const btnRefs  = useRef([]);
+  const keys = Object.keys(CAT_LABELS);
+
+  // Move sliding pill to active button
+  useEffect(()=>{
+    const pill = pillRef.current;
+    const idx  = keys.indexOf(filter);
+    const btn  = btnRefs.current[idx];
+    if(!pill || !btn) return;
+    const parent = btn.parentElement.getBoundingClientRect();
+    const r      = btn.getBoundingClientRect();
+    pill.style.width     = `${r.width}px`;
+    pill.style.height    = `${r.height}px`;
+    pill.style.transform = `translateX(${r.left - parent.left}px)`;
+  },[filter]);
+
   return (
     <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`}>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
         <span className="s-lbl">Portfolio</span>
         <h2 className="s-ttl">Réalisations<br/>récentes.</h2>
       </div>
-      <div className={`proj-filters ${dark?'proj-filters--dark':''}`}>
-        {Object.entries(CAT_LABELS).map(([k,v])=>(
-          <button key={k}
-            className={`filter-btn ${dark?'filter-btn--dark':''} ${filter===k?(dark?'filter-btn--dark-active':'filter-btn--active'):''}`}
-            onClick={()=>setFilter(k)}>
-            {v}<span>{count(k)}</span>
-          </button>
-        ))}
+
+      {/* ── Pill toggle filtre ── */}
+      <div className="pf-toggle-wrap">
+        <div className={`pf-toggle ${dark?'pf-toggle--dark':''}`}>
+          <span ref={pillRef} className={`pf-pill ${dark?'pf-pill--dark':''}`}/>
+          {Object.entries(CAT_LABELS).map(([k,v],i)=>(
+            <button
+              key={k}
+              ref={el=>btnRefs.current[i]=el}
+              className={`pf-tab ${filter===k?'pf-tab--active':''} ${dark?'pf-tab--dark':''}`}
+              onClick={()=>setFilter(k)}>
+              {v}
+              <span className={`pf-count ${filter===k?'pf-count--active':''} ${dark?'pf-count--dark':''}`}>
+                {count(k)}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
+
       <Carousel3D key={filter} items={filtered} dark={dark}/>
     </section>
   );
@@ -1297,14 +1498,14 @@ const Skills = ({dark}) => {
         {/* ── Maîtrise principale CENTRÉ ── */}
         <div className="sk-mastery-wrap">
           <div className="sk-label-tag"><span>//</span> maîtrise principale</div>
-          <div className={`sk-mastery ${vis?'anim':''}`}>
+          <div className={`sk-mastery ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
             {master.map((sk,i)=>(
-              <div key={i} className="sk-m-card" style={{animationDelay:`${i*0.07}s`}}>
+              <TiltCard key={i} className="sk-m-card" style={{animationDelay:`${i*0.07}s`}}>
                 <div className="sk-m-glow"/>
                 <img src={sk.icon} alt={sk.name}
                   style={dark&&(sk.icon.includes('flask')||sk.icon.includes('django'))?{filter:'brightness(0) invert(1)'}:{}}/>
                 <span>{sk.name}</span>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>
@@ -1321,8 +1522,8 @@ const Skills = ({dark}) => {
           <h3>Besoin de ces compétences ?</h3>
           <p>Mettons mes compétences au service de votre projet. Discutons-en !</p>
           <div className="cta-btns">
-            <button className={`btn ${dark?'btn--neon':'btn--cta-light'}`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</button>
-            <button className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'}`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-eye"/> Voir mes projets</button>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
+            <MagBtn className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-eye"/> Voir mes projets</MagBtn>
           </div>
         </div>
       </div>
@@ -1356,7 +1557,7 @@ const Contact = ({dark}) => {
         <span className="s-lbl">Contact</span>
         <h2 className="s-ttl">Transformons<br/>votre idée.</h2>
       </div>
-      <div className={`contact-grid ${vis?'anim':''}`}>
+      <div className={`contact-grid ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
         <div className="contact-left">
           <div className="contact-status"><span className="cdot"/><span>Disponible maintenant</span></div>
           <div className="code-block">
@@ -1383,7 +1584,7 @@ const Contact = ({dark}) => {
             <div>
               <p><b>Télécharger mon CV</b></p>
               <p>Scannez le QR code ou cliquez</p>
-              <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'}`} download><i className="fas fa-download"/> Télécharger CV</a>
+              <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} download><i className="fas fa-download"/> Télécharger CV</a>
             </div>
           </div>
         </div>
@@ -1415,9 +1616,9 @@ const Contact = ({dark}) => {
                 <label htmlFor="message">Message *</label>
                 <textarea id="message" rows={6} placeholder="Décrivez votre projet…" value={form.message} onChange={onChange} required/>
               </div>
-              <button type="submit" className={`btn ${dark?'btn--neon':'btn--primary'} btn--full`} disabled={sending}>
+              <MagBtn type="submit" className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-btn-grad-solid`} disabled={sending}>
                 <i className="fas fa-paper-plane"/>{sending?'Envoi en cours…':'Envoyer le message'}{sending&&<i className="fas fa-spinner fa-spin"/>}
-              </button>
+              </MagBtn>
               <p className="form-privacy"><i className="fas fa-lock"/> Vos données sont sécurisées et ne seront jamais partagées.</p>
             </form>
           )}

@@ -1246,3 +1246,461 @@ section + section { border-top:1px solid var(--border) }
   .ptabs-mob  { display: block; }
   .ptabs-mob-card { margin: 0 auto; max-width: 360px; }
 }
+/* ═══════════════════════════════════════════════════════════════
+   MICRO-INTERACTIONS v1 — AKAfolio
+   1. Ripple  2. TiltCard  3. Glint  4. Reveal  5. Pulse Ring
+   6. Grad Btn  7. Progress Bar  8. Spotlight  9. Stagger
+═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. RIPPLE ────────────────────────────────────────────────── */
+.mi-ripple-host { position:relative; overflow:hidden; }
+.mi-ripple-wave {
+  position:absolute; border-radius:50%;
+  background:rgba(255,255,255,.25);
+  transform:scale(0); pointer-events:none;
+  animation:mi-ripple-anim .55s var(--ease) forwards;
+}
+@keyframes mi-ripple-anim {
+  to { transform:scale(4); opacity:0; }
+}
+
+/* ── 2. TILT CARD ─────────────────────────────────────────────── */
+.mi-tilt {
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .08s linear, box-shadow .2s var(--ease);
+}
+.mi-tilt:hover { box-shadow:0 20px 50px rgba(0,0,0,.35), 0 0 30px var(--neon-glow); }
+
+/* ── 3. GLINT SWEEP ───────────────────────────────────────────── */
+.mi-glint { position:relative; overflow:hidden; }
+.mi-glint::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(105deg, transparent 35%, rgba(255,255,255,.18) 50%, transparent 65%);
+  transform:translateX(-100%);
+  transition:transform 0s;
+  pointer-events:none;
+}
+.mi-glint:hover::after { transform:translateX(100%); transition:transform .45s var(--ease); }
+
+/* ── 4. SCROLL REVEAL ─────────────────────────────────────────── */
+.mi-reveal {
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+}
+.mi-reveal.mi-reveal--vis {
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ── 5. PULSE RING ────────────────────────────────────────────── */
+.mi-pulse { position:relative; }
+.mi-pulse::before {
+  content:''; position:absolute; inset:-6px; border-radius:inherit;
+  border:2px solid var(--neon);
+  opacity:0;
+  animation:mi-pulse-ring 2.4s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes mi-pulse-ring {
+  0%   { transform:scale(1);   opacity:.6; }
+  70%  { transform:scale(1.12);opacity:0;  }
+  100% { transform:scale(1);   opacity:0;  }
+}
+
+/* ── 6. GRADIENT ANIMATED BUTTON ──────────────────────────────── */
+.mi-btn-grad {
+  background-size:200% 200%;
+  background-image:linear-gradient(120deg, var(--acc) 0%, var(--acc-2) 40%, #00ffaa 70%, var(--acc) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:mi-grad-shift 3s ease infinite;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+@keyframes mi-grad-shift {
+  0%   { background-position:0%   50%; }
+  50%  { background-position:100% 50%; }
+  100% { background-position:0%   50%; }
+}
+/* Fallback pour boutons solides */
+.btn.mi-btn-grad-solid {
+  background-size:200% auto;
+  background-image:linear-gradient(90deg, var(--acc) 0%, #00ffaa 50%, var(--acc) 100%);
+  -webkit-text-fill-color:unset;
+  background-clip:unset;
+  -webkit-background-clip:unset;
+  color:var(--paper);
+  animation:mi-grad-solid 2.8s linear infinite;
+}
+@keyframes mi-grad-solid {
+  0%   { background-position:0%   center; }
+  100% { background-position:200% center; }
+}
+
+/* ── 7. PROGRESS BAR ──────────────────────────────────────────── */
+.mi-progress-track {
+  width:100%; height:5px;
+  background:var(--border); border-radius:9999px;
+  overflow:hidden;
+  margin-top:6px;
+}
+.mi-progress-fill {
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--acc), #00ffaa);
+  border-radius:9999px;
+  box-shadow:0 0 8px var(--neon-glow);
+  transition:width 1.1s cubic-bezier(.25,.46,.45,.94);
+}
+/* Label row */
+.mi-progress-row { display:flex; justify-content:space-between; align-items:center; }
+.mi-progress-label { font-size:12px; font-weight:600; color:var(--ink-2); }
+.mi-progress-val   { font-size:12px; font-weight:700; color:var(--neon); font-family:var(--fd); }
+
+/* ── 8. SPOTLIGHT ─────────────────────────────────────────────── */
+.mi-spotlight {
+  position:relative;
+  overflow:hidden;
+}
+.mi-spotlight-layer {
+  position:absolute; inset:0;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s;
+  border-radius:inherit;
+}
+.mi-spotlight:hover .mi-spotlight-layer { opacity:1; }
+
+/* ── 9. STAGGER CASCADE ───────────────────────────────────────── */
+.mi-stagger > * {
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity .45s var(--ease), transform .45s var(--ease);
+}
+.mi-stagger.mi-stagger--vis > * { opacity:1; transform:translateY(0); }
+.mi-stagger.mi-stagger--vis > *:nth-child(1)  { transition-delay:.00s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(2)  { transition-delay:.07s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(3)  { transition-delay:.14s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(4)  { transition-delay:.21s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(5)  { transition-delay:.28s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(6)  { transition-delay:.35s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(7)  { transition-delay:.42s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(8)  { transition-delay:.49s; }
+.mi-stagger.mi-stagger--vis > *:nth-child(n+9){ transition-delay:.56s; }
+
+/* ── Utilitaire : delay override ──────────────────────────────── */
+.mi-delay-1 { transition-delay:.08s !important; }
+.mi-delay-2 { transition-delay:.16s !important; }
+.mi-delay-3 { transition-delay:.24s !important; }
+.mi-delay-4 { transition-delay:.32s !important; }
+
+/* ── Mode clair : adapter les couleurs neon ───────────────────── */
+.app--light .mi-pulse::before         { border-color:var(--acc); }
+.app--light .mi-progress-fill         { background:linear-gradient(90deg,var(--acc),#ff8f52); box-shadow:0 0 8px var(--neon-glow); }
+.app--light .mi-progress-val          { color:var(--acc); }
+.app--light .btn.mi-btn-grad-solid    { background-image:linear-gradient(90deg,var(--acc) 0%,#ff8f52 50%,var(--acc) 100%); }
+.app--light .mi-btn-grad              { background-image:linear-gradient(120deg,var(--acc) 0%,#ff8f52 40%,#ffb347 70%,var(--acc) 100%); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING TABS v2 — pill-toggle segmenté (style capture)
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper ── */
+.ptabs2 { padding: 0 0 24px; }
+
+/* ── Toggle pill wrapper (centré) ── */
+.ptabs2-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 44px;
+}
+
+/* ── Le rail pill ── */
+.ptabs2-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: var(--paper-3);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 5px;
+  gap: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+.ptabs2-toggle--dark {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.1);
+}
+
+/* ── Curseur glissant ── */
+.ptabs2-pill {
+  position: absolute;
+  left: 5px; top: 5px;
+  border-radius: 999px;
+  background: var(--acc);
+  box-shadow: 0 2px 14px var(--neon-glow);
+  transition: transform .28s cubic-bezier(.34,1.36,.64,1), width .28s cubic-bezier(.34,1.36,.64,1);
+  pointer-events: none;
+  z-index: 0;
+}
+.ptabs2-pill--dark {
+  background: var(--neon);
+  box-shadow: 0 0 18px var(--neon-glow);
+}
+
+/* ── Boutons tab ── */
+.ptabs2-tab {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 700;
+  font-family: var(--fd); letter-spacing: .02em;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: color .22s ease;
+  background: none; border: none; cursor: pointer;
+}
+.ptabs2-tab--active { color: #fff; }
+.ptabs2-tab--dark   { color: rgba(255,255,255,.45); }
+.ptabs2-tab--dark.ptabs2-tab--active { color: var(--paper); }
+.ptabs2-tab:not(.ptabs2-tab--active):hover { color: var(--acc); }
+.ptabs2-tab--dark:not(.ptabs2-tab--active):hover { color: var(--neon); }
+
+/* ── Grid desktop 3 cartes ── */
+.ptabs2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  animation: fadeSlide .35s ease;
+}
+
+/* ── Carte ── */
+.ptabs2-card {
+  border-radius: 18px;
+  border: 1.5px solid var(--border);
+  background: var(--paper-2);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: transform .22s var(--ease), box-shadow .22s var(--ease);
+}
+.ptabs2-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.12);
+}
+.ptabs2-card--dark {
+  background: rgba(255,255,255,.03);
+  border-color: rgba(255,255,255,.08);
+}
+.ptabs2-card--dark:hover {
+  box-shadow: 0 16px 40px rgba(0,0,0,.4), 0 0 28px var(--neon-glow);
+}
+
+/* ── Banner "Le plus populaire" ── */
+.ptabs2-pop-banner {
+  background: var(--acc);
+  color: #fff;
+  text-align: center;
+  font-size: 11px; font-weight: 800;
+  font-family: var(--fd); letter-spacing: .12em;
+  padding: 9px 16px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.ptabs2-pop-banner--dark {
+  background: var(--neon);
+  color: var(--paper);
+}
+.ptabs2-card--pop {
+  border-color: var(--acc);
+  box-shadow: 0 8px 32px rgba(217,64,16,.18);
+}
+.ptabs2-card--pop.ptabs2-card--dark {
+  border-color: var(--neon);
+  box-shadow: 0 8px 32px var(--neon-glow);
+}
+
+/* ── Corps de carte ── */
+.ptabs2-card-body {
+  padding: 24px 22px 22px;
+  display: flex; flex-direction: column; flex: 1;
+}
+
+.ptabs2-badge {
+  font-size: 10px; font-weight: 800; letter-spacing: .12em;
+  font-family: var(--fd); color: var(--muted); margin-bottom: 6px;
+}
+.ptabs2-tagline {
+  font-size: 12.5px; color: var(--ink-2); margin-bottom: 14px; line-height: 1.5;
+}
+
+/* ── Prix ── */
+.ptabs2-price { margin: 0 0 6px; line-height: 1; }
+.ptabs2-amount {
+  font-size: clamp(26px, 4vw, 36px); font-weight: 900;
+  font-family: var(--fd); color: var(--ink); letter-spacing: -.03em;
+}
+.ptabs2-price--dark .ptabs2-amount { color: var(--ink); }
+.ptabs2-card--pop .ptabs2-amount { color: var(--acc); }
+.ptabs2-card--pop.ptabs2-card--dark .ptabs2-amount { color: var(--neon); }
+.ptabs2-currency {
+  font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .01em;
+}
+
+.ptabs2-delivery {
+  font-size: 11.5px; color: var(--muted); margin-bottom: 16px;
+  font-family: var(--fd); font-weight: 600;
+}
+.ptabs2-delivery i { margin-right: 5px; }
+
+/* ── Features list ── */
+.ptabs2-feat {
+  list-style: none; display: flex; flex-direction: column; gap: 9px;
+  margin-bottom: 22px; flex: 1;
+}
+.ptabs2-feat li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13px; color: var(--ink-2); line-height: 1.4;
+}
+.ptabs2-check {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--acc-dim);
+  border: 1.5px solid var(--acc);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--acc);
+  margin-top: 1px;
+}
+.ptabs2-check--dark {
+  background: var(--neon-dim);
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+.ptabs2-cta { margin-top: auto; }
+
+/* ── Mobile display ── */
+.ptabs2-desk { display: grid; }
+.ptabs2-mob  { display: none; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .ptabs2-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .ptabs2-toggle { gap: 0; padding: 4px; }
+  .ptabs2-tab    { padding: 8px 12px; font-size: 11px; gap: 4px; }
+  .ptabs2-tab span { display: none; } /* icône seule sur très petits écrans */
+  .ptabs2-desk   { display: none !important; }
+  .ptabs2-mob    { display: block; }
+}
+
+/* Icône seule sur petits mobiles : montrer le label si assez de place */
+@media (min-width: 400px) and (max-width: 640px) {
+  .ptabs2-tab span { display: inline; }
+  .ptabs2-tab      { padding: 8px 10px; font-size: 11px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROJECT FILTERS v2 — pill toggle segmenté (même style pricing)
+═══════════════════════════════════════════════════════════════ */
+
+.pf-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 44px;
+}
+
+/* Rail */
+.pf-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: var(--paper-3);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 5px;
+  gap: 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+.pf-toggle--dark {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.1);
+}
+
+/* Curseur glissant */
+.pf-pill {
+  position: absolute;
+  left: 5px; top: 5px;
+  border-radius: 999px;
+  background: var(--acc);
+  box-shadow: 0 2px 14px var(--neon-glow);
+  transition: transform .28s cubic-bezier(.34,1.36,.64,1),
+              width   .28s cubic-bezier(.34,1.36,.64,1);
+  pointer-events: none;
+  z-index: 0;
+}
+.pf-pill--dark {
+  background: var(--neon);
+  box-shadow: 0 0 18px var(--neon-glow);
+}
+
+/* Boutons */
+.pf-tab {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 700;
+  font-family: var(--fd); letter-spacing: .02em;
+  color: var(--ink-2);
+  white-space: nowrap;
+  background: none; border: none; cursor: pointer;
+  transition: color .2s ease;
+}
+.pf-tab--active        { color: #fff; }
+.pf-tab--dark          { color: rgba(255,255,255,.45); }
+.pf-tab--dark.pf-tab--active { color: var(--paper); }
+.pf-tab:not(.pf-tab--active):hover          { color: var(--acc); }
+.pf-tab--dark:not(.pf-tab--active):hover    { color: var(--neon); }
+
+/* Badge compteur */
+.pf-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 22px; height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px; font-weight: 800;
+  font-family: var(--fd);
+  background: var(--paper-4);
+  color: var(--muted);
+  transition: background .2s, color .2s;
+  line-height: 1;
+}
+.pf-count--active {
+  background: rgba(255,255,255,.22);
+  color: #fff;
+}
+.pf-count--dark {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.5);
+}
+.pf-tab--active .pf-count--dark {
+  background: rgba(0,0,0,.2);
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .pf-toggle  { padding: 4px; flex-wrap: nowrap; }
+  .pf-tab     { padding: 8px 12px; font-size: 11.5px; gap: 5px; }
+  .pf-count   { min-width: 18px; height: 18px; font-size: 10px; }
+}
+@media (max-width: 400px) {
+  .pf-tab     { padding: 7px 9px; font-size: 10.5px; }
+}
