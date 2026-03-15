@@ -1293,10 +1293,10 @@ const Carousel3D = ({items, dark}) => {
   const cardStyle=pos=>{
     const abs=Math.abs(pos);
     if(abs>2) return {display:'none'};
-    const tx=pos*clampedPct(290);
+    const tx=pos*clampedPct(300);
     return {
-      transform:`translateX(${tx}px) translateZ(${-(abs*100)}px) rotateY(${pos*-15}deg) scale(${pos===0?1:abs===1?.82:.65})`,
-      opacity:pos===0?1:abs===1?.6:.3,
+      transform:`translateX(${tx}px) translateZ(${-(abs*110)}px) rotateY(${pos*-14}deg) scale(${pos===0?1:abs===1?.80:.60})`,
+      opacity:pos===0?1:abs===1?.55:.25,
       zIndex:10-abs,
       transition:'all .55s cubic-bezier(.25,.46,.45,.94)',
       pointerEvents:pos===0?'all':'none',
@@ -1355,9 +1355,9 @@ const Carousel3D = ({items, dark}) => {
                   </div>
                   <h3 className="c3d-title">{proj.title}</h3>
                   <p className="c3d-sub">{proj.subtitle}</p>
+                  <p className="c3d-desc">{proj.description}</p>
                   {rel===0&&<ProgressBar value={proj.progress} label="Avancement" visible={rel===0}/>}
-                  {rel===0&&<p className="c3d-desc">{proj.description}</p>}
-                  {proj.stats&&rel===0&&(
+                  {proj.stats&&(
                     <div className="c3d-stats">
                       {proj.stats.slice(0,3).map((s,si)=>(
                         <span key={si} style={{color:neon,borderColor:neonBorder,background:neonBg}}>
@@ -1371,10 +1371,16 @@ const Carousel3D = ({items, dark}) => {
                       {proj.tech.slice(0,3).map(t=><span key={t}>{t}</span>)}
                     </div>
                     {proj.url&&rel===0&&(
-                      <a href={proj.url} target="_blank" rel="noreferrer" className="c3d-link"
+                      <a
+                        href={proj.url}
+                        target={proj.url.startsWith('http')?'_blank':'_self'}
+                        rel="noreferrer"
+                        className="c3d-link"
                         onClick={e=>e.stopPropagation()}
-                        style={{borderColor:neonBorder,color:neon,background:neonBg}}>
-                        {proj.cat==='demo'?<><i className="fas fa-play-circle"/>Démo</>:<><i className="fas fa-external-link-alt"/>Voir le site</>}
+                        style={{borderColor:neonBorder,color:neon,background:neonBg,pointerEvents:'all',position:'relative',zIndex:20}}>
+                        {proj.cat==='demo'
+                          ?<><i className="fas fa-play-circle"/>Démo</>
+                          :<><i className="fas fa-external-link-alt"/>Voir le site</>}
                       </a>
                     )}
                   </div>
