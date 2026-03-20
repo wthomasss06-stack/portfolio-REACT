@@ -3,99 +3,97 @@ import { Monitor, Star, Cpu, Check, Globe, ShoppingCart, Zap, Wrench, Hammer, Br
 import './style.css';
 
 // ═══════════════════════════════════════════════════════════════
-// LOGO SVG ANIMÉ
+// LOGO — AKATech (SVG réécrit, sans fond, thème dynamique)
 // ═══════════════════════════════════════════════════════════════
 const AkafolioLogo = ({ size = 48, dark = true, onClick, animate = true }) => {
-  const accent = dark ? '#00CC6A' : '#D94010';
-  const ink    = dark ? '#D4E8DC' : '#0D0A08';
-  const id     = `akf-${Math.random().toString(36).slice(2,7)}`; // unique per instance
-
+  const acc = '#FF5500';
+  // dark=true = fond BLANC réel → Tech noir
+  // dark=false = fond NOIR réel → Tech blanc
+  const ink   = dark ? '#0D0D0D' : '#FFFFFF';
+  const cross = dark ? '#FFFFFF' : '#0D0D0D';
+  const W = size * (220 / 48);
+  const H = size;
   return (
-    <svg onClick={onClick} width={size*4.2} height={size} viewBox="0 0 210 50"
-      fill="none" xmlns="http://www.w3.org/2000/svg"
-      style={{cursor:onClick?'pointer':'default',overflow:'visible'}} aria-label="AKAfolio">
-      <defs>
-        <filter id={`${id}-glow`} x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2.5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id={`${id}-dot`} x="-100%" y="-100%" width="300%" height="300%">
-          <feGaussianBlur stdDeviation="3" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-
-      {/* Barre gauche A */}
-      <line x1="4" y1="42" x2="16" y2="8" stroke={accent} strokeWidth="3.2"
-        strokeLinecap="round" strokeDasharray="60"
-        strokeDashoffset={animate?'60':'0'} filter={`url(#${id}-glow)`}>
-        {animate&&<animate attributeName="stroke-dashoffset" from="60" to="0"
-          dur="0.55s" fill="freeze" begin="0.1s" calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>}
-      </line>
-
-      {/* Barre droite A */}
-      <line x1="16" y1="8" x2="28" y2="42" stroke={accent} strokeWidth="3.2"
-        strokeLinecap="round" strokeDasharray="60"
-        strokeDashoffset={animate?'60':'0'} filter={`url(#${id}-glow)`}>
-        {animate&&<animate attributeName="stroke-dashoffset" from="60" to="0"
-          dur="0.55s" fill="freeze" begin="0.28s" calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>}
-      </line>
-
-      {/* Barre transversale A */}
-      <line x1="8" y1="28" x2="24" y2="28" stroke={accent} strokeWidth="2.8"
-        strokeLinecap="round" strokeDasharray="20"
-        strokeDashoffset={animate?'20':'0'} filter={`url(#${id}-glow)`}>
-        {animate&&<animate attributeName="stroke-dashoffset" from="20" to="0"
-          dur="0.28s" fill="freeze" begin="0.62s"/>}
-      </line>
-
-      {/* Point néon */}
-      <circle cx="31.5" cy="40" r={animate?'0':'3'} fill={accent} filter={`url(#${id}-dot)`}>
-        {animate&&<animate attributeName="r" values="0;4.5;3" keyTimes="0;0.6;1"
-          dur="0.45s" fill="freeze" begin="0.82s"
-          calcMode="spline" keySplines="0.34 1.56 0.64 1;0.25 0.46 0.45 0.94"/>}
+    <svg
+      onClick={onClick}
+      width={W} height={H}
+      viewBox="0 0 220 48"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="AKATech"
+      style={{ cursor: onClick ? 'pointer' : 'default', display: 'block', overflow: 'visible', transition: 'all .3s' }}
+    >
+      {/* ── ICÔNE ENGRENAGE HEXAGONAL ── */}
+      {/* Hexagone */}
+      <polygon points="24,3 36,10 36,24 24,31 12,24 12,10"
+        fill="none" stroke={acc} strokeWidth="2.2"
+        strokeLinejoin="round" strokeLinecap="round"/>
+      {/* Dents haut/bas/gauche/droite */}
+      <rect x="22" y="0"  width="4" height="5"  rx="1" fill={acc}/>
+      <rect x="22" y="33" width="4" height="5"  rx="1" fill={acc}/>
+      <rect x="0"  y="14" width="5" height="4"  rx="1" fill={acc}/>
+      <rect x="0"  y="20" width="5" height="4"  rx="1" fill={acc}/>
+      <rect x="43" y="14" width="5" height="4"  rx="1" fill={acc}/>
+      <rect x="43" y="20" width="5" height="4"  rx="1" fill={acc}/>
+      {/* Centre orange */}
+      <circle cx="24" cy="17" r="5.5" fill={acc}/>
+      {/* Croix blanche/noire au centre */}
+      <line x1="24" y1="13" x2="24" y2="21" stroke={cross} strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="20" y1="17" x2="28" y2="17" stroke={cross} strokeWidth="1.8" strokeLinecap="round"/>
+      {/* Fils circuit */}
+      <line x1="24" y1="31" x2="24" y2="42" stroke={acc} strokeWidth="1.6" strokeLinecap="round"/>
+      <circle cx="24" cy="44" r="2" fill={acc}/>
+      <line x1="12" y1="17" x2="3"  y2="17" stroke={acc} strokeWidth="1.6" strokeLinecap="round"/>
+      <circle cx="1"  cy="17" r="2" fill={acc}/>
+      <line x1="36" y1="17" x2="45" y2="17" stroke={acc} strokeWidth="1.6" strokeLinecap="round"/>
+      <circle cx="47" cy="17" r="2" fill={acc}/>
+      {/* Pulse ring */}
+      <circle cx="24" cy="17" r="5.5" fill="none" stroke={acc} strokeWidth="1" opacity="0">
+        <animate attributeName="r"       values="5.5;18;5.5" dur="2.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.6;0;0.6"  dur="2.2s" repeatCount="indefinite"/>
       </circle>
 
-      {/* KA */}
-      <g opacity={animate?'0':'1'}>
-        {animate&&<>
-          <animate attributeName="opacity" from="0" to="1" dur="0.01s" fill="freeze" begin="0.72s"/>
-          <animateTransform attributeName="transform" type="translate"
-            from="0 7" to="0 0" dur="0.4s" fill="freeze" begin="0.72s"
-            calcMode="spline" keySplines="0.25 0.46 0.45 0.94"/>
-        </>}
-        <text x="40" y="40" fontFamily="'Syne',sans-serif" fontWeight="800"
-          fontSize="28" letterSpacing="-0.04em" fill={ink}>KA</text>
-      </g>
+      {/* ── TEXTE AKA (orange, gras) ── */}
+      <text
+        x="54" y="37"
+        fontFamily="'Syne','Arial Black','Impact',sans-serif"
+        fontWeight="900" fontSize="30" letterSpacing="-0.5"
+        fill={acc}
+      >AKA</text>
 
-      {/* folio */}
-      <g opacity={animate?'0':'1'}>
-        {animate&&<>
-          <animate attributeName="opacity" from="0" to="1" dur="0.01s" fill="freeze" begin="0.98s"/>
-          <animateTransform attributeName="transform" type="translate"
-            from="0 9" to="0 0" dur="0.45s" fill="freeze" begin="0.98s"
-            calcMode="spline" keySplines="0.34 1.56 0.64 1"/>
-        </>}
-        <text x="91" y="40" fontFamily="'DM Sans',sans-serif" fontWeight="300"
-          fontSize="26" letterSpacing="-0.01em" fill={accent} opacity="0.9">folio</text>
-      </g>
+      {/* ── SÉPARATEUR ── */}
+      <line x1="139" y1="10" x2="139" y2="42" stroke={acc} strokeWidth="1.5" opacity="0.45"/>
 
-      {/* Ligne déco */}
-      <line x1="91" y1="44.5" x2="162" y2="44.5" stroke={accent} strokeWidth="1.2"
-        strokeLinecap="round" strokeDasharray="80"
-        strokeDashoffset={animate?'80':'0'} opacity="0.45">
-        {animate&&<animate attributeName="stroke-dashoffset" from="80" to="0"
-          dur="0.5s" fill="freeze" begin="1.35s"/>}
-      </line>
+      {/* ── TEXTE Tech (ink, semi-bold) ── */}
+      <text
+        x="144" y="37"
+        fontFamily="'Syne','Arial','Helvetica',sans-serif"
+        fontWeight="600" fontSize="28" letterSpacing="0.3"
+        className="logo-tech-text"
+        fill={ink}
+        style={{fill: ink}}
+      >Tech</text>
 
-      {/* Pulse continu */}
-      <circle cx="31.5" cy="40" r="3" fill="none" stroke={accent} strokeWidth="1.2" opacity="0">
-        <animate attributeName="r" values="3;10;3" dur="2.6s" repeatCount="indefinite" begin={animate?'2s':'0.5s'}/>
-        <animate attributeName="opacity" values="0.55;0;0.55" dur="2.6s" repeatCount="indefinite" begin={animate?'2s':'0.5s'}/>
-      </circle>
+      {/* Ligne déco pointillée sous Tech */}
+      <line x1="144" y1="43" x2="210" y2="43"
+        stroke={acc} strokeWidth="1" opacity="0.35"
+        strokeDasharray="3 3"/>
     </svg>
   );
 };
+
+// ═══════════════════════════════════════════════════════════════
+// WINDOW CHROME — macOS-style title bar per section
+// ═══════════════════════════════════════════════════════════════
+const WindowChrome = ({ title, dark, inner = false }) => (
+  <div className={`win-chrome${inner ? ' win-chrome--inner' : ' win-chrome--section'}`}>
+    <span className="win-chrome-title">{title}</span>
+    <div className="win-chrome-dots">
+      <span className={`wc-dot wc-dot--min ${dark?'wc-dot--dk':''}`} aria-hidden title="Réduire">&#x2212;</span>
+      <span className={`wc-dot wc-dot--max ${dark?'wc-dot--dk':''}`} aria-hidden title="Agrandir">&#x25A1;</span>
+      <span className={`wc-dot wc-dot--cls ${dark?'wc-dot--dk':''}`} aria-hidden title="Fermer">&#x2715;</span>
+    </div>
+  </div>
+);
 
 // ═══════════════════════════════════════════════════════════════
 // DATA
@@ -532,6 +530,27 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// CUSTOM ORANGE CURSOR
+// ═══════════════════════════════════════════════════════════════
+const CustomCursor = () => {
+  const dotRef = useRef(null);
+  useEffect(()=>{
+    const dot = dotRef.current;
+    if(!dot) return;
+    const move = e => { dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; };
+    const over = e => {
+      if(e.target.closest('a,button,[role=button],.sk-m-card,.c3d-card,.c3d-arrow,.mob-arr'))
+        dot.classList.add('cursor-hover');
+      else dot.classList.remove('cursor-hover');
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseover', over);
+    return ()=>{ window.removeEventListener('mousemove', move); window.removeEventListener('mouseover', over); };
+  },[]);
+  return <div ref={dotRef} className="cursor-dot"/>;
+};
+
+// ═══════════════════════════════════════════════════════════════
 // NOISE
 // ═══════════════════════════════════════════════════════════════
 const Noise = () => (
@@ -561,7 +580,7 @@ const Loader = ({onDone}) => {
         <div className="loader-logo"><AkafolioLogo size={44} dark={true} animate={true}/></div>
         <div className="loader-num">{Math.min(100,Math.round(pct))}<span>%</span></div>
         <div className="loader-bar"><div className="loader-fill" style={{width:`${pct}%`}}/></div>
-        <div className="loader-name">M'BOLLO AKA ELVIS</div>
+        <div className="loader-name">AKA ELVIS · AKATECH</div>
       </div>
     </div>
   );
@@ -662,6 +681,40 @@ const Navbar = ({dark, onToggle}) => {
     </>
   );
 };
+
+// ═══════════════════════════════════════════════════════════════
+// ROCKET FLAMES
+// ═══════════════════════════════════════════════════════════════
+const RocketFlames = () => (
+  <svg className="rocket-big-flames" xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 40 100" style={{position:'absolute',bottom:'-70px',left:'50%',transform:'translateX(-50%)',width:'40px',height:'80px',pointerEvents:'none',zIndex:9999}}>
+    {/* Core jet */}
+    <ellipse cx="20" cy="10" rx="7" ry="14" fill="#FF5500" opacity="0.95">
+      <animate attributeName="ry" values="14;20;11;18;14" dur=".18s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".95;1;.85;1;.95" dur=".22s" repeatCount="indefinite"/>
+    </ellipse>
+    {/* Mid flame */}
+    <ellipse cx="20" cy="22" rx="5" ry="16" fill="#FF8C00" opacity="0.8">
+      <animate attributeName="ry" values="16;22;12;20;16" dur=".22s" repeatCount="indefinite"/>
+      <animate attributeName="cx"  values="20;19;21;20;20" dur=".15s" repeatCount="indefinite"/>
+    </ellipse>
+    {/* Tip flicker */}
+    <ellipse cx="20" cy="38" rx="3" ry="12" fill="#FFD600" opacity="0.6">
+      <animate attributeName="ry" values="12;18;8;16;12" dur=".25s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".6;.9;.4;.8;.6" dur=".2s" repeatCount="indefinite"/>
+    </ellipse>
+    {/* Side sparks L */}
+    <circle cx="12" cy="18" r="2.5" fill="#FF5500" opacity="0.5">
+      <animate attributeName="cy" values="18;30;18" dur=".3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".5;0;.5" dur=".3s" repeatCount="indefinite"/>
+    </circle>
+    {/* Side sparks R */}
+    <circle cx="28" cy="20" r="2" fill="#FF8C00" opacity="0.5">
+      <animate attributeName="cy" values="20;34;20" dur=".35s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".5;0;.5" dur=".35s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+);
 
 // ═══════════════════════════════════════════════════════════════
 // SCROLL TOP ROCKET
@@ -840,6 +893,7 @@ const ScrollTop = ({dark}) => {
     >
       <i className="fas fa-rocket"/>
       <div className="rocket-flame"/>
+      {launching && <RocketFlames/>}
     </button>
   );
 };
@@ -944,8 +998,8 @@ const FeaturedCreation = ({dark}) => {
   const proj = PROJECTS.find(p => p.id === 1);
   return (
     <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
+      <WindowChrome title="Vitrine" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-        <span className="s-lbl">Vitrine</span>
         <h2 className="s-ttl">Dernière<br/>création.</h2>
       </div>
       <div className="cr-showcase">
@@ -1133,8 +1187,8 @@ const Services = ({dark}) => {
 
   return (
     <section id="services" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="Services & Tarifs" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-        <span className="s-lbl">Services</span>
         <h2 className="s-ttl">Ce que je<br/>fais bien.</h2>
       </div>
 
@@ -1194,8 +1248,8 @@ const About = ({dark}) => {
   return (
     <>
       <section id="about" ref={r1} className={dark?'section--dark':''}>
+        <WindowChrome title="À propos" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-          <span className="s-lbl">À Propos</span>
           <h2 className="s-ttl">Alors,<br/>c'est moi.</h2>
         </div>
         <SpotlightCard className={`about-grid ${v1?'anim':''} mi-stagger ${v1?'mi-stagger--vis':''}`}>
@@ -1226,8 +1280,8 @@ const About = ({dark}) => {
         </SpotlightCard>
       </section>
       <section id="experience" ref={r2} className={dark?'section--dark':''}>
+        <WindowChrome title="Parcours" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-          <span className="s-lbl">Parcours</span>
           <h2 className="s-ttl">Expérience &amp;<br/>Formation.</h2>
         </div>
         <div className={`timeline ${v2?'anim':''} ${dark?'timeline--dark':''} mi-stagger ${v2?'mi-stagger--vis':''}`}>
@@ -1304,10 +1358,11 @@ const Carousel3D = ({items, dark}) => {
   };
 
   return (
-    <div className="c3d-root"
+    <>
+    <div className={`c3d-root ${dark?'':'c3d-root--dark'}`}
       onMouseDown={onDS} onMouseUp={onDE} onTouchStart={onDS} onTouchEnd={onDE}>
-      {/* Halo glow */}
-      <div className="c3d-halo"/>
+      {/* Window chrome */}
+      <WindowChrome title="Réalisations récentes" dark={dark} inner/>
       {/* Stage */}
       <div className="c3d-stage">
         <div className="c3d-perspective">
@@ -1336,15 +1391,6 @@ const Carousel3D = ({items, dark}) => {
                   {proj.cat==='en-ligne'&&(
                     <div className="c3d-live"><span className="c3d-live-dot"/><span>EN LIGNE</span></div>
                   )}
-                  <div className="c3d-ring">
-                    <svg viewBox="0 0 36 36">
-                      <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="2"/>
-                      <circle cx="18" cy="18" r="15" fill="none" stroke={neon} strokeWidth="2"
-                        strokeDasharray={`${proj.progress*.942} 94.2`} strokeLinecap="round" transform="rotate(-90 18 18)"/>
-                    </svg>
-                    <span style={{color:neon}}>{proj.progress}%</span>
-                  </div>
-                  <span className="c3d-year">{proj.year}</span>
                 </div>
 
                 {/* Glassmorphism content */}
@@ -1356,7 +1402,6 @@ const Carousel3D = ({items, dark}) => {
                   <h3 className="c3d-title">{proj.title}</h3>
                   <p className="c3d-sub">{proj.subtitle}</p>
                   <p className="c3d-desc">{proj.description}</p>
-                  {rel===0&&<ProgressBar value={proj.progress} label="Avancement" visible={rel===0}/>}
                   {proj.stats&&(
                     <div className="c3d-stats">
                       {proj.stats.slice(0,3).map((s,si)=>(
@@ -1370,14 +1415,13 @@ const Carousel3D = ({items, dark}) => {
                     <div className="c3d-techs">
                       {proj.tech.slice(0,3).map(t=><span key={t}>{t}</span>)}
                     </div>
-                    {proj.url&&rel===0&&(
+                    {proj.url&&(
                       <a
                         href={proj.url}
                         target={proj.url.startsWith('http')?'_blank':'_self'}
                         rel="noreferrer"
                         className="c3d-link"
-                        onClick={e=>e.stopPropagation()}
-                        style={{borderColor:neonBorder,color:neon,background:neonBg,pointerEvents:'all',position:'relative',zIndex:20}}>
+                        onClick={e=>e.stopPropagation()}>
                         {proj.cat==='demo'
                           ?<><i className="fas fa-play-circle"/>Démo</>
                           :<><i className="fas fa-external-link-alt"/>Voir le site</>}
@@ -1394,16 +1438,17 @@ const Carousel3D = ({items, dark}) => {
       {/* Arrows */}
       <button className="c3d-arrow c3d-arrow--l" onClick={()=>go(-1)}><i className="fas fa-chevron-left"/></button>
       <button className="c3d-arrow c3d-arrow--r" onClick={()=>go(1)}><i className="fas fa-chevron-right"/></button>
-
-      {/* Dots */}
-      <div className="c3d-nav">
-        <span className="c3d-counter"><span className="c3d-counter-num">{String(active+1).padStart(2,'0')}</span>/{String(total).padStart(2,'0')}</span>
-        <div className="c3d-dots">
-          {items.map((_,i)=><button key={i} className={`c3d-dot ${i===active?'c3d-dot--active':''}`} onClick={()=>{setActive(i);resetAuto();}}/>)}
-        </div>
-        <span className="c3d-hint">← glissez ou ←→</span>
-      </div>
     </div>
+
+    {/* Nav bar — outside root so it never covers links */}
+    <div className="c3d-nav">
+      <span className="c3d-counter"><span className="c3d-counter-num">{String(active+1).padStart(2,'0')}</span>/{String(total).padStart(2,'0')}</span>
+      <div className="c3d-dots">
+        {items.map((_,i)=><button key={i} className={`c3d-dot ${i===active?'c3d-dot--active':''}`} onClick={()=>{setActive(i);resetAuto();}}/>)}
+      </div>
+      <span className="c3d-hint">← glissez ou ←→</span>
+    </div>
+    </>
   );
 };
 
@@ -1440,8 +1485,8 @@ const Projects = ({dark}) => {
 
   return (
     <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`}>
+      <WindowChrome title="Projets" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-        <span className="s-lbl">Portfolio</span>
         <h2 className="s-ttl">Réalisations<br/>récentes.</h2>
       </div>
 
@@ -1496,8 +1541,8 @@ const Skills = ({dark}) => {
     <section id="skills" className="skills-section" ref={ref}>
 
       <div className="skills-inner">
+        <WindowChrome title="Skills" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-          <span className="s-lbl">Stack technique</span>
           <h2 className="s-ttl">Mes outils<br/>de travail.</h2>
         </div>
 
@@ -1559,8 +1604,8 @@ const Contact = ({dark}) => {
   };
   return (
     <section id="contact" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="Contact" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}>
-        <span className="s-lbl">Contact</span>
         <h2 className="s-ttl">Transformons<br/>votre idée.</h2>
       </div>
       <div className={`contact-grid ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
@@ -1640,7 +1685,7 @@ const Contact = ({dark}) => {
 const Footer = ({dark}) => (
   <footer className={`footer ${dark?'footer--dark':'footer--light'}`}>
     <div className="footer-inner">
-      <div className="footer-logo"><AkafolioLogo size={28} dark={dark} animate={false}/></div>
+      <div className="footer-logo"><AkafolioLogo size={52} dark={dark} animate={false}/></div>
       <div className="footer-mid">
         <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>
@@ -1675,6 +1720,7 @@ export default function App() {
     <Loader onDone={()=>setLoaded(true)}/>
   ) : (
     <div className={`app ${light?'app--light':''}`}>
+      <CustomCursor/>
       <ParticleCanvas global light={light}/>
       <Navbar dark={dark} onToggle={toggleDark}/>
       <ScrollTop dark={dark}/>
