@@ -17,9 +17,7 @@ const AKALOGO_CSS = `
 @keyframes akaParticle    { 0%{opacity:0;transform:translate(0,0) scale(.4)} 20%{opacity:.8} 80%{opacity:.35} 100%{opacity:0;transform:translate(var(--ptx),var(--pty)) scale(0)} }
 @keyframes akaScan        { 0%{background-position:0 -40px} 100%{background-position:0 200%} }
 .akalogo-wrap { position:relative; display:inline-flex; align-items:center; border-radius:10px; overflow:hidden; flex-shrink:0; }
-.akalogo-bg   { position:absolute; inset:0; border-radius:10px;
-  background:radial-gradient(ellipse 72% 80% at 26% 50%, #2a1200 0%, #0d0600 100%);
-  border:1px solid rgba(255,85,0,.18); pointer-events:none; }
+.akalogo-bg   { display:none; }
 .akalogo-scan { position:absolute; inset:0; pointer-events:none; z-index:0;
   background:linear-gradient(180deg,transparent 0%,rgba(255,85,0,.04) 50%,transparent 100%);
   background-size:100% 40px; animation:akaScan 3s linear infinite; }
