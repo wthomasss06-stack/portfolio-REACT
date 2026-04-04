@@ -2,59 +2,36 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Monitor, Star, Cpu, Check, Globe, ShoppingCart, Zap, Wrench, Hammer, Briefcase, Sparkles, ArrowRight, Send, Eye, Coffee, Hand } from 'lucide-react';
 import './style.css';
 
-const AKALOGO_CSS_ID = 'akalogo-v3-styles';
+// ─── Logo AKATech (v4 — style page.js, orange) ───────────────────
+const AKALOGO_CSS_ID = 'akalogo-v4-styles';
 const AKALOGO_CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Exo+2:wght@200;300&display=swap');
-@keyframes akaGearSpin    { to { transform:rotate(360deg); } }
-@keyframes akaGearCounter { to { transform:rotate(-360deg); } }
-@keyframes akaHaloPulse   { 0%,100%{opacity:.5;transform:translateY(-50%) scale(1)} 50%{opacity:.9;transform:translateY(-50%) scale(1.2)} }
-@keyframes akaDotPulse    { 0%,100%{opacity:.5} 50%{opacity:1} }
-@keyframes akaLineTrace   { 0%{stroke-dashoffset:44;opacity:.3} 50%{stroke-dashoffset:0;opacity:1} 100%{stroke-dashoffset:-44;opacity:.3} }
-@keyframes akaTextIn      { from{opacity:0;transform:translateX(-14px)} to{opacity:1;transform:translateX(0)} }
-@keyframes akaAkaGlow     { 0%,100%{filter:drop-shadow(0 0 7px rgba(255,85,0,.4))} 50%{filter:drop-shadow(0 0 18px rgba(255,85,0,.8))} }
-@keyframes akaLineExpand  { from{transform:scaleX(0);opacity:0} to{transform:scaleX(1);opacity:1} }
-@keyframes akaFadeSlide   { from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:translateY(0)} }
-@keyframes akaParticle    { 0%{opacity:0;transform:translate(0,0) scale(.4)} 20%{opacity:.8} 80%{opacity:.35} 100%{opacity:0;transform:translate(var(--ptx),var(--pty)) scale(0)} }
-@keyframes akaScan        { 0%{background-position:0 -40px} 100%{background-position:0 200%} }
-.akalogo-wrap { position:relative; display:inline-flex; align-items:center; border-radius:10px; overflow:hidden; flex-shrink:0; }
-.akalogo-bg   { display:none; }
-.akalogo-scan { position:absolute; inset:0; pointer-events:none; z-index:0;
-  background:linear-gradient(180deg,transparent 0%,rgba(255,85,0,.04) 50%,transparent 100%);
-  background-size:100% 40px; animation:akaScan 3s linear infinite; }
-.akalogo-grid { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.05; }
-.akalogo-halo { position:absolute; left:0; top:50%; border-radius:50%;
-  background:radial-gradient(circle, rgba(255,85,0,.25) 0%, transparent 70%);
-  animation:akaHaloPulse 2.4s ease-in-out infinite; pointer-events:none; z-index:1; }
-.akalogo-gear-wrap { position:relative; z-index:2; flex-shrink:0; }
-.akalogo-gear-svg     { animation:akaGearSpin    8s linear infinite; transform-origin:50% 50%; display:block; overflow:visible; }
-.akalogo-circuit-svg  { position:absolute; top:0; left:0; animation:akaGearCounter 8s linear infinite; transform-origin:50% 50%; display:block; overflow:visible; }
-.akalogo-gear-svg.aka-static, .akalogo-circuit-svg.aka-static { animation:none; }
-.akalogo-text  { position:relative; z-index:2; display:flex; flex-direction:column; gap:1px; }
-.akalogo-row   { display:flex; align-items:baseline; }
-.akalogo-aka   { font-family:'Orbitron','Arial Black',sans-serif; font-weight:900; line-height:1;
-  background:linear-gradient(175deg,#ff9955 0%,#ff3300 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  filter:drop-shadow(0 0 8px rgba(255,85,0,.45));
-  animation:akaTextIn .85s cubic-bezier(.22,1,.36,1) both, akaAkaGlow 3s ease-in-out 1s infinite; }
-.akalogo-aka.aka-static   { animation:none; filter:drop-shadow(0 0 6px rgba(255,85,0,.35)); }
-.akalogo-tech { font-family:'Exo 2','Arial',sans-serif; font-weight:200; line-height:1; letter-spacing:.1em; color:#f0c8a0;
-  animation:akaTextIn .85s .16s cubic-bezier(.22,1,.36,1) both; }
-.akalogo-tech.aka-static  { animation:none; }
-.akalogo-accent { height:1px; background:linear-gradient(90deg,rgba(255,85,0,.75) 0%,rgba(255,85,0,.06) 100%);
-  animation:akaLineExpand .75s .55s ease-out both; transform-origin:left; }
-.akalogo-accent.aka-static { animation:none; transform:scaleX(1); opacity:1; }
-.akalogo-tag  { font-family:'Exo 2',sans-serif; font-weight:300; letter-spacing:.3em; color:rgba(255,160,80,.45);
-  text-transform:uppercase; animation:akaFadeSlide 1.1s .85s ease both; white-space:nowrap; }
-.akalogo-tag.aka-static   { animation:none; opacity:1; }
-.akalogo-pts  { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
-.akalogo-p    { position:absolute; width:2px; height:2px; border-radius:50%; background:#ff6b1a;
-  animation:akaParticle var(--pdur) var(--pdel) ease-in-out infinite; opacity:0; }
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+@keyframes aka4Pulse  { 0%,100%{opacity:.45;transform:scale(1)} 50%{opacity:1;transform:scale(1.45)} }
+@keyframes aka4Glow   { 0%,100%{text-shadow:0 0 8px rgba(255,85,0,.35),0 0 20px rgba(255,85,0,.15)} 50%{text-shadow:0 0 18px rgba(255,85,0,.9),0 0 36px rgba(255,85,0,.4)} }
+@keyframes aka4Scan   { 0%{background-position:0 -40px} 100%{background-position:0 200%} }
+.aka4-wrap { display:inline-flex; align-items:center; position:relative; flex-shrink:0; }
+.aka4-scan { position:absolute; inset:0; pointer-events:none; border-radius:100px; z-index:0;
+  background:linear-gradient(180deg,transparent 0%,rgba(255,85,0,.06) 50%,transparent 100%);
+  background-size:100% 36px; animation:aka4Scan 2.4s linear infinite; }
+.aka4-pill { position:relative; z-index:1; display:inline-flex; align-items:center;
+  border-radius:100px; border:1px solid rgba(255,85,0,.28);
+  background:rgba(255,85,0,.07); backdrop-filter:blur(10px);
+  transition:border-color .3s,background .3s; overflow:hidden; white-space:nowrap; }
+.aka4-pill:hover { border-color:rgba(255,85,0,.55); background:rgba(255,85,0,.13); }
+.aka4-dot { border-radius:50%; background:#ff5500; flex-shrink:0; box-shadow:0 0 5px rgba(255,85,0,.6); }
+.aka4-dot--anim { animation:aka4Pulse 1.6s ease-in-out infinite; }
+.aka4-prefix { font-family:'JetBrains Mono',monospace; font-weight:600;
+  color:rgba(255,120,50,.55); line-height:1; flex-shrink:0; user-select:none; }
+.aka4-aka { font-family:'Syne',sans-serif; font-weight:800; color:#ff5500;
+  line-height:1; letter-spacing:-.025em; flex-shrink:0; }
+.aka4-aka--anim { animation:aka4Glow 3s ease-in-out infinite; }
+.aka4-tech { font-family:'Syne',sans-serif; font-weight:700; line-height:1;
+  letter-spacing:-.015em; flex-shrink:0; }
+.aka4-tech--dk { color:rgba(255,255,255,.82); }
+.aka4-tech--lt { color:rgba(12,12,12,.82); }
 `;
 
 const AkafolioLogo = ({ size = 48, dark = true, onClick, animate = true }) => {
-  const ptsRef  = useRef(null);
-  const timerRef = useRef(null);
-
   useEffect(() => {
     if (!document.getElementById(AKALOGO_CSS_ID)) {
       const s = document.createElement('style');
@@ -64,101 +41,40 @@ const AkafolioLogo = ({ size = 48, dark = true, onClick, animate = true }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!animate || !ptsRef.current) return;
-    const spawn = () => {
-      const el = ptsRef.current; if (!el) return;
-      const p = document.createElement('div');
-      p.className = 'akalogo-p';
-      p.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;`
-        + `--ptx:${((Math.random()-.5)*56).toFixed(0)}px;`
-        + `--pty:${(-(Math.random()*48+6)).toFixed(0)}px;`
-        + `--pdur:${(2.4+Math.random()*2.4).toFixed(1)}s;`
-        + `--pdel:${(Math.random()*2.8).toFixed(1)}s`;
-      el.appendChild(p);
-      setTimeout(() => p.remove(), 6000);
-    };
-    for (let i = 0; i < 8; i++) setTimeout(spawn, i * 160);
-    timerRef.current = setInterval(spawn, 360);
-    return () => clearInterval(timerRef.current);
-  }, [animate]);
-
   const sc      = size / 48;
-  const gearPx  = Math.round(72 * sc);
-  const fSize   = Math.round(52 * sc);
-  const padH    = Math.round(16 * sc);
-  const padV    = Math.round(12 * sc);
-  const gapLogo = Math.round(14 * sc);
-  const tagSize = Math.round(7.5 * sc);
-  const haloSz  = Math.round(100 * sc);
-  const showTag = size >= 34;
-  const st = animate ? '' : ' aka-static';
+  const fontSize = Math.round(19 * sc);
+  const dotSz    = Math.round(7 * sc);
+  const prefSz   = Math.round(11 * sc);
+  const padV     = Math.round(8 * sc);
+  const padH     = Math.round(14 * sc);
+  const gap      = Math.round(6 * sc);
 
   return (
     <div
-      className="akalogo-wrap"
+      className="aka4-wrap"
       onClick={onClick}
-      style={{ padding:`${padV}px ${padH}px`, gap:`${gapLogo}px`, cursor: onClick ? 'pointer' : 'default' }}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
-      <div className="akalogo-bg"/>
-      {animate && <div className="akalogo-scan"/>}
-      <svg className="akalogo-grid" preserveAspectRatio="none">
-        <defs>
-          <pattern id="akaGP" width={Math.round(26*sc)} height={Math.round(26*sc)} patternUnits="userSpaceOnUse">
-            <path d={`M${Math.round(26*sc)} 0H0V${Math.round(26*sc)}`} fill="none" stroke="#ff5500" strokeWidth="0.5"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#akaGP)"/>
-      </svg>
-      {animate && <div className="akalogo-halo" style={{width:haloSz,height:haloSz,marginLeft:Math.round(-6*sc)}}/>}
-      {animate && <div className="akalogo-pts" ref={ptsRef}/>}
-      <div className="akalogo-gear-wrap" style={{width:gearPx,height:gearPx}}>
-        <svg className={`akalogo-gear-svg${st}`} width={gearPx} height={gearPx} viewBox="0 0 96 96">
-          <defs>
-            <linearGradient id="akaGG" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ff8844"/><stop offset="100%" stopColor="#cc2200"/>
-            </linearGradient>
-            <filter id="akaGF"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <path filter="url(#akaGF)" fill="url(#akaGG)"
-            d="M48,8C51,8,53,10,53,13L53,16C56,17,59,18,62,20L65,18C67,15,71,15,74,18L80,24C83,27,83,31,80,34L78,37C80,40,81,43,82,46L85,46C89,46,91,49,91,53L91,61C91,65,89,68,85,68L82,68C81,71,80,74,78,77L80,80C83,83,83,87,80,90L74,96C71,99,67,99,65,96L62,94C59,96,56,97,53,98L53,101C53,105,51,107,48,107L40,107C37,107,35,105,35,101L35,98C32,97,29,96,26,94L23,96C21,99,17,99,14,96L8,90C5,87,5,83,8,80L10,77C8,74,7,71,6,68L3,68C-1,68,-3,65,-3,61L-3,53C-3,49,-1,46,3,46L6,46C7,43,8,40,10,37L8,34C5,31,5,27,8,24L14,18C17,15,21,15,23,18L26,20C29,18,32,17,35,16L35,13C35,10,37,8,40,8Z"/>
-          <circle cx="44" cy="57" r="23" fill="#0d0600"/>
-        </svg>
-        <svg className={`akalogo-circuit-svg${st}`} width={gearPx} height={gearPx} viewBox="0 0 96 96" style={{position:'absolute',top:0,left:0}}>
-          <defs><filter id="akaCF"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-          <g filter="url(#akaCF)">
-            {[
-              {x1:26,y1:57,x2:62,y2:57,sw:2,da:36,del:0},
-              {x1:44,y1:37,x2:44,y2:77,sw:2,da:40,del:.6},
-              {x1:26,y1:57,x2:26,y2:45,sw:1.5,da:12,del:.3},
-              {x1:62,y1:57,x2:62,y2:45,sw:1.5,da:12,del:.9},
-              {x1:26,y1:57,x2:26,y2:69,sw:1.5,da:12,del:1.2},
-              {x1:62,y1:57,x2:62,y2:69,sw:1.5,da:12,del:1.5},
-            ].map((l,i)=>(
-              <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                stroke="#ff6b1a" strokeWidth={l.sw} strokeLinecap="round" strokeDasharray={l.da}
-                style={animate?{animation:`akaLineTrace 2.4s ${l.del}s ease-in-out infinite`}:{opacity:.7}}/>
-            ))}
-            {[{cx:26,cy:45,d:0},{cx:62,cy:45,d:.4},{cx:26,cy:69,d:.8},{cx:62,cy:69,d:1.2},{cx:44,cy:37,d:.2},{cx:44,cy:77,d:1}].map(({cx,cy,d},i)=>(
-              <circle key={i} cx={cx} cy={cy} r="3" fill="#ffaa66"
-                style={animate?{animation:`akaDotPulse 1.6s ${d}s ease-in-out infinite`}:{opacity:.9}}/>
-            ))}
-            <circle cx="44" cy="57" r="4.5" fill="#ffcc99"
-              style={animate?{animation:'akaDotPulse 1.1s ease-in-out infinite'}:{opacity:1}}/>
-          </g>
-        </svg>
-      </div>
-      <div className="akalogo-text">
-        <div className="akalogo-row">
-          <span className={`akalogo-aka${st}`}  style={{fontSize:fSize}}>AKA</span>
-          <span className={`akalogo-tech${st}`} style={{fontSize:fSize}}>Tech</span>
-        </div>
-        <div className={`akalogo-accent${st}`}/>
-        {showTag && <div className={`akalogo-tag${st}`} style={{fontSize:tagSize}}>Innovation · Technology · Solutions</div>}
+      {animate && <div className="aka4-scan"/>}
+      <div className="aka4-pill" style={{ padding:`${padV}px ${padH}px`, gap }}>
+        <span
+          className={`aka4-dot${animate ? ' aka4-dot--anim' : ''}`}
+          style={{ width:dotSz, height:dotSz }}
+        />
+        <span className="aka4-prefix" style={{ fontSize:prefSz }}>{'// '}</span>
+        <span
+          className={`aka4-aka${animate ? ' aka4-aka--anim' : ''}`}
+          style={{ fontSize }}
+        >AKA</span>
+        <span
+          className={`aka4-tech ${dark ? 'aka4-tech--dk' : 'aka4-tech--lt'}`}
+          style={{ fontSize }}
+        >Tech</span>
       </div>
     </div>
   );
 };
+
 
 const WindowChrome = ({ title, dark, inner = false }) => (
   <div className={`win-chrome${inner ? ' win-chrome--inner' : ' win-chrome--section'}`}>
@@ -234,6 +150,12 @@ const PROJECTS = [
     tech:["React","Tailwind CSS","Framer Motion","Vercel"],
     stats:[{icon:"paint-brush",label:"Galerie créative"},{icon:"star",label:"Design sur-mesure"},{icon:"globe",label:"En production"}],
     url:"https://mory01ff.vercel.app/", year:"2024", isPremium:true },
+  { id:11, title:"ManoBeat 777", subtitle:"Portfolio Beatmaker", cat:"en-ligne", progress:100,
+    description:"Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp en quelques clics.",
+    image:"/assets/images/projects/beatstore-preview.jpg",
+    tech:["React","Tailwind CSS","Howler.js","Vercel"],
+    stats:[{icon:"headphones",label:"Écoute en ligne"},{icon:"whatsapp",label:"Achat via WhatsApp"},{icon:"music",label:"Catalogue beats"}],
+    url:"https://xxx-x.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [
@@ -305,7 +227,7 @@ const SKILLS = {
     { name:"React",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
     { name:"JavaScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
     { name:"TypeScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
-    { name:"Vue.js",     icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg" },
+    { name:"Next.js",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
     { name:"Tailwind",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
     { name:"HTML5",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
     { name:"CSS3",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
@@ -316,6 +238,7 @@ const SKILLS = {
     { name:"Flask",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" },
     { name:"Django",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" },
     { name:"Node.js", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+    { name:"NestJS",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" },
     { name:"MySQL",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
   ],
   tools: [
@@ -406,23 +329,80 @@ const MagBtn = ({ className='', onClick, children, ...rest }) => {
   );
 };
 
-const TiltCard = ({ children, className='', style={}, onClick }) => {
-  const ref = useRef(null);
-  const onMove = useCallback(e => {
+// ── Vrai 3D Tilt Card — mouse (PC) + touch natif (mobile) ──────
+const TiltCard = ({ children, className='', style={}, onClick, intensity=12, perspective=900 }) => {
+  const ref     = useRef(null);
+  const glowRef = useRef(null);
+  const rafRef  = useRef(null);
+
+  // Fonction centrale : applique le tilt à partir de coordonnées écran
+  const applyTilt = useCallback((mx, my, intens) => {
     const el = ref.current; if (!el) return;
     const rect = el.getBoundingClientRect();
-    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-    const mx = e.clientX ?? e.touches?.[0]?.clientX ?? cx;
-    const my = e.clientY ?? e.touches?.[0]?.clientY ?? cy;
-    const rx = ((my - cy) / (rect.height/2)) * -10;
-    const ry = ((mx - cx) / (rect.width/2))  *  10;
-    el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
-  }, []);
-  const onLeave = useCallback(() => { if (ref.current) ref.current.style.transform = ''; }, []);
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const rx = ((my - cy) / (rect.height / 2)) * -intens;
+    const ry = ((mx - cx) / (rect.width  / 2)) *  intens;
+    const px = ((mx - rect.left) / rect.width)  * 100;
+    const py = ((my - rect.top)  / rect.height) * 100;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      el.style.transform = `perspective(${perspective}px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.03,1.03,1.03)`;
+      el.style.transition = 'transform .08s linear';
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(280px circle at ${px}% ${py}%, rgba(255,85,0,.13) 0%, transparent 68%)`;
+        glowRef.current.style.opacity = '1';
+      }
+    });
+  }, [perspective]);
+
+  const resetTilt = useCallback(() => {
+    const el = ref.current; if (!el) return;
+    cancelAnimationFrame(rafRef.current);
+    el.style.transition = 'transform .45s cubic-bezier(.25,.46,.45,.94)';
+    el.style.transform  = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
+    if (glowRef.current) glowRef.current.style.opacity = '0';
+  }, [perspective]);
+
+  // Mouse (PC) — via React synthetic (fiable sur desktop)
+  const onMouseMove  = useCallback(e => applyTilt(e.clientX, e.clientY, intensity),       [applyTilt, intensity]);
+  const onMouseLeave = useCallback(()  => resetTilt(),                                      [resetTilt]);
+
+  // Touch (mobile) — listeners natifs ajoutés via useEffect
+  // (les synthetic onTouchMove de React peuvent perdre e.touches sur certains navigateurs mobiles)
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    // Intensité réduite sur mobile (doigt = geste plus ample)
+    const mobIntensity = intensity * 0.65;
+
+    const onTouchMove = e => {
+      if (!e.touches || !e.touches[0]) return;
+      applyTilt(e.touches[0].clientX, e.touches[0].clientY, mobIntensity);
+    };
+    const onTouchEnd = () => resetTilt();
+
+    el.addEventListener('touchmove', onTouchMove, { passive: true });
+    el.addEventListener('touchend',  onTouchEnd,  { passive: true });
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchmove',   onTouchMove);
+      el.removeEventListener('touchend',    onTouchEnd);
+      el.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [applyTilt, resetTilt, intensity]);
+
   return (
-    <div ref={ref} className={`mi-tilt ${className}`} style={style}
-      onMouseMove={onMove} onMouseLeave={onLeave} onTouchMove={onMove} onTouchEnd={onLeave}
-      onClick={onClick}>{children}</div>
+    <div
+      ref={ref}
+      className={`tilt3d ${className}`}
+      style={{ ...style, willChange:'transform', transformStyle:'preserve-3d' }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <div ref={glowRef} className="tilt3d-glow"/>
+      {children}
+    </div>
   );
 };
 
@@ -434,11 +414,11 @@ const SpotlightCard = ({ children, className='', style={} }) => {
     const rect = el.getBoundingClientRect();
     const x = e.clientX - rect.left, y = e.clientY - rect.top;
     layerRef.current.style.background =
-      `radial-gradient(320px circle at ${x}px ${y}px, rgba(0,204,106,.10) 0%, transparent 70%)`;
+      `radial-gradient(320px circle at ${x}px ${y}px, rgba(255,85,0,.09) 0%, transparent 70%)`;
   }, []);
   return (
     <div ref={ref} className={`mi-spotlight ${className}`} style={style} onMouseMove={onMove}>
-      <div ref={layerRef} className="mi-spotlight-layer"/>{children}
+      <div ref={layerRef} className="mi-spotlight-layer" style={{display:'block',position:'absolute',inset:0,pointerEvents:'none',zIndex:0,transition:'background .08s'}}/>{children}
     </div>
   );
 };
@@ -555,53 +535,152 @@ const Noise = () => (
 );
 
 // ═══════════════════════════════════════════════════════════════
-// LOADER — responsive amélioré
+// LOADER v4 — page.js style, orange, responsive, dark/light
 // ═══════════════════════════════════════════════════════════════
-const Loader = ({onDone}) => {
-  const [pct,setPct]=useState(0);
-  const [msg,setMsg]=useState('Initialisation…');
-  useEffect(()=>{
-    const t=setInterval(()=>setPct(p=>{
-      const n=p+Math.random()*7+2;
-      if(n>=100){clearInterval(t);setTimeout(onDone,500);return 100;}
+const LOADER_CSS_ID = 'akaloader-v4-styles';
+const LOADER_CSS = `
+@keyframes aka4LoaderScan { 0%{top:-2%} 100%{top:104%} }
+@keyframes aka4FadeUp     { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes aka4OrbPulse   { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)} }
+@keyframes aka4DotBlink   { 0%,100%{opacity:.4} 50%{opacity:1} }
+@keyframes aka4BarGlow    { 0%,100%{opacity:.6} 50%{opacity:1} }
+/* backgrounds */
+.ldv4-bg-dark  { position:absolute; inset:0;
+  background:linear-gradient(150deg,#090200 0%,#070100 55%,#0c0300 100%); }
+.ldv4-bg-light { position:absolute; inset:0;
+  background:linear-gradient(150deg,#fdf8f5 0%,#fff5ef 55%,#fef0e8 100%); }
+.ldv4-grid { position:absolute; inset:0; opacity:.055; pointer-events:none;
+  background-image:linear-gradient(rgba(255,85,0,.5) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,85,0,.5) 1px,transparent 1px);
+  background-size: clamp(30px,4.5vw,52px) clamp(30px,4.5vw,52px); }
+.ldv4-grid--light { opacity:.04; }
+.ldv4-orb { position:absolute; top:50%; left:50%;
+  width:min(560px,85vw); height:min(560px,85vw); border-radius:50%;
+  background:radial-gradient(circle,rgba(255,85,0,.07) 0%,transparent 65%);
+  pointer-events:none; animation:aka4OrbPulse 3.5s ease-in-out infinite; }
+.ldv4-scan { position:absolute; left:0; right:0; height:1px; pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,100,30,.45) 50%,transparent 100%);
+  animation:aka4LoaderScan 5s linear infinite 1s; }
+/* inner layout */
+.ldv4-inner { position:relative; z-index:2; display:flex; flex-direction:column;
+  align-items:center; text-align:center; width:100%;
+  padding:0 clamp(16px,5vw,40px); gap:0; }
+.ldv4-logo-wrap  { margin-bottom:clamp(20px,4vh,44px); animation:aka4FadeUp .55s ease .05s both; }
+.ldv4-tag        { display:inline-flex; align-items:center; gap:.5em;
+  padding:.28em .9em; border-radius:100px; border:1px solid rgba(255,85,0,.22);
+  background:rgba(255,85,0,.07); backdrop-filter:blur(8px);
+  font-family:'JetBrains Mono',monospace; letter-spacing:.14em; text-transform:uppercase;
+  font-size:clamp(.5rem,.85vw,.7rem); color:rgba(255,110,30,.7);
+  margin-bottom:clamp(14px,3vh,28px); animation:aka4FadeUp .55s ease .12s both; }
+.ldv4-tag--light { color:rgba(180,60,0,.65); border-color:rgba(255,85,0,.18); background:rgba(255,85,0,.05); }
+.ldv4-tag-dot    { width:5px; height:5px; border-radius:50%; background:#ff5500; display:inline-block;
+  animation:aka4DotBlink 1.4s ease-in-out infinite; }
+.ldv4-num        { font-family:'Syne',sans-serif; font-weight:800; line-height:.88;
+  letter-spacing:-.045em; color:#f4efe8;
+  font-size:clamp(60px,15vw,148px);
+  text-shadow:0 0 50px rgba(255,85,0,.2);
+  margin-bottom:clamp(18px,3.5vh,32px); animation:aka4FadeUp .55s ease .18s both; }
+.ldv4-num--light { color:#1a0800; text-shadow:0 0 30px rgba(255,85,0,.15); }
+.ldv4-num span   { font-size:.34em; vertical-align:super; color:#ff5500; font-weight:700; }
+.ldv4-bar-wrap   { width:min(300px,76vw); position:relative;
+  margin-bottom:clamp(14px,2.5vh,24px); animation:aka4FadeUp .55s ease .24s both; }
+.ldv4-bar-track  { height:2px; width:100%; background:rgba(255,85,0,.1); border-radius:2px;
+  position:relative; overflow:visible; }
+.ldv4-bar-fill   { height:100%; border-radius:2px;
+  background:linear-gradient(90deg,rgba(180,40,0,.55),#ff5500);
+  transition:width .13s linear; box-shadow:0 0 10px rgba(255,85,0,.35); }
+.ldv4-bar-tip    { position:absolute; top:50%; transform:translate(-50%,-50%);
+  width:7px; height:7px; border-radius:50%; background:#ff6520;
+  box-shadow:0 0 0 3px rgba(255,85,0,.18),0 0 12px 4px rgba(255,85,0,.45);
+  transition:left .13s linear; animation:aka4BarGlow 1s ease-in-out infinite; pointer-events:none; }
+.ldv4-msg        { font-family:'JetBrains Mono',monospace; letter-spacing:.16em;
+  text-transform:uppercase; font-size:clamp(.58rem,1.1vw,.78rem);
+  color:rgba(255,130,50,.6); min-height:1.3em;
+  margin-bottom:.5rem; animation:aka4FadeUp .55s ease .3s both; }
+.ldv4-msg--light { color:rgba(160,55,0,.55); }
+.ldv4-sub        { font-family:'JetBrains Mono',monospace; letter-spacing:.28em;
+  text-transform:uppercase; font-size:clamp(.46rem,.82vw,.6rem);
+  color:rgba(255,85,0,.24); animation:aka4FadeUp .55s ease .36s both; }
+.ldv4-sub--light { color:rgba(200,70,0,.22); }
+`;
+
+const Loader = ({ onDone }) => {
+  const [pct, setPct] = useState(0);
+  const [msg, setMsg] = useState('Initialisation…');
+  // detect saved theme to match loader bg
+  const [isLight] = useState(() => {
+    try { return localStorage.getItem('aka-theme') === 'light'; } catch { return false; }
+  });
+
+  useEffect(() => {
+    if (!document.getElementById(LOADER_CSS_ID)) {
+      const s = document.createElement('style');
+      s.id = LOADER_CSS_ID;
+      s.textContent = LOADER_CSS;
+      document.head.appendChild(s);
+    }
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setPct(p => {
+      const n = p + Math.random() * 7 + 2;
+      if (n >= 100) { clearInterval(t); setTimeout(onDone, 500); return 100; }
       return n;
-    }),75);
-    return ()=>clearInterval(t);
-  },[onDone]);
-  useEffect(()=>{
-    if(pct<30) setMsg('Initialisation…');
-    else if(pct<60) setMsg('Chargement des modules…');
-    else if(pct<90) setMsg('Préparation interface…');
+    }), 75);
+    return () => clearInterval(t);
+  }, [onDone]);
+
+  useEffect(() => {
+    if (pct < 30) setMsg('Initialisation…');
+    else if (pct < 60) setMsg('Chargement des modules…');
+    else if (pct < 90) setMsg('Préparation interface…');
     else setMsg('Lancement ✦');
-  },[pct]);
-  const p=Math.min(100,Math.round(pct));
+  }, [pct]);
+
+  const p = Math.min(100, Math.round(pct));
+  const lt = isLight; // light theme = dark neon bg (see CSS vars naming)
+
   return (
     <div className="loader">
-      <Noise/>
-      <div className="loader-scan"/>
+      <div className={lt ? 'ldv4-bg-light' : 'ldv4-bg-dark'}/>
+      <div className={`ldv4-grid${lt ? ' ldv4-grid--light' : ''}`}/>
+      <div className="ldv4-orb"/>
+      <div className="ldv4-scan"/>
       <div className="loader-corner loader-corner--tl"/>
       <div className="loader-corner loader-corner--tr"/>
       <div className="loader-corner loader-corner--bl"/>
       <div className="loader-corner loader-corner--br"/>
-      <div className="loader-inner">
-        <div className="loader-logo">
-          <AkafolioLogo size={56} dark={true} animate={true}/>
+      <div className="ldv4-inner">
+        <div className="ldv4-logo-wrap">
+          <AkafolioLogo
+            size={typeof window !== 'undefined' ? Math.max(44, Math.min(76, Math.round(window.innerWidth * .13))) : 60}
+            dark={!lt}
+            animate={true}
+          />
         </div>
-        <div className="loader-num">{p}<span>%</span></div>
-        <div className="loader-bar">
-          <div className="loader-fill" style={{width:`${pct}%`}}/>
-          <div className="loader-bar-glow" style={{left:`${Math.min(pct,99.5)}%`}}/>
+        <div className={`ldv4-tag${lt ? ' ldv4-tag--light' : ''}`}>
+          <span className="ldv4-tag-dot"/>
+          aka.dev · abidjan
         </div>
-        <div className="loader-name">{msg}</div>
-        <div className="loader-sub">AKA ELVIS · AKATECH · ABIDJAN</div>
+        <div className={`ldv4-num${lt ? ' ldv4-num--light' : ''}`}>
+          {p}<span>%</span>
+        </div>
+        <div className="ldv4-bar-wrap">
+          <div className="ldv4-bar-track">
+            <div className="ldv4-bar-fill" style={{ width:`${pct}%` }}/>
+            <div className="ldv4-bar-tip"  style={{ left:`${Math.min(pct, 99.5)}%` }}/>
+          </div>
+        </div>
+        <div className={`ldv4-msg${lt ? ' ldv4-msg--light' : ''}`}>{msg}</div>
+        <div className={`ldv4-sub${lt ? ' ldv4-sub--light' : ''}`}>AKA ELVIS · AKATECH · ABIDJAN</div>
       </div>
     </div>
   );
 };
 
 const ThemeToggle = ({dark, onToggle}) => (
-  <button className={`theme-toggle ${dark?'theme-toggle--dark':''}`} onClick={onToggle} title={dark?"Mode clair":"Mode sombre néon"}>
-    {dark ? <><i className="fas fa-sun"/><span>Clair</span></> : <><i className="fas fa-moon"/><span>Néon</span></>}
+  <button className={`theme-toggle ${dark?'theme-toggle--dark':''}`} onClick={onToggle} title={dark?"Passer en mode clair":"Passer en mode sombre"}>
+    {dark ? <><i className="fas fa-sun"/><span>Clair</span></> : <><i className="fas fa-moon"/><span>Sombre</span></>}
   </button>
 );
 
@@ -634,28 +713,35 @@ const Navbar = ({dark, onToggle}) => {
         </div>
         <div className="nav-mob-right">
           <ThemeToggle dark={dark} onToggle={onToggle}/>
-          <button className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''}`} onClick={()=>setOpen(o=>!o)} aria-label="Menu">
+          <button className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''}`} onClick={()=>setOpen(o=>!o)} aria-label="Menu" aria-expanded={open}>
             <span/><span/><span/>
           </button>
         </div>
       </nav>
-      <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`}>
+      <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`} aria-hidden={!open}>
         <div className="mob-drawer-header">
           <AkafolioLogo size={22} dark={dark} animate={false}/>
-          <button className="mob-drawer-close" onClick={()=>setOpen(false)}><i className="fas fa-times"/></button>
+          <button className="mob-drawer-close" onClick={()=>setOpen(false)} aria-label="Fermer le menu"><i className="fas fa-times"/></button>
         </div>
         <nav className="mob-drawer-nav">
           {NAV_LINKS.map((l,i)=>(
-            <button key={l.id} className={`mob-drawer-link ${active===l.id?'mob-drawer-link--active':''}`}
-              style={{animationDelay:`${i*0.06}s`}} onClick={()=>go(l.id)}>
+            <button key={l.id} className={`mob-drawer-link ${active===l.id?'mob-drawer-link--active':''} ${open?'mob-drawer-link--in':''}`}
+              style={{animationDelay:`${i*0.055}s`}} onClick={()=>go(l.id)}>
               <span className="mob-drawer-num">0{i+1}</span><span>{l.label}</span><ArrowRight size={14}/>
             </button>
           ))}
         </nav>
+        <div className="mob-drawer-theme">
+          <span className="mob-drawer-theme-label">
+            <i className={`fas fa-${dark?'moon':'sun'}`}/> Thème {dark?'sombre':'clair'}
+          </span>
+          <ThemeToggle dark={dark} onToggle={onToggle}/>
+        </div>
         <div className="mob-drawer-footer">
           <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
           <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
           <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
+          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><i className="fas fa-globe"/></a>
           <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
         </div>
       </div>
@@ -762,49 +848,178 @@ const ScrollTop = ({dark}) => {
   );
 };
 
-const Hero = ({dark}) => {
-  const phrases=["Full-Stack","React & Python","Django & Flask","orienté produit"];
-  const [wi,setWi]=useState(0); const [typed,setTyped]=useState(''); const [del,setDel]=useState(false); const [ch,setCh]=useState(0);
+const Hero = ({ dark }) => {
+  const phrases = ["Full-Stack", "React & Python", "Django & Flask", "orienté produit"];
+  const [wi, setWi] = useState(0);
+  const [typed, setTyped] = useState('');
+  const [del, setDel] = useState(false);
+  const [ch, setCh] = useState(0);
   const [now, setNow] = useState(new Date());
-  useEffect(()=>{ const tick=setInterval(()=>setNow(new Date()),1000); return ()=>clearInterval(tick); },[]);
-  const hour=now.getHours();
-  const greeting=(hour>=6&&hour<18)?'Bonjour je suis':'Bonsoir je suis';
-  const DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  const pad=n=>String(n).padStart(2,'0');
-  const clockStr=`${DAYS[now.getDay()]} ${pad(now.getDate())} · ${pad(hour)}h ${pad(now.getMinutes())}mn ${pad(now.getSeconds())}s`;
-  useEffect(()=>{
-    const w=phrases[wi];
-    const t=setTimeout(()=>{
-      if(!del&&ch<w.length){setTyped(w.slice(0,ch+1));setCh(c=>c+1);}
-      else if(!del&&ch===w.length) setTimeout(()=>setDel(true),1800);
-      else if(del&&ch>0){setTyped(w.slice(0,ch-1));setCh(c=>c-1);}
-      else if(del&&ch===0){setDel(false);setWi(i=>(i+1)%phrases.length);}
-    },del?45:90);
-    return ()=>clearTimeout(t);
-  },[ch,del,wi]);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const tick = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(tick);
+  }, []);
+
+  useEffect(() => {
+    const fn = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  const hour = now.getHours();
+  const isDaytime = hour >= 6 && hour < 18;
+  const DAYS  = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = `${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]}`;
+  const timeStr = `${pad(hour)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  // Période de la journée
+  const period = hour < 6 ? 'Nuit' : hour < 12 ? 'Matin' : hour < 18 ? 'Après-midi' : 'Soir';
+
+  useEffect(() => {
+    const w = phrases[wi];
+    const t = setTimeout(() => {
+      if (!del && ch < w.length) { setTyped(w.slice(0, ch + 1)); setCh(c => c + 1); }
+      else if (!del && ch === w.length) setTimeout(() => setDel(true), 1800);
+      else if (del && ch > 0) { setTyped(w.slice(0, ch - 1)); setCh(c => c - 1); }
+      else if (del && ch === 0) { setDel(false); setWi(i => (i + 1) % phrases.length); }
+    }, del ? 45 : 90);
+    return () => clearTimeout(t);
+  }, [ch, del, wi]);
+
   return (
-    <section id="home" className={`hero ${dark?'hero--dark':''}`}>
-      <Noise/>
-      <div className="hero-grid" aria-hidden>{Array.from({length:20}).map((_,i)=><div key={i} className="hgc"/>)}</div>
-      <div className="hero-content">
-        <div className="hero-eye"><span className="hero-dot"/><span>Disponible — Abidjan, Côte d'Ivoire</span><span className="hero-clock">{clockStr}</span></div>
-        <h1 className="hero-h1">
-          <span className="hero-wave">{greeting} <Hand size={Math.min(28,0.45*28)} style={{display:'inline',verticalAlign:'middle',marginLeft:'4px'}}/></span>
-          <span className="hero-name">M'BOLLO<br/>AKA ELVIS</span>
-        </h1>
-        <p className="hero-typed">Développeur <span className="hero-word">{typed}</span><span className="cursor">|</span></p>
-        <p className="hero-desc">Développeur web orienté produits, spécialisé Django &amp; React.<br/>Je construis des applications pensées pour des usages réels.</p>
-        <div className="hero-ctas">
-          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-btn-grad-solid`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>Voir mes projets <span>↗</span></MagBtn>
-          <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><i className="fas fa-download"/> Télécharger CV</a>
-        </div>
-        <div className="hero-stats mi-stagger mi-stagger--vis">
-          {[["9+","Projets"],["2+","Années exp."],["5","En production"],["9+","Outils"]].map(([n,l])=>(
-            <div key={l} className="hstat"><span className="hstat-n">{n}</span><span className="hstat-l">{l}</span></div>
-          ))}
-        </div>
+    <section id="home" className={`hero hv4 ${dark ? 'hero--dark' : ''}`}>
+
+      {/* ── Parallax ambient glows ── */}
+      <div className="hv4-parallax" aria-hidden
+        style={{ transform: `translateY(${scrollY * 0.16}px)` }}>
+        <div className="hv4-glow-a"/>
+        <div className="hv4-glow-b"/>
       </div>
-      <div className="hero-scroll"><span>scroll</span><div className="hsl"/></div>
+
+      {/* ── Hero sweep scan line ── */}
+      <div className="hv4-scan" aria-hidden/>
+
+      {/* ── Main grid ── */}
+      <div className="hero-content hv4-grid">
+
+        {/* ════ LEFT — text ════ */}
+        <div className="hv4-left">
+
+          {/* Availability badge — enrichi avec date, heure, icône soleil/lune */}
+          <div className="hv4-badge" style={{ '--d': '0s' }}>
+            <span className="hero-dot"/>
+            <span className="hv4-badge-status">disponible · Abidjan, CI</span>
+            <span className="hv4-badge-sep" aria-hidden>|</span>
+            <span className="hv4-clock-wrap">
+              <span className="hv4-clock-icon">{isDaytime ? '☀' : '🌙'}</span>
+              <span className="hv4-clock-date">{dateStr}</span>
+              <span className="hv4-clock-dot" aria-hidden>·</span>
+              <span className="hv4-clock-time">{timeStr}</span>
+              <span className="hv4-clock-tz">UTC+0</span>
+            </span>
+          </div>
+
+          {/* Name — staggered reveal per line */}
+          <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
+            <span className="hv4-name-line" style={{ '--d': '0.12s' }}>M'BOLLO</span>
+            <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '0.26s' }}>AKA ELVIS</span>
+          </h1>
+
+          {/* Typewriter */}
+          <p className="hv4-typed hv4-rv" style={{ '--d': '0.42s' }}>
+            Développeur&nbsp;
+            <span className="hero-word">{typed}</span>
+            <span className="cursor">|</span>
+          </p>
+
+          {/* Description */}
+          <p className="hv4-desc hv4-rv" style={{ '--d': '0.56s' }}>
+            Développeur web orienté produits, spécialisé Django &amp; React.<br/>
+            Je construis des applications pensées pour des usages réels.
+          </p>
+
+          {/* CTAs */}
+          <div className="hv4-ctas hv4-rv" style={{ '--d': '0.7s' }}>
+            <MagBtn
+              className={`btn ${dark ? 'btn--neon' : 'btn--primary'} mi-btn-grad-solid`}
+              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            >Voir mes projets <span>↗</span></MagBtn>
+            <a className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'} mi-glint`}
+              href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
+              <i className="fas fa-download"/> Télécharger CV
+            </a>
+          </div>
+
+          {/* Stats strip */}
+          <div className="hv4-stats hv4-rv" style={{ '--d': '0.85s' }}>
+            {[['9+','Projets'],['2+','Années exp.'],['5','En prod.'],['9+','Outils']].map(([n, l]) => (
+              <div key={l} className="hv4-stat">
+                <span className="hv4-stat-n">{n}</span>
+                <span className="hv4-stat-l">{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ════ RIGHT — floating code card ════ */}
+        <div className="hv4-right hv4-rv" style={{ '--d': '0.32s' }}>
+          <div className="hv4-card"
+            style={{ transform: `translateY(${-scrollY * 0.07}px)` }}>
+
+            {/* Window chrome */}
+            <div className="hv4-bar">
+              <div className="hv4-bar-dots">
+                <span style={{ background:'#ff5f56' }}/>
+                <span style={{ background:'#ffbd2e' }}/>
+                <span style={{ background:'#27c93f' }}/>
+              </div>
+              <span className="hv4-bar-title">aka.dev · profile.js</span>
+            </div>
+
+            {/* Code body */}
+            <div className="hv4-code-wrap">
+              <div className="hv4-line-nums" aria-hidden>
+                {[1,2,3,4,5,6,7,8,9,10].map(n => <span key={n}>{n}</span>)}
+              </div>
+              <pre className="hv4-code">
+<span className="hvc-c">{'// developer profile'}</span>{'\n'}
+<span className="hvc-k">const</span>{' '}
+<span className="hvc-v">developer</span>{' = {\n'}
+{'  '}<span className="hvc-p">name</span>{' : '}
+<span className="hvc-s">{"\"M'Bollo Aka Elvis\""}</span>{',\n'}
+{'  '}<span className="hvc-p">role</span>{' : '}
+<span className="hvc-s">{"\"Full-Stack Dev\""}</span>{',\n'}
+{'  '}<span className="hvc-p">stack</span>{' : ['}
+<span className="hvc-s">{"\"React\""}</span>{', '}
+<span className="hvc-s">{"\"Django\""}</span>{'],\n'}
+{'  '}<span className="hvc-p">status</span>{' : '}
+<span className="hvc-a">{'available'}</span>{',\n'}
+{'  '}<span className="hvc-p">base</span>{' : '}
+<span className="hvc-s">{"\"Abidjan, CI\""}</span>{',\n'}
+{'}'}</pre>
+            </div>
+
+            {/* Scan line inside card */}
+            <div className="hv4-card-scan" aria-hidden/>
+          </div>
+
+          {/* Tag below card */}
+          <div className="hv4-card-tag">
+            <span className="hvc-a">▶</span> Open to work · Freelance &amp; CDI
+          </div>
+        </div>
+
+      </div>{/* /hv4-grid */}
+
+      {/* Scroll indicator */}
+      <div className="hero-scroll">
+        <span>scroll</span>
+        <div className="hsl"/>
+      </div>
+
     </section>
   );
 };
@@ -877,19 +1092,22 @@ const PricingTabs = ({dark}) => {
     pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
   },[activeTab]);
   const switchTab=(i)=>{ setActiveTab(i); setMobCard(0); setAnimKey(k=>k+1); };
-  const PricingCard=({p})=>(
-    <div className={`ptabs2-card ${p.isPopular?'ptabs2-card--pop':''} ${dark?'ptabs2-card--dark':''}`}>
-      {p.isPopular&&(<div className={`ptabs2-pop-banner ${dark?'ptabs2-pop-banner--dark':''}`}><Star size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE</div>)}
-      <div className="ptabs2-card-body">
-        <div className="ptabs2-badge">{p.badge}</div>
-        <p className="ptabs2-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
-        <div className={`ptabs2-price ${dark?'ptabs2-price--dark':''}`}><span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span><span className="ptabs2-currency"> FCFA</span></div>
-        <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
-        <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><Check size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
-        <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Me contacter <ArrowRight size={14}/></MagBtn>
+  const PricingCard=({p, tilt=false})=>{
+    const inner = (
+      <div className={`ptabs2-card ${p.isPopular?'ptabs2-card--pop':''} ${dark?'ptabs2-card--dark':''}`}>
+        {p.isPopular&&(<div className={`ptabs2-pop-banner ${dark?'ptabs2-pop-banner--dark':''}`}><Star size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE</div>)}
+        <div className="ptabs2-card-body">
+          <div className="ptabs2-badge">{p.badge}</div>
+          <p className="ptabs2-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
+          <div className={`ptabs2-price ${dark?'ptabs2-price--dark':''}`}><span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span><span className="ptabs2-currency"> FCFA</span></div>
+          <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
+          <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><Check size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
+          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Me contacter <ArrowRight size={14}/></MagBtn>
+        </div>
       </div>
-    </div>
-  );
+    );
+    return tilt ? <TiltCard intensity={8} perspective={1000} style={{height:'100%'}}>{inner}</TiltCard> : inner;
+  };
   return (
     <div className={`ptabs2 ${dark?'ptabs2--dark':''}`}>
       <div className={`ptabs2-toggle-wrap ${dark?'ptabs2-toggle-wrap--dark':''}`}>
@@ -898,9 +1116,9 @@ const PricingTabs = ({dark}) => {
           {PRICING_TABS.map((t,i)=>{ const Icon=LUCIDE_TAB_ICONS[t.icon]; return (<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{Icon&&<Icon size={14} strokeWidth={2}/>}<span>{t.label}</span></button>); })}
         </div>
       </div>
-      <div key={animKey} className="ptabs2-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p}/>)}</div>
+      <div key={animKey} className="ptabs2-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} tilt={true}/>)}</div>
       <div className="ptabs2-mob">
-        <PricingCard p={tab.plans[mobCard]}/>
+        <PricingCard p={tab.plans[mobCard]} tilt={true}/>
         <div className="mob-nav">
           <button className="mob-arr" onClick={()=>setMobCard(i=>(i-1+tab.plans.length)%tab.plans.length)}><i className="fas fa-chevron-left"/></button>
           <div className="mob-dots">{tab.plans.map((_,i)=>(<button key={i} className={`mob-dot${i===mobCard?' mob-dot--on':''}`} onClick={()=>setMobCard(i)}/>))}</div>
@@ -930,14 +1148,14 @@ const Services = ({dark}) => {
         ))}
       </div>
       <div className="svc-mob">
-        <div className="pricing-grid" style={{gridTemplateColumns:'1fr',background:'none',border:'none',gap:'0'}}>
+        <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
           <div className="pricing-card">
             <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{SERVICES[svcIdx].n}</span><div className="svc-ico"><i className={`fas fa-${SERVICES[svcIdx].icon}`}/></div></div>
             <h3 className="pricing-title">{SERVICES[svcIdx].title}</h3>
             <p className="pricing-desc">{SERVICES[svcIdx].desc}</p>
             <ul className="pricing-feat">{SERVICES[svcIdx].features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
           </div>
-        </div>
+        </TiltCard>
         <div className="mob-nav">
           <button className="mob-arr" onClick={()=>setSvcIdx(i=>(i-1+SERVICES.length)%SERVICES.length)}><i className="fas fa-chevron-left"/></button>
           <div className="mob-dots">{SERVICES.map((_,i)=><button key={i} className={`mob-dot${i===svcIdx?' mob-dot--on':''}`} onClick={()=>setSvcIdx(i)}/>)}</div>
@@ -952,6 +1170,9 @@ const Services = ({dark}) => {
 
 const About = ({dark}) => {
   const [r1,v1]=useInView(); const [r2,v2]=useInView();
+  const [openIdx, setOpenIdx] = useState(0);
+  const toggle = i => setOpenIdx(o => o === i ? -1 : i);
+
   return (
     <>
       <section id="about" ref={r1} className={dark?'section--dark':''}>
@@ -975,24 +1196,96 @@ const About = ({dark}) => {
           </div>
         </SpotlightCard>
       </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          EXPÉRIENCE & FORMATION — Timeline accordéon améliorée
+          ═══════════════════════════════════════════════════════ */}
       <section id="experience" ref={r2} className={dark?'section--dark':''}>
         <WindowChrome title="Parcours" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Expérience &amp;<br/>Formation.</h2></div>
-        <div className={`timeline ${v2?'anim':''} ${dark?'timeline--dark':''} mi-stagger ${v2?'mi-stagger--vis':''}`}>
+
+        {/* Progress steps en haut (desktop) */}
+        <div className={`exp-steps ${dark?'exp-steps--dark':''}`}>
           {TIMELINE.map((item,i)=>(
-            <div key={i} className="tl-item" style={{animationDelay:`${i*0.12}s`}}>
-              <div className="tl-dot mi-pulse"><i className={`fas fa-${item.icon}`}/></div>
-              <div className="tl-body">
-                <span className="tl-date"><i className="far fa-calendar-alt"/> {item.date}</span>
-                <h4 className="tl-title">{item.title}</h4>
-                <p className="tl-company"><i className="fas fa-building"/> {item.company}</p>
-                {item.desc&&<p className="tl-desc">{item.desc}</p>}
-                {item.items&&<ul className="tl-list">{item.items.map((li,j)=><li key={j}>{li}</li>)}</ul>}
-                {item.tags&&<div className="tl-tags">{item.tags.map(t=><span key={t}>{t}</span>)}</div>}
+            <button key={i} className={`exp-step ${openIdx===i?'exp-step--active':''} ${dark?'exp-step--dark':''}`}
+              onClick={()=>toggle(i)}>
+              <div className={`exp-step-dot ${openIdx===i?'exp-step-dot--active':''}`}>
+                <i className={`fas fa-${item.icon}`}/>
               </div>
-            </div>
+              <div className="exp-step-line"/>
+              <span className="exp-step-label">{item.date}</span>
+            </button>
           ))}
         </div>
+
+        {/* Accordéon cards */}
+        <div className={`exp-cards ${v2?'exp-cards--vis':''} ${dark?'exp-cards--dark':''}`}>
+          {TIMELINE.map((item,i)=>{
+            const isOpen = openIdx === i;
+            return (
+              <div key={i} className={`exp-card ${isOpen?'exp-card--open':''} ${dark?'exp-card--dark':''}`}
+                style={{animationDelay:`${i*0.1}s`}}>
+                {/* Header cliquable */}
+                <button className="exp-card-hd" onClick={()=>toggle(i)} aria-expanded={isOpen}>
+                  <div className="exp-card-hd-left">
+                    <div className={`exp-dot ${isOpen?'exp-dot--on':''} ${dark?'exp-dot--dark':''}`}>
+                      <i className={`fas fa-${item.icon}`}/>
+                    </div>
+                    <div className="exp-card-hd-info">
+                      <span className="exp-date"><i className="far fa-calendar-alt"/> {item.date}</span>
+                      <h4 className="exp-title">{item.title}</h4>
+                      <p className="exp-company"><i className="fas fa-building"/> {item.company}</p>
+                    </div>
+                  </div>
+                  <div className={`exp-chevron ${isOpen?'exp-chevron--open':''}`}>
+                    <i className="fas fa-chevron-down"/>
+                  </div>
+                </button>
+
+                {/* Corps animé */}
+                <div className="exp-card-body" style={{
+                  maxHeight: isOpen ? '600px' : '0',
+                  opacity: isOpen ? 1 : 0,
+                  overflow: 'hidden',
+                  transition: 'max-height .38s cubic-bezier(.4,0,.2,1), opacity .28s ease',
+                }}>
+                  <div className="exp-card-inner">
+                    {/* Barre de progression colorée */}
+                    {item.items && (
+                      <div className="exp-prog-row">
+                        {['Maintenance','Support','Gestion','Outils'].map((l,j)=>(
+                          <div key={j} className="exp-prog-item">
+                            <span className="exp-prog-label">{l}</span>
+                            <div className="exp-prog-track">
+                              <div className={`exp-prog-fill ${isOpen?'exp-prog-fill--on':''}`}
+                                style={{transitionDelay:`${j*0.08+0.1}s`, width: isOpen ? `${[90,85,75,80][j]}%` : '0%'}}/>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {item.desc && <p className="exp-desc">{item.desc}</p>}
+                    {item.items && (
+                      <ul className="exp-list">
+                        {item.items.map((li,j)=>(
+                          <li key={j} style={{animationDelay:`${j*0.05}s`}}>
+                            <span className="exp-arrow">→</span>{li}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {item.tags && (
+                      <div className="exp-tags">
+                        {item.tags.map(t=><span key={t} className={dark?'exp-tag--dark':''}>{t}</span>)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         <div className={`cta-band ${dark?'cta-band--neon':''}`}>
           <h3>Intéressé par mon profil ?</h3>
           <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
@@ -1022,8 +1315,22 @@ const Carousel3D = ({items, dark}) => {
     <div className={`c3d-root ${dark?'':'c3d-root--dark'}`} onMouseDown={onDS} onMouseUp={onDE} onTouchStart={onDS} onTouchEnd={onDE}>
       <WindowChrome title="Réalisations récentes" dark={dark} inner/>
       <div className="c3d-stage"><div className="c3d-perspective">
-        {items.map((proj,i)=>{ const pos=((i-active+total)%total+total)%total; const rel=pos>total/2?pos-total:pos; const neon=dark?(BADGE_DARK[proj.cat]||'#00ff88'):(BADGE_LIGHT[proj.cat]||'#C94B2A'); const neonBg=dark?neon+'14':neon+'18'; const neonBorder=dark?neon+'44':neon+'55';
-          return (<div key={proj.id} className={`c3d-card ${rel===0?'c3d-card--active':''}`} style={cardStyle(rel)} onClick={()=>rel!==0&&go(rel>0?1:-1)}>
+        {items.map((proj,i)=>{ const pos=((i-active+total)%total+total)%total; const rel=pos>total/2?pos-total:pos; const neon=dark?(BADGE_DARK[proj.cat]||'#00ff88'):(BADGE_LIGHT[proj.cat]||'#C94B2A'); const neonBg=dark?neon+'14':neon+'18'; const neonBorder=dark?neon+'44':neon+'55'; const isCenter=rel===0;
+          // Tilt 3D directement sur la carte active sans wrapper (évite de casser le positionnement carousel)
+          const onCardMove = !isCenter ? undefined : e => {
+            const el = e.currentTarget; const rect = el.getBoundingClientRect();
+            const rx = ((e.clientY - rect.top  - rect.height/2) / (rect.height/2)) * -5;
+            const ry = ((e.clientX - rect.left - rect.width /2) / (rect.width /2)) *  5;
+            const base = cardStyle(rel);
+            el.style.transform = `${base.transform ? base.transform.replace(/scale\([^)]+\)/,'scale(1.02)') : ''} rotateX(${rx}deg) rotateY(${ry}deg)`;
+          };
+          const onCardLeave = !isCenter ? undefined : e => {
+            const el = e.currentTarget;
+            const base = cardStyle(rel).transform || '';
+            el.style.transition = 'all .45s cubic-bezier(.25,.46,.45,.94)';
+            el.style.transform = base;
+          };
+          return (<div key={proj.id} className={`c3d-card ${isCenter?'c3d-card--active':''}`} style={{...cardStyle(rel), transformStyle:'preserve-3d'}} onClick={()=>!isCenter&&go(rel>0?1:-1)} onMouseMove={onCardMove} onMouseLeave={onCardLeave}>
             <div className="c3d-img-zone" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
               <img src={proj.image} alt={proj.title} className="c3d-img" onError={e=>{e.target.style.display='none';}}/>
               <div className="c3d-img-overlay" style={{background:`linear-gradient(to bottom, transparent 30%, rgba(0,0,0,.85) 100%)`}}/>
@@ -1162,6 +1469,7 @@ const Contact = ({dark}) => {
             <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
             <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
             <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
+            <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech — Devis &amp; Services"><i className="fas fa-globe"/></a>
           </div>
           <div className="contact-cv">
             <div className="cv-qr"><img src="/assets/images/qrcodeCV.png" alt="QR Code CV"/></div>
@@ -1224,17 +1532,31 @@ const Footer = ({dark}) => (
         <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
         <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
         <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
+        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><i className="fas fa-globe"/></a>
         <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
       </div>
     </div>
   </footer>
 );
 
+const getAutoLight = () => { try { const h = new Date().getHours(); return h < 6 || h >= 18; } catch { return true; } };
+
 export default function App() {
   const [loaded,setLoaded]=useState(false);
-  const [light,setLight]=useState(false);
-  useEffect(()=>{ const saved=localStorage.getItem('aka-theme'); if(saved==='light') setLight(true); },[]);
-  const toggleDark=()=>setLight(l=>{ localStorage.setItem('aka-theme',!l?'light':'dark'); return !l; });
+  const [light,setLight]=useState(()=>{
+    try {
+      const saved=localStorage.getItem('aka-theme');
+      if(saved==='light') return true;
+      if(saved==='dark') return false;
+      return getAutoLight();
+    } catch { return getAutoLight(); }
+  });
+
+  const toggleDark=()=>setLight(l=>{
+    const next=!l;
+    try { localStorage.setItem('aka-theme',next?'light':'dark'); } catch {}
+    return next;
+  });
   const dark=!light;
   return !loaded ? (
     <Loader onDone={()=>setLoaded(true)}/>
