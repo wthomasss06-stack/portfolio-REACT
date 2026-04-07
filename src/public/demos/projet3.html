@@ -1,0 +1,2514 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LivreurTrack Pro - Suivi de Livraison Intelligent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --danger: #ef4444;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        body {
+            background: var(--gradient-1);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+
+        /* ============= LOADER STYLES ============= */
+        .main-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .main-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-logo {
+            font-size: 4rem;
+            color: white;
+            margin-bottom: 2rem;
+            animation: logoFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255,255,255,0.2);
+            border-top: 6px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .loader-dots {
+            display: inline-flex;
+            gap: 0.3rem;
+            margin-left: 0.5rem;
+        }
+
+        .loader-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            animation: dotPulse 1.4s ease infinite;
+        }
+
+        .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotPulse {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* ============= COMMANDES SELECTION SCREEN ============= */
+        .commandes-screen {
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInScreen 0.8s ease forwards;
+        }
+
+        @keyframes fadeInScreen {
+            to { opacity: 1; }
+        }
+
+        .screen-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen-header h2 {
+            margin: 0 0 0.5rem 0;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            font-size: 2.5rem;
+        }
+
+        .screen-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .commandes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 🔥 CORRECTION PRINCIPALE */
+        .commande-card {
+            background: white;
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+            position: relative;
+            animation: cardPopIn 0.6s ease backwards;
+        }
+
+        .commande-card:nth-child(1) { animation-delay: 0.1s; }
+        .commande-card:nth-child(2) { animation-delay: 0.2s; }
+        .commande-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes cardPopIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 🔥 CORRECTION : Empêcher l'effet shimmer de bloquer les clics */
+        .commande-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .commande-card:hover::before {
+            left: 100%;
+        }
+
+        .commande-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+        }
+
+        .commande-header {
+            padding: 1.5rem;
+            background: var(--gradient-1);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .commande-card:nth-child(2) .commande-header {
+            background: var(--gradient-3);
+        }
+
+        .commande-card:nth-child(3) .commande-header {
+            background: var(--gradient-5);
+        }
+
+        .commande-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .commande-number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+        }
+
+        .priority-badge.urgent {
+            background: rgba(239, 68, 68, 0.9);
+            animation: urgentPulse 1.5s ease infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+        }
+
+        .commande-time {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 3;
+        }
+
+        .commande-body {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .commande-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .commande-info-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .commande-info-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-3);
+            color: white;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .commande-info-text {
+            flex: 1;
+        }
+
+        .commande-info-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .commande-info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .commande-footer {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-top: 3px dashed #cbd5e1;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 🔥 CORRECTION CRITIQUE : Le bouton doit être cliquable */
+        .select-btn {
+            width: 100%;
+            background: var(--gradient-4);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(67, 233, 123, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .select-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            pointer-events: none;
+        }
+
+        .select-btn:active::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(67, 233, 123, 0.5);
+        }
+
+        .distance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ============= TRACKING SCREEN ============= */
+        .tracking-screen {
+            display: none;
+        }
+
+        .tracking-screen.active {
+            display: block;
+            animation: fadeInScreen 0.8s ease;
+        }
+
+        .header-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease;
+        }
+
+        .logo-section h3 {
+            margin: 0;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 992px) {
+            .split-container { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            overflow: visible;
+            contain: layout;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            background: var(--gradient-1);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin: -2rem -2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            to { left: 200%; }
+        }
+
+        .panel-header.client-header {
+            background: var(--gradient-4);
+        }
+
+        .panel-header h4 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .order-info-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            animation: bounceIn 0.8s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .order-number {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .info-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .info-row i {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-3);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .tracking-animation {
+            position: relative;
+            height: 150px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            margin: 2rem 0;
+            overflow: hidden;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .track-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 100%);
+            transform: translateY(-50%);
+            border-radius: 10px;
+        }
+
+        .track-line-progress {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            height: 4px;
+            background: var(--gradient-4);
+            transform: translateY(-50%);
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .track-point {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: white;
+            border: 4px solid var(--primary);
+            z-index: 2;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+            50% { box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4); }
+        }
+
+        .track-point.start {
+            left: 5%;
+            background: var(--gradient-2);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .track-point.end {
+            right: 5%;
+            background: var(--gradient-4);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .delivery-vehicle {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            width: 55px;
+            height: 55px;
+            background: var(--gradient-5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 3;
+            transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: bounce 0.8s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -45%) rotate(5deg); }
+        }
+
+        .status-badge-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            animation: statusPulse 2s ease infinite;
+            margin: 1.5rem 0;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .steps-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 4rem;
+            margin-bottom: 2rem;
+            animation: slideInLeft 0.6s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .step-timeline {
+            position: absolute;
+            left: 1.75rem;
+            top: 3.5rem;
+            bottom: -2rem;
+            width: 4px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.6s ease;
+        }
+
+        .step-timeline.active {
+            background: var(--gradient-4);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .step-icon-circle {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: white;
+            border: 4px solid #e2e8f0;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-icon-circle.active {
+            background: var(--gradient-4);
+            border-color: var(--success);
+            color: white;
+            transform: scale(1.2) rotate(360deg);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .step-icon-circle.pending {
+            background: var(--gradient-5);
+            border-color: var(--warning);
+            color: white;
+            animation: pendingPulse 1.5s ease infinite;
+        }
+
+        @keyframes pendingPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .step-card {
+            background: white;
+            border: 3px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.4s ease;
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .step-card.active {
+            opacity: 1;
+            transform: scale(1);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .step-card.completed {
+            opacity: 1;
+            transform: scale(1);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: var(--success);
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .step-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .action-btn-modern {
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            pointer-events: none;
+        }
+
+        .action-btn-modern:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        /* 🔥 CORRECTION CRITIQUE */
+        .action-btn-modern:disabled {
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            pointer-events: none !important;
+        }
+
+        .btn-warning-gradient {
+            background: var(--gradient-5);
+            color: white;
+        }
+
+        .btn-primary-gradient {
+            background: var(--gradient-3);
+            color: white;
+        }
+
+        .btn-success-gradient {
+            background: var(--gradient-4);
+            color: white;
+        }
+
+        .time-badge-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 1rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .photo-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 3px dashed #e2e8f0;
+        }
+
+        .optional-tag {
+            background: var(--gradient-5);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .photo-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .photo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .photo-preview-modern {
+            margin-top: 1rem;
+            border-radius: 16px;
+            overflow: hidden;
+            animation: zoomIn 0.6s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.7) rotate(-5deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .photo-preview-modern img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .photo-preview-modern.client-photo img {
+            height: 250px;
+        }
+
+        /* Fix layout shift - reserve space for images */
+        #client-photo-preview {
+            min-height: 0;
+            transition: min-height 0.3s ease;
+        }
+
+        #client-photo-preview:not(:empty) {
+            min-height: 250px;
+        }
+
+        .photo-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card-modern {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border: 3px solid #e2e8f0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-card-modern:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .stat-card-modern.active {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: var(--success);
+        }
+
+        .stat-icon-modern {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--gradient-3);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 0.5rem;
+        }
+
+        /* Info Alert */
+        .info-alert-modern {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            color: #1e40af;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-alert-modern i {
+            font-size: 1.5rem;
+        }
+
+        /* Estimated Time Display */
+        .estimated-time-display {
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .estimated-time-display .time-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .hidden { display: none !important; }
+
+        /* Loading Animation */
+        .loading-dots {
+            display: inline-flex;
+            gap: 0.3rem;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: loadingDots 1.4s ease infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes loadingDots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid-modern {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                padding: 1.5rem;
+            }
+            .commandes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Styles pour les nouvelles fonctionnalités --- */
+
+/* Bouton Déconnexion spécifique */
+.logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.logout-btn:hover {
+    background: var(--danger);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Container de vérification photo Client */
+#client-pickup-verification {
+    border: 2px solid #e2e8f0;
+    background: #ffffff;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#client-pickup-photo-container img {
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+}
+
+#client-pickup-photo-container img:hover {
+    transform: scale(1.02);
+}
+
+/* Bouton Annulation/Problème */
+.cancel-order-btn {
+    background: #ca212c;
+    color: var(--danger);
+    border: 2px solid #fecaca;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 700;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.cancel-order-btn:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Animation de pulse pour attirer l'attention du client */
+.pulse-border {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+        /* ============= RATING STARS STYLES ============= */
+        .rating-star {
+            font-size: 3rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+            will-change: transform;
+        }
+
+        .rating-star:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 8px 15px rgba(245, 158, 11, 0.4));
+        }
+
+        .rating-star.active {
+            color: #f59e0b;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Received stars animation */
+        @keyframes starFillIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Input focus styles */
+        input:focus {
+            outline: none;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Loader -->
+    <div id="main-loader" class="main-loader">
+        <div class="loader-logo">
+            <i class="fas fa-shipping-fast"></i>
+        </div>
+        <div class="loader-spinner"></div>
+        <div class="loader-text">
+            Chargement de LivreurTrack Pro
+            <div class="loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="commandes-screen" style="display: none;">
+        <div class="screen-header">
+            <h2><i class="fas fa-shipping-fast me-3"></i>LivreurTrack Pro</h2>
+            <p>Identifiez-vous pour continuer</p>
+        </div>
+
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div class="commande-card" style="cursor: default;">
+                <div class="commande-header" style="background: var(--gradient-4);">
+                    <div class="commande-number">
+                        <i class="fas fa-user-circle"></i>
+                        Connexion Livreur
+                    </div>
+                </div>
+                <div class="commande-body" style="padding: 2rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
+                            <i class="fas fa-user me-2" style="color: var(--primary);"></i>Prénom
+                        </label>
+                        <input type="text" id="prenom-input" placeholder="Entrez votre prénom" 
+                               style="width: 100%; padding: 0.75rem 1rem; border: 3px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 600; transition: all 0.3s ease;">
+                    </div>
+                    <div style="margin-bottom: 2rem;">
+                        <label style="display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">
+                            <i class="fas fa-user me-2" style="color: var(--primary);"></i>Nom
+                        </label>
+                        <input type="text" id="nom-input" placeholder="Entrez votre nom" 
+                               style="width: 100%; padding: 0.75rem 1rem; border: 3px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-weight: 600; transition: all 0.3s ease;">
+                    </div>
+                    <button onclick="submitLogin()" class="select-btn">
+                        <i class="fas fa-arrow-right me-2"></i>Continuer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commandes Selection Screen -->
+    <div id="commandes-screen" class="commandes-screen" style="display: none;">
+        <div class="screen-header">
+            <h2><i class="fas fa-shipping-fast me-3"></i>LivreurTrack Pro</h2>
+            <p>Sélectionnez une commande pour démarrer la livraison</p>
+        </div>
+
+        <div class="commandes-grid">
+            <!-- Commande 1 -->
+            <div class="commande-card" onclick="selectCommande(1)">
+                <div class="commande-header">
+                    <div class="commande-number">
+                        <i class="fas fa-barcode"></i>
+                        #ORD-2025-1247
+                        <span class="priority-badge urgent">
+                            <i class="fas fa-bolt"></i>
+                            URGENT
+                        </span>
+                    </div>
+                    <div class="commande-time">
+                        <i class="fas fa-clock me-1"></i>
+                        Reçue il y a 15 min
+                    </div>
+                </div>
+                <div class="commande-body">
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Client</div>
+                            <div class="commande-info-value">M. Konan Yao</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Téléphone</div>
+                            <div class="commande-info-value">+225 07 12 34 56 78</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Adresse</div>
+                            <div class="commande-info-value">Cocody, Abidjan</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="commande-footer">
+                    <div class="distance-badge mb-3">
+                        <i class="fas fa-route"></i>
+                        3.2 km - ~12 min
+                    </div>
+                    <button class="select-btn">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Accepter cette livraison
+                    </button>
+                </div>
+            </div>
+
+            <!-- Commande 2 -->
+            <div class="commande-card" onclick="selectCommande(2)">
+                <div class="commande-header">
+                    <div class="commande-number">
+                        <i class="fas fa-barcode"></i>
+                        #ORD-2025-1248
+                        <span class="priority-badge">
+                            <i class="fas fa-star"></i>
+                            NORMAL
+                        </span>
+                    </div>
+                    <div class="commande-time">
+                        <i class="fas fa-clock me-1"></i>
+                        Reçue il y a 28 min
+                    </div>
+                </div>
+                <div class="commande-body">
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Client</div>
+                            <div class="commande-info-value">Mme. Aya Traoré</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Téléphone</div>
+                            <div class="commande-info-value">+225 05 87 65 43 21</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Adresse</div>
+                            <div class="commande-info-value">Plateau, Abidjan</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="commande-footer">
+                    <div class="distance-badge mb-3">
+                        <i class="fas fa-route"></i>
+                        5.8 km - ~18 min
+                    </div>
+                    <button class="select-btn">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Accepter cette livraison
+                    </button>
+                </div>
+            </div>
+
+            <!-- Commande 3 -->
+            <div class="commande-card" onclick="selectCommande(3)">
+                <div class="commande-header">
+                    <div class="commande-number">
+                        <i class="fas fa-barcode"></i>
+                        #ORD-2025-1249
+                        <span class="priority-badge">
+                            <i class="fas fa-star"></i>
+                            NORMAL
+                        </span>
+                    </div>
+                    <div class="commande-time">
+                        <i class="fas fa-clock me-1"></i>
+                        Reçue il y a 42 min
+                    </div>
+                </div>
+                <div class="commande-body">
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Client</div>
+                            <div class="commande-info-value">M. Ibrahim Coulibaly</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Téléphone</div>
+                            <div class="commande-info-value">+225 01 23 45 67 89</div>
+                        </div>
+                    </div>
+                    <div class="commande-info-row">
+                        <div class="commande-info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="commande-info-text">
+                            <div class="commande-info-label">Adresse</div>
+                            <div class="commande-info-value">Yopougon, Abidjan</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="commande-footer">
+                    <div class="distance-badge mb-3">
+                        <i class="fas fa-route"></i>
+                        7.1 km - ~22 min
+                    </div>
+                    <button class="select-btn">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Accepter cette livraison
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Screen (votre interface existante) -->
+    <div id="tracking-screen" class="tracking-screen">
+        <div class="header-bar">
+    <div class="logo-section">
+        <h3><i class="fas fa-shipping-fast me-2"></i>LivreurTrack Pro</h3>
+        <small style="color: #64748b; font-weight: 600;">Suivi Intelligent en Temps Réel</small>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button class="logout-btn" onclick="logoutLivreur()">
+    <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+</button>
+        <button class="reset-btn" onclick="resetSimulation()">
+            <i class="fas fa-rotate-right me-2"></i>Nouvelle Simulation
+        </button>
+    </div>
+</div>
+
+        <div class="split-container">
+            <!-- PANEL LIVREUR -->
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-motorcycle me-2 fs-3"></i>
+                    <h4>🚴 INTERFACE LIVREUR</h4>
+                    <small>Gestion de la livraison</small>
+                </div>
+
+                <div class="order-info-card">
+                    <div class="order-number">
+                        <i class="fas fa-barcode me-2"></i><span id="order-display">Commande</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>Client:</strong> <span id="client-name-display">--</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong>Téléphone:</strong> <span id="client-phone-display">--</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Adresse:</strong> <span id="client-address-display">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="steps-container">
+                    <!-- Étape 1: Colis Pris -->
+                    <div class="step-item">
+                        <div id="timeline-1" class="step-timeline"></div>
+                        <div id="icon-taken" class="step-icon-circle pending">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div id="card-taken" class="step-card active">
+                            <div class="step-header">
+                                <div>
+                                    <div class="step-title">1. Récupération du Colis</div>
+                                    <div class="step-subtitle">Confirmez que vous avez récupéré le colis</div>
+                                </div>
+                                <button id="btn-taken" class="action-btn-modern btn-warning-gradient" onclick="handleTaken()">
+                                    <i class="fas fa-check-circle me-2"></i>Confirmer
+                                </button>
+                            </div>
+                            <div id="time-taken"></div>
+                            <div id="photo-taken-section" class="photo-section hidden">
+                                <div class="mb-2">
+                                    <span class="optional-tag">OPTIONNEL</span>
+                                    <span class="ms-2 small text-muted fw-semibold">Photo du colis avant départ</span>
+                                </div>
+                                <button class="photo-btn" onclick="triggerCamera('taken')">
+                                    <i class="fas fa-camera me-2"></i>Prendre une Photo
+                                </button>
+                                <div id="photo-taken-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 2: En Route -->
+                    <div class="step-item">
+                        <div id="timeline-2" class="step-timeline"></div>
+                        <div id="icon-route" class="step-icon-circle">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div id="card-route" class="step-card">
+                            <div class="step-header">
+                                <div>
+                                    <div class="step-title">2. Départ en Livraison</div>
+                                    <div class="step-subtitle">Démarrez votre trajet vers le client</div>
+                                </div>
+                                <button id="btn-route" class="action-btn-modern btn-primary-gradient" onclick="handleRoute()" disabled>
+                                    <i class="fas fa-rocket me-2"></i>Démarrer
+                                </button>
+                            </div>
+                            <div id="time-route"></div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 3: Livré -->
+                    <div class="step-item">
+                        <div id="icon-delivered" class="step-icon-circle">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div id="card-delivered" class="step-card">
+                            <div class="step-header">
+                                <div>
+                                    <div class="step-title">3. Livraison Complétée</div>
+                                    <div class="step-subtitle">Photo obligatoire comme preuve</div>
+                                </div>
+                                <button id="btn-delivered" class="action-btn-modern btn-success-gradient" onclick="triggerCamera('delivered')" disabled>
+                                    <i class="fas fa-camera-retro me-2"></i>Photo & Terminer
+                                </button>
+                            </div>
+                            <div id="time-delivered"></div>
+                            <div id="photo-delivered-preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-alert-modern">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <strong>Protection Assurée</strong><br>
+                        <small>Tous les horodatages et photos sont enregistrés automatiquement</small>
+                    </div>
+                </div>
+
+                <!-- Livreur Stats Section -->
+                <div id="livreur-stats-section" class="hidden" style="margin-top: 1.5rem;">
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 3px solid var(--success);">
+                        <h5 class="fw-bold mb-3 text-center" style="color: var(--success);">
+                            <i class="fas fa-trophy me-2"></i>Évaluation Reçue !
+                        </h5>
+                        
+                        <div class="text-center mb-3">
+                            <div class="received-rating-stars" style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+                                <i class="fas fa-star" id="livreur-star-1" style="font-size: 2rem; color: #e2e8f0;"></i>
+                                <i class="fas fa-star" id="livreur-star-2" style="font-size: 2rem; color: #e2e8f0;"></i>
+                                <i class="fas fa-star" id="livreur-star-3" style="font-size: 2rem; color: #e2e8f0;"></i>
+                                <i class="fas fa-star" id="livreur-star-4" style="font-size: 2rem; color: #e2e8f0;"></i>
+                                <i class="fas fa-star" id="livreur-star-5" style="font-size: 2rem; color: #e2e8f0;"></i>
+                            </div>
+                            <div id="livreur-rating-text" style="font-size: 1.3rem; font-weight: 700; color: var(--success);"></div>
+                        </div>
+
+                        <div style="background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                                <div>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Note Moyenne</div>
+                                    <div id="livreur-avg-rating" style="font-size: 1.8rem; font-weight: 800; color: var(--warning);">5.0</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Total Livraisons</div>
+                                    <div id="livreur-total-deliveries" style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <small style="color: #059669; font-weight: 600;">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Continuez votre excellent travail !
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL CLIENT -->
+            <div class="panel">
+                <div class="panel-header client-header">
+                    <i class="fas fa-user-circle me-2 fs-3"></i>
+                    <h4>👤 ESPACE CLIENT</h4>
+                    <small>Suivez votre livraison en direct</small>
+                </div>
+
+                <div class="text-center">
+                    <div id="client-status-badge" class="status-badge-modern" style="background: var(--gradient-5); color: white;">
+                        <i class="fas fa-clock"></i>
+                        <span>En attente de récupération</span>
+                    </div>
+                </div>
+
+                <div class="tracking-animation">
+                    <div class="track-line"></div>
+                    <div id="track-line-progress" class="track-line-progress"></div>
+                    
+                    <div class="track-point start" title="Point de départ">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    
+                    <div id="delivery-vehicle" class="delivery-vehicle">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    
+                    <div class="track-point end" title="Destination">
+                        <i class="fas fa-home"></i>
+                    </div>
+                </div>
+
+                <div id="estimated-time" class="estimated-time-display">
+                    <div class="time-text">
+                        ⏳ En attente de récupération du colis
+                        <div class="loading-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="client-pickup-verification" class="hidden" style="margin-top: 1.5rem; animation: slideDown 0.6s ease;">
+    <div style="background: white; border: 2px solid #cbd5e1; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+        <h6 class="fw-bold mb-3" style="color: var(--primary);">
+            <i class="fas fa-camera me-2"></i>Photo du Colis Récupéré
+        </h6>
+        
+        <div id="client-pickup-photo-container" style="border-radius: 12px; overflow: hidden; margin-bottom: 1rem; border: 1px solid #e2e8f0; height: 250px; background: #f8fafc; display: flex; align-items: center; justify-content: center;">
+            <span class="text-muted small">Chargement de la photo...</span>
+        </div>
+
+        <div class="alert alert-warning d-flex align-items-center mb-3" role="alert" style="font-size: 0.85rem; border-radius: 10px;">
+            <i class="fas fa-info-circle me-2 fs-5"></i>
+            <div>Veuillez confirmer que c'est bien votre colis.</div>
+        </div>
+
+        <button onclick="reportProblem('wrong_package')" class="cancel-order-btn">
+    <i class="fas fa-exclamation-circle me-2"></i>Ce n'est pas mon colis / Annuler
+</button>
+    </div>
+</div>
+
+                <div class="stats-grid-modern">
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern" style="background: var(--gradient-5);">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div class="stat-label">Colis Pris</div>
+                        <div id="client-time-taken" class="stat-value">--:--</div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern" style="background: var(--gradient-3);">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div class="stat-label">En Route</div>
+                        <div id="client-time-route" class="stat-value">--:--</div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern" style="background: var(--gradient-4);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-label">Livré</div>
+                        <div id="client-time-delivered" class="stat-value">--:--</div>
+                    </div>
+                </div>
+
+                <div class="info-alert-modern">
+                    <i class="fas fa-user-tie"></i>
+                    <div>
+                        <strong>Votre Livreur:</strong> <span id="livreur-name-display">--</span><br>
+                        <small>
+                            <span id="livreur-rating-display">⭐ 5.0/5</span> • 
+                            <span id="livreur-deliveries-count">0</span> livraisons • 
+                            Vérifié ✓
+                        </small>
+                    </div>
+                </div>
+
+                <div id="client-photo-section" class="hidden" style="margin-top: 1.5rem; contain: layout;">
+                    <h6 class="fw-bold mb-3" style="color: var(--success);">
+                        <i class="fas fa-camera me-2"></i>Preuve de Livraison
+                    </h6>
+                    <div id="client-photo-preview"></div>
+                </div>
+
+                <!-- Rating Section -->
+                <div id="rating-section" class="hidden" style="margin-top: 1.5rem; contain: layout;">
+                    <div style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding: 2rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 3px solid var(--warning);">
+                        <h5 class="fw-bold mb-3 text-center" style="color: var(--primary);">
+                            <i class="fas fa-star me-2"></i>Évaluez votre livreur
+                        </h5>
+                        <p class="text-center text-muted mb-4">Votre avis nous aide à améliorer notre service</p>
+                        
+                        <div class="rating-stars" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
+                            <i class="fas fa-star rating-star" data-rating="1" onclick="setRating(1)"></i>
+                            <i class="fas fa-star rating-star" data-rating="2" onclick="setRating(2)"></i>
+                            <i class="fas fa-star rating-star" data-rating="3" onclick="setRating(3)"></i>
+                            <i class="fas fa-star rating-star" data-rating="4" onclick="setRating(4)"></i>
+                            <i class="fas fa-star rating-star" data-rating="5" onclick="setRating(5)"></i>
+                        </div>
+                        
+                        <div id="rating-text" class="text-center mb-3" style="font-size: 1.2rem; font-weight: 700; color: var(--warning); height: 30px; display: flex; align-items: center; justify-content: center;">
+                            Cliquez sur les étoiles pour noter
+                        </div>
+                        
+                        <button id="submit-rating-btn" class="select-btn" onclick="submitRating()" disabled style="opacity: 0.5;">
+                            <i class="fas fa-paper-plane me-2"></i>Envoyer mon évaluation
+                        </button>
+                    </div>
+                </div>
+
+                <div id="delivery-completed-message" class="hidden" style="margin-top: 1.5rem; contain: layout;">
+                    <div style="background: var(--gradient-4); color: white; padding: 1.5rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h5 class="fw-bold mb-2">Livraison Réussie ! 🎉</h5>
+                        <p class="mb-0">Votre commande a été livrée avec succès</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Input -->
+    <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ============= DONNÉES DES COMMANDES =============
+        const commandesData = {
+            1: {
+                orderNumber: '#ORD-2025-1247',
+                clientName: 'M. Konan Yao',
+                clientPhone: '+225 07 12 34 56 78',
+                clientAddress: 'Cocody, Abidjan'
+            },
+            2: {
+                orderNumber: '#ORD-2025-1248',
+                clientName: 'Mme. Aya Traoré',
+                clientPhone: '+225 05 87 65 43 21',
+                clientAddress: 'Plateau, Abidjan'
+            },
+            3: {
+                orderNumber: '#ORD-2025-1249',
+                clientName: 'M. Ibrahim Coulibaly',
+                clientPhone: '+225 01 23 45 67 89',
+                clientAddress: 'Yopougon, Abidjan'
+            }
+        };
+
+        let currentPhotoTarget = null;
+        let deliveryState = {
+            taken: null,
+            route: null,
+            delivered: null
+        };
+        let clientUpdateInterval = null;
+        let selectedCommande = null;
+        let livreurInfo = {
+            prenom: '',
+            nom: '',
+            rating: 5.0,
+            totalRatings: 0,
+            sumRatings: 0,
+            deliveriesCount: 0
+        };
+        let currentRating = 0;
+
+        // ============= INITIALIZATION =============
+        window.addEventListener('DOMContentLoaded', () => {
+            // Simulate initial loading
+            setTimeout(() => {
+                document.getElementById('main-loader').classList.add('hidden');
+                
+                // Check if livreur is already logged in
+                const savedLivreur = localStorage.getItem('livreur_info');
+                if (savedLivreur) {
+                    livreurInfo = JSON.parse(savedLivreur);
+                    
+                    // Check if there's a saved state
+                    const savedState = localStorage.getItem('livreur_track_state');
+                    const savedCommande = localStorage.getItem('selected_commande');
+                    
+                    if (savedState && savedCommande) {
+                        // Resume previous delivery
+                        selectedCommande = parseInt(savedCommande);
+                        loadState();
+                        showTrackingScreen();
+                    } else {
+                        // Show commandes selection
+                        document.getElementById('commandes-screen').style.display = 'block';
+                    }
+                } else {
+                    // Show login screen
+                    document.getElementById('login-screen').style.display = 'block';
+                }
+            }, 2000);
+        });
+
+        // ============= LOGIN FUNCTION =============
+        function submitLogin() {
+            const prenom = document.getElementById('prenom-input').value.trim();
+            const nom = document.getElementById('nom-input').value.trim();
+            
+            if (!prenom || !nom) {
+                showToast('Veuillez remplir tous les champs', 'warning');
+                return;
+            }
+            
+            livreurInfo.prenom = prenom;
+            livreurInfo.nom = nom;
+            
+            // Load existing stats if any
+            const savedLivreur = localStorage.getItem('livreur_info');
+            if (savedLivreur) {
+                const saved = JSON.parse(savedLivreur);
+                livreurInfo.rating = saved.rating || 5.0;
+                livreurInfo.totalRatings = saved.totalRatings || 0;
+                livreurInfo.sumRatings = saved.sumRatings || 0;
+                livreurInfo.deliveriesCount = saved.deliveriesCount || 0;
+            }
+            
+            localStorage.setItem('livreur_info', JSON.stringify(livreurInfo));
+            
+            // Transition to commandes screen
+            const loginScreen = document.getElementById('login-screen');
+            loginScreen.style.animation = 'fadeOut 0.5s ease forwards';
+            
+            setTimeout(() => {
+                loginScreen.style.display = 'none';
+                document.getElementById('commandes-screen').style.display = 'block';
+            }, 500);
+            
+            showToast(`Bienvenue ${prenom} ${nom} ! 👋`, 'success');
+        }
+
+        // ============= COMMANDE SELECTION =============
+        function selectCommande(commandeId) {
+            selectedCommande = commandeId;
+            localStorage.setItem('selected_commande', commandeId);
+            
+            // Show loading transition
+            const comandesScreen = document.getElementById('commandes-screen');
+            comandesScreen.style.animation = 'fadeOut 0.5s ease forwards';
+            
+            setTimeout(() => {
+                showTrackingScreen();
+            }, 500);
+        }
+
+        function showTrackingScreen() {
+            // Hide commandes screen
+            document.getElementById('commandes-screen').style.display = 'none';
+            
+            // Show tracking screen
+            const trackingScreen = document.getElementById('tracking-screen');
+            trackingScreen.classList.add('active');
+            
+            // Update order info with selected commande
+            const commande = commandesData[selectedCommande];
+            document.getElementById('order-display').textContent = `Commande ${commande.orderNumber}`;
+            document.getElementById('client-name-display').textContent = commande.clientName;
+            document.getElementById('client-phone-display').textContent = commande.clientPhone;
+            document.getElementById('client-address-display').textContent = commande.clientAddress;
+            
+            // Update livreur info on client side
+            document.getElementById('livreur-name-display').textContent = `${livreurInfo.prenom} ${livreurInfo.nom}`;
+            document.getElementById('livreur-rating-display').textContent = `⭐ ${livreurInfo.rating.toFixed(1)}/5`;
+            document.getElementById('livreur-deliveries-count').textContent = livreurInfo.deliveriesCount;
+            
+            // Start client updates
+            startClientUpdates();
+            
+            showToast('Commande acceptée avec succès ! 🎉', 'success');
+        }
+
+        // ============= STORAGE MANAGEMENT =============
+        function saveState() {
+            localStorage.setItem('livreur_track_state', JSON.stringify(deliveryState));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('livreur_track_state');
+            if (saved) {
+                try {
+                    deliveryState = JSON.parse(saved);
+                    restoreState();
+                } catch (e) {
+                    console.error('Error loading state:', e);
+                }
+            }
+        }
+
+        // ============= CLIENT REAL-TIME UPDATES (VERSION CORRIGÉE) =============
+        function startClientUpdates() {
+            if (clientUpdateInterval) clearInterval(clientUpdateInterval);
+            clientUpdateInterval = setInterval(updateClientView, 1000);
+        }
+
+        function updateClientView() {
+            const statusBadge = document.getElementById('client-status-badge');
+            const vehicle = document.getElementById('delivery-vehicle');
+            const trackProgress = document.getElementById('track-line-progress');
+            const estimatedTime = document.getElementById('estimated-time');
+            
+            // Éléments pour la vérification photo (Correction Bug)
+            const pickupVerifSection = document.getElementById('client-pickup-verification');
+            const pickupPhotoContainer = document.getElementById('client-pickup-photo-container');
+
+            // 1. Mise à jour des horodatages
+            if (deliveryState.taken) {
+                document.getElementById('client-time-taken').textContent = deliveryState.taken.time;
+                document.querySelector('.stats-grid-modern .stat-card-modern:nth-child(1)').classList.add('active');
+            }
+            if (deliveryState.route) {
+                document.getElementById('client-time-route').textContent = deliveryState.route.time;
+                document.querySelector('.stats-grid-modern .stat-card-modern:nth-child(2)').classList.add('active');
+            }
+            if (deliveryState.delivered) {
+                document.getElementById('client-time-delivered').textContent = deliveryState.delivered.time;
+                document.querySelector('.stats-grid-modern .stat-card-modern:nth-child(3)').classList.add('active');
+            }
+
+            // 2. Logique d'affichage de la photo de récupération (NOUVEAU)
+            // On affiche la section SI le colis est pris ET qu'il y a une photo ET que ce n'est pas encore livré
+            if (deliveryState.taken && deliveryState.taken.photo && !deliveryState.delivered) {
+                if (pickupVerifSection.classList.contains('hidden')) {
+                    pickupVerifSection.classList.remove('hidden');
+                    // Injection de l'image
+                    pickupPhotoContainer.innerHTML = `
+                        <img src="${deliveryState.taken.photo}" 
+                             style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" 
+                             onclick="viewFullPhoto(this.src)"
+                             alt="Photo du colis au départ">
+                    `;
+                }
+            } else {
+                // On cache la section si on n'en a pas besoin (pas encore pris OU déjà livré)
+                if (!pickupVerifSection.classList.contains('hidden')) {
+                    pickupVerifSection.classList.add('hidden');
+                }
+            }
+
+            // 3. Gestion des États et Animations
+            if (deliveryState.delivered) {
+                // --- ÉTAT : LIVRÉ ---
+                statusBadge.innerHTML = '<i class="fas fa-check-circle"></i><span>Livraison Terminée ✅</span>';
+                statusBadge.style.background = 'var(--gradient-4)';
+                vehicle.style.left = '90%';
+                trackProgress.style.width = '80%';
+                estimatedTime.innerHTML = '<div class="time-text" style="color: var(--success);">✅ Livraison complétée avec succès !</div>';
+
+                // Affichage Preuve de Livraison Finale
+                if (deliveryState.delivered.photo) {
+                    const photoSection = document.getElementById('client-photo-section');
+                    const photoPreview = document.getElementById('client-photo-preview');
+                    
+                    photoSection.classList.remove('hidden');
+                    photoPreview.innerHTML = `
+                        <div class="photo-preview-modern client-photo">
+                            <img src="${deliveryState.delivered.photo}" alt="Preuve de livraison" onclick="viewFullPhoto(this.src)">
+                            <div class="photo-badge">
+                                <i class="fas fa-check-circle me-1"></i>Vérifié
+                            </div>
+                        </div>
+                    `;
+                }
+
+                document.getElementById('delivery-completed-message').classList.remove('hidden');
+                
+                // Affichage notation
+                setTimeout(() => {
+                    document.getElementById('rating-section').classList.remove('hidden');
+                }, 1000);
+
+            } else if (deliveryState.route) {
+                // --- ÉTAT : EN ROUTE ---
+                const routeStart = deliveryState.route.timestamp;
+                const now = Date.now();
+                const elapsed = now - routeStart;
+                
+                // Estimation (5 minutes)
+                const estimatedDuration = 5 * 60 * 1000; 
+                const remaining = Math.max(0, Math.ceil((estimatedDuration - elapsed) / 60000));
+                
+                statusBadge.innerHTML = '<i class="fas fa-motorcycle"></i><span>En route vers vous 🏍️</span>';
+                statusBadge.style.background = 'var(--gradient-3)';
+
+                // Calcul progression
+                const progress = Math.min(75, 10 + (elapsed / estimatedDuration) * 65);
+                vehicle.style.left = (10 + progress) + '%';
+                trackProgress.style.width = progress + '%';
+
+                if (remaining > 0) {
+                    estimatedTime.innerHTML = `
+                        <div class="time-text" style="color: var(--primary);">
+                            🚀 Arrive dans environ <strong>${remaining} minute${remaining > 1 ? 's' : ''}</strong>
+                        </div>
+                    `;
+                } else {
+                    estimatedTime.innerHTML = `
+                        <div class="time-text" style="color: var(--warning);">
+                            📍 Le livreur arrive très bientôt !
+                        </div>
+                    `;
+                }
+
+            } else if (deliveryState.taken) {
+                // --- ÉTAT : COLIS PRIS (MAIS PAS ENCORE PARTI) ---
+                statusBadge.innerHTML = '<i class="fas fa-box-open"></i><span>Colis récupéré 📦</span>';
+                statusBadge.style.background = 'var(--gradient-5)';
+                vehicle.style.left = '10%';
+                trackProgress.style.width = '0%';
+                estimatedTime.innerHTML = `
+                    <div class="time-text" style="color: var(--warning);">
+                        ⏳ Le livreur a le colis et va démarrer...
+                        <div class="loading-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ============= NOUVELLES FONCTIONS UTILITAIRES =============
+
+        // 1. Fonction de Déconnexion
+        function logoutLivreur() {
+            if(confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                // Nettoyage complet
+                localStorage.removeItem('livreur_info');
+                localStorage.removeItem('selected_commande');
+                // On garde l'état 'livreur_track_state' si on veut reprendre la course après reconnexion, 
+                // sinon ajoutez : localStorage.removeItem('livreur_track_state');
+                
+                showToast('Déconnexion en cours...', 'info');
+                setTimeout(() => {
+                    location.reload(); // Recharge la page pour retourner au login
+                }, 1000);
+            }
+        }
+
+        // 2. Fonction de Signalement / Annulation
+        function reportProblem(reason) {
+            if (reason === 'wrong_package') {
+                const motif = prompt("Veuillez indiquer pourquoi ce n'est pas le bon colis :", "Le colis ne correspond pas à ma commande");
+                
+                if (motif && motif.trim() !== "") {
+                    // Arrêter le suivi en direct
+                    clearInterval(clientUpdateInterval);
+                    
+                    // Alerter visuellement
+                    const verifSection = document.getElementById('client-pickup-verification');
+                    verifSection.innerHTML = `
+                        <div class="alert alert-danger text-center p-4" style="border-radius: 16px; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.15);">
+                            <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                            <h4 class="fw-bold text-danger">LIVRAISON SUSPENDUE</h4>
+                            <p class="fw-bold mb-1">Signalement envoyé au livreur.</p>
+                            <div class="bg-white p-2 rounded mt-2 border text-start">
+                                <small class="text-muted d-block">Motif :</small>
+                                <strong>${motif}</strong>
+                            </div>
+                            <button onclick="location.reload()" class="btn btn-sm btn-outline-danger mt-3 rounded-pill">
+                                Réinitialiser l'interface
+                            </button>
+                        </div>
+                    `;
+                    
+                    showToast('Signalement envoyé au livreur !', 'warning');
+                    alert("Le livreur a été notifié de l'erreur. La course est suspendue.");
+                }
+            }
+        }
+
+        // 3. Voir la photo en grand (Optionnel)
+        function viewFullPhoto(src) {
+            const w = window.open("", "_blank");
+            w.document.write(`
+                <html>
+                    <body style="margin:0; background:black; display:flex; align-items:center; justify-content:center; height:100vh;">
+                        <img src="${src}" style="max-width:100%; max-height:100%;">
+                    </body>
+                </html>
+            `);
+        }
+
+        // ============= LIVREUR ACTIONS =============
+        function handleTaken() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            deliveryState.taken = {
+                time: time,
+                timestamp: now.getTime(),
+                photo: null
+            };
+            saveState();
+            
+            // Update UI
+            document.getElementById('btn-taken').style.display = 'none';
+            document.getElementById('time-taken').innerHTML = `
+                <div class="time-badge-modern">
+                    <i class="fas fa-clock"></i>
+                    Récupéré à ${time}
+                </div>
+            `;
+            
+            document.getElementById('icon-taken').classList.remove('pending');
+            document.getElementById('icon-taken').classList.add('active');
+            document.getElementById('card-taken').classList.remove('active');
+            document.getElementById('card-taken').classList.add('completed');
+            document.getElementById('photo-taken-section').classList.remove('hidden');
+            
+            // Activate next step
+            document.getElementById('btn-route').disabled = false;
+            document.getElementById('card-route').classList.add('active');
+            document.getElementById('icon-route').classList.add('pending');
+            document.getElementById('timeline-1').classList.add('active');
+            
+            showToast('Colis récupéré avec succès !', 'success');
+        }
+
+        function handleRoute() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            deliveryState.route = {
+                time: time,
+                timestamp: now.getTime()
+            };
+            saveState();
+            
+            // Update UI
+            document.getElementById('btn-route').style.display = 'none';
+            document.getElementById('time-route').innerHTML = `
+                <div class="time-badge-modern">
+                    <i class="fas fa-clock"></i>
+                    Départ à ${time}
+                </div>
+            `;
+            
+            document.getElementById('icon-route').classList.remove('pending');
+            document.getElementById('icon-route').classList.add('active');
+            document.getElementById('card-route').classList.remove('active');
+            document.getElementById('card-route').classList.add('completed');
+            
+            // Activate next step
+            document.getElementById('btn-delivered').disabled = false;
+            document.getElementById('card-delivered').classList.add('active');
+            document.getElementById('icon-delivered').classList.add('pending');
+            document.getElementById('timeline-2').classList.add('active');
+            
+            showToast('Départ en livraison !', 'info');
+        }
+
+        // ============= CAMERA FUNCTIONS =============
+        function triggerCamera(target) {
+            currentPhotoTarget = target;
+            document.getElementById('camera-input').click();
+        }
+
+        document.getElementById('camera-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64 = event.target.result;
+                
+                if (currentPhotoTarget === 'taken') {
+                    deliveryState.taken.photo = base64;
+                    saveState();
+                    
+                    document.getElementById('photo-taken-preview').innerHTML = `
+                        <div class="photo-preview-modern">
+                            <img src="${base64}" alt="Photo du colis">
+                            <div class="photo-badge">
+                                <i class="fas fa-check me-1"></i>Photo ajoutée
+                            </div>
+                        </div>
+                    `;
+                    
+                    showToast('Photo du colis enregistrée !', 'success');
+                } else if (currentPhotoTarget === 'delivered') {
+                    const now = new Date();
+                    const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                    
+                    deliveryState.delivered = {
+                        time: time,
+                        timestamp: now.getTime(),
+                        photo: base64
+                    };
+                    saveState();
+                    
+                    handleDelivered(time, base64);
+                }
+            };
+            reader.readAsDataURL(file);
+            
+            // Reset input
+            e.target.value = '';
+        });
+
+        function handleDelivered(time, photo) {
+            // Update UI
+            document.getElementById('btn-delivered').style.display = 'none';
+            document.getElementById('time-delivered').innerHTML = `
+                <div class="time-badge-modern">
+                    <i class="fas fa-clock"></i>
+                    Livré à ${time}
+                </div>
+            `;
+            
+            document.getElementById('photo-delivered-preview').innerHTML = `
+                <div class="photo-preview-modern">
+                    <img src="${photo}" alt="Preuve de livraison">
+                    <div class="photo-badge">
+                        <i class="fas fa-check-circle me-1"></i>Livraison confirmée
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('icon-delivered').classList.remove('pending');
+            document.getElementById('icon-delivered').classList.add('active');
+            document.getElementById('card-delivered').classList.remove('active');
+            document.getElementById('card-delivered').classList.add('completed');
+            
+            showToast('Livraison terminée avec succès ! 🎉', 'success');
+        }
+
+        // ============= RESTORE STATE =============
+        function restoreState() {
+            if (deliveryState.taken) {
+                document.getElementById('btn-taken').style.display = 'none';
+                document.getElementById('time-taken').innerHTML = `
+                    <div class="time-badge-modern">
+                        <i class="fas fa-clock"></i>
+                        Récupéré à ${deliveryState.taken.time}
+                    </div>
+                `;
+                document.getElementById('icon-taken').classList.add('active');
+                document.getElementById('card-taken').classList.add('completed');
+                document.getElementById('photo-taken-section').classList.remove('hidden');
+                
+                if (deliveryState.taken.photo) {
+                    document.getElementById('photo-taken-preview').innerHTML = `
+                        <div class="photo-preview-modern">
+                            <img src="${deliveryState.taken.photo}" alt="Photo du colis">
+                            <div class="photo-badge">
+                                <i class="fas fa-check me-1"></i>Photo ajoutée
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('btn-route').disabled = false;
+                document.getElementById('card-route').classList.add('active');
+                document.getElementById('icon-route').classList.add('pending');
+                document.getElementById('timeline-1').classList.add('active');
+            }
+            
+            if (deliveryState.route) {
+                document.getElementById('btn-route').style.display = 'none';
+                document.getElementById('time-route').innerHTML = `
+                    <div class="time-badge-modern">
+                        <i class="fas fa-clock"></i>
+                        Départ à ${deliveryState.route.time}
+                    </div>
+                `;
+                document.getElementById('icon-route').classList.add('active');
+                document.getElementById('card-route').classList.add('completed');
+                
+                document.getElementById('btn-delivered').disabled = false;
+                document.getElementById('card-delivered').classList.add('active');
+                document.getElementById('icon-delivered').classList.add('pending');
+                document.getElementById('timeline-2').classList.add('active');
+            }
+            
+            if (deliveryState.delivered) {
+                document.getElementById('btn-delivered').style.display = 'none';
+                document.getElementById('time-delivered').innerHTML = `
+                    <div class="time-badge-modern">
+                        <i class="fas fa-clock"></i>
+                        Livré à ${deliveryState.delivered.time}
+                    </div>
+                `;
+                document.getElementById('photo-delivered-preview').innerHTML = `
+                    <div class="photo-preview-modern">
+                        <img src="${deliveryState.delivered.photo}" alt="Preuve de livraison">
+                        <div class="photo-badge">
+                            <i class="fas fa-check-circle me-1"></i>Livraison confirmée
+                        </div>
+                    </div>
+                `;
+                document.getElementById('icon-delivered').classList.add('active');
+                document.getElementById('card-delivered').classList.add('completed');
+            }
+        }
+
+        // ============= RESET SIMULATION =============
+        function resetSimulation() {
+            if (confirm('Voulez-vous vraiment recommencer une nouvelle simulation ? Toutes les données seront effacées.')) {
+                localStorage.removeItem('livreur_track_state');
+                localStorage.removeItem('selected_commande');
+                location.reload();
+            }
+        }
+
+        // ============= RATING SYSTEM =============
+        function setRating(rating) {
+            currentRating = rating;
+            
+            // Update stars visual
+            const stars = document.querySelectorAll('.rating-star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+            // Update text
+            const ratingTexts = {
+                1: '😞 Très décevant',
+                2: '😕 Peut mieux faire',
+                3: '😐 Correct',
+                4: '😊 Très bien',
+                5: '🤩 Excellent !'
+            };
+            
+            document.getElementById('rating-text').textContent = ratingTexts[rating];
+            
+            // Enable submit button
+            const submitBtn = document.getElementById('submit-rating-btn');
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        }
+
+        function submitRating() {
+            if (currentRating === 0) {
+                showToast('Veuillez sélectionner une note', 'warning');
+                return;
+            }
+            
+            // Update livreur stats
+            livreurInfo.totalRatings++;
+            livreurInfo.sumRatings += currentRating;
+            livreurInfo.rating = livreurInfo.sumRatings / livreurInfo.totalRatings;
+            livreurInfo.deliveriesCount++;
+            
+            // Save to localStorage
+            localStorage.setItem('livreur_info', JSON.stringify(livreurInfo));
+            
+            // Hide rating section
+            document.getElementById('rating-section').style.animation = 'fadeOut 0.5s ease forwards';
+            
+            // Show thank you message
+            setTimeout(() => {
+                document.getElementById('rating-section').innerHTML = `
+                    <div style="background: var(--gradient-4); color: white; padding: 2rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                        <i class="fas fa-heart" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h5 class="fw-bold mb-2">Merci pour votre évaluation ! 💚</h5>
+                        <p class="mb-0">Votre avis a été enregistré avec succès</p>
+                    </div>
+                `;
+                document.getElementById('rating-section').style.animation = 'fadeInUp 0.5s ease forwards';
+            }, 500);
+            
+            // Show rating to livreur
+            showRatingToLivreur(currentRating);
+            
+            showToast(`Merci d'avoir noté ${livreurInfo.prenom} ! ⭐`, 'success');
+        }
+
+        // ============= SHOW RATING TO LIVREUR =============
+        function showRatingToLivreur(rating) {
+            const livreurStatsSection = document.getElementById('livreur-stats-section');
+            
+            if (livreurStatsSection) {
+                livreurStatsSection.classList.remove('hidden');
+                
+                // Animate stars one by one
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.getElementById(`livreur-star-${i}`);
+                    if (i <= rating) {
+                        setTimeout(() => {
+                            star.style.color = '#f59e0b';
+                            star.style.animation = 'starPop 0.4s ease';
+                        }, i * 150);
+                    }
+                }
+                
+                // Update text
+                const ratingTexts = {
+                    1: '😞 Le client n\'est pas satisfait',
+                    2: '😕 Le client pense que vous pouvez mieux faire',
+                    3: '😐 Service correct selon le client',
+                    4: '😊 Le client est très satisfait !',
+                    5: '🤩 Le client est ravi de votre service !'
+                };
+                
+                setTimeout(() => {
+                    document.getElementById('livreur-rating-text').textContent = ratingTexts[rating];
+                }, 800);
+                
+                // Update average and total
+                document.getElementById('livreur-avg-rating').textContent = livreurInfo.rating.toFixed(1);
+                document.getElementById('livreur-total-deliveries').textContent = livreurInfo.deliveriesCount;
+                
+                // Scroll to show the rating
+                setTimeout(() => {
+                    livreurStatsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 1000);
+            }
+        }
+
+        // ============= FEEDBACK MODAL =============
+        function showFeedbackModal() {
+            alert('🌟 Merci pour votre feedback !\n\nCette fonctionnalité sera bientôt disponible.\n\nVotre satisfaction est notre priorité !');
+        }
+
+        // ============= TOAST NOTIFICATIONS =============
+        function showToast(message, type = 'success') {
+            const colors = {
+                success: 'var(--gradient-4)',
+                info: 'var(--gradient-3)',
+                warning: 'var(--gradient-5)'
+            };
+            
+            const icons = {
+                success: 'fa-check-circle',
+                info: 'fa-info-circle',
+                warning: 'fa-exclamation-circle'
+            };
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 50px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-weight: 600;
+                animation: slideInRight 0.5s ease;
+            `;
+            
+            toast.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+        
+        // Add animations for toast
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+            @keyframes fadeOut {
+                to { opacity: 0; transform: scale(0.9); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
