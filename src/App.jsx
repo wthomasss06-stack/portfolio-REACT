@@ -1,6 +1,51 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Monitor, Star, Cpu, Check, Globe, ShoppingCart, Zap, Wrench, Hammer, Briefcase, Sparkles, ArrowRight, Send, Eye, Coffee, Hand } from 'lucide-react';
 import './style.css';
+
+/* ── SVG icon replacements (pas de dépendance lucide-react) ── */
+const SvgArrowRight = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </svg>
+);
+const SvgStar = ({ size = 14, strokeWidth = 2.5 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+);
+const SvgCheck = ({ size = 13, strokeWidth = 3 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+const SvgGlobe = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+const SvgShoppingCart = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+);
+const SvgCpu = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2"/>
+    <rect x="9" y="9" width="6" height="6"/>
+    <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
+    <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+    <line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/>
+    <line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+  </svg>
+);
 
 // ─── Logo AKATech (v4 — style page.js, orange) ───────────────────
 const AKALOGO_CSS_ID = 'akalogo-v4-styles';
@@ -156,6 +201,12 @@ const PROJECTS = [
     tech:["React","Tailwind CSS","Howler.js","Vercel"],
     stats:[{icon:"headphones",label:"Écoute en ligne"},{icon:"whatsapp",label:"Achat via WhatsApp"},{icon:"music",label:"Catalogue beats"}],
     url:"https://xxx-x.vercel.app/", year:"2025", isPremium:true },
+  { id:12, title:"New Horizon Service", subtitle:"Location de Résidences", cat:"en-ligne", progress:100,
+    description:"Plateforme de location de résidences meublées haut de gamme. Interface moderne côté client, backend Flask sécurisé avec API REST, recherche avancée et gestion des disponibilités.",
+    image:"/assets/images/projects/newhorizon-preview.jpg",
+    tech:["Next.js","Flask","Python","MySQL","Vercel"],
+    stats:[{icon:"home",label:"Résidences meublées"},{icon:"search",label:"Recherche avancée"},{icon:"calendar-check",label:"Réservation en ligne"}],
+    url:"https://new-horizonservice.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [
@@ -463,22 +514,46 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
     const resize = () => { cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; };
     resize(); window.addEventListener('resize', resize);
     const mouse = { x: null, y: null };
-    const onMouseMove = e => { const rect = cv.getBoundingClientRect(); mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top; };
-    const onMouseLeave = () => { mouse.x = null; mouse.y = null; };
-    cv.addEventListener('mousemove', onMouseMove); cv.addEventListener('mouseleave', onMouseLeave);
-    const globalMouseMove = e => { mouse.x = e.clientX; mouse.y = e.clientY; };
-    if (isGlobal) window.addEventListener('mousemove', globalMouseMove);
-    const pts = Array.from({length:70},()=>({
+    // Canvas a pointer-events:none → impossible de catcher mousemove sur lui.
+    // On écoute window et on convertit en coords locales si besoin.
+    const onWindowMouse = e => {
+      if (isGlobal) {
+        mouse.x = e.clientX; mouse.y = e.clientY;
+      } else {
+        const rect = cv.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      }
+    };
+    const onWindowLeave = () => { mouse.x = null; mouse.y = null; };
+    window.addEventListener('mousemove', onWindowMouse);
+    window.addEventListener('mouseleave', onWindowLeave);
+    const pts = Array.from({length:110},()=>({
       x: Math.random()*cv.width, y: Math.random()*cv.height,
-      r: Math.random()*1+0.3, vx:(Math.random()-.5)*0.8, vy:(Math.random()-.5)*0.8,
-      c: COLORS[Math.floor(Math.random()*COLORS.length)], a: Math.random()*.4+.15,
+      r: Math.random()*2.2+0.7, vx:(Math.random()-.5)*0.8, vy:(Math.random()-.5)*0.8,
+      c: COLORS[Math.floor(Math.random()*COLORS.length)], a: Math.random()*.55+.28,
     }));
     const draw = () => {
       ctx.clearRect(0,0,cv.width,cv.height);
+
+      // ── Lignes d'attraction vers le curseur ──
+      if (mouse.x !== null) {
+        pts.forEach(p => {
+          const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+          if (d < 180) {
+            ctx.globalAlpha = (1 - d / 180) * 0.22;
+            ctx.strokeStyle = CONN_COLOR;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        });
+      }
+
       pts.forEach(p=>{
         if (mouse.x !== null) {
           const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
-          if (d < 100) { const force = (100 - d) / 100, angle = Math.atan2(dy, dx); p.vx -= Math.cos(angle) * force * 0.6; p.vy -= Math.sin(angle) * force * 0.6; }
+          if (d < 160) { const force = (160 - d) / 160, angle = Math.atan2(dy, dx); p.vx -= Math.cos(angle) * force * 1.4; p.vy -= Math.sin(angle) * force * 1.4; }
         }
         const spd = Math.hypot(p.vx, p.vy);
         if (spd > 1.5) { p.vx = (p.vx/spd)*1.5; p.vy = (p.vy/spd)*1.5; }
@@ -487,26 +562,37 @@ const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
         if (Math.abs(p.vy) < 0.15) p.vy += (Math.random()-.5)*0.25;
         p.x+=p.vx; p.y+=p.vy;
         if(p.x<0||p.x>cv.width) p.vx*=-1; if(p.y<0||p.y>cv.height) p.vy*=-1;
-        ctx.save(); ctx.globalAlpha=p.a*.2;
-        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*8);
+        ctx.save(); ctx.globalAlpha=p.a*.35;
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10);
         g.addColorStop(0,p.c); g.addColorStop(1,'transparent');
-        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*8,0,Math.PI*2); ctx.fill(); ctx.restore();
-        ctx.globalAlpha=p.a; ctx.fillStyle=p.c; ctx.shadowBlur=8; ctx.shadowColor=p.c;
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*10,0,Math.PI*2); ctx.fill(); ctx.restore();
+        ctx.globalAlpha=p.a; ctx.fillStyle=p.c; ctx.shadowBlur=12; ctx.shadowColor=p.c;
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
         ctx.globalAlpha=1; ctx.shadowBlur=0;
       });
       for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
         const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
-        if(d<130){ ctx.globalAlpha=(1-d/130)*.15; ctx.strokeStyle=CONN_COLOR; ctx.lineWidth=.5;
+        if(d<140){ ctx.globalAlpha=(1-d/140)*.28; ctx.strokeStyle=CONN_COLOR; ctx.lineWidth=.7;
           ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); ctx.globalAlpha=1; }
       }
+
+      // ── Halo curseur ──
+      if (mouse.x !== null) {
+        const cg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 90);
+        cg.addColorStop(0, CONN_COLOR.replace(')', ',0.12)').replace('rgb','rgba').replace('#ff8c00','rgba(255,140,0,0.12)').replace('#00ff88','rgba(0,255,136,0.12)'));
+        cg.addColorStop(1, 'transparent');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = isLight ? 'rgba(255,140,0,0.10)' : 'rgba(0,255,136,0.10)';
+        ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 90, 0, Math.PI * 2); ctx.fill();
+      }
+
       raf=requestAnimationFrame(draw);
     };
     draw();
     return ()=>{
       cancelAnimationFrame(raf); window.removeEventListener('resize',resize);
-      if (isGlobal) window.removeEventListener('mousemove',globalMouseMove);
-      cv.removeEventListener('mousemove',onMouseMove); cv.removeEventListener('mouseleave',onMouseLeave);
+      window.removeEventListener('mousemove', onWindowMouse);
+      window.removeEventListener('mouseleave', onWindowLeave);
     };
   },[isLight]);
   return <canvas ref={cvRef} className={isGlobal ? "particle-canvas particle-canvas--global" : "particle-canvas"}/>
@@ -727,7 +813,7 @@ const Navbar = ({dark, onToggle}) => {
           {NAV_LINKS.map((l,i)=>(
             <button key={l.id} className={`mob-drawer-link ${active===l.id?'mob-drawer-link--active':''} ${open?'mob-drawer-link--in':''}`}
               style={{animationDelay:`${i*0.055}s`}} onClick={()=>go(l.id)}>
-              <span className="mob-drawer-num">0{i+1}</span><span>{l.label}</span><ArrowRight size={14}/>
+              <span className="mob-drawer-num">0{i+1}</span><span>{l.label}</span><SvgArrowRight size={14}/>
             </button>
           ))}
         </nav>
@@ -902,6 +988,9 @@ const Hero = ({ dark }) => {
       {/* ── Hero sweep scan line ── */}
       <div className="hv4-scan" aria-hidden/>
 
+      {/* ── Particles hero dédiées ── */}
+      <ParticleCanvas light={!dark}/>
+
       {/* ── Main grid ── */}
       <div className="hero-content hv4-grid">
 
@@ -927,6 +1016,14 @@ const Hero = ({ dark }) => {
             <span className="hv4-name-line" style={{ '--d': '0.12s' }}>M'BOLLO</span>
             <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '0.26s' }}>AKA ELVIS</span>
           </h1>
+
+          {/* Photo mobile — entre le nom et le typewriter */}
+          <div className="hv4-photo-mob hv4-rv" style={{ '--d': '0.3s' }}>
+            <div className="hv4-photo-mob-inner">
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo"/>
+              <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
+            </div>
+          </div>
 
           {/* Typewriter */}
           <p className="hv4-typed hv4-rv" style={{ '--d': '0.42s' }}>
@@ -964,51 +1061,21 @@ const Hero = ({ dark }) => {
           </div>
         </div>
 
-        {/* ════ RIGHT — floating code card ════ */}
+        {/* ════ RIGHT — photo plein format ════ */}
         <div className="hv4-right hv4-rv" style={{ '--d': '0.32s' }}>
-          <div className="hv4-card"
-            style={{ transform: `translateY(${-scrollY * 0.07}px)` }}>
 
-            {/* Window chrome */}
-            <div className="hv4-bar">
-              <div className="hv4-bar-dots">
-                <span style={{ background:'#ff5f56' }}/>
-                <span style={{ background:'#ffbd2e' }}/>
-                <span style={{ background:'#27c93f' }}/>
-              </div>
-              <span className="hv4-bar-title">aka.dev · profile.js</span>
+          {/* Photo de profil — B&W par défaut, couleur au hover */}
+          <div className="hv4-photo-wrap hv4-photo-wrap--full">
+            <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"/>
+            <div className="hv4-photo-overlay">
+              <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
+              <span><i className="fas fa-code"/> Full-Stack Dev</span>
             </div>
-
-            {/* Code body */}
-            <div className="hv4-code-wrap">
-              <div className="hv4-line-nums" aria-hidden>
-                {[1,2,3,4,5,6,7,8,9,10].map(n => <span key={n}>{n}</span>)}
-              </div>
-              <pre className="hv4-code">
-<span className="hvc-c">{'// developer profile'}</span>{'\n'}
-<span className="hvc-k">const</span>{' '}
-<span className="hvc-v">developer</span>{' = {\n'}
-{'  '}<span className="hvc-p">name</span>{' : '}
-<span className="hvc-s">{"\"M'Bollo Aka Elvis\""}</span>{',\n'}
-{'  '}<span className="hvc-p">role</span>{' : '}
-<span className="hvc-s">{"\"Full-Stack Dev\""}</span>{',\n'}
-{'  '}<span className="hvc-p">stack</span>{' : ['}
-<span className="hvc-s">{"\"React\""}</span>{', '}
-<span className="hvc-s">{"\"Django\""}</span>{'],\n'}
-{'  '}<span className="hvc-p">status</span>{' : '}
-<span className="hvc-a">{'available'}</span>{',\n'}
-{'  '}<span className="hvc-p">base</span>{' : '}
-<span className="hvc-s">{"\"Abidjan, CI\""}</span>{',\n'}
-{'}'}</pre>
+            {/* Badge open to work intégré sur la photo */}
+            <div className="hv4-photo-status">
+              <span className="hero-dot"/>
+              <span>Open to work · Freelance &amp; CDI</span>
             </div>
-
-            {/* Scan line inside card */}
-            <div className="hv4-card-scan" aria-hidden/>
-          </div>
-
-          {/* Tag below card */}
-          <div className="hv4-card-tag">
-            <span className="hvc-a">▶</span> Open to work · Freelance &amp; CDI
           </div>
         </div>
 
@@ -1079,7 +1146,7 @@ const FeaturedCreation = ({dark}) => {
   );
 };
 
-const LUCIDE_TAB_ICONS = { Globe, ShoppingCart, Cpu, Star };
+const LUCIDE_TAB_ICONS = { Globe: SvgGlobe, ShoppingCart: SvgShoppingCart, Cpu: SvgCpu, Star: SvgStar };
 const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations." };
 
 const PricingTabs = ({dark}) => {
@@ -1095,14 +1162,14 @@ const PricingTabs = ({dark}) => {
   const PricingCard=({p, tilt=false})=>{
     const inner = (
       <div className={`ptabs2-card ${p.isPopular?'ptabs2-card--pop':''} ${dark?'ptabs2-card--dark':''}`}>
-        {p.isPopular&&(<div className={`ptabs2-pop-banner ${dark?'ptabs2-pop-banner--dark':''}`}><Star size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE</div>)}
+        {p.isPopular&&(<div className={`ptabs2-pop-banner ${dark?'ptabs2-pop-banner--dark':''}`}><SvgStar size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE</div>)}
         <div className="ptabs2-card-body">
           <div className="ptabs2-badge">{p.badge}</div>
           <p className="ptabs2-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
           <div className={`ptabs2-price ${dark?'ptabs2-price--dark':''}`}><span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span><span className="ptabs2-currency"> FCFA</span></div>
           <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
-          <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><Check size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
-          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Me contacter <ArrowRight size={14}/></MagBtn>
+          <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
+          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Me contacter <SvgArrowRight size={14}/></MagBtn>
         </div>
       </div>
     );
@@ -1153,7 +1220,7 @@ const Services = ({dark}) => {
             <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{SERVICES[svcIdx].n}</span><div className="svc-ico"><i className={`fas fa-${SERVICES[svcIdx].icon}`}/></div></div>
             <h3 className="pricing-title">{SERVICES[svcIdx].title}</h3>
             <p className="pricing-desc">{SERVICES[svcIdx].desc}</p>
-            <ul className="pricing-feat">{SERVICES[svcIdx].features.map((f,fi)=><li key={fi}><Check size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
+            <ul className="pricing-feat">{SERVICES[svcIdx].features.map((f,fi)=><li key={fi}><SvgCheck size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
           </div>
         </TiltCard>
         <div className="mob-nav">
