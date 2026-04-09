@@ -1366,68 +1366,371 @@ const About = ({dark}) => {
   );
 };
 
-const Carousel3D = ({items, dark}) => {
-  const [active,setActive]=useState(0);
-  const isDrag=useRef(false); const dragX=useRef(0); const autoRef=useRef(null); const total=items.length;
-  const resetAuto=useCallback(()=>{ clearInterval(autoRef.current); autoRef.current=setInterval(()=>setActive(p=>(p+1)%total),4500); },[total]);
-  useEffect(()=>{ resetAuto(); return ()=>clearInterval(autoRef.current); },[resetAuto]);
-  useEffect(()=>setActive(0),[items]);
-  const go=useCallback(dir=>{ setActive(p=>(p+dir+total)%total); resetAuto(); },[total,resetAuto]);
-  useEffect(()=>{ const fn=e=>{ if(e.key==='ArrowRight')go(1); if(e.key==='ArrowLeft')go(-1); }; window.addEventListener('keydown',fn); return ()=>window.removeEventListener('keydown',fn); },[go]);
-  const onDS=e=>{ dragX.current=e.clientX??e.touches?.[0]?.clientX; isDrag.current=true; };
-  const onDE=e=>{ if(!isDrag.current)return; const dx=(e.clientX??e.changedTouches?.[0]?.clientX)-dragX.current; if(Math.abs(dx)>48) go(dx<0?1:-1); isDrag.current=false; };
-  const cardStyle=pos=>{ const abs=Math.abs(pos); if(abs>2) return {display:'none'}; const tx=pos*clampedPct(300); return {transform:`translateX(${tx}px) translateZ(${-(abs*110)}px) rotateY(${pos*-14}deg) scale(${pos===0?1:abs===1?.80:.60})`,opacity:pos===0?1:abs===1?.55:.25,zIndex:10-abs,transition:'all .55s cubic-bezier(.25,.46,.45,.94)',pointerEvents:pos===0?'all':'none'}; };
+/* ══════════════════════════════════════════════════════════
+   PROJECT MODAL — fenêtre détail projet (utilisé par FanDeck)
+   ══════════════════════════════════════════════════════════ */
+const ProjectModal = ({ project, dark, onClose }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (project) { requestAnimationFrame(() => setVisible(true)); document.body.style.overflow = 'hidden'; }
+    else { setVisible(false); document.body.style.overflow = ''; }
+    const onKey = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('keydown', onKey); };
+  }, [project, onClose]);
+
+  if (!project) return null;
+
   return (
-    <>
-    <div className={`c3d-root ${dark?'':'c3d-root--dark'}`} onMouseDown={onDS} onMouseUp={onDE} onTouchStart={onDS} onTouchEnd={onDE}>
-      <WindowChrome title="Réalisations récentes" dark={dark} inner/>
-      <div className="c3d-stage"><div className="c3d-perspective">
-        {items.map((proj,i)=>{ const pos=((i-active+total)%total+total)%total; const rel=pos>total/2?pos-total:pos; const neon=dark?(BADGE_DARK[proj.cat]||'#00ff88'):(BADGE_LIGHT[proj.cat]||'#C94B2A'); const neonBg=dark?neon+'14':neon+'18'; const neonBorder=dark?neon+'44':neon+'55'; const isCenter=rel===0;
-          // Tilt 3D directement sur la carte active sans wrapper (évite de casser le positionnement carousel)
-          const onCardMove = !isCenter ? undefined : e => {
-            const el = e.currentTarget; const rect = el.getBoundingClientRect();
-            const rx = ((e.clientY - rect.top  - rect.height/2) / (rect.height/2)) * -5;
-            const ry = ((e.clientX - rect.left - rect.width /2) / (rect.width /2)) *  5;
-            const base = cardStyle(rel);
-            el.style.transform = `${base.transform ? base.transform.replace(/scale\([^)]+\)/,'scale(1.02)') : ''} rotateX(${rx}deg) rotateY(${ry}deg)`;
-          };
-          const onCardLeave = !isCenter ? undefined : e => {
-            const el = e.currentTarget;
-            const base = cardStyle(rel).transform || '';
-            el.style.transition = 'all .45s cubic-bezier(.25,.46,.45,.94)';
-            el.style.transform = base;
-          };
-          return (<div key={proj.id} className={`c3d-card ${isCenter?'c3d-card--active':''}`} style={{...cardStyle(rel), transformStyle:'preserve-3d'}} onClick={()=>!isCenter&&go(rel>0?1:-1)} onMouseMove={onCardMove} onMouseLeave={onCardLeave}>
-            <div className="c3d-img-zone" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
-              <img src={proj.image} alt={proj.title} className="c3d-img" onError={e=>{e.target.style.display='none';}}/>
-              <div className="c3d-img-overlay" style={{background:`linear-gradient(to bottom, transparent 30%, rgba(0,0,0,.85) 100%)`}}/>
-              {proj.cat==='en-ligne'&&(<div className="c3d-live"><span className="c3d-live-dot"/><span>EN LIGNE</span></div>)}
-            </div>
-            <div className="c3d-glass">
-              <div className="c3d-glass-top"><span className="c3d-num">#{String(proj.id).padStart(2,'0')}</span><span className="c3d-badge" style={{color:neon,borderColor:neonBorder,background:neonBg}}>{CAT_LABELS[proj.cat]}</span></div>
-              <h3 className="c3d-title">{proj.title}</h3><p className="c3d-sub">{proj.subtitle}</p><p className="c3d-desc">{proj.description}</p>
-              {proj.stats&&(<div className="c3d-stats">{proj.stats.slice(0,3).map((s,si)=>(<span key={si} style={{color:neon,borderColor:neonBorder,background:neonBg}}><i className={`fas fa-${s.icon}`}/>{s.label}</span>))}</div>)}
-              <div className="c3d-footer">
-                <div className="c3d-techs">{proj.tech.slice(0,3).map(t=><span key={t}>{t}</span>)}</div>
-                {proj.url&&(<a href={proj.url} target={proj.url.startsWith('http')?'_blank':'_self'} rel="noreferrer" className="c3d-link" onClick={e=>e.stopPropagation()}>{proj.cat==='demo'?<><i className="fas fa-play-circle"/>Démo</>:<><i className="fas fa-external-link-alt"/>Voir le site</>}</a>)}
-              </div>
-            </div>
-          </div>);
-        })}
-      </div></div>
-      <button className="c3d-arrow c3d-arrow--l" onClick={()=>go(-1)}><i className="fas fa-chevron-left"/></button>
-      <button className="c3d-arrow c3d-arrow--r" onClick={()=>go(1)}><i className="fas fa-chevron-right"/></button>
+    <div className={`fd-modal-bg ${visible ? 'fd-modal-bg--show' : ''}`}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className={`fd-modal ${dark ? 'fd-modal--dark' : ''} ${visible ? 'fd-modal--show' : ''}`}>
+        {/* Image */}
+        <div className="fd-modal-img-wrap" style={{ background: GRAD[(project.id - 1) % GRAD.length] }}>
+          <img src={project.image} alt={project.title} className="fd-modal-img"
+            onError={e => { e.target.style.display = 'none'; }} />
+          <div className="fd-modal-img-grad" />
+          {project.cat === 'en-ligne' && (
+            <div className="fd-modal-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
+          )}
+          <button className="fd-modal-close-btn" onClick={onClose} aria-label="Fermer">
+            <i className="fas fa-times" />
+          </button>
+        </div>
+        {/* Body */}
+        <div className="fd-modal-body">
+          <div className="fd-modal-meta">
+            <span className="fd-modal-tag">{CAT_LABELS[project.cat]}</span>
+            <span className="fd-modal-year">{project.year}</span>
+            <span className="fd-modal-num">#{String(project.id).padStart(2,'0')}</span>
+          </div>
+          <h3 className="fd-modal-title">{project.title}</h3>
+          <p className="fd-modal-sub">{project.subtitle}</p>
+          <p className="fd-modal-desc">{project.description}</p>
+          <div className="fd-modal-techs">
+            {project.tech.map(t => <span key={t}>{t}</span>)}
+          </div>
+          <div className="fd-modal-actions">
+            {project.url && (
+              <a href={project.url} target={project.url.startsWith('http') ? '_blank' : '_self'} rel="noreferrer"
+                className={`btn ${dark ? 'btn--neon' : 'btn--primary'} fd-modal-btn-primary`}>
+                {project.cat === 'demo'
+                  ? <><i className="fas fa-play-circle" />Voir la démo</>
+                  : <><i className="fas fa-external-link-alt" />Voir le site</>}
+              </a>
+            )}
+            <button className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'}`} onClick={onClose}>Fermer</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div className="c3d-nav">
-      <span className="c3d-counter"><span className="c3d-counter-num">{String(active+1).padStart(2,'0')}</span>/{String(total).padStart(2,'0')}</span>
-      <div className="c3d-dots">{items.map((_,i)=><button key={i} className={`c3d-dot ${i===active?'c3d-dot--active':''}`} onClick={()=>{setActive(i);resetAuto();}}/>)}</div>
-      <span className="c3d-hint">← glissez ou ←→</span>
-    </div>
-    </>
   );
 };
 
-function clampedPct(base){ if(typeof window==='undefined') return base; return Math.min(base,window.innerWidth*0.3); }
+/* ══════════════════════════════════════════════════════════
+   FAN DECK — effet éventail inspiré portfolio.html
+   ══════════════════════════════════════════════════════════ */
+const FanDeck = ({ items, dark }) => {
+  const [phase,    setPhase]   = useState('stack');   // 'stack' | 'fan' | 'focus'
+  const [active,   setActive]  = useState(0);
+  const [modal,    setModal]   = useState(null);
+  const [dragging, setDragging]= useState(false);
+  const [dragDx,   setDragDx]  = useState(0);
+
+  const deckRef    = useRef(null);
+  const touchX0    = useRef(null);
+  const touchY0    = useRef(null);
+  const dragLocked = useRef(false); // true = scroll vertical verrouillé
+  const isDragMove = useRef(false);
+  const total = items.length;
+
+  // Reset sur changement de filtre
+  useEffect(() => { setPhase('stack'); setActive(0); setDragDx(0); }, [items]);
+
+  /* ── Navigation ── */
+  const goPrev = useCallback(() => setActive(a => Math.max(0, a - 1)), []);
+  const goNext = useCallback(() => setActive(a => Math.min(total - 1, a + 1)), [total]);
+
+  // Clavier ← →
+  useEffect(() => {
+    if (phase !== 'focus') return;
+    const fn = e => {
+      if (e.key === 'ArrowLeft')  goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [phase, goPrev, goNext]);
+
+  /* ── Clic sur le deck empilé → ouvre le fan ── */
+  const handleStackClick = () => { if (phase === 'stack') setPhase('fan'); };
+
+  /* ── Clic sur une carte en mode fan → passe en focus ── */
+  const handleFanCardClick = (e, idx) => {
+    e.stopPropagation();
+    setActive(idx);
+    setPhase('focus');
+  };
+
+  /* ── Clic sur la carte active en mode focus → ouvre la modal ── */
+  const handleFocusCardClick = (e, item) => {
+    e.stopPropagation();
+    if (!isDragMove.current) setModal(item);
+  };
+
+  /* ── Retour fan depuis focus ── */
+  const backToFan = e => {
+    e.stopPropagation();
+    setPhase('fan');
+    setDragDx(0);
+  };
+
+  /* ════════════════════════════════════════════════════
+     DRAG / SWIPE — mode focus uniquement
+     ════════════════════════════════════════════════════ */
+  // Mouse
+  const onMouseDown = e => {
+    if (phase !== 'focus') return;
+    touchX0.current = e.clientX;
+    isDragMove.current = false;
+    setDragging(true);
+  };
+  const onMouseMove = useCallback(e => {
+    if (!dragging || touchX0.current === null) return;
+    const dx = e.clientX - touchX0.current;
+    if (Math.abs(dx) > 4) isDragMove.current = true;
+    setDragDx(dx);
+  }, [dragging]);
+  const onMouseUp = useCallback(e => {
+    if (!dragging) return;
+    const dx = e.clientX - (touchX0.current ?? e.clientX);
+    commitDrag(dx);
+    touchX0.current = null;
+    setDragging(false);
+  }, [dragging, active, total]); // eslint-disable-line
+
+  // Touch
+  const onTouchStart = e => {
+    touchX0.current = e.touches[0].clientX;
+    touchY0.current = e.touches[0].clientY;
+    dragLocked.current = false;
+    isDragMove.current = false;
+    if (phase === 'stack') setPhase('fan');
+  };
+  const onTouchMove = useCallback(e => {
+    if (phase !== 'focus' || touchX0.current === null) return;
+    const dx = e.touches[0].clientX - touchX0.current;
+    const dy = e.touches[0].clientY - (touchY0.current ?? 0);
+    // Verrouille direction au premier mouvement
+    if (!dragLocked.current) {
+      dragLocked.current = true;
+      if (Math.abs(dy) > Math.abs(dx)) return; // scroll vertical → ignore
+    }
+    if (Math.abs(dx) > 4) { isDragMove.current = true; e.preventDefault(); }
+    setDragDx(dx);
+    setDragging(true);
+  }, [phase]);
+  const onTouchEnd = useCallback(e => {
+    if (phase === 'fan') { /* déjà ouvert via onTouchStart */ return; }
+    if (phase !== 'focus') return;
+    const dx = e.changedTouches[0].clientX - (touchX0.current ?? 0);
+    commitDrag(dx);
+    touchX0.current = null;
+    touchY0.current = null;
+    setDragging(false);
+  }, [phase, active, total]); // eslint-disable-line
+
+  const commitDrag = dx => {
+    const threshold = 60;
+    if (dx < -threshold && active < total - 1) setActive(a => a + 1);
+    else if (dx > threshold && active > 0)     setActive(a => a - 1);
+    setDragDx(0);
+  };
+
+  // Attach touchmove passive:false pour e.preventDefault()
+  useEffect(() => {
+    const el = deckRef.current; if (!el) return;
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    return () => el.removeEventListener('touchmove', onTouchMove);
+  }, [onTouchMove]);
+
+  /* ════════════════════════════════════════════════════
+     Calcul positions par phase
+     ════════════════════════════════════════════════════ */
+  // STACK : cartes empilées légèrement décalées
+  const stackStyle = i => ({
+    transform: `rotate(${(i - (total-1)/2) * 3}deg) translateY(${i * -3}px)`,
+    zIndex: total - i,
+    opacity: 1,
+    transition: 'transform .45s cubic-bezier(.34,1.4,.64,1)',
+  });
+
+  // FAN : éventail bien espacé, zIndex croissant = carte du dessus visible
+  const fanStyle = i => {
+    if (total === 1) return { transform: 'rotate(0deg) translateY(-60px)', zIndex: 1, opacity: 1, transition: 'transform .45s cubic-bezier(.34,1.4,.64,1)' };
+    // Spread adaptatif : plus de cartes = spread plus large
+    const spread = Math.min(38, 6 + total * 4);
+    const angle  = -spread + (i / (total - 1)) * spread * 2;
+    // On sépare horizontalement aussi pour éviter le chevauchement
+    const cardW  = typeof window !== 'undefined' ? Math.min(240, window.innerWidth * 0.52) : 220;
+    const gap    = Math.min(cardW * 0.42, 100); // espacement horizontal entre cartes
+    const cx     = (total - 1) / 2;
+    const tx     = (i - cx) * gap;
+    const ty     = -Math.abs(i - cx) * 18 - 50; // cartes latérales légèrement plus basses
+    return {
+      transform: `translateX(${tx}px) translateY(${ty}px) rotate(${angle}deg)`,
+      zIndex: i + 1,
+      opacity: 1,
+      transition: `transform .48s cubic-bezier(.34,1.4,.64,1) ${i * 0.03}s`,
+    };
+  };
+
+  // FOCUS : carte active centrée grande, voisines sur les côtés visibles mais dégagées
+  const focusStyle = (i, liveOffset) => {
+    const rel = i - active; // distance depuis l'active
+    const absRel = Math.abs(rel);
+    if (absRel > 2) return { opacity: 0, pointerEvents: 'none', zIndex: 0, transform: `translateX(${rel > 0 ? 200 : -200}%) scale(0.5)`, transition: 'all .42s cubic-bezier(.25,.46,.45,.94)' };
+
+    // Décalage live (drag en cours)
+    const dragOffset = dragging || dragDx !== 0 ? liveOffset : 0;
+
+    const cardW = typeof window !== 'undefined' ? Math.min(240, window.innerWidth * 0.52) : 220;
+    const sideOffset = cardW * 0.7 + 24; // distance centre→carte latérale
+
+    const baseX = rel === 0 ? 0 : rel > 0 ? sideOffset : -sideOffset;
+    const scale = rel === 0 ? 1 : 0.72;
+    const opacity = rel === 0 ? 1 : 0.45;
+    const rotY = rel === 0 ? 0 : rel > 0 ? 8 : -8;
+    const ty = rel === 0 ? -20 : 30;
+
+    return {
+      transform: `translateX(${baseX + dragOffset}px) translateY(${ty}px) scale(${scale}) perspective(800px) rotateY(${rotY}deg)`,
+      zIndex: rel === 0 ? 10 : (absRel === 1 ? 5 : 2),
+      opacity,
+      pointerEvents: rel === 0 ? 'all' : 'none',
+      transition: dragging ? 'none' : `transform .42s cubic-bezier(.25,.46,.45,.94), opacity .3s ease`,
+    };
+  };
+
+  const getCardStyle = i => {
+    if (phase === 'stack') return stackStyle(i);
+    if (phase === 'fan')   return fanStyle(i);
+    // focus
+    const vel = Math.sign(dragDx) === -1 ? 1 : -1;
+    const resistance = 0.35;
+    const live = dragging ? dragDx * resistance : dragDx * resistance;
+    return focusStyle(i, live);
+  };
+
+  /* ════ RENDER ════ */
+  return (
+    <>
+      <div
+        className={`fd-root fd-root--${phase} ${dark ? 'fd-root--dark' : ''}`}
+        ref={deckRef}
+        onClick={phase === 'stack' ? handleStackClick : undefined}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={e => { if (dragging) onMouseUp(e); }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* ── Deck ── */}
+        <div className="fd-wrap" style={{ cursor: phase === 'focus' ? (dragging ? 'grabbing' : 'grab') : 'pointer' }}>
+          {items.map((item, i) => {
+            const style = getCardStyle(i);
+            const isActive = phase === 'focus' && i === active;
+            return (
+              <div
+                key={item.id}
+                className={`fd-card ${isActive ? 'fd-card--active' : ''}`}
+                style={style}
+                onClick={e => {
+                  if (phase === 'fan')   handleFanCardClick(e, i);
+                  if (phase === 'focus' && isActive) handleFocusCardClick(e, item);
+                }}
+              >
+                <div className="fd-card-img" style={{ background: GRAD[(item.id - 1) % GRAD.length] }}>
+                  <img src={item.image} alt={item.title} onError={e => { e.target.style.display = 'none'; }} />
+                  <div className="fd-card-img-grad" />
+                  {item.cat === 'en-ligne' && (
+                    <div className="fd-card-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
+                  )}
+                </div>
+                {/* Overlay : toujours visible en focus actif, hover en fan */}
+                <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`}>
+                  <span className="fd-card-label">{item.title}</span>
+                  <span className="fd-card-sub">{item.subtitle}</span>
+                  {isActive && <span className="fd-card-cta">Cliquer pour voir →</span>}
+                </div>
+                <div className="fd-card-num">#{String(item.id).padStart(2,'0')}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── UI par phase ── */}
+        {phase === 'stack' && (
+          <p className="fd-hint">
+            <span className="fd-hint-line" />
+            Cliquer pour ouvrir
+            <span className="fd-hint-line" />
+          </p>
+        )}
+
+        {phase === 'fan' && (
+          <p className="fd-hint fd-hint--fan">
+            <span className="fd-hint-line" />
+            Choisir une carte
+            <span className="fd-hint-line" />
+          </p>
+        )}
+
+        {phase === 'focus' && (
+          <div className="fd-nav">
+            {/* Retour fan */}
+            <button className={`fd-nav-back ${dark ? 'fd-nav-back--dark' : ''}`} onClick={backToFan} title="Retour">
+              <i className="fas fa-th-large" />
+            </button>
+            {/* Flèche gauche */}
+            <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goPrev(); }} disabled={active === 0} aria-label="Précédent">
+              <i className="fas fa-chevron-left" />
+            </button>
+            {/* Dots */}
+            <div className="fd-nav-dots">
+              {items.map((_, i) => (
+                <button key={i}
+                  className={`fd-nav-dot ${i === active ? 'fd-nav-dot--on' : ''}`}
+                  onClick={e => { e.stopPropagation(); setActive(i); }}
+                  aria-label={`Projet ${i + 1}`}
+                />
+              ))}
+            </div>
+            {/* Flèche droite */}
+            <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goNext(); }} disabled={active === total - 1} aria-label="Suivant">
+              <i className="fas fa-chevron-right" />
+            </button>
+            {/* Compteur */}
+            <span className="fd-nav-count">
+              <span className="fd-nav-count-n">{String(active + 1).padStart(2, '0')}</span>
+              /{String(total).padStart(2, '0')}
+            </span>
+          </div>
+        )}
+
+        {/* Compteur bas (stack + fan) */}
+        {phase !== 'focus' && (
+          <div className={`fd-counter ${dark ? 'fd-counter--dark' : ''}`}>
+            <span>{total}</span> projet{total > 1 ? 's' : ''}
+          </div>
+        )}
+      </div>
+
+      <ProjectModal project={modal} dark={dark} onClose={() => setModal(null)} />
+    </>
+  );
+};
 
 const Projects = ({dark}) => {
   const [filter,setFilter]=useState('all');
@@ -1450,7 +1753,7 @@ const Projects = ({dark}) => {
           {Object.entries(CAT_LABELS).map(([k,v],i)=>(<button key={k} ref={el=>btnRefs.current[i]=el} className={`pf-tab ${filter===k?'pf-tab--active':''} ${dark?'pf-tab--dark':''}`} onClick={()=>setFilter(k)}>{v}<span className={`pf-count ${filter===k?'pf-count--active':''} ${dark?'pf-count--dark':''}`}>{count(k)}</span></button>))}
         </div>
       </div>
-      <Carousel3D key={filter} items={filtered} dark={dark}/>
+      <FanDeck key={filter} items={filtered} dark={dark}/>
     </section>
   );
 };

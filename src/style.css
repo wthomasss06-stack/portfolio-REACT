@@ -68,7 +68,7 @@ body { background:var(--paper); color:var(--ink); font-family:var(--fb); line-he
 .cursor-dot { position:fixed; width:10px; height:10px; background:#FF5500; border-radius:50%; pointer-events:none; z-index:99999; transform:translate(-50%,-50%); transition:width .15s,height .15s }
 .cursor-ring { display:none !important }
 .cursor-hover .cursor-dot { width:6px; height:6px }
-a, button, [role=button], .sk-m-card, .c3d-card { cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 2 C7 2 7 16 7 16 L10 13 L13 19 L15 18 L12 12 L16 12 Z' fill='%23FF5500' stroke='%23000' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") 7 2, pointer }
+a, button, [role=button], .sk-m-card, .c3d-card, .fd-card { cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7 2 C7 2 7 16 7 16 L10 13 L13 19 L15 18 L12 12 L16 12 Z' fill='%23FF5500' stroke='%23000' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") 7 2, pointer }
 a { color:inherit; text-decoration:none }
 button { cursor:pointer; border:none; background:none; font-family:inherit }
 img { max-width:100%; display:block }
@@ -1393,3 +1393,345 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 /* ═══════════════════════════════════════════════════════════════
    CAROUSEL 3D — tilt3d center card override
    ═══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   FAN DECK — 3 phases : stack → fan → focus
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Conteneur principal ── */
+.fd-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 56px;
+  user-select: none;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  background: var(--paper-2);
+  min-height: 580px;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grille de fond */
+.fd-root::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, var(--border-2) 28px, var(--border-2) 29px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, var(--border-2) 28px, var(--border-2) 29px);
+  opacity: .35; pointer-events: none; z-index: 0;
+}
+
+/* Phase focus : plus d'espace pour les cartes latérales */
+.fd-root--focus { min-height: 640px; overflow: visible; }
+
+/* ── Deck wrapper ── */
+.fd-wrap {
+  position: relative;
+  width: clamp(300px, 90vw, 700px);
+  height: clamp(360px, 52vw, 460px);
+  perspective: 1000px;
+  z-index: 1;
+  margin-top: 40px;
+  /* Empêche le clipping des cartes latérales en focus */
+  overflow: visible;
+}
+
+/* ── Carte individuelle ── */
+.fd-card {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: clamp(180px, 46vw, 240px);
+  /* Centrage horizontal : moitié de la largeur */
+  margin-left: clamp(-120px, -23vw, -90px);
+  height: clamp(260px, 66vw, 340px);
+  border: 2px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+.fd-card--active {
+  box-shadow: 6px 6px 0 var(--border), 0 24px 64px rgba(0,0,0,.4);
+  border-color: var(--acc);
+}
+
+/* Image */
+.fd-card-img { position: absolute; inset: 0; }
+.fd-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .5s ease;
+}
+.fd-card--active .fd-card-img img { transform: scale(1.04); }
+.fd-card-img-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(13,13,13,.92) 0%, rgba(0,0,0,.2) 55%, transparent 100%);
+}
+
+/* Badge EN LIGNE */
+.fd-card-live {
+  position: absolute; top: 8px; left: 8px;
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--fd); font-size: 8px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 8px;
+  border: 2px solid var(--border);
+  background: var(--acc); color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Numéro */
+.fd-card-num {
+  position: absolute; bottom: 8px; right: 8px;
+  font-family: var(--fd); font-size: 9px; font-weight: 700;
+  color: rgba(255,255,255,.28);
+  letter-spacing: .1em;
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 2px 6px;
+  background: rgba(0,0,0,.3);
+}
+
+/* Overlay — toujours visible sur carte active, sinon au hover en fan */
+.fd-card-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px;
+  opacity: 0;
+  transition: opacity .22s ease;
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 60%);
+}
+.fd-card-overlay--show { opacity: 1; }
+.fd-card-label {
+  font-family: var(--fd); font-size: 15px; font-weight: 900;
+  color: #fff; line-height: 1.1;
+  text-shadow: 0 1px 6px rgba(0,0,0,.9);
+}
+.fd-card-sub {
+  font-family: var(--fb); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--acc); margin-top: 3px;
+}
+.fd-card-cta {
+  font-family: var(--fd); font-size: 9px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); margin-top: 8px;
+  display: inline-flex; align-items: center;
+  border-top: 1px solid rgba(255,255,255,.15); padding-top: 8px;
+}
+
+/* ── Hints ── */
+.fd-hint {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--fd); font-size: 10px; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--muted); margin-top: 22px;
+  position: relative; z-index: 1;
+}
+.fd-hint--fan { font-size: 9px; opacity: .7; }
+.fd-hint-line { display: block; width: 20px; height: 2px; background: var(--border); }
+
+/* ── Navigation (mode focus) ── */
+.fd-nav {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: 22px;
+  position: relative; z-index: 2;
+  flex-wrap: wrap;
+}
+
+.fd-nav-back {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  background: var(--paper-3); color: var(--muted);
+  font-size: 12px; cursor: pointer;
+  transition: all .15s; box-shadow: var(--shadow-sm);
+  margin-right: 6px;
+}
+.fd-nav-back:hover { background: var(--acc); color: var(--ink); transform: translate(-2px,-2px); box-shadow: var(--shadow); }
+
+.fd-nav-arr {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  background: var(--paper-2); color: var(--ink);
+  font-size: 14px; cursor: pointer;
+  transition: all .15s; box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+.fd-nav-arr:hover:not(:disabled) { background: var(--acc); transform: translate(-2px,-2px); box-shadow: var(--shadow); }
+.fd-nav-arr:disabled { opacity: .25; cursor: not-allowed; }
+
+.fd-nav-dots { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 200px; }
+.fd-nav-dot {
+  width: 10px; height: 10px;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer; transition: all .15s;
+}
+.fd-nav-dot--on { background: var(--acc); box-shadow: var(--shadow-sm); }
+.fd-nav-dot:hover:not(.fd-nav-dot--on) { background: var(--acc-light); }
+
+.fd-nav-count {
+  font-family: var(--fd); font-size: 11px; font-weight: 700;
+  color: var(--muted); letter-spacing: .08em; margin-left: 6px;
+}
+.fd-nav-count-n { color: var(--acc); }
+
+/* ── Compteur global ── */
+.fd-counter {
+  font-family: var(--fd); font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); margin-top: 12px;
+  padding: 4px 12px; border: 2px solid var(--border-2);
+  background: var(--paper-3); position: relative; z-index: 1;
+}
+.fd-counter span { color: var(--acc); }
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL PROJET (FanDeck)
+   ══════════════════════════════════════════════════════════════ */
+
+.fd-modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(12px, 3vw, 24px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+.fd-modal-bg--show { opacity: 1; pointer-events: all; }
+
+.fd-modal {
+  width: min(560px, 96vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-lg), 0 40px 100px rgba(0,0,0,.5);
+  transform: translateY(32px) scale(0.97);
+  transition: transform 0.4s cubic-bezier(.34,1.4,.64,1);
+}
+.fd-modal--dark { background: var(--paper-2); }
+.fd-modal--show { transform: translateY(0) scale(1); }
+.fd-modal::-webkit-scrollbar { width: 4px; }
+.fd-modal::-webkit-scrollbar-thumb { background: var(--acc); }
+
+/* Image */
+.fd-modal-img-wrap {
+  position: relative;
+  height: clamp(180px, 40vw, 240px);
+  overflow: hidden; flex-shrink: 0;
+}
+.fd-modal-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fd-modal-img-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 50%);
+}
+.fd-modal-live {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--fd); font-size: 8px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 8px; border: 2px solid var(--border);
+  background: var(--acc); color: var(--ink); box-shadow: var(--shadow-sm);
+}
+.fd-modal-close-btn {
+  position: absolute; top: 12px; right: 12px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  background: var(--paper); color: var(--ink);
+  font-size: 14px; cursor: pointer;
+  transition: all .15s; box-shadow: var(--shadow-sm);
+}
+.fd-modal-close-btn:hover { background: var(--acc); transform: translate(-2px,-2px); box-shadow: var(--shadow); }
+
+/* Body */
+.fd-modal-body { padding: clamp(18px, 4vw, 28px); }
+.fd-modal-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.fd-modal-tag {
+  font-family: var(--fd); font-size: 9px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 10px; border: 2px solid var(--border);
+  background: var(--acc); color: var(--ink); box-shadow: var(--shadow-sm);
+}
+.fd-modal-year, .fd-modal-num {
+  font-family: var(--fb); font-size: 11px; color: var(--muted); letter-spacing: .06em;
+}
+.fd-modal-num { opacity: .5; }
+.fd-modal-title {
+  font-family: var(--fd); font-size: clamp(22px, 5vw, 30px);
+  font-weight: 900; line-height: 1.0; letter-spacing: -.025em;
+  color: var(--ink); margin-bottom: 4px;
+}
+.fd-modal-sub {
+  font-family: var(--fb); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+}
+.fd-modal-desc {
+  font-family: var(--fb); font-size: 13px; line-height: 1.8;
+  color: var(--muted); margin-bottom: 20px;
+  border-left: 3px solid var(--acc); padding-left: 14px;
+}
+.fd-modal-techs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.fd-modal-techs span {
+  font-family: var(--fd); font-size: 9px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 10px; border: 2px solid var(--border);
+  background: var(--paper-2); color: var(--ink); box-shadow: var(--shadow-sm);
+  transition: all .15s;
+}
+.fd-modal-techs span:hover { background: var(--acc); transform: translate(-1px,-1px); box-shadow: var(--shadow); }
+.fd-modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.fd-modal-btn-primary {
+  flex: 1; min-width: 140px; text-align: center; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+/* ── Responsive mobile FanDeck ── */
+@media (max-width: 768px) {
+  .fd-root { min-height: 520px; }
+  .fd-root--focus { min-height: 580px; }
+  .fd-wrap {
+    width: clamp(280px, 92vw, 500px);
+    height: clamp(320px, 70vw, 400px);
+  }
+  .fd-card {
+    width: clamp(160px, 44vw, 210px);
+    height: clamp(230px, 62vw, 295px);
+    margin-left: clamp(-105px, -22vw, -80px);
+  }
+  .fd-nav-dots { max-width: 160px; }
+  .fd-modal { max-height: 95vh; }
+  .fd-modal-img-wrap { height: clamp(160px, 45vw, 200px); }
+  .fd-modal-actions { flex-direction: column; }
+  .fd-modal-btn-primary { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .fd-root { min-height: 460px; padding-bottom: 36px; }
+  .fd-root--focus { min-height: 520px; }
+  .fd-wrap {
+    width: min(290px, 96vw);
+    height: min(340px, 86vw);
+  }
+  .fd-card {
+    width: min(185px, 48vw);
+    height: min(265px, 67vw);
+    margin-left: min(-92px, -24vw);
+  }
+  .fd-hint { font-size: 9px; letter-spacing: .14em; gap: 8px; }
+  .fd-nav { gap: 4px; }
+  .fd-nav-arr { width: 36px; height: 36px; }
+  .fd-nav-dots { max-width: 120px; }
+  .fd-nav-dot { width: 8px; height: 8px; }
+  .fd-nav-count { font-size: 10px; }
+  .fd-modal-title { font-size: clamp(20px, 6vw, 26px); }
+}
