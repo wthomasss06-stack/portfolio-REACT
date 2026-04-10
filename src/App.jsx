@@ -934,6 +934,136 @@ const ScrollTop = ({dark}) => {
   );
 };
 
+/* ══════════════════════════════════════════════
+   AURORA CANVAS — WebGL background hero
+   ══════════════════════════════════════════════ */
+const AuroraCanvas = ({ dark }) => {
+  const cvRef   = useRef(null);
+  const rafRef  = useRef(null);
+  const glRef   = useRef(null);
+  const uRef    = useRef({});
+  const darkRef = useRef(dark);
+  const mouseRef= useRef({ x: 0, y: 0 });
+  const lastTs  = useRef(0);
+  const INTERVAL= 1000 / 30;
+
+  useEffect(() => { darkRef.current = dark; }, [dark]);
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const gl = cv.getContext('webgl') || cv.getContext('experimental-webgl');
+    if (!gl) return;
+    glRef.current = gl;
+
+    const SCALE = 0.55;
+    const resize = () => {
+      cv.width  = Math.round(cv.offsetWidth  * SCALE);
+      cv.height = Math.round(cv.offsetHeight * SCALE);
+      gl.viewport(0, 0, cv.width, cv.height);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(cv);
+
+    const vert = `attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.,1.);}`;
+    const frag = `
+      precision mediump float;
+      uniform vec2  u_res;
+      uniform float u_time;
+      uniform vec2  u_mouse;
+      uniform float u_light;
+
+      float hash(vec2 p){p=fract(p*vec2(234.34,435.345));p+=dot(p,p+34.23);return fract(p.x*p.y);}
+      float noise(vec2 p){
+        vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.-2.*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
+      }
+      float fbm(vec2 p){
+        float v=0.,a=.5;
+        for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.1+vec2(1.7,9.2);a*=.5;}
+        return v;
+      }
+      void main(){
+        vec2 uv=gl_FragCoord.xy/u_res;
+        vec2 st=uv*2.-1.; st.x*=u_res.x/u_res.y;
+        float t=u_time*.12;
+        vec2 m=(u_mouse/u_res)*2.-1.; m.x*=u_res.x/u_res.y;
+        float mdist=length(st-m);
+        vec2 q=vec2(fbm(st+t*.5),fbm(st+vec2(5.2,1.3)+t*.4));
+        float f=fbm(st+3.5*q+t*.18);
+        f=f*f*f+.55*f*f+.45*f;
+        vec3 dk0=vec3(.01,.0,.05); vec3 dk1=vec3(.28,.04,.45); vec3 dk2=vec3(.9,.45,.02);
+        vec3 lt0=vec3(.87,.89,.97); vec3 lt1=vec3(.72,.74,.94); vec3 lt2=vec3(.99,.65,.3);
+        vec3 c0=mix(dk0,lt0,u_light);
+        vec3 c1=mix(dk1,lt1,u_light);
+        vec3 c2=mix(dk2,lt2,u_light);
+        vec3 col=mix(c0,c1,clamp(f*1.6,0.,1.));
+        col=mix(col,c2,clamp(f*f*2.2,0.,1.));
+        float vig=1.-smoothstep(.4,1.3,length(uv-.5)*1.9);
+        col*=vig*mix(.12,1.,smoothstep(0.,.4,uv.y));
+        vec3 mglow=mix(vec3(.5,.15,.0),vec3(.97,.5,.5),u_light);
+        col+=mglow*exp(-mdist*3.)*.4;
+        gl_FragColor=vec4(col,1.);
+      }
+    `;
+
+    const compile = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    uRef.current = {
+      res:   gl.getUniformLocation(prog, 'u_res'),
+      time:  gl.getUniformLocation(prog, 'u_time'),
+      mouse: gl.getUniformLocation(prog, 'u_mouse'),
+      light: gl.getUniformLocation(prog, 'u_light'),
+    };
+
+    const onMouse = e => { mouseRef.current = { x: e.clientX, y: cv.height - e.clientY }; };
+    const onTouch = e => {
+      const t = e.touches[0];
+      mouseRef.current = { x: t.clientX, y: cv.height - t.clientY };
+    };
+    window.addEventListener('mousemove', onMouse);
+    window.addEventListener('touchmove', onTouch, { passive: true });
+
+    const render = ts => {
+      if (!glRef.current) return;
+      rafRef.current = requestAnimationFrame(render);
+      if (ts - lastTs.current < INTERVAL) return;
+      lastTs.current = ts;
+      const u = uRef.current;
+      gl.uniform2f(u.res, cv.width, cv.height);
+      gl.uniform1f(u.time, ts * 0.001);
+      gl.uniform2f(u.mouse, mouseRef.current.x, mouseRef.current.y);
+      gl.uniform1f(u.light, darkRef.current ? 0.0 : 1.0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    rafRef.current = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      window.removeEventListener('mousemove', onMouse);
+      window.removeEventListener('touchmove', onTouch);
+      glRef.current = null;
+    };
+  }, []);
+
+  return <canvas ref={cvRef} className="aurora-canvas" aria-hidden />;
+};
+
 const Hero = ({ dark }) => {
   const phrases = ["Full-Stack", "React & Python", "Django & Flask", "orienté produit"];
   const [wi, setWi] = useState(0);
@@ -941,36 +1071,27 @@ const Hero = ({ dark }) => {
   const [del, setDel] = useState(false);
   const [ch, setCh] = useState(0);
   const [now, setNow] = useState(new Date());
-  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const tick = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(tick);
   }, []);
 
-  useEffect(() => {
-    const fn = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
-
   const hour = now.getHours();
   const isDaytime = hour >= 6 && hour < 18;
-  const DAYS  = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const DAYS   = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-  const pad = n => String(n).padStart(2, '0');
+  const pad = n => String(n).padStart(2,'0');
   const dateStr = `${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]}`;
   const timeStr = `${pad(hour)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  // Période de la journée
-  const period = hour < 6 ? 'Nuit' : hour < 12 ? 'Matin' : hour < 18 ? 'Après-midi' : 'Soir';
 
   useEffect(() => {
     const w = phrases[wi];
     const t = setTimeout(() => {
-      if (!del && ch < w.length) { setTyped(w.slice(0, ch + 1)); setCh(c => c + 1); }
-      else if (!del && ch === w.length) setTimeout(() => setDel(true), 1800);
-      else if (del && ch > 0) { setTyped(w.slice(0, ch - 1)); setCh(c => c - 1); }
-      else if (del && ch === 0) { setDel(false); setWi(i => (i + 1) % phrases.length); }
+      if (!del && ch < w.length)      { setTyped(w.slice(0, ch+1)); setCh(c=>c+1); }
+      else if (!del && ch===w.length) { setTimeout(()=>setDel(true),1800); }
+      else if (del && ch > 0)         { setTyped(w.slice(0, ch-1)); setCh(c=>c-1); }
+      else if (del && ch===0)         { setDel(false); setWi(i=>(i+1)%phrases.length); }
     }, del ? 45 : 90);
     return () => clearTimeout(t);
   }, [ch, del, wi]);
@@ -978,26 +1099,19 @@ const Hero = ({ dark }) => {
   return (
     <section id="home" className={`hero hv4 ${dark ? 'hero--dark' : ''}`}>
 
-      {/* ── Parallax ambient glows ── */}
-      <div className="hv4-parallax" aria-hidden
-        style={{ transform: `translateY(${scrollY * 0.16}px)` }}>
-        <div className="hv4-glow-a"/>
-        <div className="hv4-glow-b"/>
-      </div>
+      {/* ── Aurora WebGL background ── */}
+      <AuroraCanvas dark={dark} />
 
-      {/* ── Hero sweep scan line ── */}
+      {/* ── scan line ── */}
       <div className="hv4-scan" aria-hidden/>
-
-      {/* ── Particles hero dédiées ── */}
-      <ParticleCanvas light={!dark}/>
 
       {/* ── Main grid ── */}
       <div className="hero-content hv4-grid">
 
-        {/* ════ LEFT — text ════ */}
+        {/* ════ LEFT ════ */}
         <div className="hv4-left">
 
-          {/* Availability badge — enrichi avec date, heure, icône soleil/lune */}
+          {/* Badge disponible */}
           <div className="hv4-badge" style={{ '--d': '0s' }}>
             <span className="hero-dot"/>
             <span className="hv4-badge-status">disponible · Abidjan, CI</span>
@@ -1011,13 +1125,13 @@ const Hero = ({ dark }) => {
             </span>
           </div>
 
-          {/* Name — staggered reveal per line */}
+          {/* Name */}
           <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
             <span className="hv4-name-line" style={{ '--d': '0.12s' }}>M'BOLLO</span>
             <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '0.26s' }}>AKA ELVIS</span>
           </h1>
 
-          {/* Photo mobile — entre le nom et le typewriter */}
+          {/* Photo mobile */}
           <div className="hv4-photo-mob hv4-rv" style={{ '--d': '0.3s' }}>
             <div className="hv4-photo-mob-inner">
               <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo"/>
@@ -1050,9 +1164,9 @@ const Hero = ({ dark }) => {
             </a>
           </div>
 
-          {/* Stats strip */}
+          {/* Stats */}
           <div className="hv4-stats hv4-rv" style={{ '--d': '0.85s' }}>
-            {[['9+','Projets'],['2+','Années exp.'],['5','En prod.'],['9+','Outils']].map(([n, l]) => (
+            {[['9+','Projets'],['2+','Années exp.'],['5','En prod.'],['9+','Outils']].map(([n,l]) => (
               <div key={l} className="hv4-stat">
                 <span className="hv4-stat-n">{n}</span>
                 <span className="hv4-stat-l">{l}</span>
@@ -1061,17 +1175,14 @@ const Hero = ({ dark }) => {
           </div>
         </div>
 
-        {/* ════ RIGHT — photo plein format ════ */}
+        {/* ════ RIGHT — photo ════ */}
         <div className="hv4-right hv4-rv" style={{ '--d': '0.32s' }}>
-
-          {/* Photo de profil — B&W par défaut, couleur au hover */}
           <div className="hv4-photo-wrap hv4-photo-wrap--full">
             <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"/>
             <div className="hv4-photo-overlay">
               <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
               <span><i className="fas fa-code"/> Full-Stack Dev</span>
             </div>
-            {/* Badge open to work intégré sur la photo */}
             <div className="hv4-photo-status">
               <span className="hero-dot"/>
               <span>Open to work · Freelance &amp; CDI</span>
@@ -1079,7 +1190,7 @@ const Hero = ({ dark }) => {
           </div>
         </div>
 
-      </div>{/* /hv4-grid */}
+      </div>
 
       {/* Scroll indicator */}
       <div className="hero-scroll">
@@ -1933,7 +2044,6 @@ export default function App() {
   ) : (
     <div className={`app ${light?'app--light':''}`}>
       <CustomCursor/>
-      <ParticleCanvas global light={light}/>
       <Navbar dark={dark} onToggle={toggleDark}/>
       <ScrollTop dark={dark}/>
       <main>

@@ -10,35 +10,6 @@
 @tailwind utilities;
 
 :root {
-  --ink:        #0D0D0D;
-  --ink-2:      #2A2A2A;
-  --paper:      #FFFFFF;
-  --paper-2:    #F8F8F8;
-  --paper-3:    #F0F0F0;
-  --paper-4:    #E4E4E4;
-  --acc:        #FF5500;
-  --acc-2:      #FF6B1A;
-  --acc-light:  rgba(255,85,0,.10);
-  --acc-dim:    rgba(255,85,0,.18);
-  --muted:      #666666;
-  --muted-2:    #AAAAAA;
-  --border:     #0D0D0D;
-  --border-2:   rgba(13,13,13,.15);
-  --shadow:     4px 4px 0 #0D0D0D;
-  --shadow-lg:  6px 6px 0 #0D0D0D;
-  --shadow-sm:  2px 2px 0 #0D0D0D;
-  --win-bar:    #F0F0F0;
-  --win-h:      32px;
-  --fd: 'Unbounded', sans-serif;
-  --fb: 'Space Mono', monospace;
-  --r: 0px;
-  --ease:   cubic-bezier(.25,.46,.45,.94);
-  --spring: cubic-bezier(.34,1.56,.64,1);
-  --max:    1200px;
-  --pad:    clamp(20px, 5vw, 80px);
-}
-
-.app--light {
   --ink:        #F0F0F0;
   --ink-2:      #CCCCCC;
   --paper:      #0A0A0A;
@@ -49,14 +20,44 @@
   --acc-2:      #FF6B1A;
   --acc-light:  rgba(255,85,0,.12);
   --acc-dim:    rgba(255,85,0,.22);
-  --muted:      #777777;
+  --muted:      #888888;
   --muted-2:    #555555;
-  --border:     #E0E0E0;
-  --border-2:   rgba(224,224,224,.20);
-  --shadow:     4px 4px 0 #E0E0E0;
-  --shadow-lg:  6px 6px 0 #E0E0E0;
-  --shadow-sm:  2px 2px 0 #E0E0E0;
+  --border:     #333333;
+  --border-2:   rgba(255,255,255,.10);
+  --shadow:     4px 4px 0 #333;
+  --shadow-lg:  6px 6px 0 #333;
+  --shadow-sm:  2px 2px 0 #333;
   --win-bar:    #1C1C1C;
+  --win-h:      32px;
+  --fd: 'Unbounded', sans-serif;
+  --fb: 'Space Mono', monospace;
+  --r: 0px;
+  --ease:   cubic-bezier(.25,.46,.45,.94);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+  --max:    1200px;
+  --pad:    clamp(20px, 5vw, 80px);
+}
+
+/* Mode clair : fond blanc, textes noirs */
+.app--light {
+  --ink:        #0D0D0D;
+  --ink-2:      #2A2A2A;
+  --paper:      #FFFFFF;
+  --paper-2:    #F8F8F8;
+  --paper-3:    #F0F0F0;
+  --paper-4:    #E4E4E4;
+  --acc:        #FF5500;
+  --acc-2:      #FF6B1A;
+  --acc-light:  rgba(255,85,0,.10);
+  --acc-dim:    rgba(255,85,0,.18);
+  --muted:      #333333;
+  --muted-2:    #666666;
+  --border:     #0D0D0D;
+  --border-2:   rgba(13,13,13,.15);
+  --shadow:     4px 4px 0 #0D0D0D;
+  --shadow-lg:  6px 6px 0 #0D0D0D;
+  --shadow-sm:  2px 2px 0 #0D0D0D;
+  --win-bar:    #F0F0F0;
   --win-h:      32px;
 }
 
@@ -74,11 +75,11 @@ button { cursor:pointer; border:none; background:none; font-family:inherit }
 img { max-width:100%; display:block }
 input,textarea,select { font-family:inherit }
 .noise { display:none }
-.particle-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.15 }
-.particle-canvas--global { position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:0; opacity:.05 }
-/* Mode clair (fond blanc) — particules oranges plus visibles */
-.app:not(.app--light) .particle-canvas { opacity:.55; }
-.app:not(.app--light) .particle-canvas--global { opacity:.18; }
+.particle-canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.55 }
+.particle-canvas--global { position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:0; opacity:.18 }
+/* Mode clair (app--light, fond blanc) — particules oranges plus discrètes */
+.app--light .particle-canvas { opacity:.15; }
+.app--light .particle-canvas--global { opacity:.05; }
 .app { background:var(--paper); min-height:100vh }
 
 /* ═══ LOADER ═══ */
@@ -94,8 +95,10 @@ input,textarea,select { font-family:inherit }
 .loader-inner { position:relative; z-index:2; text-align:center; width:100%; padding:0 24px; display:flex; flex-direction:column; align-items:center; }
 .loader-logo { display:flex; justify-content:center; margin-bottom:clamp(20px,5vw,40px); opacity:0; animation:fadeUp .6s ease .1s forwards; max-width:90vw; overflow:hidden; }
 .loader-logo .akalogo-wrap { box-shadow:0 0 40px rgba(255,85,0,.25),0 0 80px rgba(255,85,0,.08); max-width:100%; }
-.logo-tech-text { fill:#0D0D0D !important }
-.app--light .logo-tech-text { fill:#FFFFFF !important }
+/* Sombre (root) = fond noir → texte tech blanc */
+.logo-tech-text { fill:#FFFFFF !important }
+/* Clair (app--light) = fond blanc → texte tech noir */
+.app--light .logo-tech-text { fill:#0D0D0D !important }
 .loader-num { font-family:var(--fd); font-size:clamp(56px,18vw,160px); font-weight:900; line-height:.9; letter-spacing:-.04em; margin-bottom:clamp(16px,4vw,28px); color:#F0F0F0; text-shadow:0 0 40px rgba(255,85,0,.3) }
 .loader-num span { font-size:.38em; vertical-align:super; color:#FF5500 }
 .loader-bar { position:relative; width:min(260px,80vw); height:6px; background:#1a0d00; border:1.5px solid rgba(255,85,0,.35); margin:0 auto clamp(12px,3vw,20px); overflow:visible }
@@ -319,8 +322,9 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .hero-grid { display:none }
 .hero-content { max-width:var(--max); margin:0 auto; position:relative; z-index:1; width:100% }
 
-/* Particle canvas hero — bien visible */
-.hero .particle-canvas { opacity:0.55; z-index:0; pointer-events:none; }
+/* Particle canvas global — désactivé */
+.particle-canvas--global { display: none; }
+.hero .particle-canvas { display: none; }
 
 /* Badge disponible — INVERSÉ selon fond */
 .hero-eye { display:inline-flex; align-items:center; gap:10px; font-family:var(--fb); font-size:12px; font-weight:700; padding:6px 14px; background:var(--ink); color:var(--paper); border:2px solid var(--border); box-shadow:var(--shadow-sm); margin-bottom:28px; letter-spacing:.02em }
@@ -354,10 +358,22 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
    HERO v4 — minimal, typo forte, animations
    ═══════════════════════════════════════════ */
 
-/* Parallax ambient */
-.hv4-parallax { position:absolute; inset:0; pointer-events:none; z-index:0; will-change:transform; }
-.hv4-glow-a { position:absolute; top:0%; right:-6%; width:clamp(260px,40vw,540px); height:clamp(260px,40vw,540px); border-radius:50%; background:radial-gradient(circle,rgba(255,85,0,.07) 0%,transparent 65%); }
-.hv4-glow-b { position:absolute; bottom:5%; left:-4%; width:clamp(160px,22vw,300px); height:clamp(160px,22vw,300px); border-radius:50%; background:radial-gradient(circle,rgba(255,85,0,.04) 0%,transparent 70%); }
+/* Aurora canvas — fond WebGL hero */
+.aurora-canvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+  opacity: .72;
+  display: block;
+  image-rendering: pixelated;  /* rendu net même à résolution réduite */
+  will-change: contents;
+}
+/* Light mode : aurora plus douce */
+.app--light .aurora-canvas { opacity: .55; }
+
+/* Vieux parallax désactivé (remplacé par aurora) */
+.hv4-parallax { display: none; }
+.hv4-glow-a, .hv4-glow-b { display: none; }
 
 /* Hero-wide sweep scan line */
 .hv4-scan { position:absolute; left:0; right:0; height:1px; z-index:1; pointer-events:none;
@@ -365,9 +381,10 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   animation:hv4ScanMove 10s linear infinite 2s; }
 @keyframes hv4ScanMove { 0%{top:-3%} 100%{top:103%} }
 
-/* Reveal animation — triggered on mount, delay via --d */
+/* Reveal animation — fill-mode both, part de transparent vers visible */
 .hv4-rv { opacity:0; animation:hv4Up .72s cubic-bezier(.22,1,.36,1) both; animation-delay:var(--d,0s); }
-@keyframes hv4Up { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes hv4Up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+/* Sur fond aurora : les éléments hv4-rv utilisent leur animation normalement */
 
 /* Two-column grid */
 .hv4-grid { display:grid; grid-template-columns:1fr clamp(280px,34vw,440px); gap:clamp(32px,5vw,60px); align-items:center; }
@@ -382,7 +399,7 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   padding:7px 14px; border:2px solid var(--border); box-shadow:var(--shadow-sm);
   margin-bottom:clamp(18px,3vh,30px);
   background:var(--ink); color:var(--paper);
-  opacity:0; animation:hv4Up .65s cubic-bezier(.22,1,.36,1) 0s both;
+  animation:hv4Up .65s cubic-bezier(.22,1,.36,1) 0s both;
   flex-wrap:wrap; row-gap:.35em;
 }
 .app--light .hv4-badge { background:var(--paper-3); color:var(--ink); }
@@ -404,9 +421,9 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   display:block;
   font-family:var(--fd); font-weight:900; letter-spacing:-.045em; color:var(--ink);
   font-size:clamp(46px,10.5vw,122px);
-  opacity:0; animation:hv4NameIn .82s cubic-bezier(.22,1,.36,1) both; animation-delay:var(--d,.1s);
+  animation:hv4NameIn .82s cubic-bezier(.22,1,.36,1) both; animation-delay:var(--d,.1s);
 }
-@keyframes hv4NameIn { from{opacity:0;transform:translateY(38px) skewX(-1.5deg)} to{opacity:1;transform:translateY(0) skewX(0)} }
+@keyframes hv4NameIn { from{opacity:0;transform:translateY(32px) skewX(-1.5deg)} to{opacity:1;transform:translateY(0) skewX(0)} }
 
 /* Orange underline accent on second name line */
 .hv4-name-line--u {
@@ -1393,8 +1410,9 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 /* ═══════════════════════════════════════════════════════════════
    CAROUSEL 3D — tilt3d center card override
    ═══════════════════════════════════════════════════════════════ */
+
 /* ══════════════════════════════════════════════════════════════
-   FAN DECK — 3 phases : stack → fan → focus
+   FAN DECK — éventail de cartes projets
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Conteneur principal ── */
@@ -1735,3 +1753,93 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   .fd-nav-count { font-size: 10px; }
   .fd-modal-title { font-size: clamp(20px, 6vw, 26px); }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   HERO — Aurora overlay : texte lisible sur fond WebGL
+   ══════════════════════════════════════════════════════════════ */
+
+/* Hero avec aurora : fond transparent (le canvas WebGL gère le fond) */
+.hero.hv4 { background: #050505; }
+.app--light .hero.hv4 { background: #f0ece8; }
+
+/* Overlay fort côté gauche pour lisibilité du texte — pas de flash */
+.hero.hv4::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg,
+      rgba(0,0,0,.82) 0%,
+      rgba(0,0,0,.55) 38%,
+      rgba(0,0,0,.18) 62%,
+      transparent 100%
+    );
+}
+.app--light .hero.hv4::after {
+  background:
+    linear-gradient(105deg,
+      rgba(240,236,232,.92) 0%,
+      rgba(240,236,232,.68) 38%,
+      rgba(240,236,232,.22) 62%,
+      transparent 100%
+    );
+}
+
+/* Contenu au-dessus du canvas et de l'overlay */
+.hero.hv4 .hero-content,
+.hero.hv4 .hero-scroll,
+.hero.hv4 .hv4-scan { position: relative; z-index: 2; }
+
+/* ── Animations hero : fill-mode both + démarrent visibles (pas de flash blanc) ──
+   On remplace opacity:0 initial par un fade-in smooth qui part du bon fond */
+.hero.hv4 .hv4-badge {
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  border-color: rgba(255,255,255,.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.app--light .hero.hv4 .hv4-badge {
+  background: rgba(240,236,232,.82);
+  color: var(--ink);
+  border-color: var(--border);
+  backdrop-filter: blur(10px);
+}
+
+/* Texte hero mode SOMBRE (défaut :root, fond noir) → blanc net */
+.hero.hv4 .hv4-name-line   { color: #fff !important; }
+.hero.hv4 .hv4-typed       { color: rgba(255,255,255,.82); }
+.hero.hv4 .hero-word        { color: #fff; border-bottom-color: var(--acc); }
+.hero.hv4 .hv4-desc         { color: rgba(255,255,255,.7); }
+.hero.hv4 .hv4-stat-n       { color: #fff; }
+.hero.hv4 .hv4-stat-l       { color: rgba(255,255,255,.6); }
+.hero.hv4 .hero-dot         { border-color: rgba(255,255,255,.25); }
+
+.hero.hv4 .hv4-stats {
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: none;
+}
+.hero.hv4 .hv4-stat          { border-right-color: rgba(255,255,255,.1); }
+.hero.hv4 .hv4-stat:hover    { background: rgba(255,85,0,.22); }
+
+/* Texte hero mode CLAIR (app--light, fond blanc) → noir net */
+.app--light .hero.hv4 .hv4-name-line   { color: #111 !important; }
+.app--light .hero.hv4 .hv4-typed       { color: #222; }
+.app--light .hero.hv4 .hero-word        { color: #111; border-bottom-color: var(--acc); }
+.app--light .hero.hv4 .hv4-desc         { color: #333; }
+.app--light .hero.hv4 .hv4-stat-n       { color: #111; }
+.app--light .hero.hv4 .hv4-stat-l       { color: #444; }
+.app--light .hero.hv4 .hv4-stats {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(12px);
+  border-color: rgba(0,0,0,.12);
+  box-shadow: 2px 2px 0 rgba(0,0,0,.08);
+}
+.app--light .hero.hv4 .hv4-stat         { border-right-color: rgba(0,0,0,.1); }
+
+/* Scroll indicator */
+.hero.hv4 .hero-scroll             { color: rgba(255,255,255,.42); }
+.app--light .hero.hv4 .hero-scroll { color: rgba(0,0,0,.45); }
