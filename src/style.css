@@ -371,6 +371,47 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 /* Light mode : aurora plus douce */
 .app--light .aurora-canvas { opacity: .55; }
 
+/* ── Fix aurora canvas mobile + centrage photo + scroll caché ── */
+@media (max-width: 900px) {
+  /* Hero : hauteur plein écran mobile (svh évite le bug barre d'adresse) */
+  .hero {
+    min-height: 100svh;
+    height: 100svh;
+  }
+  /* Aurora : le canvas remplit le parent qui a maintenant une hauteur définie */
+  .aurora-canvas {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  /* Cacher scroll indicator sur mobile */
+  .hero-scroll { display: none; }
+  /* Centrer la photo mobile */
+  .hv4-photo-mob {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .hv4-photo-mob-inner { margin: 0 auto; }
+  /* Centrer le contenu hero gauche */
+  .hv4-left { align-items: center; text-align: center; }
+  .hv4-name { text-align: center; }
+  .hv4-typed { justify-content: center; }
+  .hv4-desc { text-align: left; }
+  .hv4-ctas { justify-content: center; }
+  .hv4-stats { margin: 0 auto; }
+  .hv4-badge { justify-content: center; }
+}
+@media (max-width: 560px) {
+  .hero {
+    min-height: 100svh;
+    height: auto;
+    padding-bottom: 40px;
+  }
+}
+
 /* Vieux parallax désactivé (remplacé par aurora) */
 .hv4-parallax { display: none; }
 .hv4-glow-a, .hv4-glow-b { display: none; }
@@ -511,10 +552,11 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .hv4-photo-overlay span { display:inline-flex; align-items:center; gap:5px; opacity:.9; }
 
 /* ─── Photo mobile (entre le nom et le typewriter) ─── */
-.hv4-photo-mob { display:none; margin-bottom:clamp(16px,3vh,26px); margin-top:clamp(10px,2vh,18px); width:100%; }
+.hv4-photo-mob { display:none; margin-bottom:clamp(16px,3vh,26px); margin-top:clamp(10px,2vh,18px); width:100%; justify-content:center; align-items:center; }
 .hv4-photo-mob-inner {
   position:relative;
-  width:100%;
+  width: min(320px, 88vw);
+  margin: 0 auto;
   border:3px solid var(--border);
   box-shadow:var(--shadow-lg);
   overflow:hidden;

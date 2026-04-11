@@ -945,7 +945,7 @@ const AuroraCanvas = ({ dark }) => {
   const darkRef = useRef(dark);
   const mouseRef= useRef({ x: 0, y: 0 });
   const lastTs  = useRef(0);
-  const INTERVAL= 1000 / 30;
+  const INTERVAL= 1000 / 60;
 
   useEffect(() => { darkRef.current = dark; }, [dark]);
 
@@ -955,19 +955,26 @@ const AuroraCanvas = ({ dark }) => {
     if (!gl) return;
     glRef.current = gl;
 
-    const SCALE = 0.55;
+    const SCALE = 0.75;
     const resize = () => {
-      cv.width  = Math.round(cv.offsetWidth  * SCALE);
-      cv.height = Math.round(cv.offsetHeight * SCALE);
+      const parent = cv.parentElement;
+      const w = parent ? parent.getBoundingClientRect().width  : cv.offsetWidth;
+      const h = parent ? parent.getBoundingClientRect().height : (cv.offsetHeight || window.innerHeight);
+      cv.width  = Math.round(w * SCALE);
+      cv.height = Math.round(h * SCALE);
+      if (cv.width < 1)  cv.width  = Math.round(window.innerWidth  * SCALE);
+      if (cv.height < 1) cv.height = Math.round(window.innerHeight * SCALE);
       gl.viewport(0, 0, cv.width, cv.height);
     };
     resize();
+    // Resize différé : sur mobile le layout n'est pas toujours calculé au premier tick
+    const resizeDeferred = setTimeout(resize, 150);
     const ro = new ResizeObserver(resize);
     ro.observe(cv);
 
     const vert = `attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.,1.);}`;
     const frag = `
-      precision mediump float;
+      precision highp float;
       uniform vec2  u_res;
       uniform float u_time;
       uniform vec2  u_mouse;
@@ -975,35 +982,53 @@ const AuroraCanvas = ({ dark }) => {
 
       float hash(vec2 p){p=fract(p*vec2(234.34,435.345));p+=dot(p,p+34.23);return fract(p.x*p.y);}
       float noise(vec2 p){
-        vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.-2.*f);
+        vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
         return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
       }
       float fbm(vec2 p){
-        float v=0.,a=.5;
-        for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.1+vec2(1.7,9.2);a*=.5;}
+        float v=0.0,a=0.5;
+        for(int i=0;i<6;i++){v+=a*noise(p);p=p*2.1+vec2(1.7,9.2);a*=0.5;}
         return v;
       }
       void main(){
         vec2 uv=gl_FragCoord.xy/u_res;
-        vec2 st=uv*2.-1.; st.x*=u_res.x/u_res.y;
-        float t=u_time*.12;
-        vec2 m=(u_mouse/u_res)*2.-1.; m.x*=u_res.x/u_res.y;
+        vec2 st=uv*2.0-1.0; st.x*=u_res.x/u_res.y;
+        float t=u_time*0.18;
+
+        /* mouse influence */
+        vec2 m=(u_mouse/u_res)*2.0-1.0; m.x*=u_res.x/u_res.y;
         float mdist=length(st-m);
-        vec2 q=vec2(fbm(st+t*.5),fbm(st+vec2(5.2,1.3)+t*.4));
-        float f=fbm(st+3.5*q+t*.18);
-        f=f*f*f+.55*f*f+.45*f;
-        vec3 dk0=vec3(.01,.0,.05); vec3 dk1=vec3(.28,.04,.45); vec3 dk2=vec3(.9,.45,.02);
-        vec3 lt0=vec3(.87,.89,.97); vec3 lt1=vec3(.72,.74,.94); vec3 lt2=vec3(.99,.65,.3);
-        vec3 c0=mix(dk0,lt0,u_light);
-        vec3 c1=mix(dk1,lt1,u_light);
-        vec3 c2=mix(dk2,lt2,u_light);
-        vec3 col=mix(c0,c1,clamp(f*1.6,0.,1.));
-        col=mix(col,c2,clamp(f*f*2.2,0.,1.));
-        float vig=1.-smoothstep(.4,1.3,length(uv-.5)*1.9);
-        col*=vig*mix(.12,1.,smoothstep(0.,.4,uv.y));
-        vec3 mglow=mix(vec3(.5,.15,.0),vec3(.97,.5,.5),u_light);
-        col+=mglow*exp(-mdist*3.)*.4;
-        gl_FragColor=vec4(col,1.);
+        float mflow=exp(-mdist*2.2)*0.35;
+
+        /* double domain warp */
+        vec2 q=vec2(
+          fbm(st+vec2(0.0,0.0)+t*0.6),
+          fbm(st+vec2(5.2,1.3)+t*0.5)
+        );
+        vec2 r=vec2(
+          fbm(st+4.0*q+vec2(1.7,9.2)+t*0.4+mflow),
+          fbm(st+4.0*q+vec2(8.3,2.8)+t*0.3)
+        );
+        float f=fbm(st+4.5*r+t*0.25);
+        f=f*f*f+0.6*f*f+0.5*f;
+
+        /* ── palette fixe : noir violet → violet profond → teal → orange brillant → blanc ── */
+        vec3 col=mix(vec3(0.02,0.0,0.12),vec3(0.38,0.06,0.62),clamp(f*1.6,0.0,1.0));
+        col=mix(col,vec3(0.04,0.65,0.55),clamp(f*f*2.2,0.0,1.0));
+        col=mix(col,vec3(1.0,0.42,0.0),clamp(pow(f,3.5)*3.0,0.0,1.0));
+        col=mix(col,vec3(1.0,0.97,0.9),clamp(pow(f,5.0)*2.5,0.0,1.0));
+
+        /* vignette */
+        float vig=1.0-smoothstep(0.5,1.4,length(uv-0.5)*1.8);
+        col*=vig;
+
+        /* bottom darkness */
+        col*=mix(0.15,1.0,smoothstep(0.0,0.4,uv.y));
+
+        /* mouse glow — teal fixe */
+        col+=vec3(0.05,0.4,0.25)*exp(-mdist*3.0)*0.6;
+
+        gl_FragColor=vec4(col,1.0);
       }
     `;
 
@@ -1054,6 +1079,7 @@ const AuroraCanvas = ({ dark }) => {
 
     return () => {
       cancelAnimationFrame(rafRef.current);
+      clearTimeout(resizeDeferred);
       ro.disconnect();
       window.removeEventListener('mousemove', onMouse);
       window.removeEventListener('touchmove', onTouch);
@@ -1164,14 +1190,25 @@ const Hero = ({ dark }) => {
             </a>
           </div>
 
-          {/* Stats */}
+          {/* Stats — auto-calculées depuis les données réelles */}
           <div className="hv4-stats hv4-rv" style={{ '--d': '0.85s' }}>
-            {[['9+','Projets'],['2+','Années exp.'],['5','En prod.'],['9+','Outils']].map(([n,l]) => (
-              <div key={l} className="hv4-stat">
-                <span className="hv4-stat-n">{n}</span>
-                <span className="hv4-stat-l">{l}</span>
-              </div>
-            ))}
+            {(() => {
+              const totalProjects  = PROJECTS.length;
+              const enLigne        = PROJECTS.filter(p => p.cat === 'en-ligne').length;
+              const totalOutils    = Object.values(SKILLS).reduce((acc, arr) => acc + arr.length, 0);
+              const yearsExp       = new Date().getFullYear() - 2023;
+              return [
+                [totalProjects,         'Projets'],
+                [`${yearsExp}+`,        'Années exp.'],
+                [enLigne,               'En prod.'],
+                [totalOutils,           'Outils'],
+              ].map(([n, l]) => (
+                <div key={l} className="hv4-stat">
+                  <span className="hv4-stat-n">{n}</span>
+                  <span className="hv4-stat-l">{l}</span>
+                </div>
+              ));
+            })()}
           </div>
         </div>
 
@@ -1280,7 +1317,22 @@ const PricingTabs = ({dark}) => {
           <div className={`ptabs2-price ${dark?'ptabs2-price--dark':''}`}><span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span><span className="ptabs2-currency"> FCFA</span></div>
           <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
           <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
-          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Me contacter <SvgArrowRight size={14}/></MagBtn>
+          <div className="ptabs2-ctas">
+            <a
+              href="https://akatech.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
+              className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint ptabs2-cta`}
+            >
+              <SvgGlobe size={14}/> Voir le détail
+            </a>
+            <MagBtn
+              className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`}
+              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}
+            >
+              Me contacter <SvgArrowRight size={14}/>
+            </MagBtn>
+          </div>
         </div>
       </div>
     );
@@ -1347,9 +1399,84 @@ const Services = ({dark}) => {
 };
 
 const About = ({dark}) => {
-  const [r1,v1]=useInView(); const [r2,v2]=useInView();
+  const [r1,v1] = useInView();
   const [openIdx, setOpenIdx] = useState(0);
-  const toggle = i => setOpenIdx(o => o === i ? -1 : i);
+
+  const total         = TIMELINE.length;
+  const expSectionRef = useRef(null);
+  const scrollAccum   = useRef(0);
+  const lastTouchY    = useRef(null);
+  // Ref miroir — toujours à jour dans les handlers natifs (évite le stale-closure)
+  const openIdxRef    = useRef(0);
+  useEffect(() => { openIdxRef.current = openIdx; }, [openIdx]);
+
+  const STEP_THRESH = 60;
+
+  const goNext = () => setOpenIdx(i => Math.min(total - 1, i + 1));
+  const goPrev = () => setOpenIdx(i => Math.max(0, i - 1));
+
+  const isSectionVisible = () => {
+    const el = expSectionRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.5;
+  };
+
+  // Un seul useEffect, monté une fois — lit openIdxRef au lieu de openIdx
+  useEffect(() => {
+    const onWheel = e => {
+      if (!isSectionVisible()) return;
+      const cur       = openIdxRef.current;
+      const goingDown = e.deltaY > 0;
+      const goingUp   = e.deltaY < 0;
+      // Aux extrémités → libérer le scroll de page
+      if ((cur === 0 && goingUp) || (cur === total - 1 && goingDown)) {
+        scrollAccum.current = 0;
+        return;
+      }
+      e.preventDefault();
+      scrollAccum.current += e.deltaY;
+      if (scrollAccum.current >= STEP_THRESH) {
+        setOpenIdx(i => Math.min(total - 1, i + 1));
+        scrollAccum.current = 0;
+      } else if (scrollAccum.current <= -STEP_THRESH) {
+        setOpenIdx(i => Math.max(0, i - 1));
+        scrollAccum.current = 0;
+      }
+    };
+    const onTouchStart = e => {
+      if (!isSectionVisible()) return;
+      lastTouchY.current = e.touches[0].clientY;
+    };
+    const onTouchMove = e => {
+      if (!isSectionVisible() || lastTouchY.current === null) return;
+      const cur = openIdxRef.current;
+      const dy  = lastTouchY.current - e.touches[0].clientY;
+      if ((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0)) return;
+      e.preventDefault();
+    };
+    const onTouchEnd = e => {
+      if (!isSectionVisible() || lastTouchY.current === null) return;
+      const cur = openIdxRef.current;
+      const dy  = lastTouchY.current - (e.changedTouches[0]?.clientY ?? lastTouchY.current);
+      if (!((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0))) {
+        if      (dy >  40) setOpenIdx(i => Math.min(total - 1, i + 1));
+        else if (dy < -40) setOpenIdx(i => Math.max(0, i - 1));
+      }
+      lastTouchY.current = null;
+    };
+    window.addEventListener('wheel',      onWheel,      { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true  });
+    window.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true  });
+    return () => {
+      window.removeEventListener('wheel',      onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove',  onTouchMove);
+      window.removeEventListener('touchend',   onTouchEnd);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // [] intentionnel — on lit via ref pour éviter le stale closure
 
   return (
     <>
@@ -1376,87 +1503,102 @@ const About = ({dark}) => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          EXPÉRIENCE & FORMATION — Timeline accordéon améliorée
+          EXPÉRIENCE & FORMATION — Timeline scroll-hijack
           ═══════════════════════════════════════════════════════ */}
-      <section id="experience" ref={r2} className={dark?'section--dark':''}>
+      <section id="experience" ref={expSectionRef} className={dark?'section--dark':''}>
         <WindowChrome title="Parcours" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Expérience &amp;<br/>Formation.</h2></div>
 
-        {/* Progress steps en haut (desktop) */}
+        {/* ── Hint scroll ── */}
+        <p style={{
+          textAlign:'center', color:'var(--muted)', fontSize:'12px',
+          marginBottom:'24px', letterSpacing:'0.08em', opacity: 0.7,
+        }}>
+          <i className="fas fa-mouse" style={{marginRight:'6px'}}/>
+          Scrollez pour naviguer entre les étapes
+        </p>
+
+        {/* ── Timeline horizontale ── */}
         <div className={`exp-steps ${dark?'exp-steps--dark':''}`}>
-          {TIMELINE.map((item,i)=>(
-            <button key={i} className={`exp-step ${openIdx===i?'exp-step--active':''} ${dark?'exp-step--dark':''}`}
-              onClick={()=>toggle(i)}>
+          {TIMELINE.map((t,i)=>(
+            <button key={i}
+              className={`exp-step ${openIdx===i?'exp-step--active':''} ${dark?'exp-step--dark':''}`}
+              onClick={()=>setOpenIdx(i)}
+              style={{ cursor:'pointer' }}>
               <div className={`exp-step-dot ${openIdx===i?'exp-step-dot--active':''}`}>
-                <i className={`fas fa-${item.icon}`}/>
+                <i className={`fas fa-${t.icon}`}/>
               </div>
               <div className="exp-step-line"/>
-              <span className="exp-step-label">{item.date}</span>
+              <span className="exp-step-label">{t.date}</span>
             </button>
           ))}
         </div>
 
-        {/* Accordéon cards */}
-        <div className={`exp-cards ${v2?'exp-cards--vis':''} ${dark?'exp-cards--dark':''}`}>
-          {TIMELINE.map((item,i)=>{
-            const isOpen = openIdx === i;
+        {/* ── Carte unique animée ── */}
+        <div style={{ position:'relative', minHeight:'320px' }}>
+          {TIMELINE.map((t, i) => {
+            const active = openIdx === i;
             return (
-              <div key={i} className={`exp-card ${isOpen?'exp-card--open':''} ${dark?'exp-card--dark':''}`}
-                style={{animationDelay:`${i*0.1}s`}}>
-                {/* Header cliquable */}
-                <button className="exp-card-hd" onClick={()=>toggle(i)} aria-expanded={isOpen}>
-                  <div className="exp-card-hd-left">
-                    <div className={`exp-dot ${isOpen?'exp-dot--on':''} ${dark?'exp-dot--dark':''}`}>
-                      <i className={`fas fa-${item.icon}`}/>
+              <div key={i} style={{
+                position: active ? 'relative' : 'absolute',
+                top: 0, left: 0, right: 0,
+                opacity: active ? 1 : 0,
+                transform: active ? 'translateX(0) scale(1)' : `translateX(${i < openIdx ? '-60px' : '60px'}) scale(0.97)`,
+                transition: 'opacity .38s ease, transform .38s cubic-bezier(.4,0,.2,1)',
+                pointerEvents: active ? 'auto' : 'none',
+              }}>
+                <div className={`exp-card exp-card--open ${dark?'exp-card--dark':''}`}>
+                  {/* Header */}
+                  <div className="exp-card-hd" style={{ cursor:'default' }}>
+                    <div className="exp-card-hd-left">
+                      <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
+                        <i className={`fas fa-${t.icon}`}/>
+                      </div>
+                      <div className="exp-card-hd-info">
+                        <span className="exp-date"><i className="far fa-calendar-alt"/> {t.date}</span>
+                        <h4 className="exp-title">{t.title}</h4>
+                        <p className="exp-company"><i className="fas fa-building"/> {t.company}</p>
+                      </div>
                     </div>
-                    <div className="exp-card-hd-info">
-                      <span className="exp-date"><i className="far fa-calendar-alt"/> {item.date}</span>
-                      <h4 className="exp-title">{item.title}</h4>
-                      <p className="exp-company"><i className="fas fa-building"/> {item.company}</p>
+                    {/* Indicateur étape X/N */}
+                    <div style={{
+                      display:'flex', alignItems:'center', gap:'6px',
+                      color:'var(--acc)', fontFamily:'var(--fb)', fontSize:'13px', fontWeight:700,
+                    }}>
+                      {openIdx + 1}<span style={{color:'var(--muted)'}}>/ {total}</span>
                     </div>
                   </div>
-                  <div className={`exp-chevron ${isOpen?'exp-chevron--open':''}`}>
-                    <i className="fas fa-chevron-down"/>
-                  </div>
-                </button>
 
-                {/* Corps animé */}
-                <div className="exp-card-body" style={{
-                  maxHeight: isOpen ? '600px' : '0',
-                  opacity: isOpen ? 1 : 0,
-                  overflow: 'hidden',
-                  transition: 'max-height .38s cubic-bezier(.4,0,.2,1), opacity .28s ease',
-                }}>
-                  <div className="exp-card-inner">
-                    {/* Barre de progression colorée */}
-                    {item.items && (
-                      <div className="exp-prog-row">
-                        {['Maintenance','Support','Gestion','Outils'].map((l,j)=>(
-                          <div key={j} className="exp-prog-item">
-                            <span className="exp-prog-label">{l}</span>
-                            <div className="exp-prog-track">
-                              <div className={`exp-prog-fill ${isOpen?'exp-prog-fill--on':''}`}
-                                style={{transitionDelay:`${j*0.08+0.1}s`, width: isOpen ? `${[90,85,75,80][j]}%` : '0%'}}/>
+                  {/* Corps */}
+                  <div className="exp-card-body" style={{ maxHeight:'600px', opacity:1, overflow:'hidden' }}>
+                    <div className="exp-card-inner">
+                      {t.items && (
+                        <div className="exp-prog-row">
+                          {['Maintenance','Support','Gestion','Outils'].map((l,j)=>(
+                            <div key={j} className="exp-prog-item">
+                              <span className="exp-prog-label">{l}</span>
+                              <div className="exp-prog-track">
+                                <div className="exp-prog-fill exp-prog-fill--on"
+                                  style={{transitionDelay:`${j*0.08+0.1}s`, width:`${[90,85,75,80][j]}%`}}/>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {item.desc && <p className="exp-desc">{item.desc}</p>}
-                    {item.items && (
-                      <ul className="exp-list">
-                        {item.items.map((li,j)=>(
-                          <li key={j} style={{animationDelay:`${j*0.05}s`}}>
-                            <span className="exp-arrow">→</span>{li}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {item.tags && (
-                      <div className="exp-tags">
-                        {item.tags.map(t=><span key={t} className={dark?'exp-tag--dark':''}>{t}</span>)}
-                      </div>
-                    )}
+                          ))}
+                        </div>
+                      )}
+                      {t.desc && <p className="exp-desc">{t.desc}</p>}
+                      {t.items && (
+                        <ul className="exp-list">
+                          {t.items.map((li,j)=>(
+                            <li key={j}><span className="exp-arrow">→</span>{li}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {t.tags && (
+                        <div className="exp-tags">
+                          {t.tags.map(tag=><span key={tag} className={dark?'exp-tag--dark':''}>{tag}</span>)}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1464,7 +1606,39 @@ const About = ({dark}) => {
           })}
         </div>
 
-        <div className={`cta-band ${dark?'cta-band--neon':''}`}>
+        {/* ── Boutons navigation manuels ── */}
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:'16px', marginTop:'32px' }}>
+          <button
+            onClick={goPrev} disabled={openIdx === 0}
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
+            style={{ opacity: openIdx===0 ? 0.3 : 1, transition:'opacity .2s' }}>
+            <i className="fas fa-arrow-left"/> Précédent
+          </button>
+
+          {/* Dots */}
+          <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
+            {TIMELINE.map((_,i)=>(
+              <button key={i} onClick={()=>setOpenIdx(i)}
+                style={{
+                  width: openIdx===i ? '28px' : '8px',
+                  height:'8px', borderRadius:'4px',
+                  background: openIdx===i ? 'var(--acc)' : 'var(--muted-2)',
+                  border:'none', cursor:'pointer',
+                  transition:'width .3s var(--spring), background .2s',
+                  padding:0,
+                }}/>
+            ))}
+          </div>
+
+          <button
+            onClick={goNext} disabled={openIdx === total - 1}
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
+            style={{ opacity: openIdx===total-1 ? 0.3 : 1, transition:'opacity .2s' }}>
+            Suivant <i className="fas fa-arrow-right"/>
+          </button>
+        </div>
+
+        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{ marginTop:'48px' }}>
           <h3>Intéressé par mon profil ?</h3>
           <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
           <div className="cta-btns">
