@@ -207,6 +207,12 @@ const PROJECTS = [
     tech:["Next.js","Flask","Python","MySQL","Vercel"],
     stats:[{icon:"home",label:"Résidences meublées"},{icon:"search",label:"Recherche avancée"},{icon:"calendar-check",label:"Réservation en ligne"}],
     url:"https://new-horizonservice.vercel.app/", year:"2025", isPremium:true },
+  { id:13, title:"AKATech", subtitle:"Agence Digitale Abidjan", cat:"en-ligne", progress:100,
+    description:"Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions web modernes : sites vitrines, e-commerce, SaaS. Aurora WebGL, animations Framer Motion, design vert/noir premium.",
+    image:"/assets/images/projects/akatech-preview.jpg",
+    tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
+    stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
+    url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
 ];
 
 const SERVICES = [
@@ -338,6 +344,7 @@ const GRAD = [
   "linear-gradient(135deg,#1a0a28,#3a1a58)",
   "linear-gradient(135deg,#0a2a1a,#1a5a3a)",
   "linear-gradient(135deg,#2a1a0a,#5a3a1a)",
+  "linear-gradient(135deg,#060e09,#0a2a12)",  // AKATech — vert forêt profond
 ];
 
 const BADGE_LIGHT = {"en-ligne":"#C94B2A","demo":"#A0522D","en-cours":"#E06B2A"};
@@ -1926,30 +1933,63 @@ const FanDeck = ({ items, dark }) => {
           {items.map((item, i) => {
             const style = getCardStyle(i);
             const isActive = phase === 'focus' && i === active;
+            const isAgency = !!item.isAgency;
             return (
               <div
                 key={item.id}
-                className={`fd-card ${isActive ? 'fd-card--active' : ''}`}
+                className={`fd-card ${isActive ? 'fd-card--active' : ''} ${isAgency ? 'fd-card--agency' : ''}`}
                 style={style}
                 onClick={e => {
                   if (phase === 'fan')   handleFanCardClick(e, i);
                   if (phase === 'focus' && isActive) handleFocusCardClick(e, item);
                 }}
               >
-                <div className="fd-card-img" style={{ background: GRAD[(item.id - 1) % GRAD.length] }}>
-                  <img src={item.image} alt={item.title} onError={e => { e.target.style.display = 'none'; }} />
-                  <div className="fd-card-img-grad" />
-                  {item.cat === 'en-ligne' && (
-                    <div className="fd-card-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
-                  )}
-                </div>
-                {/* Overlay : toujours visible en focus actif, hover en fan */}
-                <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`}>
-                  <span className="fd-card-label">{item.title}</span>
-                  <span className="fd-card-sub">{item.subtitle}</span>
-                  {isActive && <span className="fd-card-cta">Cliquer pour voir →</span>}
-                </div>
-                <div className="fd-card-num">#{String(item.id).padStart(2,'0')}</div>
+                {/* ── Carte spéciale AKATech ── */}
+                {isAgency ? (
+                  <div className="fd-agency-card">
+                    {/* Grille animée en arrière-plan */}
+                    <div className="fd-agency-grid" aria-hidden />
+                    {/* Aurora orbs */}
+                    <div className="fd-agency-orb fd-agency-orb--1" aria-hidden />
+                    <div className="fd-agency-orb fd-agency-orb--2" aria-hidden />
+                    {/* Scan line */}
+                    <div className="fd-agency-scan" aria-hidden />
+                    {/* Logo text */}
+                    <div className="fd-agency-logo">
+                      <span className="fd-agency-aka">AKA</span><span className="fd-agency-tech">Tech</span>
+                    </div>
+                    <div className="fd-agency-tagline">Agence Digitale · Abidjan</div>
+                    {/* Tech pills */}
+                    <div className="fd-agency-pills">
+                      {item.tech.map(t => <span key={t} className="fd-agency-pill">{t}</span>)}
+                    </div>
+                    {/* Live badge */}
+                    <div className="fd-agency-live"><span className="fd-agency-dot"/><span>EN LIGNE</span></div>
+                    {/* Overlay label en fan/focus */}
+                    <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`} style={{background:'linear-gradient(to top,rgba(3,8,6,.92) 0%,transparent 60%)'}}>
+                      <span className="fd-card-label" style={{color:'#22c864'}}>{item.title}</span>
+                      <span className="fd-card-sub">{item.subtitle}</span>
+                      {isActive && <span className="fd-card-cta" style={{color:'#22c864',borderColor:'rgba(34,200,100,.4)'}}>Visiter l'agence →</span>}
+                    </div>
+                    <div className="fd-card-num" style={{color:'rgba(34,200,100,.5)'}}>#13</div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="fd-card-img" style={{ background: GRAD[(item.id - 1) % GRAD.length] }}>
+                      <img src={item.image} alt={item.title} onError={e => { e.target.style.display = 'none'; }} />
+                      <div className="fd-card-img-grad" />
+                      {item.cat === 'en-ligne' && (
+                        <div className="fd-card-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
+                      )}
+                    </div>
+                    <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`}>
+                      <span className="fd-card-label">{item.title}</span>
+                      <span className="fd-card-sub">{item.subtitle}</span>
+                      {isActive && <span className="fd-card-cta">Cliquer pour voir →</span>}
+                    </div>
+                    <div className="fd-card-num">#{String(item.id).padStart(2,'0')}</div>
+                  </>
+                )}
               </div>
             );
           })}
