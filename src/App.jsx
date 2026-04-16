@@ -213,6 +213,12 @@ const PROJECTS = [
     tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
     stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
     url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
+  { id:14, title:"Université les Anges", subtitle:"Site Institutionnel", cat:"en-ligne", progress:100,
+    description:"Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
+    image:"/assets/images/projects/universitelesanges-preview.jpg",
+    tech:["HTML","CSS","Bulma","Bootstrap","Vercel"],
+    stats:[{icon:"university",label:"Site institutionnel"},{icon:"mobile-alt",label:"Responsive"},{icon:"globe",label:"En production"}],
+    url:"https://universitelesanges.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [
@@ -324,10 +330,23 @@ const SKILLS = {
 };
 
 const TIMELINE = [
-  { date:"Mai - Novembre 2025", icon:"briefcase", title:"Informaticien Stagiaire", company:"Mairie d'Agboville",
-    items:["Maintenance du parc informatique et du réseau","Support technique aux utilisateurs","Contribution à la gestion et à la numérisation des données","Appui à la création d'outils numériques internes"] },
+  { date:"2025 – 2026", icon:"rocket", title:"Développeur Freelance Fullstack", company:"AKATech",
+    items:[
+      "Conception et déploiement de plus de 10 applications web (SaaS, e-commerce, plateformes)",
+      "Développement d'API REST avec Django et Flask",
+      "Mise en place de dashboards et systèmes de gestion de données",
+    ],
+    progLabels:["Apps web","API REST","Dashboards","Déploiement"],
+    progValues:[95,88,82,90],
+    tags:["Freelance","Full-Stack","Django","React","SaaS","Data"] },
+  { date:"Mai – Nov. 2025", icon:"briefcase", title:"Informaticien Stagiaire", company:"Mairie d'Agboville",
+    items:["Maintenance du parc informatique et du réseau","Support technique aux utilisateurs","Contribution à la gestion et à la numérisation des données","Appui à la création d'outils numériques internes"],
+    progLabels:["Maintenance","Support","Gestion","Outils"],
+    progValues:[90,85,75,80] },
   { date:"2023-2024", icon:"laptop-code", title:"Projet Académique – ARTICI", company:"UVCI",
-    items:["Plateforme web de promotion de l'artisanat local","Travail collaboratif en équipe pluridisciplinaire","Optimisation des performances","Intégration de bonnes pratiques de sécurité"] },
+    items:["Plateforme web de promotion de l'artisanat local","Travail collaboratif en équipe pluridisciplinaire","Optimisation des performances","Intégration de bonnes pratiques de sécurité"],
+    progLabels:["Frontend","Backend","Perf.","Sécurité"],
+    progValues:[80,75,85,90] },
   { date:"2023-2024", icon:"graduation-cap", title:"Licence en Réseau et Sécurité Informatique", company:"UVCI",
     desc:"Formation complète en développement web, bases de données et sécurité des applications.", tags:["Certification E-Banking","Réf: CC/24-002485"] },
   { date:"2020-2021", icon:"school", title:"Baccalauréat Série D", company:"Lycée Moderne d'Arrah", desc:"Mention : Assez Bien" },
@@ -1098,7 +1117,7 @@ const AuroraCanvas = ({ dark }) => {
 };
 
 const Hero = ({ dark }) => {
-  const phrases = ["Full-Stack", "React & Python", "Django & Flask", "orienté produit"];
+  const phrases = ["Full-Stack", "React & Python", "Django & Flask", "orienté produit", "orienté Data & Carto"];
   const [wi, setWi] = useState(0);
   const [typed, setTyped] = useState('');
   const [del, setDel] = useState(false);
@@ -1499,10 +1518,10 @@ const About = ({dark}) => {
             </div>
           </div>
           <div className="about-right">
-            <h3>Développeur Web Full-Stack</h3>
+            <h3>Développeur Full-Stack orienté Data &amp; Cartographie</h3>
             <p>Développeur web formé en <strong>Réseau et Sécurité Informatique</strong>, je développe des applications web complètes en combinant front-end moderne et back-end Python.</p>
-            <p>J'utilise principalement <strong>Python, MySQL et React</strong> pour concevoir des solutions claires, maintenables et adaptées aux usages réels. La sécurité applicative est intégrée dès la conception.</p>
-            <p>Mon expérience en <strong>support informatique</strong> à la Mairie d'Agboville m'a apporté une approche pragmatique et orientée résolution de problèmes.</p>
+            <p>Spécialisé en <strong>Django, React et Flask</strong>, je conçois également des solutions orientées <strong>Data et Cartographie</strong> : dashboards de gestion, visualisations de données et intégration de cartes interactives (Leaflet, OpenStreetMap).</p>
+            <p>Mon passage en <strong>freelance via AKATech</strong> m'a permis de livrer plus de 10 applications web — SaaS, e-commerce, plateformes — avec une approche orientée produit et usages réels.</p>
             <div className={`about-tags ${dark?'about-tags--dark':''}`}>{["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}</div>
             <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
           </div>
@@ -1579,14 +1598,14 @@ const About = ({dark}) => {
                   {/* Corps */}
                   <div className="exp-card-body" style={{ maxHeight:'600px', opacity:1, overflow:'hidden' }}>
                     <div className="exp-card-inner">
-                      {t.items && (
+                      {t.items && t.progLabels && (
                         <div className="exp-prog-row">
-                          {['Maintenance','Support','Gestion','Outils'].map((l,j)=>(
+                          {t.progLabels.map((l,j)=>(
                             <div key={j} className="exp-prog-item">
                               <span className="exp-prog-label">{l}</span>
                               <div className="exp-prog-track">
                                 <div className="exp-prog-fill exp-prog-fill--on"
-                                  style={{transitionDelay:`${j*0.08+0.1}s`, width:`${[90,85,75,80][j]}%`}}/>
+                                  style={{transitionDelay:`${j*0.08+0.1}s`, width:`${(t.progValues||[90,85,75,80])[j]}%`}}/>
                               </div>
                             </div>
                           ))}
