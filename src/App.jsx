@@ -1117,154 +1117,207 @@ const AuroraCanvas = ({ dark }) => {
 };
 
 const Hero = ({ dark }) => {
-  const phrases = ["Full-Stack", "React & Python", "Django & Flask", "orienté produit", "orienté Data & Carto"];
-  const [wi, setWi] = useState(0);
-  const [typed, setTyped] = useState('');
-  const [del, setDel] = useState(false);
-  const [ch, setCh] = useState(0);
-  const [now, setNow] = useState(new Date());
+  const phrases = ["Full-Stack","React & Python","Django & Flask","orienté produit","orienté Data & Carto"];
+  const [wi,setWi]=useState(0); const [typed,setTyped]=useState(''); const [del,setDel]=useState(false); const [ch,setCh]=useState(0); const [now,setNow]=useState(new Date());
 
+  const heroRef    = useRef(null);
+  const bgRef      = useRef(null);   // aurora bg layer — zooms on scroll
+  const sceneRef   = useRef(null);   // grid wrapper — rotates on mouse
+  const fadeRef    = useRef(null);   // inner grid — fades+blurs on scroll
+  const leftRef    = useRef(null);
+  const rightRef   = useRef(null);
+  const cardARef   = useRef(null);
+  const cardBRef   = useRef(null);
+  const raysRef    = useRef(null);
+  const cursorRef  = useRef(null);
+  const dustRef    = useRef(null);
+  const rafRef     = useRef(null);
+  const mTarget    = useRef({ x:0, y:0 });
+  const mCurrent   = useRef({ x:typeof window!=='undefined'?window.innerWidth/2:0, y:typeof window!=='undefined'?window.innerHeight/2:0 });
+
+  /* ── lerp mouse loop ── */
   useEffect(() => {
-    const tick = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(tick);
-  }, []);
+    const onMove = e => { mTarget.current.x=e.clientX; mTarget.current.y=e.clientY; };
+    window.addEventListener('mousemove', onMove);
+    const loop = () => {
+      mCurrent.current.x += (mTarget.current.x - mCurrent.current.x) * 0.07;
+      mCurrent.current.y += (mTarget.current.y - mCurrent.current.y) * 0.07;
+      const mx=mCurrent.current.x, my=mCurrent.current.y;
+      const W=window.innerWidth, H=window.innerHeight;
+      /* light cursor */
+      if(cursorRef.current){ cursorRef.current.style.left=`${mx}px`; cursorRef.current.style.top=`${my}px`; }
+      /* god rays follow cursor */
+      const gx=50-(mx/W-0.5)*28, gy=50-(my/H-0.5)*20;
+      if(raysRef.current) raysRef.current.style.background=`radial-gradient(circle at ${gx}% ${gy}%, rgba(255,85,0,0.15) 0%, transparent 55%)`;
+      /* scene rotation (like hhjjj layer-mid) */
+      if(sceneRef.current){
+        const rx=(my/H-0.5)*10, ry=(mx/W-0.5)*-10;
+        sceneRef.current.style.transform=`perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      }
+      /* depth offsets per layer */
+      const dx=(W/2-mx)/(W/2), dy=(H/2-my)/(H/2);
+      if(bgRef.current)    bgRef.current.style.transform   =`translate3d(${dx*-8}px,${dy*-6}px,0) scale(1.04)`;
+      if(leftRef.current)  leftRef.current.style.transform  =`translate3d(${dx*12}px,${dy*8}px,0)`;
+      if(rightRef.current) rightRef.current.style.transform =`translate3d(${dx*-20}px,${dy*-14}px,0) rotateY(${dx*-2}deg) rotateX(${dy*1.5}deg)`;
+      if(cardARef.current) cardARef.current.style.transform =`translate3d(${dx*28}px,${dy*20}px,0)`;
+      if(cardBRef.current) cardBRef.current.style.transform =`translate3d(${dx*-34}px,${dy*-24}px,0)`;
+      rafRef.current=requestAnimationFrame(loop);
+    };
+    rafRef.current=requestAnimationFrame(loop);
+    return()=>{ window.removeEventListener('mousemove',onMove); cancelAnimationFrame(rafRef.current); };
+  },[]);
 
-  const hour = now.getHours();
-  const isDaytime = hour >= 6 && hour < 18;
-  const DAYS   = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-  const pad = n => String(n).padStart(2,'0');
-  const dateStr = `${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]}`;
-  const timeStr = `${pad(hour)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  /* ── dust canvas ── */
+  useEffect(()=>{
+    const cv=dustRef.current; if(!cv) return;
+    const ctx=cv.getContext('2d'); let id;
+    const resize=()=>{ cv.width=cv.parentElement?.offsetWidth||window.innerWidth; cv.height=cv.parentElement?.offsetHeight||window.innerHeight; };
+    resize(); window.addEventListener('resize',resize);
+    const pts=Array.from({length:90},()=>({ x:Math.random()*cv.width, y:Math.random()*cv.height, r:Math.random()*1.5+0.2, vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35, op:Math.random()*.4+.05 }));
+    const tick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); pts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=cv.width; if(p.x>cv.width)p.x=0; if(p.y<0)p.y=cv.height; if(p.y>cv.height)p.y=0; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${p.op})`; ctx.fill(); }); id=requestAnimationFrame(tick); };
+    tick();
+    return()=>{ cancelAnimationFrame(id); window.removeEventListener('resize',resize); };
+  },[]);
 
-  useEffect(() => {
-    const w = phrases[wi];
-    const t = setTimeout(() => {
-      if (!del && ch < w.length)      { setTyped(w.slice(0, ch+1)); setCh(c=>c+1); }
-      else if (!del && ch===w.length) { setTimeout(()=>setDel(true),1800); }
-      else if (del && ch > 0)         { setTyped(w.slice(0, ch-1)); setCh(c=>c-1); }
-      else if (del && ch===0)         { setDel(false); setWi(i=>(i+1)%phrases.length); }
-    }, del ? 45 : 90);
-    return () => clearTimeout(t);
-  }, [ch, del, wi]);
+  /* ── scroll: zoom bg + fade+blur text (starts at 50% vh) ── */
+  useEffect(()=>{
+    const onScroll=()=>{
+      const s=window.pageYOffset, vh=window.innerHeight;
+      /* bg zoom like hhjjj layer-bg */
+      if(bgRef.current) bgRef.current.style.transform=`scale(${1+s/4000}) translate3d(0,${s*0.3}px,0)`;
+      /* text fade only after 50% scroll */
+      const start=vh*0.5, end=vh*1.0;
+      const p=Math.min(1,Math.max(0,(s-start)/(end-start)));
+      if(fadeRef.current){
+        fadeRef.current.style.opacity=`${1-p}`;
+        fadeRef.current.style.filter=`blur(${p*10}px)`;
+        fadeRef.current.style.transform=`translateY(${s*0.1}px)`;
+      }
+    };
+    window.addEventListener('scroll',onScroll,{passive:true});
+    return()=>window.removeEventListener('scroll',onScroll);
+  },[]);
+
+  useEffect(()=>{ const t=setInterval(()=>setNow(new Date()),1000); return()=>clearInterval(t); },[]);
+  const hour=now.getHours(), isDaytime=hour>=6&&hour<18;
+  const DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'], MONTHS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const pad=n=>String(n).padStart(2,'0');
+  const dateStr=`${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]}`;
+  const timeStr=`${pad(hour)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  useEffect(()=>{
+    const w=phrases[wi];
+    const t=setTimeout(()=>{ if(!del&&ch<w.length){setTyped(w.slice(0,ch+1));setCh(c=>c+1);} else if(!del&&ch===w.length){setTimeout(()=>setDel(true),1800);} else if(del&&ch>0){setTyped(w.slice(0,ch-1));setCh(c=>c-1);} else if(del&&ch===0){setDel(false);setWi(i=>(i+1)%phrases.length);} },del?45:90);
+    return()=>clearTimeout(t);
+  },[ch,del,wi]);
 
   return (
-    <section id="home" className={`hero hv4 ${dark ? 'hero--dark' : ''}`}>
+    <section id="home" ref={heroRef} className={`hero hv4 hv4-cinematic ${dark?'hero--dark':''}`}>
 
-      {/* ── Aurora WebGL background ── */}
-      <AuroraCanvas dark={dark} />
+      {/* ── film grain ── */}
+      <div className="hv4-grain" aria-hidden/>
+
+      
+
+      {/* ── god rays ── */}
+      <div className="hv4-god-rays" ref={raysRef} aria-hidden/>
+
+      {/* ── aurora bg layer (zoom on scroll, parallax on mouse) ── */}
+      <div className="hv4-bg-layer" ref={bgRef} aria-hidden>
+        <AuroraCanvas dark={dark}/>
+      </div>
 
       {/* ── scan line ── */}
       <div className="hv4-scan" aria-hidden/>
 
-      {/* ── Main grid ── */}
-      <div className="hero-content hv4-grid">
+      
 
-        {/* ════ LEFT ════ */}
-        <div className="hv4-left">
+      {/* ── scene wrapper: handles perspective rotation ── */}
+      <div className="hv4-scene-wrap" ref={sceneRef}>
 
-          {/* Badge disponible */}
-          <div className="hv4-badge" style={{ '--d': '0s' }}>
-            <span className="hero-dot"/>
-            <span className="hv4-badge-status">disponible · Abidjan, CI</span>
-            <span className="hv4-badge-sep" aria-hidden>|</span>
-            <span className="hv4-clock-wrap">
-              <span className="hv4-clock-icon">{isDaytime ? '☀' : '🌙'}</span>
-              <span className="hv4-clock-date">{dateStr}</span>
-              <span className="hv4-clock-dot" aria-hidden>·</span>
-              <span className="hv4-clock-time">{timeStr}</span>
-              <span className="hv4-clock-tz">UTC+0</span>
-            </span>
-          </div>
+        {/* ── fade wrapper: handles scroll fade/blur/translateY ── */}
+        <div className="hero-content hv4-grid" ref={fadeRef}>
 
-          {/* Name */}
-          <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
-            <span className="hv4-name-line" style={{ '--d': '0.12s' }}>M'BOLLO</span>
-            <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '0.26s' }}>AKA ELVIS</span>
-          </h1>
-
-          {/* Photo mobile */}
-          <div className="hv4-photo-mob hv4-rv" style={{ '--d': '0.3s' }}>
-            <div className="hv4-photo-mob-inner">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo"/>
-              <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
+          {/* ════ LEFT ════ */}
+          <div className="hv4-left" ref={leftRef}>
+            <div className="hv4-badge" style={{'--d':'0s'}}>
+              <span className="hero-dot"/>
+              <span className="hv4-badge-status">disponible · Abidjan, CI</span>
+              <span className="hv4-badge-sep" aria-hidden>|</span>
+              <span className="hv4-clock-wrap">
+                <span className="hv4-clock-icon">{isDaytime?'☀':'🌙'}</span>
+                <span className="hv4-clock-date">{dateStr}</span>
+                <span className="hv4-clock-dot" aria-hidden>·</span>
+                <span className="hv4-clock-time">{timeStr}</span>
+                <span className="hv4-clock-tz">UTC+0</span>
+              </span>
             </div>
-          </div>
 
-          {/* Typewriter */}
-          <p className="hv4-typed hv4-rv" style={{ '--d': '0.42s' }}>
-            Développeur&nbsp;
-            <span className="hero-word">{typed}</span>
-            <span className="cursor">|</span>
-          </p>
+            <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
+              <span className="hv4-name-line" style={{'--d':'0.12s'}}>M'BOLLO</span>
+              <span className="hv4-name-line hv4-name-line--u" style={{'--d':'0.26s'}}>AKA ELVIS</span>
+            </h1>
 
-          {/* Description */}
-          <p className="hv4-desc hv4-rv" style={{ '--d': '0.56s' }}>
-            Développeur web orienté produits, spécialisé Django &amp; React.<br/>
-            Je construis des applications pensées pour des usages réels.
-          </p>
+            <div className="hv4-photo-mob hv4-rv" style={{'--d':'0.3s'}}>
+              <div className="hv4-photo-mob-inner">
+                <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo"/>
+                <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
+              </div>
+            </div>
 
-          {/* CTAs */}
-          <div className="hv4-ctas hv4-rv" style={{ '--d': '0.7s' }}>
-            <MagBtn
-              className={`btn ${dark ? 'btn--neon' : 'btn--primary'} mi-btn-grad-solid`}
-              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-            >Voir mes projets <span>↗</span></MagBtn>
-            <a className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'} mi-glint`}
-              href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
-              <i className="fas fa-download"/> Télécharger CV
-            </a>
-          </div>
+            <p className="hv4-typed hv4-rv" style={{'--d':'0.42s'}}>
+              Développeur&nbsp;<span className="hero-word">{typed}</span><span className="cursor">|</span>
+            </p>
 
-          {/* Stats — auto-calculées depuis les données réelles */}
-          <div className="hv4-stats hv4-rv" style={{ '--d': '0.85s' }}>
-            {(() => {
-              const totalProjects  = PROJECTS.length;
-              const enLigne        = PROJECTS.filter(p => p.cat === 'en-ligne').length;
-              const totalOutils    = Object.values(SKILLS).reduce((acc, arr) => acc + arr.length, 0);
-              const yearsExp       = new Date().getFullYear() - 2023;
-              return [
-                [totalProjects,         'Projets'],
-                [`${yearsExp}+`,        'Années exp.'],
-                [enLigne,               'En prod.'],
-                [totalOutils,           'Outils'],
-              ].map(([n, l]) => (
+            <p className="hv4-desc hv4-rv" style={{'--d':'0.56s'}}>
+              Développeur web orienté produits, spécialisé Django &amp; React.<br/>
+              Je construis des applications pensées pour des usages réels.
+            </p>
+
+            <div className="hv4-ctas hv4-rv" style={{'--d':'0.7s'}}>
+              <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-btn-grad-solid`}
+                onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+                Voir mes projets <span>↗</span>
+              </MagBtn>
+              <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} mi-glint`}
+                href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
+                <i className="fas fa-download"/> Télécharger CV
+              </a>
+            </div>
+
+            <div className="hv4-stats hv4-rv" style={{'--d':'0.85s'}}>
+              {[['14','Projets'],['3+','Années exp.'],['9','En prod.'],['33','Outils']].map(([n,l])=>(
                 <div key={l} className="hv4-stat">
                   <span className="hv4-stat-n">{n}</span>
                   <span className="hv4-stat-l">{l}</span>
                 </div>
-              ));
-            })()}
-          </div>
-        </div>
-
-        {/* ════ RIGHT — photo ════ */}
-        <div className="hv4-right hv4-rv" style={{ '--d': '0.32s' }}>
-          <div className="hv4-photo-wrap hv4-photo-wrap--full">
-            <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"/>
-            <div className="hv4-photo-overlay">
-              <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
-              <span><i className="fas fa-code"/> Full-Stack Dev</span>
-            </div>
-            <div className="hv4-photo-status">
-              <span className="hero-dot"/>
-              <span>Open to work · Freelance &amp; CDI</span>
+              ))}
             </div>
           </div>
-        </div>
 
-      </div>
+          {/* ════ RIGHT ════ */}
+          <div className="hv4-right hv4-rv" style={{'--d':'0.32s'}} ref={rightRef}>
+            <div className="hv4-photo-wrap hv4-photo-wrap--full">
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"/>
+              <div className="hv4-photo-overlay">
+                <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
+                <span><i className="fas fa-code"/> Full-Stack Dev</span>
+              </div>
+              <div className="hv4-photo-status">
+                <span className="hero-dot"/>
+                <span>Open to work · Freelance &amp; CDI</span>
+              </div>
+            </div>
+          </div>
 
-      {/* Scroll indicator */}
-      <div className="hero-scroll">
-        <span>scroll</span>
-        <div className="hsl"/>
-      </div>
+        </div>{/* /hv4-grid */}
+      </div>{/* /hv4-scene-wrap */}
+
+      <div className="hero-scroll"><span>scroll</span><div className="hsl"/></div>
 
     </section>
   );
 };
-
 const Marquee = ({dark}) => {
   const words=["React","Django","Flask","Python","TypeScript","Tailwind","MySQL","Vercel","Node.js","Git","REST API","Bootstrap","JavaScript"];
   const d=[...words,...words];

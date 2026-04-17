@@ -314,13 +314,13 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .app--light .win-frame { background:var(--paper-2); border:2px solid var(--border) }
 
 /* HERO */
-.hero { min-height:100vh; display:flex; align-items:center; padding-top:100px; padding-bottom:60px; position:relative; overflow:hidden; max-width:100% !important; margin:0; padding-left:var(--pad); padding-right:var(--pad); background:var(--paper) }
+.hero { min-height:100vh; display:flex; align-items:center; padding-top:100px; padding-bottom:60px; position:relative; overflow:hidden; max-width:100% !important; margin:0; padding-left:var(--pad); padding-right:var(--pad); background:var(--paper); }
 /* Dots désactivés sur hv4 — remplacés par particules dédiées */
 .hero::before { display:none; }
 .app--light .hero::after { display:none }
 .app--light .hero-eye { background:var(--paper-3); color:var(--ink); border-color:var(--border) }
 .hero-grid { display:none }
-.hero-content { max-width:var(--max); margin:0 auto; position:relative; z-index:1; width:100% }
+.hero-content { max-width:var(--max); margin:0 auto; position:relative; z-index:1; width:100%; will-change: transform, opacity, filter; }
 
 /* Particle canvas global — désactivé */
 .particle-canvas--global { display: none; }
@@ -370,6 +370,172 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 }
 /* Light mode : aurora plus douce */
 .app--light .aurora-canvas { opacity: .55; }
+
+/* ════════════════════════════════════════════════
+   CINEMATIC HERO EFFECTS — Film grain · God rays · Float cards · Parallax
+   ════════════════════════════════════════════════ */
+
+/* Film grain */
+@keyframes hv4Grain {
+  0%   { transform: translate(0,0) }
+  10%  { transform: translate(-4%,-6%) }
+  25%  { transform: translate(6%,-3%) }
+  40%  { transform: translate(-8%, 5%) }
+  55%  { transform: translate(5%, 8%) }
+  70%  { transform: translate(-3%,-4%) }
+  85%  { transform: translate(7%, 2%) }
+  100% { transform: translate(0,0) }
+}
+.hv4-grain {
+  position: absolute; inset: -100%;
+  z-index: 6; pointer-events: none;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/1k_filmgrain.png");
+  background-repeat: repeat;
+  opacity: 0.045;
+  animation: hv4Grain 9s steps(10) infinite;
+  will-change: transform;
+}
+.app--light .hv4-grain { opacity: 0.025; }
+
+/* God rays */
+.hv4-god-rays {
+  position: absolute; inset: 0;
+  z-index: 2; pointer-events: none;
+  background: radial-gradient(circle at 25% 25%, rgba(255,85,0,0.12) 0%, transparent 55%);
+  filter: blur(55px);
+  transition: background 0.15s ease;
+  will-change: background;
+}
+.app--light .hv4-god-rays { opacity: 0.4; }
+
+/* Floating glass cards — desktop only */
+.hv4-float-card {
+  position: absolute; z-index: 8;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px -15px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,85,0,0.08);
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+  animation: hv4FloatIn .8s cubic-bezier(.22,1,.36,1) both;
+}
+.app--light .hv4-float-card {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 20px 60px -10px rgba(0,0,0,0.15);
+}
+@keyframes hv4FloatIn {
+  from { opacity:0; transform: translateY(20px) scale(.96); }
+  to   { opacity:1; transform: translateY(0)    scale(1); }
+}
+.hv4-float-card--a {
+  top: 22%; left: 4%;
+  animation-delay: 1s;
+}
+.hv4-float-card--b {
+  bottom: 18%; right: 4%;
+  animation-delay: 1.2s;
+}
+.hv4-float-card-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgba(52,211,153,0.25), 0 0 12px rgba(52,211,153,0.5);
+  animation: blink 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.hv4-float-card-big {
+  font-family: var(--fd); font-weight: 900;
+  font-size: 28px; line-height: 1;
+  color: var(--acc);
+  text-shadow: 0 0 20px rgba(255,85,0,0.4);
+  flex-shrink: 0;
+}
+.hv4-float-card-title {
+  font-family: var(--fd); font-weight: 800;
+  font-size: 13px; color: var(--ink);
+  letter-spacing: -.01em; line-height: 1.2;
+}
+.hv4-float-card-sub {
+  font-family: var(--fb); font-size: 11px;
+  color: var(--muted); margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* hide float cards on small screens */
+@media (max-width: 900px) {
+  .hv4-float-card { display: none; }
+}
+
+/* ── Light cursor (hhjjj style) ── */
+.hv4-light-cursor {
+  position: fixed;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(255,85,0,0.13) 0%, transparent 68%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 7;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+  transition: width .3s, height .3s;
+  will-change: left, top;
+}
+.app--light .hv4-light-cursor { background: radial-gradient(circle, rgba(255,85,0,0.08) 0%, transparent 68%); }
+@media (max-width: 900px) { .hv4-light-cursor { display: none; } }
+
+/* ── Dust canvas ── */
+.hv4-dust {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 4; pointer-events: none;
+}
+
+/* ── bg layer: aurora container, zooms on scroll, slight parallax on mouse ── */
+.hv4-bg-layer {
+  position: absolute; inset: -6%; z-index: 1;
+  will-change: transform;
+  transition: none;
+  overflow: hidden;
+}
+.hv4-bg-layer .aurora-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+
+/* ── scene wrap: perspective rotation on mouse ── */
+.hv4-scene-wrap {
+  position: relative; z-index: 10;
+  width: 100%; flex: 1;
+  display: flex; align-items: center;
+  will-change: transform;
+  transition: transform 0.08s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+/* ── Float card B stats variant ── */
+.hv4-float-stats {
+  flex-direction: row;
+  gap: 0;
+  padding: 14px 8px;
+}
+.hv4-fstat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 6px 18px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.hv4-fstat:last-child { border-right: none; }
+.hv4-fstat-n {
+  font-family: var(--fd); font-weight: 900; font-size: 22px; line-height: 1;
+  color: var(--acc); text-shadow: 0 0 16px rgba(255,85,0,0.4);
+}
+.hv4-fstat-l {
+  font-family: var(--fb); font-size: 10px; color: var(--muted);
+  margin-top: 3px; white-space: nowrap; letter-spacing: .03em;
+}
+.app--light .hv4-fstat-n { color: var(--acc); }
+.app--light .hv4-fstat-l { color: var(--ink-2); }
 
 /* ── Fix aurora canvas mobile + centrage photo + scroll caché ── */
 @media (max-width: 900px) {
@@ -431,7 +597,7 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .hv4-grid { display:grid; grid-template-columns:1fr clamp(280px,34vw,440px); gap:clamp(32px,5vw,60px); align-items:center; }
 
 /* ── LEFT ── */
-.hv4-left { display:flex; flex-direction:column; }
+.hv4-left { display:flex; flex-direction:column; will-change: transform; }
 
 /* Badge */
 .hv4-badge {
@@ -492,7 +658,7 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .hv4-stat-l { font-family:var(--fb); font-size:clamp(8px,.95vw,10px); color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin-top:2px; white-space:nowrap; }
 
 /* ── RIGHT ── */
-.hv4-right { display:flex; flex-direction:column; align-items:stretch; gap:0; align-self:center; }
+.hv4-right { display:flex; flex-direction:column; align-items:stretch; gap:0; align-self:center; will-change: transform; }
 
 /* ─── Photo hero ─── */
 .hv4-photo-wrap {
@@ -1396,7 +1562,7 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 
 .exp-card-hd-info { flex: 1; min-width: 0; }
 .exp-date { font-family: var(--fb); font-size: 10px; color: var(--muted); letter-spacing: .06em; margin-bottom: 2px; display: block; }
-.exp-title { font-family: var(--fd); font-size: clamp(14px,2.5vw,18px); font-weight: 900; color: var(--ink); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.exp-title { font-family: var(--fd); font-size: clamp(13px,2.5vw,18px); font-weight: 900; color: var(--ink); margin-bottom: 2px; white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.2; word-break: break-word; }
 .exp-company { font-family: var(--fb); font-size: 11px; color: var(--muted); margin: 0; }
 
 .exp-chevron {
@@ -1828,6 +1994,8 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 }
 
 /* Contenu au-dessus du canvas et de l'overlay */
+.hero.hv4 .hv4-bg-layer { position: absolute; z-index: 1; }
+.hero.hv4 .hv4-scene-wrap { z-index: 10; }
 .hero.hv4 .hero-content,
 .hero.hv4 .hero-scroll,
 .hero.hv4 .hv4-scan { position: relative; z-index: 2; }
