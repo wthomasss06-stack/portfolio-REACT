@@ -502,6 +502,121 @@ const SpotlightCard = ({ children, className='', style={} }) => {
 
 function useStagger(thr=0.08){ const [r,v] = useInView(thr); return [r, v]; }
 
+/* ── usePhotoColor : couleur si la section est active (scroll à son niveau) ── */
+function usePhotoColor() {
+  const ref = useRef(null);
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const el = ref.current; if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const mid = window.innerHeight * 0.5;
+      setActive(rect.top <= mid && rect.bottom >= mid);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    return () => { window.removeEventListener('scroll', check); window.removeEventListener('resize', check); };
+  }, []);
+  return [ref, active];
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STACKED CARD — swipe horizontal, mobile uniquement
+   Swipe gauche → carte suivante (s'envole vers l'arrière)
+   Swipe droite → carte précédente (revient vers l'avant)
+   Cartes fantômes = prochaines cartes en attente.
+   ══════════════════════════════════════════════════════════════ */
+const StackedCard = ({ items, renderCard }) => {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [prevIdx,   setPrevIdx]   = useState(null);
+  const [dir,       setDir]       = useState(1); // 1=forward, -1=backward
+  const total    = items.length;
+  const busy     = useRef(false);
+  const touchX0  = useRef(null);
+  const activeRef= useRef(0);
+  useEffect(() => { activeRef.current = activeIdx; }, [activeIdx]);
+
+  const goTo = useCallback((next) => {
+    if (busy.current) return;
+    const cur = activeRef.current;
+    if (next < 0 || next >= total) return;
+    busy.current = true;
+    setDir(next > cur ? 1 : -1);
+    setPrevIdx(cur);
+    setActiveIdx(next);
+    setTimeout(() => { setPrevIdx(null); busy.current = false; }, 480);
+  }, [total]);
+
+  const onTouchStart = e => { touchX0.current = e.touches[0].clientX; };
+  const onTouchEnd   = e => {
+    if (touchX0.current === null) return;
+    const dx = touchX0.current - e.changedTouches[0].clientX;
+    touchX0.current = null;
+    if (Math.abs(dx) < 40) return; // trop petit → ignoré
+    goTo(dx > 0 ? activeRef.current + 1 : activeRef.current - 1);
+  };
+
+  return (
+    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+         style={{ userSelect:'none', touchAction:'pan-y' }}>
+
+      {/* Barre de progression */}
+      <div className="sc-progress-bar">
+        <div className="sc-progress-fill"
+             style={{ width:`${((activeIdx+1)/total)*100}%` }}/>
+      </div>
+      <div className="sc-counter">
+        <span className="sc-counter-cur">{String(activeIdx+1).padStart(2,'0')}</span>
+        <span className="sc-counter-sep"> / </span>
+        <span>{String(total).padStart(2,'0')}</span>
+      </div>
+
+      {/* Zone empilée */}
+      <div className="sc-stack-area">
+        {/* Cartes fantômes = prochaines cartes en attente */}
+        {[2,1].map(offset => {
+          const gi = activeIdx + offset;
+          if (gi >= total) return null; // plus de cartes → pas de fantôme
+          return (
+            <div key={`g${offset}`} className="sc-ghost" style={{
+              opacity: 1 - offset * 0.22,
+              filter: `blur(${offset * 0.8}px)`,
+              transform: `translateY(${-offset * 8}px) scale(${1 - offset * 0.03})`,
+            }} aria-hidden>
+              {renderCard(items[gi], gi)}
+            </div>
+          );
+        })}
+
+        {/* Carte sortante */}
+        {prevIdx !== null && (
+          <div className={`sc-card sc-card--exit-${dir > 0 ? 'back' : 'fwd'}`}
+               key={`p${prevIdx}`}>
+            {renderCard(items[prevIdx], prevIdx)}
+          </div>
+        )}
+
+        {/* Carte active */}
+        <div className={`sc-card sc-card--enter-${dir > 0 ? 'fwd' : 'back'}`}
+             key={`a${activeIdx}`}>
+          {renderCard(items[activeIdx], activeIdx)}
+        </div>
+      </div>
+
+      {/* Dots de navigation (tap) */}
+      <div className="sc-dots">
+        {items.map((_,i) => (
+          <button key={i}
+            className={`sc-dot${i===activeIdx?' sc-dot--on':''}`}
+            onClick={()=>goTo(i)}
+            aria-label={`Carte ${i+1}`}/>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 function useReveal(thr=0.1){
   const ref = useRef(null);
   useEffect(()=>{
@@ -1121,6 +1236,7 @@ const Hero = ({ dark }) => {
   const [wi,setWi]=useState(0); const [typed,setTyped]=useState(''); const [del,setDel]=useState(false); const [ch,setCh]=useState(0); const [now,setNow]=useState(new Date());
 
   const heroRef    = useRef(null);
+  const [photoColorRef, heroPhotoColor] = usePhotoColor();
   const bgRef      = useRef(null);   // aurora bg layer — zooms on scroll
   const sceneRef   = useRef(null);   // grid wrapper — rotates on mouse
   const fadeRef    = useRef(null);   // inner grid — fades+blurs on scroll
@@ -1212,7 +1328,7 @@ const Hero = ({ dark }) => {
   },[ch,del,wi]);
 
   return (
-    <section id="home" ref={heroRef} className={`hero hv4 hv4-cinematic ${dark?'hero--dark':''}`}>
+    <section id="home" ref={el => { heroRef.current = el; photoColorRef.current = el; }} className={`hero hv4 hv4-cinematic ${dark?'hero--dark':''}`}>
 
       {/* ── film grain ── */}
       <div className="hv4-grain" aria-hidden/>
@@ -1260,7 +1376,7 @@ const Hero = ({ dark }) => {
 
             <div className="hv4-photo-mob hv4-rv" style={{'--d':'0.3s'}}>
               <div className="hv4-photo-mob-inner">
-                <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo"/>
+                <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
                 <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
               </div>
             </div>
@@ -1298,7 +1414,7 @@ const Hero = ({ dark }) => {
           {/* ════ RIGHT ════ */}
           <div className="hv4-right hv4-rv" style={{'--d':'0.32s'}} ref={rightRef}>
             <div className="hv4-photo-wrap hv4-photo-wrap--full">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"/>
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
               <div className="hv4-photo-overlay">
                 <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
                 <span><i className="fas fa-code"/> Full-Stack Dev</span>
@@ -1377,7 +1493,7 @@ const LUCIDE_TAB_ICONS = { Globe: SvgGlobe, ShoppingCart: SvgShoppingCart, Cpu: 
 const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations." };
 
 const PricingTabs = ({dark}) => {
-  const [activeTab,setActiveTab]=useState(0); const [mobCard,setMobCard]=useState(0); const [animKey,setAnimKey]=useState(0);
+  const [activeTab,setActiveTab]=useState(0); const [animKey,setAnimKey]=useState(0);
   const pillRef=useRef(null); const btnRefs=useRef([]); const tab=PRICING_TABS[activeTab];
   useEffect(()=>{
     const pill=pillRef.current,btn=btnRefs.current[activeTab];
@@ -1385,7 +1501,7 @@ const PricingTabs = ({dark}) => {
     const parent=btn.parentElement.getBoundingClientRect(),r=btn.getBoundingClientRect();
     pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
   },[activeTab]);
-  const switchTab=(i)=>{ setActiveTab(i); setMobCard(0); setAnimKey(k=>k+1); };
+  const switchTab=(i)=>{ setActiveTab(i); setAnimKey(k=>k+1); };
   const PricingCard=({p, tilt=false})=>{
     const inner = (
       <div className={`ptabs2-card ${p.isPopular?'ptabs2-card--pop':''} ${dark?'ptabs2-card--dark':''}`}>
@@ -1427,12 +1543,12 @@ const PricingTabs = ({dark}) => {
       </div>
       <div key={animKey} className="ptabs2-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} tilt={true}/>)}</div>
       <div className="ptabs2-mob">
-        <PricingCard p={tab.plans[mobCard]} tilt={true}/>
-        <div className="mob-nav">
-          <button className="mob-arr" onClick={()=>setMobCard(i=>(i-1+tab.plans.length)%tab.plans.length)}><i className="fas fa-chevron-left"/></button>
-          <div className="mob-dots">{tab.plans.map((_,i)=>(<button key={i} className={`mob-dot${i===mobCard?' mob-dot--on':''}`} onClick={()=>setMobCard(i)}/>))}</div>
-          <button className="mob-arr" onClick={()=>setMobCard(i=>(i+1)%tab.plans.length)}><i className="fas fa-chevron-right"/></button>
-        </div>
+        <StackedCard
+          items={tab.plans}
+          renderCard={(p, idx) => (
+            <PricingCard p={p} tilt={true}/>
+          )}
+        />
       </div>
       <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}><i className="fas fa-info-circle"/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.</p>
     </div>
@@ -1440,7 +1556,7 @@ const PricingTabs = ({dark}) => {
 };
 
 const Services = ({dark}) => {
-  const [ref,vis]=useInView(); const [svcIdx,setSvcIdx]=useState(0);
+  const [ref,vis]=useInView();
   return (
     <section id="services" ref={ref} className={dark?'section--dark':''}>
       <WindowChrome title="Services & Tarifs" dark={dark}/>
@@ -1457,19 +1573,19 @@ const Services = ({dark}) => {
         ))}
       </div>
       <div className="svc-mob">
-        <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
-          <div className="pricing-card">
-            <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{SERVICES[svcIdx].n}</span><div className="svc-ico"><i className={`fas fa-${SERVICES[svcIdx].icon}`}/></div></div>
-            <h3 className="pricing-title">{SERVICES[svcIdx].title}</h3>
-            <p className="pricing-desc">{SERVICES[svcIdx].desc}</p>
-            <ul className="pricing-feat">{SERVICES[svcIdx].features.map((f,fi)=><li key={fi}><SvgCheck size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
-          </div>
-        </TiltCard>
-        <div className="mob-nav">
-          <button className="mob-arr" onClick={()=>setSvcIdx(i=>(i-1+SERVICES.length)%SERVICES.length)}><i className="fas fa-chevron-left"/></button>
-          <div className="mob-dots">{SERVICES.map((_,i)=><button key={i} className={`mob-dot${i===svcIdx?' mob-dot--on':''}`} onClick={()=>setSvcIdx(i)}/>)}</div>
-          <button className="mob-arr" onClick={()=>setSvcIdx(i=>(i+1)%SERVICES.length)}><i className="fas fa-chevron-right"/></button>
-        </div>
+        <StackedCard
+          items={SERVICES}
+          renderCard={(s, idx) => (
+            <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
+              <div className="pricing-card">
+                <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div></div>
+                <h3 className="pricing-title">{s.title}</h3>
+                <p className="pricing-desc">{s.desc}</p>
+                <ul className="pricing-feat">{s.features.map((f,fi)=><li key={fi}><SvgCheck size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
+              </div>
+            </TiltCard>
+          )}
+        />
       </div>
       <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginTop:'60px'}}><span className="s-lbl">Tarifs</span><h2 className="s-ttl" style={{fontSize:'clamp(24px,3.5vw,44px)'}}>Mes offres.</h2></div>
       <PricingTabs dark={dark}/>
@@ -1479,6 +1595,7 @@ const Services = ({dark}) => {
 
 const About = ({dark}) => {
   const [r1,v1] = useInView();
+  const [aboutPhotoRef, aboutPhotoColor] = usePhotoColor();
   const [openIdx, setOpenIdx] = useState(0);
 
   const total         = TIMELINE.length;
@@ -1503,8 +1620,10 @@ const About = ({dark}) => {
 
   // Un seul useEffect, monté une fois — lit openIdxRef au lieu de openIdx
   useEffect(() => {
+    const isMobile = () => window.innerWidth <= 768;
+
     const onWheel = e => {
-      if (!isSectionVisible()) return;
+      if (isMobile() || !isSectionVisible()) return;
       const cur       = openIdxRef.current;
       const goingDown = e.deltaY > 0;
       const goingUp   = e.deltaY < 0;
@@ -1524,18 +1643,18 @@ const About = ({dark}) => {
       }
     };
     const onTouchStart = e => {
-      if (!isSectionVisible()) return;
+      if (isMobile() || !isSectionVisible()) return;
       lastTouchY.current = e.touches[0].clientY;
     };
     const onTouchMove = e => {
-      if (!isSectionVisible() || lastTouchY.current === null) return;
+      if (isMobile() || !isSectionVisible() || lastTouchY.current === null) return;
       const cur = openIdxRef.current;
       const dy  = lastTouchY.current - e.touches[0].clientY;
       if ((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0)) return;
       e.preventDefault();
     };
     const onTouchEnd = e => {
-      if (!isSectionVisible() || lastTouchY.current === null) return;
+      if (isMobile() || !isSectionVisible() || lastTouchY.current === null) return;
       const cur = openIdxRef.current;
       const dy  = lastTouchY.current - (e.changedTouches[0]?.clientY ?? lastTouchY.current);
       if (!((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0))) {
@@ -1559,14 +1678,14 @@ const About = ({dark}) => {
 
   return (
     <>
-      <section id="about" ref={r1} className={dark?'section--dark':''}>
+      <section id="about" ref={el => { r1.current = el; aboutPhotoRef.current = el; }} className={dark?'section--dark':''}>
         <WindowChrome title="À propos" dark={dark}/>
         <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Alors,<br/>c'est moi.</h2></div>
         <SpotlightCard className={`about-grid ${v1?'anim':''} mi-stagger ${v1?'mi-stagger--vis':''}`}>
           <div className="about-left">
             <div className={`about-quote ${dark?'about-quote--dark':''}`}><p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p><span>— Kevin Ressegaire</span></div>
             <div className="about-img-wrap">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className="about-img"/>
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
               <div className="about-badges"><span><i className="fas fa-code"/> Pro</span><span><i className="fas fa-lightbulb"/> Créatif</span><span><i className="fas fa-eye"/> Curieux</span></div>
             </div>
           </div>
@@ -1613,7 +1732,8 @@ const About = ({dark}) => {
           ))}
         </div>
 
-        {/* ── Carte unique animée ── */}
+        {/* ── Carte unique animée (desktop) ── */}
+        <div className="exp-desk-only">
         <div style={{ position:'relative', minHeight:'320px' }}>
           {TIMELINE.map((t, i) => {
             const active = openIdx === i;
@@ -1685,7 +1805,7 @@ const About = ({dark}) => {
           })}
         </div>
 
-        {/* ── Boutons navigation manuels ── */}
+        {/* ── Boutons navigation manuels (desktop) ── */}
         <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:'16px', marginTop:'32px' }}>
           <button
             onClick={goPrev} disabled={openIdx === 0}
@@ -1715,6 +1835,63 @@ const About = ({dark}) => {
             style={{ opacity: openIdx===total-1 ? 0.3 : 1, transition:'opacity .2s' }}>
             Suivant <i className="fas fa-arrow-right"/>
           </button>
+        </div>
+        </div>{/* /exp-desk-only */}
+
+        {/* ── StackedCard Parcours — mobile uniquement (EN DEHORS de exp-desk-only) ── */}
+        <div className="exp-sc-mob">
+          <StackedCard
+            items={TIMELINE}
+            renderCard={(t, i) => (
+              <div className={`exp-card exp-card--open ${dark?'exp-card--dark':''}`}>
+                <div className="exp-card-hd" style={{ cursor:'default' }}>
+                  <div className="exp-card-hd-left">
+                    <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
+                      <i className={`fas fa-${t.icon}`}/>
+                    </div>
+                    <div className="exp-card-hd-info">
+                      <span className="exp-date"><i className="far fa-calendar-alt"/> {t.date}</span>
+                      <h4 className="exp-title">{t.title}</h4>
+                      <p className="exp-company"><i className="fas fa-building"/> {t.company}</p>
+                    </div>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:'6px', color:'var(--acc)', fontFamily:'var(--fb)', fontSize:'13px', fontWeight:700 }}>
+                    {i + 1}<span style={{color:'var(--muted)'}}>/ {total}</span>
+                  </div>
+                </div>
+                <div className="exp-card-body" style={{ maxHeight:'600px', opacity:1, overflow:'hidden' }}>
+                  <div className="exp-card-inner">
+                    {t.items && t.progLabels && (
+                      <div className="exp-prog-row">
+                        {t.progLabels.map((l,j)=>(
+                          <div key={j} className="exp-prog-item">
+                            <span className="exp-prog-label">{l}</span>
+                            <div className="exp-prog-track">
+                              <div className="exp-prog-fill exp-prog-fill--on"
+                                style={{transitionDelay:`${j*0.08+0.1}s`, width:`${(t.progValues||[90,85,75,80])[j]}%`}}/>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {t.desc && <p className="exp-desc">{t.desc}</p>}
+                    {t.items && (
+                      <ul className="exp-list">
+                        {t.items.map((li,j)=>(
+                          <li key={j}><span className="exp-arrow">→</span>{li}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {t.tags && (
+                      <div className="exp-tags">
+                        {t.tags.map(tag=><span key={tag} className={dark?'exp-tag--dark':''}>{tag}</span>)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          />
         </div>
 
         <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{ marginTop:'48px' }}>

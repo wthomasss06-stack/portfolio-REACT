@@ -1099,23 +1099,50 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .ptabs2-tab--active { background:var(--acc); color:var(--ink) }
 .app--light .ptabs2-tab--active { background:var(--acc); color:#0A0A0A }
 .ptabs2-grid { display:grid; grid-template-columns:repeat(3,1fr); border-top:2px solid var(--border); border-left:2px solid var(--border); box-shadow:var(--shadow-lg) }
-.ptabs2-card { border-right:2px solid var(--border); border-bottom:2px solid var(--border); position:relative }
+.ptabs2-card { border-right:2px solid var(--border); border-bottom:2px solid var(--border); position:relative; background:var(--paper-2) }
 .app--light .ptabs2-card { background:var(--paper-2) }
-.ptabs2-card--pop { background:var(--acc) }
-.app--light .ptabs2-card--pop { background:var(--acc) }
-.ptabs2-pop-banner { display:flex; align-items:center; gap:6px; padding:8px 20px; font-family:var(--fd); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; background:var(--ink); color:var(--acc); border-bottom:2px solid var(--border) }
+
+/* ── Carte POPULAIRE : même fond, différenciée par barre top + ombre + décalage ── */
+.ptabs2-card--pop {
+  /* Pas de fond différent — même que les autres */
+  border-top: 4px solid var(--acc);         /* barre accent épaisse en haut */
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--acc);  /* halo subtil */
+  z-index: 1;                               /* légèrement au-dessus des voisines */
+  transform: translateY(-4px);              /* petit soulèvement */
+}
+.app--light .ptabs2-card--pop {
+  border-top: 4px solid var(--acc);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--acc);
+}
+
+/* Banner "LE PLUS POPULAIRE" — fond acc, texte noir/paper */
+.ptabs2-pop-banner {
+  display:flex; align-items:center; gap:6px;
+  padding:7px 20px;
+  font-family:var(--fd); font-size:10px; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase;
+  background:var(--acc);
+  color:var(--paper);
+  border-bottom:2px solid var(--border);
+}
+.app--light .ptabs2-pop-banner { color:#0A0A0A }
+
 .ptabs2-card-body { padding:24px 20px }
 .ptabs2-badge { display:inline-block; font-family:var(--fd); font-size:10px; font-weight:700; letter-spacing:.12em; padding:4px 10px; border:2px solid var(--border); background:var(--paper-2); color:var(--ink); box-shadow:var(--shadow-sm); margin-bottom:12px; text-transform:uppercase }
-.ptabs2-card--pop .ptabs2-badge { background:var(--ink); color:var(--acc) }
+/* Badge populaire : outline accent, pas de fond plein */
+.ptabs2-card--pop .ptabs2-badge { background:transparent; color:var(--acc); border-color:var(--acc) }
 .ptabs2-tagline { font-family:var(--fb); font-size:11px; color:var(--muted); margin-bottom:16px; line-height:1.6 }
 .ptabs2-price { margin-bottom:8px }
 .ptabs2-amount { font-family:var(--fd); font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--ink) }
+/* Prix populaire légèrement plus grand */
+.ptabs2-card--pop .ptabs2-amount { color:var(--acc) }
 .ptabs2-currency { font-family:var(--fb); font-size:12px; color:var(--muted) }
 .ptabs2-delivery { font-family:var(--fb); font-size:11px; color:var(--muted); margin-bottom:20px }
 .ptabs2-feat { list-style:none; display:flex; flex-direction:column; gap:8px; margin-bottom:24px }
 .ptabs2-feat li { display:flex; align-items:flex-start; gap:10px; font-family:var(--fb); font-size:12px; color:var(--ink-2); line-height:1.4 }
+/* Check icon : identique aux autres (acc background) */
 .ptabs2-check { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border:2px solid var(--border); background:var(--acc); color:var(--ink); font-size:10px; margin-top:1px }
-.ptabs2-card--pop .ptabs2-check { background:var(--ink); color:var(--acc) }
+.ptabs2-card--pop .ptabs2-check { background:var(--acc); color:var(--ink); border-color:var(--border) }
 .app--light .ptabs2-check { background:var(--acc); color:#0A0A0A; border-color:var(--border) }
 .ptabs2-cta { width:100%; justify-content:center }
 .ptabs-note { margin-top:24px; padding:12px 16px; font-family:var(--fb); font-size:12px; color:var(--muted); border:2px solid var(--border-2); background:var(--paper-2) }
@@ -2216,4 +2243,152 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 @keyframes dot-blink {
   0%,100% { opacity: 1; }
   50%      { opacity: .3; }
+}
+
+
+
+/* ══════════════════════════════════════════════════════════════
+   PHOTO B&W → COULEUR au scroll
+   ══════════════════════════════════════════════════════════════ */
+.photo-bw {
+  filter: grayscale(1) brightness(.88);
+  transition: filter .65s cubic-bezier(.4,0,.2,1);
+}
+.photo-bw--on {
+  filter: grayscale(0) brightness(1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STACKED CARD — swipe horizontal, mobile uniquement
+   ══════════════════════════════════════════════════════════════ */
+
+/* Barre de progression fine en haut */
+.sc-progress-bar {
+  width: 100%;
+  height: 2px;
+  background: var(--paper-4);
+  border-radius: 2px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.sc-progress-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 2px;
+  transition: width .35s ease;
+}
+
+/* Compteur ex: 02 / 06 */
+.sc-counter {
+  font-family: var(--fb);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  letter-spacing: .1em;
+}
+.sc-counter-cur { color: var(--acc); font-weight: 700; }
+.sc-counter-sep { opacity: .4; }
+
+/* Zone empilée */
+.sc-stack-area {
+  position: relative;
+  perspective: 900px;
+}
+
+/* Cartes fantômes (prochaines cartes en attente) */
+.sc-ghost {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform-origin: top center;
+}
+
+/* Carte active */
+.sc-card {
+  position: relative;
+  z-index: 3;
+  transform-origin: center center;
+}
+
+/* ── Animations entrée/sortie "vol vers l'arrière" ── */
+
+/* Carte qui S'ENVOLE VERS L'ARRIÈRE (forward : swipe gauche) */
+@keyframes sc-exit-back {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(0.70) translateY(28px); }
+}
+/* Nouvelle carte qui ARRIVE DEPUIS LE FOND (forward) */
+@keyframes sc-enter-fwd {
+  from { opacity: 0; transform: scale(0.86) translateY(40px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* Carte qui REVIENT VERS L'AVANT (backward : swipe droite) */
+@keyframes sc-exit-fwd {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(1.06) translateY(-32px); }
+}
+/* Carte précédente qui REDESCEND DEPUIS L'AVANT (backward) */
+@keyframes sc-enter-back {
+  from { opacity: 0; transform: scale(0.9) translateY(-36px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.sc-card--exit-back { animation: sc-exit-back .42s cubic-bezier(.4,0,.2,1) forwards; position:absolute; top:0; left:0; right:0; }
+.sc-card--exit-fwd  { animation: sc-exit-fwd  .38s cubic-bezier(.4,0,.2,1) forwards; position:absolute; top:0; left:0; right:0; }
+.sc-card--enter-fwd { animation: sc-enter-fwd .46s cubic-bezier(.34,1.1,.64,1) forwards; }
+.sc-card--enter-back{ animation: sc-enter-back .46s cubic-bezier(.34,1.1,.64,1) forwards; }
+
+/* Dots navigation (tap) */
+.sc-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.sc-dot {
+  height: 8px;
+  width: 8px;
+  border: 2px solid var(--border);
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  padding: 0;
+  transition: background .2s, width .32s var(--spring), box-shadow .2s;
+}
+.sc-dot--on {
+  background: var(--acc);
+  width: 24px;
+  box-shadow: 2px 2px 0 var(--border);
+}
+
+/* ── Visibilité desktop/mobile ── */
+
+/* Parcours */
+.exp-desk-only { display: block; }
+.exp-sc-mob    { display: none;  }
+
+@media (max-width: 768px) {
+  /* Afficher les StackedCards */
+  .svc-mob    { display: block !important; }
+  .ptabs2-mob { display: block !important; }
+  .exp-sc-mob { display: block !important; }
+
+  /* Masquer les versions desktop */
+  .svc-desk                 { display: none !important; }
+  .ptabs2-grid.ptabs2-desk  { display: none !important; }
+  .exp-desk-only            { display: none !important; }
+  .exp-steps                { display: none !important; }
+  section#experience > p    { display: none !important; }
+
+  /* Espacements StackedCard mobile */
+  .exp-sc-mob {
+    padding: 0 0 24px;
+  }
+}
+
+@media (min-width: 769px) {
+  .exp-sc-mob { display: none !important; }
 }
