@@ -1076,7 +1076,119 @@ const ScrollTop = ({dark}) => {
 };
 
 /* ══════════════════════════════════════════════
-   AURORA CANVAS — WebGL background hero
+   PLASMA CANVAS BG — version légère pour bandeaux
+   Même shader plasma, optimisé pour petits conteneurs
+   ══════════════════════════════════════════════ */
+const PlasmaCanvasBg = ({ intensity = 1.0 }) => {
+  const cvRef  = useRef(null);
+  const rafRef = useRef(null);
+  const glRef  = useRef(null);
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const gl = cv.getContext('webgl') || cv.getContext('experimental-webgl');
+    if (!gl) { glRef.current = null; return; }
+    glRef.current = gl;
+
+    const resize = () => {
+      const p = cv.parentElement;
+      cv.width  = Math.round((p ? p.offsetWidth  : cv.offsetWidth)  * 0.5);
+      cv.height = Math.round((p ? p.offsetHeight : cv.offsetHeight) * 0.5);
+      if (cv.width  < 1) cv.width  = 320;
+      if (cv.height < 1) cv.height = 120;
+      gl.viewport(0, 0, cv.width, cv.height);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(cv.parentElement || cv);
+
+    const vert = `attribute vec2 a; void main(){gl_Position=vec4(a,0.,1.);}`;
+    const frag = `
+      precision mediump float;
+      uniform vec2  u_res;
+      uniform float u_time;
+      #define TAU 6.28318530
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_res;
+        vec2 p  = uv * 2.0 - 1.0; p.x *= u_res.x / u_res.y;
+        float t = u_time * 0.55;
+        float v = 0.0;
+        v += sin(p.x * 5.0 + t);
+        v += sin(p.y * 4.5 + t * 0.85);
+        v += sin((p.x + p.y) * 3.5 + t * 0.7);
+        float cx = p.x + 0.5 * sin(t * 0.38);
+        float cy = p.y + 0.5 * cos(t * 0.30);
+        v += sin(sqrt(90.0*(cx*cx+cy*cy)+1.0)+t);
+        v += sin((p.x-p.y)*2.8+t*0.6)*0.5;
+        v = v*0.5+0.5;
+        vec3 a2 = vec3(0.04,  0.02,  0.01);
+        vec3 b2 = vec3(0.18,  0.07,  0.01);
+        vec3 c2 = vec3(1.0,   0.333, 0.0);
+        vec3 d2 = vec3(1.0,   0.549, 0.0);
+        vec3 e2 = vec3(1.0,   0.85,  0.55);
+        vec3 col;
+        if      (v < 0.22) col = mix(a2, b2, v/0.22);
+        else if (v < 0.52) col = mix(b2, c2, (v-0.22)/0.30);
+        else if (v < 0.78) col = mix(c2, d2, (v-0.52)/0.26);
+        else               col = mix(d2, e2, (v-0.78)/0.22);
+        col *= (0.75 + 0.25*sin(t*0.45));
+        float vig = 1.0 - smoothstep(0.3, 1.2, length(uv-0.5)*1.8);
+        col *= vig * 0.9 + 0.1;
+        float grain = fract(sin(dot(gl_FragCoord.xy,vec2(127.1,311.7))+u_time*80.)*43758.5)*0.022-0.011;
+        gl_FragColor = vec4(clamp(col+grain,0.,1.),1.0);
+      }
+    `;
+
+    const comp = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, comp(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, comp(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const aLoc = gl.getAttribLocation(prog, 'a');
+    gl.enableVertexAttribArray(aLoc);
+    gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes  = gl.getUniformLocation(prog, 'u_res');
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+
+    const render = ts => {
+      if (!glRef.current) return;
+      rafRef.current = requestAnimationFrame(render);
+      gl.uniform2f(uRes, cv.width, cv.height);
+      gl.uniform1f(uTime, ts * 0.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    rafRef.current = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      glRef.current = null;
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={cvRef}
+      className="plasma-bg-canvas"
+      aria-hidden
+      style={{ position:'absolute', inset:0, width:'100%', height:'100%',
+               pointerEvents:'none', zIndex:0, opacity: intensity,
+               imageRendering:'pixelated', display:'block' }}
+    />
+  );
+};
+
+/* ══════════════════════════════════════════════
+   PLASMA CANVAS — WebGL background hero
+   Shader plasma AKAfolio : noir profond → orange #FF5500 → ambre
    ══════════════════════════════════════════════ */
 const AuroraCanvas = ({ dark }) => {
   const cvRef   = useRef(null);
@@ -1108,68 +1220,79 @@ const AuroraCanvas = ({ dark }) => {
       gl.viewport(0, 0, cv.width, cv.height);
     };
     resize();
-    // Resize différé : sur mobile le layout n'est pas toujours calculé au premier tick
     const resizeDeferred = setTimeout(resize, 150);
     const ro = new ResizeObserver(resize);
     ro.observe(cv);
 
     const vert = `attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.,1.);}`;
+
+    /* ── Plasma shader — palette AKAfolio : noir #0A0A0A → orange #FF5500 → ambre #FF8C00 ── */
     const frag = `
       precision highp float;
       uniform vec2  u_res;
       uniform float u_time;
       uniform vec2  u_mouse;
       uniform float u_light;
+      #define TAU 6.28318530
 
-      float hash(vec2 p){p=fract(p*vec2(234.34,435.345));p+=dot(p,p+34.23);return fract(p.x*p.y);}
-      float noise(vec2 p){
-        vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
-        return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
-      }
-      float fbm(vec2 p){
-        float v=0.0,a=0.5;
-        for(int i=0;i<6;i++){v+=a*noise(p);p=p*2.1+vec2(1.7,9.2);a*=0.5;}
-        return v;
-      }
       void main(){
-        vec2 uv=gl_FragCoord.xy/u_res;
-        vec2 st=uv*2.0-1.0; st.x*=u_res.x/u_res.y;
-        float t=u_time*0.18;
+        vec2 uv = gl_FragCoord.xy / u_res;
+        vec2 p  = uv * 2.0 - 1.0; p.x *= u_res.x / u_res.y;
+        vec2 m  = (u_mouse / u_res) * 2.0 - 1.0; m.x *= u_res.x / u_res.y;
+        float t = u_time * 0.5;
 
-        /* mouse influence */
-        vec2 m=(u_mouse/u_res)*2.0-1.0; m.x*=u_res.x/u_res.y;
-        float mdist=length(st-m);
-        float mflow=exp(-mdist*2.2)*0.35;
+        /* layered plasma sines */
+        float v = 0.0;
+        v += sin(p.x * 5.0 + t);
+        v += sin(p.y * 4.5 + t * 0.85);
+        v += sin((p.x + p.y) * 3.5 + t * 0.7);
+        float cx = p.x + 0.55 * sin(t * 0.38) + m.x * 0.28;
+        float cy = p.y + 0.55 * cos(t * 0.30) + m.y * 0.28;
+        v += sin(sqrt(90.0 * (cx*cx + cy*cy) + 1.0) + t);
+        /* extra diagonal wave for richness */
+        v += sin((p.x - p.y) * 2.8 + t * 0.6) * 0.5;
+        v = v * 0.5 + 0.5; /* normalise 0..1 */
 
-        /* double domain warp */
-        vec2 q=vec2(
-          fbm(st+vec2(0.0,0.0)+t*0.6),
-          fbm(st+vec2(5.2,1.3)+t*0.5)
-        );
-        vec2 r=vec2(
-          fbm(st+4.0*q+vec2(1.7,9.2)+t*0.4+mflow),
-          fbm(st+4.0*q+vec2(8.3,2.8)+t*0.3)
-        );
-        float f=fbm(st+4.5*r+t*0.25);
-        f=f*f*f+0.6*f*f+0.5*f;
+        /* AKAfolio palette :
+           a = noir profond   #0A0A0A  (0.04, 0.04, 0.04)
+           b = gris chaud     #1C1008  (0.11, 0.063, 0.031)
+           c = orange vif     #FF5500  (1.0,  0.333, 0.0)
+           d = ambre brillant #FF8C00  (1.0,  0.549, 0.0)
+           e = blanc chaud    #FFF0D8  (1.0,  0.94,  0.847) */
+        vec3 a = vec3(0.04,  0.04,  0.04);
+        vec3 b = vec3(0.11,  0.063, 0.031);
+        vec3 c = vec3(1.0,   0.333, 0.0);
+        vec3 d = vec3(1.0,   0.549, 0.0);
+        vec3 e = vec3(1.0,   0.94,  0.847);
 
-        /* ── palette fixe : noir violet → violet profond → teal → orange brillant → blanc ── */
-        vec3 col=mix(vec3(0.02,0.0,0.12),vec3(0.38,0.06,0.62),clamp(f*1.6,0.0,1.0));
-        col=mix(col,vec3(0.04,0.65,0.55),clamp(f*f*2.2,0.0,1.0));
-        col=mix(col,vec3(1.0,0.42,0.0),clamp(pow(f,3.5)*3.0,0.0,1.0));
-        col=mix(col,vec3(1.0,0.97,0.9),clamp(pow(f,5.0)*2.5,0.0,1.0));
+        vec3 col;
+        if      (v < 0.25) col = mix(a, b, v * 4.0);
+        else if (v < 0.55) col = mix(b, c, (v - 0.25) / 0.30);
+        else if (v < 0.80) col = mix(c, d, (v - 0.55) / 0.25);
+        else               col = mix(d, e, (v - 0.80) / 0.20);
 
-        /* vignette */
-        float vig=1.0-smoothstep(0.5,1.4,length(uv-0.5)*1.8);
-        col*=vig;
+        /* pulsing brightness */
+        col *= 0.78 + 0.22 * sin(t * 0.45);
 
-        /* bottom darkness */
-        col*=mix(0.15,1.0,smoothstep(0.0,0.4,uv.y));
+        /* vignette douce */
+        float vig = 1.0 - smoothstep(0.45, 1.35, length(uv - 0.5) * 1.9);
+        col *= vig;
 
-        /* mouse glow — teal fixe */
-        col+=vec3(0.05,0.4,0.25)*exp(-mdist*3.0)*0.6;
+        /* bottom darkness — conserve le noir en bas */
+        col *= mix(0.08, 1.0, smoothstep(0.0, 0.38, uv.y));
 
-        gl_FragColor=vec4(col,1.0);
+        /* mouse orange glow */
+        float mdist = length(p - m);
+        col += vec3(1.0, 0.333, 0.0) * exp(-mdist * 2.8) * 0.22;
+
+        /* mode clair : légèrement plus clair */
+        col = mix(col, col * 1.18 + vec3(0.02, 0.01, 0.0), u_light * 0.35);
+
+        /* grain subtil */
+        float grain = fract(sin(dot(gl_FragCoord.xy, vec2(127.1, 311.7)) + u_time * 80.0) * 43758.5) * 0.025 - 0.0125;
+        col += grain;
+
+        gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
       }
     `;
 
@@ -1683,7 +1806,10 @@ const About = ({dark}) => {
         <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Alors,<br/>c'est moi.</h2></div>
         <SpotlightCard className={`about-grid ${v1?'anim':''} mi-stagger ${v1?'mi-stagger--vis':''}`}>
           <div className="about-left">
-            <div className={`about-quote ${dark?'about-quote--dark':''}`}><p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p><span>— Kevin Ressegaire</span></div>
+            <div className={`about-quote ${dark?'about-quote--dark':''}`} style={{position:'relative',overflow:'hidden'}}>
+              <PlasmaCanvasBg intensity={0.82}/>
+              <div style={{position:'relative',zIndex:1}}><p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p><span>— Kevin Ressegaire</span></div>
+            </div>
             <div className="about-img-wrap">
               <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
               <div className="about-badges"><span><i className="fas fa-code"/> Pro</span><span><i className="fas fa-lightbulb"/> Créatif</span><span><i className="fas fa-eye"/> Curieux</span></div>
@@ -1894,12 +2020,15 @@ const About = ({dark}) => {
           />
         </div>
 
-        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{ marginTop:'48px' }}>
+        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{ marginTop:'48px', position:'relative', overflow:'hidden' }}>
+          <PlasmaCanvasBg intensity={0.78}/>
+          <div style={{position:'relative',zIndex:1,display:'contents'}}>
           <h3>Intéressé par mon profil ?</h3>
           <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
           <div className="cta-btns">
             <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
             <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><i className="fas fa-download"/> Télécharger CV</a>
+          </div>
           </div>
         </div>
       </section>
@@ -2361,12 +2490,15 @@ const Skills = ({dark}) => {
           <SkillBand title="Outils & IA" icon="tools"       items={SKILLS.tools}    dir="left"  dark={dark}/>
           <SkillBand title="Autres"      icon="plus-circle" items={SKILLS.autres}   dir="right" dark={dark}/>
         </div>
-        <div className={`cta-band ${dark?'cta-band--neon':''}`}>
+        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{position:'relative',overflow:'hidden'}}>
+          <PlasmaCanvasBg intensity={0.78}/>
+          <div style={{position:'relative',zIndex:1,display:'contents'}}>
           <h3>Besoin de ces compétences ?</h3>
           <p>Mettons mes compétences au service de votre projet. Discutons-en !</p>
           <div className="cta-btns">
             <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
             <MagBtn className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-eye"/> Voir mes projets</MagBtn>
+          </div>
           </div>
         </div>
       </div>

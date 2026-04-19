@@ -358,18 +358,18 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
    HERO v4 — minimal, typo forte, animations
    ═══════════════════════════════════════════ */
 
-/* Aurora canvas — fond WebGL hero */
+/* Plasma canvas — fond WebGL hero */
 .aurora-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   pointer-events: none; z-index: 0;
-  opacity: .72;
+  opacity: .88;
   display: block;
-  image-rendering: pixelated;  /* rendu net même à résolution réduite */
+  image-rendering: pixelated;
   will-change: contents;
 }
-/* Light mode : aurora plus douce */
-.app--light .aurora-canvas { opacity: .55; }
+/* Light mode : plasma plus doux */
+.app--light .aurora-canvas { opacity: .62; }
 
 /* ════════════════════════════════════════════════
    CINEMATIC HERO EFFECTS — Film grain · God rays · Float cards · Parallax
@@ -397,16 +397,16 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 }
 .app--light .hv4-grain { opacity: 0.025; }
 
-/* God rays */
+/* God rays — alignés palette plasma orange */
 .hv4-god-rays {
   position: absolute; inset: 0;
   z-index: 2; pointer-events: none;
-  background: radial-gradient(circle at 25% 25%, rgba(255,85,0,0.12) 0%, transparent 55%);
+  background: radial-gradient(circle at 25% 25%, rgba(255,85,0,0.18) 0%, transparent 55%);
   filter: blur(55px);
   transition: background 0.15s ease;
   will-change: background;
 }
-.app--light .hv4-god-rays { opacity: 0.4; }
+.app--light .hv4-god-rays { opacity: 0.35; }
 
 /* Floating glass cards — desktop only */
 .hv4-float-card {
@@ -443,8 +443,8 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 }
 .hv4-float-card-dot {
   width: 10px; height: 10px; border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 0 3px rgba(52,211,153,0.25), 0 0 12px rgba(52,211,153,0.5);
+  background: #FF5500;
+  box-shadow: 0 0 0 3px rgba(255,85,0,0.25), 0 0 12px rgba(255,85,0,0.55);
   animation: blink 1.4s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -1157,10 +1157,13 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 /* ABOUT */
 .about-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:60px; align-items:start }
 .about-left,.about-right { display:flex; flex-direction:column; gap:16px }
-.about-quote { border:2px solid var(--border); padding:20px 24px; background:var(--acc); box-shadow:var(--shadow) }
+/* about-quote : plasma bg + overlay orange */
+.about-quote { position:relative; overflow:hidden; border:2px solid var(--border); padding:20px 24px; background:var(--acc); box-shadow:var(--shadow) }
+.about-quote::after { content:''; position:absolute; inset:0; background:rgba(200,60,0,0.38); pointer-events:none; z-index:0 }
 .app--light .about-quote { background:var(--acc) }
-.about-quote p { font-family:var(--fb); font-size:14px; color:var(--ink); line-height:1.8; font-style:italic }
-.about-quote span { font-family:var(--fd); font-size:11px; font-weight:700; color:var(--ink); margin-top:8px; display:block; letter-spacing:.05em; text-transform:uppercase }
+.app--light .about-quote::after { background:rgba(200,60,0,0.28) }
+.about-quote p { font-family:var(--fb); font-size:14px; color:#fff; line-height:1.8; font-style:italic; position:relative; z-index:1 }
+.about-quote span { font-family:var(--fd); font-size:11px; font-weight:700; color:rgba(255,255,255,0.82); margin-top:8px; display:block; letter-spacing:.05em; text-transform:uppercase; position:relative; z-index:1 }
 .about-img-wrap { position:relative; border:3px solid var(--border); overflow:hidden; box-shadow:var(--shadow-lg); cursor:pointer; }
 .about-img { width:100%; display:block; filter:grayscale(100%) contrast(1.08) brightness(0.95); transition:filter .5s cubic-bezier(.22,1,.36,1); }
 .about-img-wrap:hover .about-img { filter:grayscale(0%) contrast(1) brightness(1); }
@@ -1198,17 +1201,18 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .tl-tag,.tl-tags span { font-family:var(--fd); font-size:9px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border:2px solid var(--border); background:var(--paper-2); color:var(--ink); box-shadow:var(--shadow-sm) }
 .app--light .tl-tag,.app--light .tl-tags span { background:var(--paper-3); color:var(--ink); border-color:var(--border) }
 
-/* CTA BAND */
-.cta-band { margin-top:48px; padding:40px; border:3px solid var(--border); background:var(--acc); box-shadow:var(--shadow-lg); display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px }
+/* CTA BAND — plasma bg + overlay orange pour lisibilité */
+.cta-band { position:relative; overflow:hidden; margin-top:48px; padding:40px; border:3px solid var(--border); background:var(--acc); box-shadow:var(--shadow-lg); display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px }
+.cta-band::after { content:''; position:absolute; inset:0; background:rgba(200,55,0,0.40); pointer-events:none; z-index:0 }
 .app--light .cta-band { background:var(--acc); border-color:var(--border) }
-.cta-band h3 { font-family:var(--fd); font-size:clamp(20px,3vw,32px); font-weight:900; color:var(--paper) }
-
-.cta-band p { font-family:var(--fb); font-size:14px; color:var(--paper); opacity:.7 }
-.app--light .cta-band p { color:var(--ink); opacity:.7 }
-.cta-btns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px }
+.app--light .cta-band::after { background:rgba(200,55,0,0.30) }
+.cta-band h3 { font-family:var(--fd); font-size:clamp(20px,3vw,32px); font-weight:900; color:#fff; position:relative; z-index:1 }
+.cta-band p { font-family:var(--fb); font-size:14px; color:rgba(255,255,255,0.82); position:relative; z-index:1 }
+.app--light .cta-band p { color:rgba(255,255,255,0.85) }
+.cta-btns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; position:relative; z-index:1 }
 .cta-band .btn,.cta-band .btn--neon,.cta-band .btn--cta-light { background:var(--paper); color:var(--acc); border-color:var(--paper); box-shadow:var(--shadow-sm) }
 .cta-band .btn:hover,.cta-band .btn--neon:hover { background:var(--paper-2); transform:translate(-3px,-3px); box-shadow:var(--shadow-lg) }
-.cta-band .btn--ghost-neon,.cta-band .btn--cta-ghost-light { background:transparent; color:var(--paper); border-color:var(--paper); box-shadow:var(--shadow-sm) }
+.cta-band .btn--ghost-neon,.cta-band .btn--cta-ghost-light { background:transparent; color:#fff; border-color:#fff; box-shadow:var(--shadow-sm) }
 .app--light .cta-band .btn,.app--light .cta-band .btn--neon { background:var(--paper); color:var(--acc); border-color:var(--paper) }
 
 /* CAROUSEL + WINDOW CHROME via win-chrome */
