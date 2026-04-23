@@ -301,7 +301,6 @@ const SKILLS = {
     { name:"Flask",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" },
     { name:"Django",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" },
     { name:"Node.js", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-    { name:"NestJS",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" },
     { name:"MySQL",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
   ],
   tools: [
@@ -1816,10 +1815,10 @@ const About = ({dark}) => {
             </div>
           </div>
           <div className="about-right">
-            <h3>Développeur Full-Stack orienté Data &amp; Cartographie</h3>
-            <p>Développeur web formé en <strong>Réseau et Sécurité Informatique</strong>, je développe des applications web complètes en combinant front-end moderne et back-end Python.</p>
-            <p>Spécialisé en <strong>Django, React et Flask</strong>, je conçois également des solutions orientées <strong>Data et Cartographie</strong> : dashboards de gestion, visualisations de données et intégration de cartes interactives (Leaflet, OpenStreetMap).</p>
-            <p>Mon passage en <strong>freelance via AKATech</strong> m'a permis de livrer plus de 10 applications web — SaaS, e-commerce, plateformes — avec une approche orientée produit et usages réels.</p>
+            <h3>Développeur Full-Stack · Django &amp; React / Vite &amp; Next.js · Data &amp; Carto</h3>
+            <p>Formé en <strong>Réseau et Sécurité Informatique</strong>, je conçois et mets en œuvre des applications web complètes — de l'interface React jusqu'au back-end Python — en appliquant les bonnes pratiques de développement et de sécurité dès la conception.</p>
+            <p>À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées <strong>Data &amp; Cartographie</strong> : dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).</p>
+            <p>Via mon agence <strong>AKATech</strong>, j'ai livré plus de <strong>10 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels.</p>
             <div className={`about-tags ${dark?'about-tags--dark':''}`}>{["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}</div>
             <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
           </div>
