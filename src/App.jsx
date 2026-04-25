@@ -234,47 +234,47 @@ const SERVICES = [
 
 const PRICING_TABS = [
   {
+    key:"portfolio", label:"Portfolio", icon:"Star",
+    plans:[
+      { badge:"STARTER",  price:"70 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
+        features:["3 pages","Design responsive","Section projets","Formulaire contact","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+      { badge:"STANDARD", price:"120 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
+        features:["5 pages","Animations modernes","Projets détaillés","SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+      { badge:"PREMIUM",  price:"180 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
+        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+    ]
+  },
+  {
     key:"vitrine", label:"Site Vitrine", icon:"Globe",
     plans:[
-      { badge:"STARTER",   price:"60 000 FCFA",  title:"Starter",  delivery:"5 à 7 jours",
-        features:["Design moderne responsive","Jusqu'à 3 pages","Formulaire de contact","Intégration WhatsApp","Liens réseaux sociaux","SEO de base","Mise en ligne incluse"] },
-      { badge:"STANDARD",  price:"120 000 FCFA", title:"Standard", delivery:"7 à 10 jours", isPopular:true,
-        features:["Design professionnel responsive","Jusqu'à 5 pages","Formulaire de contact","Google Maps intégré","Intégration WhatsApp","SEO optimisé","Optimisation vitesse"] },
-      { badge:"PREMIUM",   price:"200 000 FCFA", title:"Premium",  delivery:"10 à 14 jours",
-        features:["Jusqu'à 8 pages","Design personnalisé","Blog intégré","Optimisation SEO avancée","Formulaire avancé","Newsletter intégrée","Formation incluse"] },
+      { badge:"STARTER", price:"150 000 FCFA", title:"Starter", delivery:"5 jours",
+        features:["5 pages","Design responsive","Formulaire contact","SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support"] },
+      { badge:"PRO",     price:"270 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
+        features:["10 pages","Design premium","Blog intégré","SEO avancé","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h"] },
+      { badge:"ELITE",   price:"450 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
+        features:["15 à 20 pages","Design sur mesure","CMS complet","SEO + Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","➕ Page supp. : 20 000 FCFA"] },
     ]
   },
   {
     key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
     plans:[
-      { badge:"STARTER",  price:"200 000 FCFA", title:"Starter",  delivery:"10 à 14 jours",
-        features:["Catalogue produits","Jusqu'à 20 produits","Panier d'achat","Paiement à la livraison","Interface admin","Gestion des commandes"] },
-      { badge:"STANDARD", price:"350 000 FCFA", title:"Standard", delivery:"15 à 20 jours", isPopular:true,
-        features:["Jusqu'à 50 produits","Paiement en ligne","Gestion des stocks","Filtres produits","SEO e-commerce","Formation incluse"] },
-      { badge:"PREMIUM",  price:"500 000 FCFA", title:"Premium",  delivery:"3 à 4 semaines",
-        features:["Jusqu'à 150 produits","Paiement sécurisé","Gestion commandes complète","Avis clients","Statistiques de vente","Optimisation performance"] },
+      { badge:"STARTER", price:"400 000 FCFA",   title:"Starter", delivery:"14 jours",
+        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+      { badge:"PRO",     price:"650 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
+        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin"] },
+      { badge:"ELITE",   price:"1 000 000 FCFA", title:"Elite",   delivery:"30 jours",
+        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe"] },
     ]
   },
   {
-    key:"saas", label:"Application SaaS", icon:"Cpu",
+    key:"saas", label:"App SaaS", icon:"Cpu",
     plans:[
-      { badge:"STARTER",  price:"500 000 FCFA",   title:"Starter",  delivery:"3 à 4 semaines",
-        features:["Backend Python / Flask","Base de données MySQL","Interface utilisateur","Dashboard admin","API REST"] },
-      { badge:"STANDARD", price:"800 000 FCFA",   title:"Standard", delivery:"4 à 6 semaines", isPopular:true,
-        features:["Backend Django / Flask","Authentification utilisateurs","Dashboard avancé","API REST sécurisée","Optimisation performance"] },
-      { badge:"PREMIUM",  price:"1 200 000 FCFA", title:"Premium",  delivery:"6 à 8 semaines",
-        features:["Architecture complète","Gestion des abonnements","Dashboard complet","API avancée","Documentation technique","Support 3 mois inclus"] },
-    ]
-  },
-  {
-    key:"portfolio", label:"Portfolio", icon:"Star",
-    plans:[
-      { badge:"STARTER",  price:"50 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
-        features:["Design responsive","3 pages","Section projets","Formulaire de contact"] },
-      { badge:"STANDARD", price:"100 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
-        features:["5 pages","Animations modernes","Section projets détaillés","SEO de base"] },
-      { badge:"PREMIUM",  price:"150 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
-        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance"] },
+      { badge:"MVP",        price:"700 000 FCFA",         title:"MVP",        delivery:"3 à 4 semaines",
+        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","🌐 Nom de domaine offert (1 an)","🛠 1 mois support","⚠️ Hébergement inclus 1–3 mois"] },
+      { badge:"SCALE",      price:"Sur devis",            title:"Scale",      delivery:"4 à 6 semaines", isPopular:true,
+        features:["Multi-tenant","Analytics temps réel","Intégrations (paiement, email…)","Support prioritaire","1 200 000 – 2 000 000 FCFA"] },
+      { badge:"ENTERPRISE", price:"À partir de 2 500 000 FCFA", title:"Enterprise", delivery:"6 à 10 semaines",
+        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe"] },
     ]
   },
 ];
@@ -1617,7 +1617,342 @@ const FeaturedCreation = ({dark}) => {
   );
 };
 
+// ─── Icônes animées Lordicon-style — système complet v2 ──────────────────────
+const PANIM_CSS_ID = 'pricing-anim-icons-v2';
+const PANIM_CSS = `
+@keyframes paiGlobeOrbit  { 0%{stroke-dashoffset:62;opacity:.25} 60%{opacity:1} 100%{stroke-dashoffset:0;opacity:.7} }
+@keyframes paiBlink       { 0%,100%{opacity:.3} 50%{opacity:1} }
+@keyframes paiToolWobble  { 0%,100%{transform:rotate(-18deg)} 50%{transform:rotate(18deg)} }
+@keyframes paiGlow        { 0%,100%{filter:drop-shadow(0 0 3px rgba(255,85,0,.35))} 50%{filter:drop-shadow(0 0 8px rgba(255,85,0,.75))} }
+@keyframes paiSpinSlow    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes paiCross       { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.1)} }
+@keyframes paiCapWobble   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+@keyframes paiPlusPulse   { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.2);opacity:1} }
+@keyframes paiWarnFlash   { 0%,100%{opacity:.5} 40%{opacity:1} 60%{opacity:.7} }
+@keyframes paiCartBounce  { 0%,100%{transform:translateY(0)} 45%{transform:translateY(-3px)} 65%{transform:translateY(1px)} }
+@keyframes paiCheckDraw   { 0%{stroke-dashoffset:20;opacity:0} 100%{stroke-dashoffset:0;opacity:1} }
+@keyframes paiRocketFly   { 0%,100%{transform:translateY(0) rotate(-45deg)} 50%{transform:translateY(-3px) rotate(-45deg)} }
+@keyframes paiShieldPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+@keyframes paiTagSlide    { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+@keyframes paiDbLayer     { 0%,100%{transform:translateY(0);opacity:.7} 50%{transform:translateY(-1.5px);opacity:1} }
+@keyframes paiHeadBob     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+@keyframes paiMobileTap   { 0%,100%{transform:scale(1)} 50%{transform:scale(.92)} }
+@keyframes paiCalFlip     { 0%,100%{transform:rotateX(0deg)} 50%{transform:rotateX(8deg)} }
+@keyframes paiPhonePing   { 0%,60%,100%{transform:rotate(0deg)} 10%{transform:rotate(-8deg)} 20%{transform:rotate(8deg)} 30%{transform:rotate(-6deg)} 40%{transform:rotate(6deg)} }
+@keyframes paiClockTick   { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+@keyframes paiStarSpin    { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.15) rotate(180deg)} }
+@keyframes paiMapPin      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2.5px)} }
+@keyframes paiDownload    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+@keyframes paiCode        { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-2px)} }
+@keyframes paiCodeRight   { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+@keyframes paiLock        { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(.88)} }
+.pai-root       { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; animation:paiGlow 2.4s ease-in-out infinite; }
+.pai-globe-eq   { animation: paiGlobeOrbit 2.6s ease-in-out infinite; }
+.pai-blink1     { animation: paiBlink 1.6s ease-in-out infinite; }
+.pai-blink2     { animation: paiBlink 1.6s ease-in-out infinite .5s; }
+.pai-blink3     { animation: paiBlink 1.6s ease-in-out infinite 1s; }
+.pai-tool       { animation: paiToolWobble 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-spin       { animation: paiSpinSlow 4s linear infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cross      { animation: paiCross 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cap        { animation: paiCapWobble 1.8s ease-in-out infinite; transform-origin:50% 100%; transform-box:fill-box; }
+.pai-plus       { animation: paiPlusPulse 1.6s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-warn       { animation: paiWarnFlash 1.2s ease-in-out infinite; }
+.pai-cart       { animation: paiCartBounce 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-check-draw { animation: paiCheckDraw .6s ease forwards; stroke-dasharray:20; stroke-dashoffset:20; }
+.pai-rocket     { animation: paiRocketFly 1.5s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-shield     { animation: paiShieldPulse 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-tag        { animation: paiTagSlide 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-db         { animation: paiDbLayer 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-head       { animation: paiHeadBob 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-mobile     { animation: paiMobileTap 2.2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cal        { animation: paiCalFlip 2s ease-in-out infinite; transform-origin:50% 0%; transform-box:fill-box; }
+.pai-phone      { animation: paiPhonePing 2.5s ease-in-out infinite 1s; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-clock-hand { animation: paiClockTick 2s linear infinite; transform-origin:12px 12px; }
+.pai-star-anim  { animation: paiStarSpin 3s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-map        { animation: paiMapPin 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-dl         { animation: paiDownload 1.6s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-code-l     { animation: paiCode 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-code-r     { animation: paiCodeRight 1.8s ease-in-out infinite .15s; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-lock-body  { animation: paiLock 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+`;
+
+function usePAnimCSS(){
+  useEffect(()=>{
+    if(!document.getElementById(PANIM_CSS_ID)){
+      const s=document.createElement('style'); s.id=PANIM_CSS_ID; s.textContent=PANIM_CSS;
+      document.head.appendChild(s);
+    }
+  },[]);
+}
+
+const PricingAnimIcon = ({ type, size=20 }) => {
+  usePAnimCSS();
+  const C='#ff5500', Cm='rgba(255,85,0,.22)', Cr='rgba(200,40,40,.7)';
+  if (type==='globe') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4"/>
+        <ellipse cx="12" cy="12" rx="5.5" ry="9.5" stroke={C} strokeWidth="1.2" opacity=".45" strokeDasharray="62" className="pai-globe-eq"/>
+        <line x1="2.5" y1="12" x2="21.5" y2="12" stroke={C} strokeWidth="1.2" opacity=".5"/>
+        <path d="M4.5 8C7 9.2 17 9.2 19.5 8" stroke={C} strokeWidth=".9" opacity=".35"/>
+        <path d="M4.5 16C7 14.8 17 14.8 19.5 16" stroke={C} strokeWidth=".9" opacity=".35"/>
+      </svg>
+    </span>
+  );
+  if (type==='server') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="5.25" r="2.2" fill={C} className="pai-blink1"/>
+        <line x1="4.5" y1="5.25" x2="14" y2="5.25" stroke={C} strokeWidth="1" opacity=".4"/>
+        <rect x="2" y="10" width="20" height="5.5" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="12.75" r="2.2" fill={C} className="pai-blink2"/>
+        <line x1="4.5" y1="12.75" x2="14" y2="12.75" stroke={C} strokeWidth="1" opacity=".4"/>
+        <rect x="2" y="17.5" width="20" height="4" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="19.5" r="2" fill={C} className="pai-blink3"/>
+        <line x1="4.5" y1="19.5" x2="13" y2="19.5" stroke={C} strokeWidth="1" opacity=".4"/>
+      </svg>
+    </span>
+  );
+  if (type==='tools') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-tool">
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.77 3.77z"
+            stroke={C} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='cross') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cross">
+          <circle cx="12" cy="12" r="9.5" stroke={Cr} strokeWidth="1.4" fill="rgba(200,40,40,.08)"/>
+          <line x1="8" y1="8" x2="16" y2="16" stroke={Cr} strokeWidth="2" strokeLinecap="round"/>
+          <line x1="16" y1="8" x2="8" y2="16" stroke={Cr} strokeWidth="2" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='grad') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cap">
+          <path d="M12 3L2 9l10 6 10-6-10-6z" stroke={C} strokeWidth="1.5" fill={Cm} strokeLinejoin="round"/>
+          <path d="M6 12v4.5c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5V12" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+          <line x1="22" y1="9" x2="22" y2="14" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='plus') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-plus">
+          <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="12" y1="7" x2="12" y2="17" stroke={C} strokeWidth="2" strokeLinecap="round"/>
+          <line x1="7" y1="12" x2="17" y2="12" stroke={C} strokeWidth="2" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='warn') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-warn">
+          <path d="M12 2.5L1.5 20.5h21L12 2.5z" stroke="#ffaa00" strokeWidth="1.5" fill="rgba(255,170,0,.12)" strokeLinejoin="round"/>
+          <line x1="12" y1="10" x2="12" y2="15" stroke="#ffaa00" strokeWidth="2" strokeLinecap="round"/>
+          <circle cx="12" cy="18" r="1" fill="#ffaa00"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='cart') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cart">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke={C} strokeWidth="1.4" fill={Cm} strokeLinejoin="round"/>
+          <line x1="3" y1="6" x2="21" y2="6" stroke={C} strokeWidth="1.4"/>
+          <path d="M16 10a4 4 0 01-8 0" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='rocket') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-rocket">
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l4-4-3-3-4 4z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <path d="M19.5 3.5a4.5 4.5 0 00-4.5.5l-5 5 3 3 5-5a4.5 4.5 0 00.5-4.5z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <circle cx="10.5" cy="13.5" r="1.5" fill={C} className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='shield') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-shield">
+          <path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <polyline points="9 12 11 14 15 10" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-check-draw"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='tag') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-tag">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="7" y1="7" x2="7.01" y2="7" stroke={C} strokeWidth="2.5" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='database') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="5" rx="9" ry="3" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-db"/>
+        <path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke={C} strokeWidth="1.4"/>
+        <path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" stroke={C} strokeWidth="1.4"/>
+      </svg>
+    </span>
+  );
+  if (type==='phone') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-phone">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 11.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 8.66a16 16 0 006.29 6.29l1.02-1.02a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='mail') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="4" width="20" height="16" rx="2" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-blink1"/>
+        <polyline points="2,4 12,13 22,4" stroke={C} strokeWidth="1.4" strokeLinejoin="round"/>
+      </svg>
+    </span>
+  );
+  if (type==='map') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-map">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <circle cx="12" cy="10" r="3" stroke={C} strokeWidth="1.4" fill={C} opacity=".4" className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='download') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-dl">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="7 10 12 15 17 10" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="12" y1="15" x2="12" y2="3" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='code') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <polyline points="16 18 22 12 16 6" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-code-r"/>
+        <polyline points="8 6 2 12 8 18" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-code-l"/>
+      </svg>
+    </span>
+  );
+  if (type==='lock') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="11" width="18" height="11" rx="2" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-lock-body"/>
+        <path d="M7 11V7a5 5 0 0110 0v4" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        <circle cx="12" cy="16" r="1.5" fill={C} className="pai-blink1"/>
+      </svg>
+    </span>
+  );
+  if (type==='star') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-star-anim">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='clock') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <line x1="12" y1="7" x2="12" y2="12" stroke={C} strokeWidth="1.8" strokeLinecap="round" className="pai-clock-hand"/>
+        <line x1="12" y1="12" x2="15" y2="14" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        <circle cx="12" cy="12" r="1.2" fill={C}/>
+      </svg>
+    </span>
+  );
+  if (type==='mobile') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-mobile">
+          <rect x="5" y="2" width="14" height="20" rx="2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="9" y1="18" x2="15" y2="18" stroke={C} strokeWidth="1.8" strokeLinecap="round"/>
+          <circle cx="12" cy="5" r="1" fill={C} className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='analytics') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2" width="20" height="20" rx="2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <polyline points="6 16 10 10 14 13 18 7" stroke={C} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="pai-blink1"/>
+        <circle cx="18" cy="7" r="1.5" fill={C} className="pai-blink2"/>
+      </svg>
+    </span>
+  );
+  return null;
+};
+
+// Map emoji → type d'icône animée (couvre TOUS les emojis utilisés dans PRICING_TABS)
+const EMOJI_ICON_MAP = {
+  '🌐': 'globe',   // Nom de domaine
+  '🖥': 'server',  // Hébergement
+  '🛠': 'tools',   // Support
+  '❌': 'cross',   // Non inclus
+  '🎓': 'grad',    // Formation
+  '➕': 'plus',    // Extra / page supp.
+  '⚠️': 'warn',   // Avertissement
+  '🚀': 'rocket',  // Déploiement
+  '🔒': 'lock',    // Sécurité
+  '📊': 'analytics', // Analytics
+  '📱': 'mobile',  // Mobile
+};
+
+// Composant universel pour les features pricing — appliqué à TOUS les onglets
+const AnimPricingFeature = ({ text, dark }) => {
+  for (const [emoji, iconType] of Object.entries(EMOJI_ICON_MAP)) {
+    if (text.startsWith(emoji)) {
+      return (
+        <li style={{display:'flex',alignItems:'center',gap:'8px',padding:'3px 0',listStyle:'none'}}>
+          <PricingAnimIcon type={iconType} size={18}/>
+          <span style={{fontSize:'0.875rem'}}>{text.slice(emoji.length).trim()}</span>
+        </li>
+      );
+    }
+  }
+  return (
+    <li><span className={`pc3-check ${dark?'pc3-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{text}</li>
+  );
+};
+
+// Rétro-compatibilité
+const PortfolioPricingFeature = AnimPricingFeature;
+
 const LUCIDE_TAB_ICONS = { Globe: SvgGlobe, ShoppingCart: SvgShoppingCart, Cpu: SvgCpu, Star: SvgStar };
+const ANIM_TAB_ICONS   = { Globe: ()=><PricingAnimIcon type="globe" size={15}/>, ShoppingCart: ()=><PricingAnimIcon type="cart" size={15}/>, Cpu: ()=><PricingAnimIcon type="code" size={15}/>, Star: ()=><PricingAnimIcon type="star" size={15}/> };
 const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations." };
 
 const PricingTabs = ({dark}) => {
@@ -1637,10 +1972,10 @@ const PricingTabs = ({dark}) => {
   const PricingCard=({p,idx=0,tilt=false})=>{
     const inner=(
       <div className={`pc3-card ${p.isPopular?'pc3-card--pop':''} ${dark?'pc3-card--dark':''}`}>
-        {p.isPopular&&<div className={`pc3-pop-label ${dark?'pc3-pop-label--dark':''}`}><SvgStar size={11} strokeWidth={2.5}/> PLUS POPULAIRE</div>}
+        {p.isPopular&&<div className={`pc3-pop-label ${dark?'pc3-pop-label--dark':''}`}><PricingAnimIcon type="star" size={12}/> PLUS POPULAIRE</div>}
         <div className="pc3-top">
           <span className="pc3-num">0{idx+1}</span>
-          <span className="pc3-promo-badge"><SvgStar size={10} strokeWidth={2.5}/> −25%</span>
+          <span className="pc3-promo-badge"><PricingAnimIcon type="star" size={11}/> −25%</span>
         </div>
         <div className="pc3-plan">{p.badge}</div>
         <p className="pc3-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
@@ -1651,10 +1986,10 @@ const PricingTabs = ({dark}) => {
             <span className="pc3-currency"> FCFA</span>
           </div>
         </div>
-        <p className="pc3-delivery"><i className="fas fa-clock"/> {p.delivery}</p>
+        <p className="pc3-delivery"><PricingAnimIcon type="clock" size={15}/> {p.delivery}</p>
         <div className="pc3-sep"/>
         <ul className="pc3-feat">{p.features.map((f,fi)=>(
-          <li key={fi}><span className={`pc3-check ${dark?'pc3-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{f}</li>
+          <AnimPricingFeature key={fi} text={f} dark={dark}/>
         ))}</ul>
         <div className="pc3-ctas">
           <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
@@ -1675,7 +2010,7 @@ const PricingTabs = ({dark}) => {
       <div className={`ptabs2-toggle-wrap ${dark?'ptabs2-toggle-wrap--dark':''}`}>
         <div className={`ptabs2-toggle ${dark?'ptabs2-toggle--dark':''}`}>
           <span ref={pillRef} className={`ptabs2-pill ${dark?'ptabs2-pill--dark':''}`}/>
-          {PRICING_TABS.map((t,i)=>{const Icon=LUCIDE_TAB_ICONS[t.icon];return(<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{Icon&&<Icon size={14} strokeWidth={2}/>}<span>{t.label}</span></button>);})}
+          {PRICING_TABS.map((t,i)=>{const AnimIcon=ANIM_TAB_ICONS[t.icon];return(<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{AnimIcon&&<AnimIcon/>}<span>{t.label}</span></button>);})}
         </div>
       </div>
       <div key={animKey} className="pc3-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} idx={i} tilt={true}/>)}</div>
@@ -2621,6 +2956,70 @@ const Skills = ({dark}) => {
   );
 };
 
+// ─── Témoignages clients ─────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  { name:"Koné Ibrahima", role:"Fondateur · TechFlow", avatar:"K",
+    text:"Elvis a livré notre site vitrine en un temps record. Design moderne, responsive, exactement ce qu'on voulait. Très professionnel.", stars:5 },
+  { name:"Calvin Dexter", role:"Gérant · New Horizon Service", avatar:"C",
+    text:"La plateforme de location est impeccable. Les clients peuvent réserver facilement, le backend est solide. Je recommande à 100%.", stars:5 },
+  { name:"Mory Koné", role:"Graphiste · MK Portfolio", avatar:"M",
+    text:"Mon portfolio reflète parfaitement mon univers créatif. Elvis a su traduire ma vision en une expérience visuelle mémorable.", stars:5 },
+  { name:"Tatiana D.", role:"Influenceuse · Tatii", avatar:"T",
+    text:"Super boulot ! Mon site de présentation est élégant, rapide et je reçois beaucoup de compliments. Merci Elvis !", stars:5 },
+  { name:"Manobeat 777", role:"Beatmaker · ManoBeat", avatar:"B",
+    text:"La boutique de beats marche très bien. Les clients achètent facilement via WhatsApp. Interface propre et professionnel.", stars:5 },
+];
+
+const Testimonials = ({dark}) => {
+  const [ref,vis]=useInView(0.08);
+  const [active,setActive]=useState(0);
+  const total=TESTIMONIALS.length;
+  const prev=()=>setActive(a=>(a-1+total)%total);
+  const next=()=>setActive(a=>(a+1)%total);
+  const t=TESTIMONIALS[active];
+  return (
+    <section ref={ref} className={`testi-section ${dark?'section--dark':''}`}>
+      <WindowChrome title="Témoignages" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}>
+        <span className="s-lbl">// clients</span>
+        <h2 className="s-ttl">Ils m'ont<br/>fait confiance.</h2>
+      </div>
+      <div className={`testi-wrap ${vis?'testi-wrap--vis':''}`}>
+        {/* Compteur */}
+        <div className={`testi-counter ${dark?'testi-counter--dark':''}`}>
+          <span className="testi-count-cur">{String(active+1).padStart(2,'0')}</span>
+          <span className="testi-count-sep"> / </span>
+          <span>{String(total).padStart(2,'0')}</span>
+          <span className="testi-plus">+4 clients</span>
+        </div>
+        {/* Card active */}
+        <div key={active} className={`testi-card ${dark?'testi-card--dark':''}`}>
+          <div className="testi-quote-icon">"</div>
+          <p className="testi-text">{t.text}</p>
+          <div className="testi-stars">{'★'.repeat(t.stars)}</div>
+          <div className="testi-author">
+            <div className={`testi-avatar ${dark?'testi-avatar--dark':''}`}>{t.avatar}</div>
+            <div>
+              <div className="testi-name">{t.name}</div>
+              <div className="testi-role">{t.role}</div>
+            </div>
+          </div>
+        </div>
+        {/* Nav */}
+        <div className="testi-nav">
+          <button className={`testi-btn ${dark?'testi-btn--dark':''}`} onClick={prev} aria-label="Précédent">←</button>
+          <div className="testi-dots">
+            {TESTIMONIALS.map((_,i)=>(
+              <button key={i} className={`testi-dot ${i===active?'testi-dot--on':''} ${dark?'testi-dot--dark':''}`} onClick={()=>setActive(i)}/>
+            ))}
+          </div>
+          <button className={`testi-btn ${dark?'testi-btn--dark':''}`} onClick={next} aria-label="Suivant">→</button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Contact = ({dark}) => {
   const [ref,vis]=useInView();
   const [form,setForm]=useState({name:'',email:'',projectType:'',message:''});
@@ -2808,6 +3207,7 @@ export default function App() {
     <About dark={dark}/>
     <Projects dark={dark}/>
     <Skills dark={dark}/>
+    <Testimonials dark={dark}/>
     <Contact dark={dark}/>
   </ScrollDepthScene>
 </main>
