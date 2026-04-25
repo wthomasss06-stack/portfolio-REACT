@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './style.css';
+import ScrollDepthScene from './components/ScrollDepthScene';
+
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
 const SvgArrowRight = ({ size = 14 }) => (
@@ -923,9 +925,13 @@ const Navbar = ({dark, onToggle}) => {
   useEffect(()=>{
     const fn=()=>{
       setScrolled(window.scrollY>40);
-      document.querySelectorAll('section[id]').forEach(s=>{ if(window.scrollY>=s.offsetTop-120) setActive(s.id); });
+      document.querySelectorAll('section[id]').forEach(s=>{
+        const absTop=s.getBoundingClientRect().top+window.scrollY;
+        if(window.scrollY>=absTop-120) setActive(s.id);
+      });
     };
-    window.addEventListener('scroll',fn); return ()=>window.removeEventListener('scroll',fn);
+    fn();
+    window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
   },[]);
   const go=id=>{ setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };
   return (
@@ -1624,53 +1630,57 @@ const PricingTabs = ({dark}) => {
     pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
   },[activeTab]);
   const switchTab=(i)=>{ setActiveTab(i); setAnimKey(k=>k+1); };
-  const PricingCard=({p, tilt=false})=>{
-    const inner = (
-      <div className={`ptabs2-card ${p.isPopular?'ptabs2-card--pop':''} ${dark?'ptabs2-card--dark':''}`}>
-        {p.isPopular&&(<div className={`ptabs2-pop-banner ${dark?'ptabs2-pop-banner--dark':''}`}><SvgStar size={11} strokeWidth={2.5}/> LE PLUS POPULAIRE</div>)}
-        <div className="ptabs2-card-body">
-          <div className="ptabs2-badge">{p.badge}</div>
-          <p className="ptabs2-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
-          <div className={`ptabs2-price ${dark?'ptabs2-price--dark':''}`}><span className="ptabs2-amount">{p.price.replace(' FCFA','')}</span><span className="ptabs2-currency"> FCFA</span></div>
-          <p className="ptabs2-delivery"><i className="fas fa-clock"/> Livraison : {p.delivery}</p>
-          <ul className="ptabs2-feat">{p.features.map((f,fi)=>(<li key={fi}><span className={`ptabs2-check ${dark?'ptabs2-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{f}</li>))}</ul>
-          <div className="ptabs2-ctas">
-            <a
-              href="https://akatech.vercel.app/"
-              target="_blank"
-              rel="noreferrer"
-              className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint ptabs2-cta`}
-            >
-              <SvgGlobe size={14}/> Voir le détail
-            </a>
-            <MagBtn
-              className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint ptabs2-cta`}
-              onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}
-            >
-              Me contacter <SvgArrowRight size={14}/>
-            </MagBtn>
+  const strikePrice=(s)=>{
+    const n=parseInt(s.replace(/\s/g,'').replace('FCFA',''));
+    return isNaN(n)?s:Math.round(n*1.25).toLocaleString('fr-FR')+' FCFA';
+  };
+  const PricingCard=({p,idx=0,tilt=false})=>{
+    const inner=(
+      <div className={`pc3-card ${p.isPopular?'pc3-card--pop':''} ${dark?'pc3-card--dark':''}`}>
+        {p.isPopular&&<div className={`pc3-pop-label ${dark?'pc3-pop-label--dark':''}`}><SvgStar size={11} strokeWidth={2.5}/> PLUS POPULAIRE</div>}
+        <div className="pc3-top">
+          <span className="pc3-num">0{idx+1}</span>
+          <span className="pc3-promo-badge"><SvgStar size={10} strokeWidth={2.5}/> −25%</span>
+        </div>
+        <div className="pc3-plan">{p.badge}</div>
+        <p className="pc3-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
+        <div className="pc3-prices">
+          <span className="pc3-original">{strikePrice(p.price)}</span>
+          <div className="pc3-discounted">
+            <span className="pc3-amount">{p.price.replace(' FCFA','')}</span>
+            <span className="pc3-currency"> FCFA</span>
           </div>
+        </div>
+        <p className="pc3-delivery"><i className="fas fa-clock"/> {p.delivery}</p>
+        <div className="pc3-sep"/>
+        <ul className="pc3-feat">{p.features.map((f,fi)=>(
+          <li key={fi}><span className={`pc3-check ${dark?'pc3-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{f}</li>
+        ))}</ul>
+        <div className="pc3-ctas">
+          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint pc3-cta`}>
+            <SvgGlobe size={14}/> Détails
+          </a>
+          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint pc3-cta`}
+            onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+            Me contacter <SvgArrowRight size={14}/>
+          </MagBtn>
         </div>
       </div>
     );
-    return tilt ? <TiltCard intensity={8} perspective={1000} style={{height:'100%'}}>{inner}</TiltCard> : inner;
+    return tilt?<TiltCard intensity={8} perspective={1000} style={{height:'100%'}}>{inner}</TiltCard>:inner;
   };
   return (
     <div className={`ptabs2 ${dark?'ptabs2--dark':''}`}>
       <div className={`ptabs2-toggle-wrap ${dark?'ptabs2-toggle-wrap--dark':''}`}>
         <div className={`ptabs2-toggle ${dark?'ptabs2-toggle--dark':''}`}>
           <span ref={pillRef} className={`ptabs2-pill ${dark?'ptabs2-pill--dark':''}`}/>
-          {PRICING_TABS.map((t,i)=>{ const Icon=LUCIDE_TAB_ICONS[t.icon]; return (<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{Icon&&<Icon size={14} strokeWidth={2}/>}<span>{t.label}</span></button>); })}
+          {PRICING_TABS.map((t,i)=>{const Icon=LUCIDE_TAB_ICONS[t.icon];return(<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{Icon&&<Icon size={14} strokeWidth={2}/>}<span>{t.label}</span></button>);})}
         </div>
       </div>
-      <div key={animKey} className="ptabs2-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} tilt={true}/>)}</div>
+      <div key={animKey} className="pc3-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} idx={i} tilt={true}/>)}</div>
       <div className="ptabs2-mob">
-        <StackedCard
-          items={tab.plans}
-          renderCard={(p, idx) => (
-            <PricingCard p={p} tilt={true}/>
-          )}
-        />
+        <StackedCard items={tab.plans} renderCard={(p,idx)=><PricingCard p={p} idx={idx} tilt={true}/>}/>
       </div>
       <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}><i className="fas fa-info-circle"/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.</p>
     </div>
@@ -1701,9 +1711,9 @@ const Services = ({dark}) => {
             <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
               <div className="pricing-card">
                 <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div></div>
-                <h3 className="pricing-title">{s.title}</h3>
-                <p className="pricing-desc">{s.desc}</p>
-                <ul className="pricing-feat">{s.features.map((f,fi)=><li key={fi}><SvgCheck size={13} strokeWidth={2.5}/>{f}</li>)}</ul>
+                <h3 className="svc-title">{s.title}</h3>
+                <p className="svc-desc">{s.desc}</p>
+                <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
               </div>
             </TiltCard>
           )}
@@ -2434,6 +2444,111 @@ const FanDeck = ({ items, dark }) => {
   );
 };
 
+/* ══ SPOTLIGHT PROJECTS ══ */
+const SpotlightProjects = ({ items, dark }) => {
+  const [selected, setSelected] = useState(0);
+  const [imgErr, setImgErr] = useState({});
+  const thumbsRef = useRef(null);
+
+  const goPrev = () => setSelected(s => Math.max(0, s - 1));
+  const goNext = () => setSelected(s => Math.min(items.length - 1, s + 1));
+
+  useEffect(() => {
+    const rail = thumbsRef.current; if (!rail) return;
+    const thumb = rail.children[selected];
+    if (!thumb) return;
+    const targetLeft = thumb.offsetLeft - (rail.clientWidth - thumb.clientWidth) / 2;
+    rail.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+  }, [selected]);
+  useEffect(() => { setSelected(0); setImgErr({}); }, [items]);
+
+  const proj = items[selected] ?? items[0];
+  if (!proj) return null;
+  const isExternal = proj.url?.startsWith('http');
+  const isDemo = proj.cat === 'demo';
+
+  return (
+    <div className={`sp-root ${dark?'sp-root--dark':''}`}>
+      <div className="sp-viewer">
+        {/* Preview */}
+        <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
+          {!imgErr[proj.id]
+            ? <img src={proj.image} alt={proj.title} className="sp-preview-img" onError={()=>setImgErr(e=>({...e,[proj.id]:true}))}/>
+            : <div className="sp-preview-placeholder"><i className="fas fa-code"/></div>}
+          {proj.cat==='en-ligne' && <div className="sp-live-badge"><span className="hero-dot"/><span>EN LIGNE</span></div>}
+          {proj.isPremium && <div className="sp-prem-badge"><i className="fas fa-star"/> Premium</div>}
+        </div>
+        {/* Détails */}
+        <div className={`sp-details ${dark?'sp-details--dark':''}`}>
+          <div className="sp-num">{String(selected+1).padStart(2,'0')}</div>
+          <div className="sp-title-wrap">
+            <h3 className="sp-title">{proj.title}</h3>
+            <span className={`sp-cat-badge sp-cat-badge--${proj.cat}`}>{CAT_LABELS[proj.cat]}</span>
+          </div>
+          <p className="sp-sub">{proj.subtitle}</p>
+          <p className="sp-desc">{proj.description}</p>
+          <div className="sp-meta">
+            <span className="sp-year"><i className="far fa-calendar-alt"/> {proj.year}</span>
+            {proj.progress!=null&&(
+              <div className="sp-progress-wrap">
+                <div className="sp-progress-track"><div className="sp-progress-fill" style={{width:`${proj.progress}%`}}/></div>
+                <span className="sp-progress-pct">{proj.progress}%</span>
+              </div>
+            )}
+          </div>
+          <div className="sp-techs">{proj.tech.map(t=><span key={t} className="sp-tech">{t}</span>)}</div>
+          {proj.url&&(
+            <div className="sp-actions">
+              <a href={proj.url} target={isExternal?'_blank':'_self'} rel="noreferrer"
+                className={`btn ${dark?'btn--neon':'btn--primary'} sp-cta mi-glint`}>
+                <i className={`fas fa-${isDemo?'play-circle':'external-link-alt'}`}/>{isDemo?'Voir la démo':'Voir le site →'}
+              </a>
+            </div>
+          )}
+          {/* Navigation : boutons slide + dots */}
+          <div className="sp-nav-row">
+            <button
+              className={`sp-nav-btn ${dark?'sp-nav-btn--dark':''}`}
+              onClick={goPrev}
+              disabled={selected===0}
+              aria-label="Projet précédent">
+              <i className="fas fa-chevron-left"/>
+            </button>
+            <div className="sp-dots">
+              {items.map((_,i)=><button key={i} className={`sp-dot ${i===selected?'sp-dot--on':''}`} onClick={()=>setSelected(i)} aria-label={`Projet ${i+1}`}/>)}
+            </div>
+            <button
+              className={`sp-nav-btn ${dark?'sp-nav-btn--dark':''}`}
+              onClick={goNext}
+              disabled={selected===items.length-1}
+              aria-label="Projet suivant">
+              <i className="fas fa-chevron-right"/>
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* Thumbnails */}
+      <div className="sp-thumbs-wrap">
+        <div className="sp-thumbs" ref={thumbsRef}>
+          {items.map((item,i)=>(
+            <button key={item.id} className={`sp-thumb ${i===selected?'sp-thumb--active':''} ${dark?'sp-thumb--dark':''}`}
+              onClick={()=>setSelected(i)} title={item.title}>
+              <div className="sp-thumb-img" style={{background:GRAD[(item.id-1)%GRAD.length]}}>
+                {!imgErr[item.id]
+                  ? <img src={item.image} alt={item.title} onError={()=>setImgErr(e=>({...e,[item.id]:true}))}/>
+                  : <i className="fas fa-code"/>}
+                {item.cat==='en-ligne'&&<div className="sp-thumb-live"/>}
+              </div>
+              <span className="sp-thumb-title">{item.title}</span>
+              {i===selected&&<div className="sp-thumb-bar"/>}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Projects = ({dark}) => {
   const [filter,setFilter]=useState('all');
   const filtered=filter==='all'?PROJECTS:PROJECTS.filter(p=>p.cat===filter);
@@ -2446,7 +2561,8 @@ const Projects = ({dark}) => {
     pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
   },[filter]);
   return (
-    <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`}>
+    /* overflow:hidden + position:relative → empêche le décalage gauche lors du scroll des thumbnails */
+    <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`} style={{overflowX:'hidden',position:'relative'}}>
       <WindowChrome title="Projets" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Réalisations<br/>récentes.</h2></div>
       <div className="pf-toggle-wrap">
@@ -2455,7 +2571,7 @@ const Projects = ({dark}) => {
           {Object.entries(CAT_LABELS).map(([k,v],i)=>(<button key={k} ref={el=>btnRefs.current[i]=el} className={`pf-tab ${filter===k?'pf-tab--active':''} ${dark?'pf-tab--dark':''}`} onClick={()=>setFilter(k)}>{v}<span className={`pf-count ${filter===k?'pf-count--active':''} ${dark?'pf-count--dark':''}`}>{count(k)}</span></button>))}
         </div>
       </div>
-      <FanDeck key={filter} items={filtered} dark={dark}/>
+      <SpotlightProjects key={filter} items={filtered} dark={dark}/>
     </section>
   );
 };
@@ -2522,6 +2638,8 @@ const Contact = ({dark}) => {
     <section id="contact" ref={ref} className={dark?'section--dark':''}>
       <WindowChrome title="Contact" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Transformons<br/>votre idée.</h2></div>
+
+      {/* ── Formulaire + bloc code ── */}
       <div className={`contact-grid ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
         <div className="contact-left">
           <div className="contact-status"><span className="cdot"/><span>Disponible maintenant</span></div>
@@ -2532,26 +2650,6 @@ const Contact = ({dark}) => {
               <div><span className="ck">const</span> [<span className="cv">availability</span>] = <span className="cs">"100%"</span>;</div>
               <div><span className="ck">const</span> [<span className="cv">status</span>] = <span className="cs">"ready"</span>;</div>
               <div><span className="cc">{'// 🚀 Prêt pour de nouveaux défis !'}</span></div>
-            </div>
-          </div>
-          <div className="contact-infos">
-            <a href="tel:+2250142507750" className="cinfo"><i className="fas fa-phone"/><div><b>Téléphone</b><span>+225 01 42 50 77 50</span></div></a>
-            <a href="mailto:wthomasss06@gmail.com" className="cinfo"><i className="fas fa-envelope"/><div><b>Email</b><span>wthomasss06@gmail.com</span></div></a>
-            <a href="mailto:aka.mbollo@uvci.edu.ci" className="cinfo"><i className="fas fa-envelope"/><div><b>Email UVCI</b><span>aka.mbollo@uvci.edu.ci</span></div></a>
-            <div className="cinfo"><i className="fas fa-map-marker-alt"/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div></div>
-          </div>
-          <div className="contact-socials">
-            <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
-            <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
-            <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
-            <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech — Devis &amp; Services"><i className="fas fa-globe"/></a>
-          </div>
-          <div className="contact-cv">
-            <div className="cv-qr"><img src="/assets/images/qrcodeCV.png" alt="QR Code CV"/></div>
-            <div>
-              <p><b>Télécharger mon CV</b></p>
-              <p>Scannez le QR code ou cliquez</p>
-              <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} download><i className="fas fa-download"/> Télécharger CV</a>
             </div>
           </div>
         </div>
@@ -2589,6 +2687,67 @@ const Contact = ({dark}) => {
               <p className="form-privacy"><i className="fas fa-lock"/> Vos données sont sécurisées et ne seront jamais partagées.</p>
             </form>
           )}
+        </div>
+      </div>
+
+      {/* ── OÙ ME JOINDRE — après le formulaire ── */}
+      <div className={`coj-wrap ${dark?'coj-wrap--dark':''}`}>
+        <div className="coj-hd">
+          <span className={`coj-label ${dark?'coj-label--dark':''}`}>// Où me joindre</span>
+          <div className="coj-infos">
+            <a href="tel:+2250142507750" className={`coj-info ${dark?'coj-info--dark':''}`}>
+              <i className="fas fa-phone"/><div><b>Téléphone</b><span>+225 01 42 50 77 50</span></div>
+            </a>
+            <a href="mailto:wthomasss06@gmail.com" className={`coj-info ${dark?'coj-info--dark':''}`}>
+              <i className="fas fa-envelope"/><div><b>Email</b><span>wthomasss06@gmail.com</span></div>
+            </a>
+            <div className={`coj-info ${dark?'coj-info--dark':''}`}>
+              <i className="fas fa-map-marker-alt"/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Grille sociale — icônes TOUTES en orange */}
+        <div className={`csg-root ${dark?'csg-root--dark':''}`}>
+          <div className="csg-heading">
+            <span className="csg-label">// un clic, chaque canal</span>
+            <h4 className="csg-title">UN RÉSEAU.<br/><span className="csg-accent">CHAQUE LIEN.</span></h4>
+            <p className="csg-sub">Retrouvez-moi sur toutes les plateformes.</p>
+          </div>
+          <div className="csg-grid">
+            {[
+              {ico:'fab fa-github',   label:'GitHub',   url:'https://github.com/wthomasss06-stack'},
+              {ico:'fab fa-linkedin', label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/'},
+              {ico:'fab fa-facebook', label:'Facebook',  url:FACEBOOK_URL},
+              {ico:'fab fa-whatsapp', label:'WhatsApp',  url:'https://wa.me/2250142507750'},
+              {ico:'fas fa-globe',    label:'AKATech',   url:'https://akatech.vercel.app/'},
+              {ico:'fas fa-envelope', label:'Gmail',     url:'mailto:wthomasss06@gmail.com'},
+              {ico:'fas fa-university',label:'UVCI',    url:'mailto:aka.mbollo@uvci.edu.ci'},
+              {ico:'fas fa-file-pdf', label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true},
+            ].map((s,i)=>(
+              <a key={i} href={s.url}
+                target={s.url.startsWith('http')?'_blank':'_self'}
+                rel="noreferrer"
+                download={s.download||undefined}
+                className={`csg-item ${dark?'csg-item--dark':''}`}
+                title={s.label}>
+                <i className={`${s.ico} csg-ico`}/>
+                <span className="csg-name">{s.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* QR + CV */}
+        <div className={`contact-cv ${dark?'contact-cv--dark':''}`}>
+          <div className="cv-qr"><img src="/assets/images/qrcodeCV.png" alt="QR Code CV"/></div>
+          <div>
+            <p><b>Télécharger mon CV</b></p>
+            <p>Scannez le QR code ou cliquez</p>
+            <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} download>
+              <i className="fas fa-download"/> Télécharger CV
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -2641,15 +2800,17 @@ export default function App() {
       <Navbar dark={dark} onToggle={toggleDark}/>
       <ScrollTop dark={dark}/>
       <main>
-        <Hero dark={dark}/>
-        <Marquee dark={dark}/>
-        <FeaturedCreation dark={dark}/>
-        <Services dark={dark}/>
-        <About dark={dark}/>
-        <Projects dark={dark}/>
-        <Skills dark={dark}/>
-        <Contact dark={dark}/>
-      </main>
+  <ScrollDepthScene dark={dark}>
+    <Hero dark={dark}/>
+    <Marquee dark={dark}/>
+    <FeaturedCreation dark={dark}/>
+    <Services dark={dark}/>
+    <About dark={dark}/>
+    <Projects dark={dark}/>
+    <Skills dark={dark}/>
+    <Contact dark={dark}/>
+  </ScrollDepthScene>
+</main>
       <Footer dark={dark}/>
     </div>
   );
