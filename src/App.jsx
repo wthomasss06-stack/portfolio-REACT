@@ -918,10 +918,25 @@ const NAV_LINKS = [
   {id:"projects",label:"Projets"},{id:"skills",label:"Skills"},{id:"contact",label:"Contact"}
 ];
 
+/* ── LiveClock : date + heure temps réel ── */
+function useLiveClock() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = now.toLocaleDateString('fr-CI', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  return { dateStr, timeStr };
+}
+
 const Navbar = ({dark, onToggle}) => {
   const [active,setActive]=useState("home");
   const [scrolled,setScrolled]=useState(false);
   const [open,setOpen]=useState(false);
+  const { dateStr, timeStr } = useLiveClock();
+
   useEffect(()=>{
     const fn=()=>{
       setScrolled(window.scrollY>40);
@@ -934,22 +949,50 @@ const Navbar = ({dark, onToggle}) => {
     window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
   },[]);
   const go=id=>{ setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };
+
   return (
     <>
       {open&&<div className="mob-overlay" onClick={()=>setOpen(false)}/>}
-      <nav className={`nav ${scrolled?'nav--scrolled':''} ${dark?'nav--dark':''}`}>
-        <div className="nav-logo" onClick={()=>go('home')}><AkafolioLogo size={26} dark={dark} animate={false} onClick={()=>go('home')}/></div>
-        <div className="nav-links">
-          {NAV_LINKS.map(l=>(<button key={l.id} className={`nav-link ${active===l.id?'nav-link--active':''}`} onClick={()=>go(l.id)}>{l.label}</button>))}
-          <ThemeToggle dark={dark} onToggle={onToggle}/>
+
+      {/* ── HEADER TOP BAR — logo gauche | date+heure centre | dispo droite ── */}
+      <header className={`nb-topbar ${scrolled?'nb-topbar--scrolled':''} ${dark?'nb-topbar--dark':''}`}>
+        {/* Gauche : logo + nom */}
+        <div className="nb-topbar-left" onClick={()=>go('home')} style={{cursor:'pointer'}}>
+          <AkafolioLogo size={26} dark={dark} animate={false}/>
         </div>
-        <div className="nav-mob-right">
+
+        {/* Centre : date + heure */}
+        <div className="nb-topbar-center">
+          <span className="nb-date">{dateStr}</span>
+          <span className="nb-sep">·</span>
+          <span className="nb-time">{timeStr}</span>
+        </div>
+
+        {/* Droite : disponibilité + theme toggle */}
+        <div className="nb-topbar-right">
+          <span className="nb-avail">
+            <span className="nb-avail-dot"/>
+            disponible · Abidjan, CI
+          </span>
           <ThemeToggle dark={dark} onToggle={onToggle}/>
-          <button className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''}`} onClick={()=>setOpen(o=>!o)} aria-label="Menu" aria-expanded={open}>
+          <button className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''} nb-hamburger-only`} onClick={()=>setOpen(o=>!o)} aria-label="Menu" aria-expanded={open}>
             <span/><span/><span/>
           </button>
         </div>
+      </header>
+
+      {/* ── NAV BOTTOM BAR — sections links fixed en bas ── */}
+      <nav className={`nb-bottombar ${scrolled?'nb-bottombar--scrolled':''} ${dark?'nb-bottombar--dark':''}`}>
+        <div className="nb-bottombar-inner">
+          {NAV_LINKS.map(l=>(
+            <button key={l.id} className={`nb-nav-link ${active===l.id?'nb-nav-link--active':''}`} onClick={()=>go(l.id)}>
+              {l.label}
+            </button>
+          ))}
+        </div>
       </nav>
+
+      {/* ── MOBILE DRAWER ── */}
       <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`} aria-hidden={!open}>
         <div className="mob-drawer-header">
           <AkafolioLogo size={22} dark={dark} animate={false}/>
@@ -1484,18 +1527,7 @@ const Hero = ({ dark }) => {
 
           {/* ════ LEFT ════ */}
           <div className="hv4-left" ref={leftRef}>
-            <div className="hv4-badge" style={{'--d':'0s'}}>
-              <span className="hero-dot"/>
-              <span className="hv4-badge-status">disponible · Abidjan, CI</span>
-              <span className="hv4-badge-sep" aria-hidden>|</span>
-              <span className="hv4-clock-wrap">
-                <span className="hv4-clock-icon">{isDaytime?'☀':'🌙'}</span>
-                <span className="hv4-clock-date">{dateStr}</span>
-                <span className="hv4-clock-dot" aria-hidden>·</span>
-                <span className="hv4-clock-time">{timeStr}</span>
-                <span className="hv4-clock-tz">UTC+0</span>
-              </span>
-            </div>
+
 
             <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
               <span className="hv4-name-line" style={{'--d':'0.12s'}}>M'BOLLO</span>
@@ -1992,7 +2024,7 @@ const PricingTabs = ({dark}) => {
           <AnimPricingFeature key={fi} text={f} dark={dark}/>
         ))}</ul>
         <div className="pc3-ctas">
-          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
+          <a href="https://akatech.vercel.app/pricing/" target="_blank" rel="noreferrer"
             className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint pc3-cta`}>
             <SvgGlobe size={14}/> Détails
           </a>
@@ -2974,9 +3006,14 @@ const Testimonials = ({dark}) => {
   const [ref,vis]=useInView(0.08);
   const [active,setActive]=useState(0);
   const total=TESTIMONIALS.length;
-  const prev=()=>setActive(a=>(a-1+total)%total);
-  const next=()=>setActive(a=>(a+1)%total);
   const t=TESTIMONIALS[active];
+
+  /* ── Auto-slide toutes les 4s ── */
+  useEffect(()=>{
+    const id=setInterval(()=>setActive(a=>(a+1)%total),10000);
+    return()=>clearInterval(id);
+  },[total]);
+
   return (
     <section ref={ref} className={`testi-section ${dark?'section--dark':''}`}>
       <WindowChrome title="Témoignages" dark={dark}/>
@@ -2992,8 +3029,8 @@ const Testimonials = ({dark}) => {
           <span>{String(total).padStart(2,'0')}</span>
           <span className="testi-plus">+4 clients</span>
         </div>
-        {/* Card active */}
-        <div key={active} className={`testi-card ${dark?'testi-card--dark':''}`}>
+        {/* Card active — slide auto */}
+        <div key={active} className={`testi-card testi-card--auto ${dark?'testi-card--dark':''}`}>
           <div className="testi-quote-icon">"</div>
           <p className="testi-text">{t.text}</p>
           <div className="testi-stars">{'★'.repeat(t.stars)}</div>
@@ -3004,16 +3041,14 @@ const Testimonials = ({dark}) => {
               <div className="testi-role">{t.role}</div>
             </div>
           </div>
+          {/* Barre de progression 4s */}
+          <div className="testi-progress"><div className="testi-progress-fill"/></div>
         </div>
-        {/* Nav */}
-        <div className="testi-nav">
-          <button className={`testi-btn ${dark?'testi-btn--dark':''}`} onClick={prev} aria-label="Précédent">←</button>
-          <div className="testi-dots">
-            {TESTIMONIALS.map((_,i)=>(
-              <button key={i} className={`testi-dot ${i===active?'testi-dot--on':''} ${dark?'testi-dot--dark':''}`} onClick={()=>setActive(i)}/>
-            ))}
-          </div>
-          <button className={`testi-btn ${dark?'testi-btn--dark':''}`} onClick={next} aria-label="Suivant">→</button>
+        {/* Dots uniquement — pas de boutons ← → */}
+        <div className="testi-dots-only">
+          {TESTIMONIALS.map((_,i)=>(
+            <button key={i} className={`testi-dot ${i===active?'testi-dot--on':''} ${dark?'testi-dot--dark':''}`} onClick={()=>setActive(i)}/>
+          ))}
         </div>
       </div>
     </section>

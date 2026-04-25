@@ -156,27 +156,39 @@ function useWebGLTerrain(canvasRef, dark) {
     };
     animate();
 
-    // ── ZOOM AGRESSIF : la caméra fonce dans le terrain au scroll ────────────
-    // On sature en ~40% du scroll total → effet de "blast" rapide
-    // camera.position.z : 20 → 3   (rapprochement frontal violent)
-    // camera.position.y : 8  → 2   (plonge vers le sol)
+    // ── ZOOM CONTINU : la caméra plonge sur TOUT le scroll sans jamais s'arrêter
+    // p va de 0 à 1 sur 100% du scroll → mouvement permanent jusqu'en bas
+    // Phase 1 (0→50%) : plongeon frontal violent vers le terrain
+    // Phase 2 (50→100%) : traversée et immersion continue sous le sol
     const onScroll = () => {
       const scrolled = window.scrollY;
       const maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
-      // p sature à 1.0 en 40% du scroll → zoom très rapide au début
-      const p = Math.min(1, (scrolled / maxScroll) / 0.4);
+      // p = progression linéaire sur 100% du scroll — ne sature jamais
+      const p = scrolled / maxScroll;
 
-      // Easing quadratique : accélère le début du mouvement
-      const eased = p * (2 - p); // ease-out quad : fort départ, freine en fin
+      // Phase 1 : rapprochement rapide (0 → 50% scroll)
+      const p1 = Math.min(1, p / 0.5);
+      const e1 = 1 - Math.pow(1 - p1, 3); // ease-out cubic
 
-      camera.position.z = 20 - eased * 17;   // 20 → 3
-      camera.position.y = 8  - eased * 5.5;  // 8  → 2.5
+      // Phase 2 : continuation lente et continue (50% → 100% scroll)
+      const p2 = Math.max(0, (p - 0.5) / 0.5);
+      const e2 = p2; // linéaire — sentiment de descente constante
 
-      // Opacité du wireframe augmente légèrement avec le zoom
+      // z : 20 → 1 (phase 1) → -10 (phase 2, continue à traverser)
+      camera.position.z = 20 - e1 * 19 - e2 * 11;
+
+      // y : 8 → 2 (phase 1) → -1 (phase 2, passe sous le sol)
+      camera.position.y = 8 - e1 * 6 - e2 * 3;
+
+      // FOV s'élargit progressivement tout au long du scroll
+      camera.fov = 60 + e1 * 20 + e2 * 15;  // 60° → 80° → 95°
+      camera.updateProjectionMatrix();
+
+      // Opacité monte en phase 1, reste haute en phase 2
       mat.opacity = dark
-        ? 0.12 + eased * 0.14   // max ~0.26
-        : 0.08 + eased * 0.10;  // max ~0.18
+        ? 0.12 + e1 * 0.22 + e2 * 0.08  // 0.12 → 0.34 → 0.42
+        : 0.08 + e1 * 0.16 + e2 * 0.06; // 0.08 → 0.24 → 0.30
     };
 
     const onResize = () => {
