@@ -4,6 +4,271 @@ import ScrollDepthScene from './components/ScrollDepthScene';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ANIMATED ICON SYSTEM — Lordicon-style
+// Usage :  <LI name="rocket" size={18} color="#ff5500" className="..." style={{}}/>
+// ═══════════════════════════════════════════════════════════════════════════════
+const LI_CSS_ID = 'li-anim-global-v2';
+const LI_CSS = `
+.li{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex-shrink:0;line-height:1;}
+@keyframes li-sun-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.li-sun-rays{animation:li-sun-spin 8s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-moon-rock{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+.li-moon{animation:li-moon-rock 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-x-pop{0%{transform:scale(.5) rotate(-30deg);opacity:0}70%{transform:scale(1.12) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.li-x{animation:li-x-pop .35s cubic-bezier(.175,.885,.32,1.275) both;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-rocket-fly{0%,100%{transform:translateY(0) rotate(-45deg)}50%{transform:translateY(-4px) rotate(-45deg)}}
+@keyframes li-flame{0%,100%{opacity:.5;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1.3)}}
+.li-rocket{animation:li-rocket-fly 1.6s ease-in-out infinite;}
+.li-flame{animation:li-flame .45s ease-in-out infinite;transform-origin:bottom;transform-box:fill-box;}
+@keyframes li-dl{0%,100%{transform:translateY(0)}40%{transform:translateY(4px)}70%{transform:translateY(-1px)}}
+.li-dl-arrow{animation:li-dl 1.4s ease-in-out infinite;}
+@keyframes li-pin-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes li-pin-ring{0%{r:0;opacity:.7}100%{r:7;opacity:0}}
+.li-pin{animation:li-pin-bounce 1.8s ease-in-out infinite;}
+.li-pin-ring{animation:li-pin-ring 1.8s ease-out infinite;transform-origin:12px 18px;}
+@keyframes li-brace-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-2.5px)}}
+@keyframes li-brace-r{0%,100%{transform:translateX(0)}50%{transform:translateX(2.5px)}}
+.li-brace-l{animation:li-brace-l 1.8s ease-in-out infinite;}
+.li-brace-r{animation:li-brace-r 1.8s ease-in-out infinite;}
+@keyframes li-chk-ring{0%{stroke-dashoffset:72}100%{stroke-dashoffset:0}}
+@keyframes li-chk-mark{0%{stroke-dashoffset:20}100%{stroke-dashoffset:0}}
+.li-chk-ring{stroke-dasharray:72;animation:li-chk-ring .5s ease-out both;}
+.li-chk-mark{stroke-dasharray:20;animation:li-chk-mark .4s ease-out .3s both;}
+@keyframes li-ext{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,-2px)}}
+.li-ext-arrow{animation:li-ext 1.5s ease-in-out infinite;}
+@keyframes li-min-hand{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes li-hr-hand{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.li-clock-min{animation:li-min-hand 4s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-clock-hr{animation:li-hr-hand 48s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-info-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.li-info-circle{animation:li-info-pulse 2.2s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-bulb-glow{0%,100%{filter:drop-shadow(0 0 0px rgba(255,220,0,.0));opacity:.7}50%{filter:drop-shadow(0 0 6px rgba(255,220,0,.9));opacity:1}}
+.li-bulb{animation:li-bulb-glow 2s ease-in-out infinite;}
+@keyframes li-eye-blink{0%,85%,100%{transform:scaleY(1)}92%{transform:scaleY(.08)}}
+@keyframes li-pupil{0%,100%{transform:translateX(0)}30%{transform:translateX(2px)}70%{transform:translateX(-2px)}}
+.li-eye-wrap{animation:li-eye-blink 3.5s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-pupil{animation:li-pupil 3.5s ease-in-out infinite;}
+@keyframes li-wheel{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(4px);opacity:.2}}
+.li-wheel{animation:li-wheel 1.5s ease-in-out infinite;}
+@keyframes li-cal-page{0%,70%,100%{transform:rotateX(0)}30%{transform:rotateX(-25deg)}}
+.li-cal-top{animation:li-cal-page 2.8s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+@keyframes li-win{0%,100%{opacity:.2}50%{opacity:1}}
+.li-w1{animation:li-win 1.8s ease-in-out infinite;}
+.li-w2{animation:li-win 1.8s ease-in-out infinite .35s;}
+.li-w3{animation:li-win 1.8s ease-in-out infinite .7s;}
+.li-w4{animation:li-win 1.8s ease-in-out infinite 1.05s;}
+@keyframes li-arr-r{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+@keyframes li-arr-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-4px)}}
+.li-arr-r{animation:li-arr-r 1.2s ease-in-out infinite;}
+.li-arr-l{animation:li-arr-l 1.2s ease-in-out infinite;}
+@keyframes li-plane{0%,55%{transform:translate(0,0) rotate(-45deg);opacity:1}50%{transform:translate(5px,-5px) rotate(-45deg);opacity:0}51%{transform:translate(-5px,5px) rotate(-45deg);opacity:0}100%{transform:translate(0,0) rotate(-45deg);opacity:1}}
+.li-plane{animation:li-plane 2.2s ease-in-out infinite;}
+@keyframes li-play-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes li-play-ring{0%{r:9;opacity:.6}100%{r:14;opacity:0}}
+.li-play{animation:li-play-pulse 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-play-ring{animation:li-play-ring 1.8s ease-out infinite;}
+@keyframes li-grid-g{0%,100%{transform:scale(1)}50%{transform:scale(.78);opacity:.5}}
+.li-g1{animation:li-grid-g 2s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+.li-g2{animation:li-grid-g 2s ease-in-out infinite .25s;transform-origin:center;transform-box:fill-box;}
+.li-g3{animation:li-grid-g 2s ease-in-out infinite .5s;transform-origin:center;transform-box:fill-box;}
+.li-g4{animation:li-grid-g 2s ease-in-out infinite .75s;transform-origin:center;transform-box:fill-box;}
+@keyframes li-chev-r{0%,100%{transform:translateX(0)}50%{transform:translateX(2px)}}
+@keyframes li-chev-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-2px)}}
+.li-chev-r{animation:li-chev-r 1s ease-in-out infinite;}
+.li-chev-l{animation:li-chev-l 1s ease-in-out infinite;}
+@keyframes li-star-spin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.18)}100%{transform:rotate(360deg) scale(1)}}
+.li-star{animation:li-star-spin 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.li-spinner{animation:li-spin .7s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-phone-ring{0%,55%,100%{transform:rotate(0)}10%{transform:rotate(-18deg)}20%{transform:rotate(18deg)}30%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}50%{transform:rotate(0)}}
+.li-phone{animation:li-phone-ring 2.5s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-shackle{0%,100%{transform:translateY(0)}40%{transform:translateY(-3px)}70%{transform:translateY(1px)}}
+@keyframes li-lock-glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 4px currentColor)}}
+.li-shackle{animation:li-shackle 2.5s ease-in-out infinite;transform-origin:12px 11px;transform-box:fill-box;}
+.li-lock-body{animation:li-lock-glow 2.5s ease-in-out infinite;}
+@keyframes li-env-flap{0%,60%,100%{transform:rotateX(0)}20%{transform:rotateX(-50deg)}40%{transform:rotateX(-30deg)}}
+.li-env-flap{animation:li-env-flap 2.5s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+@keyframes li-globe-orbit{0%{stroke-dashoffset:62;opacity:.2}100%{stroke-dashoffset:0;opacity:.7}}
+@keyframes li-globe-merid{0%{rx:5.5;ry:9.5}25%{rx:9;ry:9.5}50%{rx:5.5;ry:9.5}75%{rx:1.2;ry:9.5}100%{rx:5.5;ry:9.5}}
+.li-globe-orbit{animation:li-globe-orbit 2.6s ease-in-out infinite;}
+.li-globe-merid{animation:li-globe-merid 3.4s ease-in-out infinite;}
+@keyframes li-gh-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+.li-gh{animation:li-gh-bounce 2s ease-in-out infinite;}
+@keyframes li-li-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.li-li{animation:li-li-pulse 2s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-fb-sway{0%,100%{transform:rotate(0)}30%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}}
+.li-fb{animation:li-fb-sway 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-wa-ring{0%{r:0;opacity:.6}100%{r:10;opacity:0}}
+@keyframes li-wa-bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.li-wa-ring{animation:li-wa-ring 1.8s ease-out infinite;}
+.li-wa{animation:li-wa-bounce 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-screen-fx{0%,100%{opacity:1}88%{opacity:1}90%{opacity:.15}93%{opacity:1}96%{opacity:.5}98%{opacity:1}}
+.li-screen{animation:li-screen-fx 5s ease-in-out infinite;}
+@keyframes li-mob-vibe{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg)}40%{transform:rotate(5deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}
+.li-mob{animation:li-mob-vibe 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-col-glow{0%,100%{opacity:.4}50%{opacity:1}}
+.li-col1{animation:li-col-glow 2s ease-in-out infinite;}
+.li-col2{animation:li-col-glow 2s ease-in-out infinite .4s;}
+.li-col3{animation:li-col-glow 2s ease-in-out infinite .8s;}
+@keyframes li-pdf-flip{0%,70%,100%{transform:rotateY(0)}30%{transform:rotateY(-30deg)}}
+.li-pdf-page{animation:li-pdf-flip 2.5s ease-in-out infinite;transform-origin:left center;transform-box:fill-box;}
+@keyframes li-db{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08);opacity:.7}}
+.li-db{animation:li-db 1.8s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+`;
+
+function useLICSS(){
+  useEffect(()=>{
+    if(!document.getElementById(LI_CSS_ID)){
+      const s=document.createElement('style');s.id=LI_CSS_ID;s.textContent=LI_CSS;
+      document.head.appendChild(s);
+    }
+  },[]);
+}
+
+const LI_ICONS = {
+  /* ── SUN — cercle épuré + rayons fins ── */
+  sun:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="4"/><g className="li-sun-rays"><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="5.64" y1="5.64" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="18.36" y2="18.36"/><line x1="5.64" y1="18.36" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="18.36" y2="5.64"/></g></svg>),
+  /* ── MOON — croissant minimal ── */
+  moon:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><path className="li-moon" d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" fill={C} fillOpacity=".1"/></svg>),
+  /* ── TIMES — croix fine style iOS ── */
+  times:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-x"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></g></svg>),
+  /* ── ROCKET — style Telegram/envoyer ── */
+  rocket:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-rocket"><path d="M12 2.5C8 2.5 4.5 6 4.5 10.5c0 3 1.5 5.5 3.5 7l1 4h6l1-4c2-1.5 3.5-4 3.5-7C19.5 6 16 2.5 12 2.5z" fill={C} fillOpacity=".1"/><circle cx="12" cy="10" r="2.5" fill={C} fillOpacity=".35"/><path d="M9.5 17.5l-2 1.5M14.5 17.5l2 1.5"/></g><g className="li-flame" transform="translate(11.5 21)"><ellipse cx="0" cy="0" rx="1.5" ry="2" fill="#ff5500" stroke="none" opacity=".85"/></g></svg>),
+  /* ── DOWNLOAD — flèche vers le bas dans plateau ── */
+  download:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-dl-arrow"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/></g><path d="M5 19h14" strokeWidth={sw*.9}/></svg>),
+  /* ── MAP-MARKER — goutte épurée ── */
+  'map-marker-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle className="li-pin-ring" cx="12" cy="19" r="0" stroke={C} fill="none" strokeWidth="1"/><g className="li-pin"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z" fill={C} fillOpacity=".1"/><circle cx="12" cy="9" r="2.5" fill={C} fillOpacity=".4"/></g></svg>),
+  /* ── CODE — sliders égaliseur (filtre style new) ── */
+  code:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-brace-l"><line x1="5" y1="6" x2="5" y2="18"/><circle cx="5" cy="9" r="1.8" fill={C} strokeWidth="0"/></g><g className="li-brace-r"><line x1="12" y1="4" x2="12" y2="18"/><circle cx="12" cy="14" r="1.8" fill={C} strokeWidth="0"/></g><g className="li-ext-arrow"><line x1="19" y1="6" x2="19" y2="18"/><circle cx="19" cy="10" r="1.8" fill={C} strokeWidth="0"/></g></svg>),
+  /* ── DESKTOP — écran arrondi minimal ── */
+  desktop:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="13" rx="3" fill={C} fillOpacity=".08"/><rect className="li-screen" x="4" y="6" width="16" height="9" rx="2" fill={C} fillOpacity=".2" stroke="none"/><path d="M8 21h8M12 17v4"/></svg>),
+  /* ── MOBILE — téléphone rectangle arrondi (new phone style image) ── */
+  'mobile-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-mob"><rect x="6" y="1.5" width="12" height="21" rx="3.5" fill={C} fillOpacity=".08"/><circle cx="12" cy="19" r="1" fill={C} stroke="none"/></g></svg>),
+  /* ── CHECK-CIRCLE — coche dans cercle épuré ── */
+  'check-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" className="li-chk-ring" fill={C} fillOpacity=".08"/><polyline className="li-chk-mark" points="8 12 11 15 16 9"/></svg>),
+  /* ── EXTERNAL-LINK — share box (upward arrow new style) ── */
+  'external-link-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><path d="M12 3v10M9 6l3-3 3 3"/></g><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>),
+  /* ── CLOCK — montre arrondie, aiguilles fines ── */
+  clock:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><line className="li-clock-hr" x1="12" y1="12" x2="12" y2="7.5"/><line className="li-clock-min" x1="12" y1="12" x2="15.5" y2="12"/><circle cx="12" cy="12" r="1" fill={C} stroke="none"/></svg>),
+  /* ── INFO-CIRCLE — i minimaliste ── */
+  'info-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-info-circle"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".08"/><circle cx="12" cy="8" r=".8" fill={C} stroke="none"/><line x1="12" y1="11" x2="12" y2="16.5" strokeWidth={sw*1.1}/></g></svg>),
+  /* ── LIGHTBULB — ampoule épurée ── */
+  lightbulb:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-bulb"><path d="M9 18h6M10 21h4"/><path d="M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z" fill={C} fillOpacity=".1"/></g></svg>),
+  /* ── EYE — œil géométrique fin ── */
+  eye:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-eye-wrap"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" fill={C} fillOpacity=".08"/><circle className="li-pupil" cx="12" cy="12" r="3" fill={C} fillOpacity=".2"/><circle className="li-pupil" cx="12" cy="12" r="1.5" fill={C} stroke="none"/></g></svg>),
+  /* ── MOUSE — molette style bookmark ── */
+  mouse:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><rect x="7" y="2" width="10" height="16" rx="5" fill={C} fillOpacity=".08"/><line x1="12" y1="6" x2="12" y2="10" className="li-wheel" strokeWidth={sw+.5}/></svg>),
+  /* ── CALENDAR — agenda épuré ── */
+  'calendar-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="17" rx="3" fill={C} fillOpacity=".07"/><g className="li-cal-top"><path d="M3 10h18" strokeWidth={sw}/></g><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><rect x="7.5" y="14" width="3" height="3" rx="1" fill={C} fillOpacity=".5" stroke="none"/><rect x="13.5" y="14" width="3" height="3" rx="1" fill={C} fillOpacity=".5" stroke="none"/></svg>),
+  /* ── BUILDING — immeuble avec fenêtres lumineuses ── */
+  building:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="19" rx="2" fill={C} fillOpacity=".07"/><line x1="3" y1="22" x2="21" y2="22"/><rect className="li-w1" x="7" y="7" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w2" x="14" y="7" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w3" x="7" y="13" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w4" x="14" y="13" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><path d="M10 22v-4h4v4"/></svg>),
+  /* ── ARROW-LEFT — flèche fine ── */
+  'arrow-left':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-l"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 6 4 12 10 18"/></g></svg>),
+  /* ── ARROW-RIGHT — flèche fine ── */
+  'arrow-right':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></g></svg>),
+  /* ── PAPER-PLANE — avion Telegram style (Send new) ── */
+  'paper-plane':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-plane"><path d="M21.5 2.5L10 13.5M21.5 2.5L14.5 21.5l-4.5-8-8-4.5 19.5-6.5z" fill={C} fillOpacity=".12"/><path d="M21.5 2.5L10 13.5m0 0l3 7 8.5-19"/></g></svg>),
+  /* ── PLAY-CIRCLE — play épuré ── */
+  'play-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle className="li-play-ring" cx="12" cy="12" r="9" stroke={C} fill="none" strokeWidth="1" opacity=".4"/><g className="li-play"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".09"/><path d="M10 8.5l6 3.5-6 3.5V8.5z" fill={C} fillOpacity=".6" stroke={C} strokeLinejoin="round"/></g></svg>),
+  /* ── TH-LARGE — grid 2×2 coins arrondis ── */
+  'th-large':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw}><rect className="li-g1" x="2.5" y="2.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g2" x="13.5" y="2.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g3" x="2.5" y="13.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g4" x="13.5" y="13.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/></svg>),
+  /* ── CHEVRON-LEFT / RIGHT — minimal ── */
+  'chevron-left':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline className="li-chev-l" points="14 18 8 12 14 6"/></svg>),
+  'chevron-right':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline className="li-chev-r" points="10 18 16 12 10 6"/></svg>),
+  /* ── STAR → HEART (wishlist new style) ── */
+  star:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path className="li-star" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".2"/></svg>),
+  /* ── SPINNER — arc de cercle qui tourne ── */
+  spinner:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" stroke={C} strokeOpacity=".15" strokeWidth={sw}/><path className="li-spinner" d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5"/></svg>),
+  /* ── PHONE → mobile rectangle (new phone style) ── */
+  phone:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-phone"><rect x="5.5" y="1.5" width="13" height="21" rx="3.5" fill={C} fillOpacity=".1"/><circle cx="12" cy="19.5" r="1" fill={C} stroke="none"/></g></svg>),
+  /* ── LOCK — cadenas minimal arrondi ── */
+  lock:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path className="li-shackle" d="M8 11V7.5a4 4 0 0 1 8 0V11"/><g className="li-lock-body"><rect x="4" y="11" width="16" height="11" rx="3" fill={C} fillOpacity=".12"/><circle cx="12" cy="16.5" r="1.5" fill={C} fillOpacity=".6" stroke="none"/></g></svg>),
+  /* ── ENVELOPE — enveloppe ouverte style send ── */
+  envelope:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="15" rx="3" fill={C} fillOpacity=".08"/><path className="li-env-flap" d="M2 8l10 7 10-7"/></svg>),
+  /* ── GLOBE — sphère avec meridiens ── */
+  globe:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><ellipse cx="12" cy="12" rx="4.5" ry="9.5" stroke={C} strokeWidth={sw*.8} strokeDasharray="60" className="li-globe-orbit"/><ellipse className="li-globe-merid" cx="12" cy="12" rx="4.5" ry="9.5" stroke={C} strokeWidth={sw*.7} opacity=".5"/><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".4"/></svg>),
+  /* ── GITHUB ── */
+  github:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none"><g className="li-gh"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke={C} fill="none" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/></g></svg>),
+  /* ── LINKEDIN ── */
+  linkedin:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-li"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" fill={C} fillOpacity=".15"/><rect x="2" y="9" width="4" height="12" fill={C} fillOpacity=".2"/><circle cx="4" cy="4" r="2" fill={C} fillOpacity=".5"/></g></svg>),
+  /* ── FACEBOOK ── */
+  facebook:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-fb"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill={C} fillOpacity=".18"/></g></svg>),
+  /* ── WHATSAPP — bulle Telegram ── */
+  whatsapp:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle className="li-wa-ring" cx="12" cy="12" r="0" stroke={C} fill="none" strokeWidth="1.2"/><g className="li-wa"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" fill={C} fillOpacity=".1"/><path d="M9.5 11a.5.5 0 0 0 1 0V10a.5.5 0 0 0-1 0v1zm0 0a5 5 0 0 0 5 5h.5a.5.5 0 0 0 0-1H14" stroke={C} strokeWidth={sw*.9}/></g></svg>),
+  /* ── UNIVERSITY — institution épurée ── */
+  university:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><line x1="2" y1="22" x2="22" y2="22"/><line x1="2" y1="11" x2="22" y2="11"/><polygon points="12 2 22 7 2 7 12 2" fill={C} fillOpacity=".18"/><rect className="li-col1" x="4.5" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/><rect className="li-col2" x="11" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/><rect className="li-col3" x="17.5" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/></svg>),
+  /* ── FILE-PDF — signet bookmark (save new style) ── */
+  'file-pdf':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-pdf-page"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill={C} fillOpacity=".1"/><polyline points="14 2 14 8 20 8"/></g><text x="6.5" y="18" fontSize="5.5" fontWeight="700" fill={C} stroke="none" fontFamily="monospace">PDF</text></svg>),
+  /* ── SERVER — rack épuré ── */
+  server:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2.5" width="20" height="6" rx="2" fill={C} fillOpacity=".12"/><rect x="2" y="10.5" width="20" height="6" rx="2" fill={C} fillOpacity=".12"/><rect x="2" y="18" width="20" height="4" rx="2" fill={C} fillOpacity=".12"/><circle cx="19" cy="5.5" r="1.5" fill={C} className="li-w1" stroke="none"/><circle cx="19" cy="13.5" r="1.5" fill={C} className="li-w2" stroke="none"/><circle cx="19" cy="20" r="1.2" fill={C} className="li-w3" stroke="none"/></svg>),
+  /* ── DATABASE ── */
+  database:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3" fill={C} fillOpacity=".18" className="li-w1"/><path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" className="li-w2"/><path d="M3 15v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4" className="li-w3"/></svg>),
+  /* ── SHIELD-ALT — bouclier arrondi + coche ── */
+  'shield-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V6L12 2z" fill={C} fillOpacity=".1" className="li-info-circle"/><polyline points="9 12 11 14 15 10" className="li-chk-mark"/></svg>),
+  /* ── TOOLS — clé + tournevis croisés ── */
+  tools:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z" fill={C} fillOpacity=".12"/></g></svg>),
+  /* ── USERS ── */
+  users:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill={C} fillOpacity=".08"/><circle cx="9" cy="7" r="4" fill={C} fillOpacity=".15" className="li-w2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75" className="li-w1"/></svg>),
+  /* ── SHOPPING-CART ── */
+  'shopping-cart':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── SEARCH ── */
+  search:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-info-circle"><circle cx="11" cy="11" r="8" fill={C} fillOpacity=".08"/></g><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>),
+  /* ── HOME ── */
+  home:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 21V10.5z" fill={C} fillOpacity=".1" className="li-w2"/><path d="M9 22.5V15h6v7.5"/></svg>),
+  /* ── USER ── */
+  user:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="7" r="4.5" fill={C} fillOpacity=".15" className="li-play"/><path d="M4 21v-1a8 8 0 0 1 16 0v1" fill={C} fillOpacity=".08"/></svg>),
+  /* ── PAINT-BRUSH ── */
+  'paint-brush':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".1"/><line x1="15.5" y1="8" x2="8.5" y2="15"/></g></svg>),
+  /* ── HEADPHONES ── */
+  headphones:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-mob"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z" fill={C} fillOpacity=".2"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" fill={C} fillOpacity=".2"/></g></svg>),
+  /* ── MUSIC ── */
+  music:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-arr-r"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill={C} fillOpacity=".25"/><circle cx="18" cy="16" r="3" fill={C} fillOpacity=".25"/></g></svg>),
+  /* ── CHART-LINE — waveform (sound new style) ── */
+  'chart-line':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><line x1="2" y1="20" x2="22" y2="20" opacity=".3"/><polyline points="5 15 9 9 13 13 17 7 21 11"/></g></svg>),
+  /* ── FILTER — sliders équaliseur (new style) ── */
+  filter:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-dl-arrow"><line x1="5" y1="4" x2="5" y2="20"/><circle cx="5" cy="8" r="2" fill={C} stroke="none"/></g><line x1="12" y1="4" x2="12" y2="20"/><circle cx="12" cy="15" r="2" fill={C} stroke="none" className="li-w2"/><g className="li-ext-arrow"><line x1="19" y1="4" x2="19" y2="20"/><circle cx="19" cy="11" r="2" fill={C} stroke="none"/></g></svg>),
+  /* ── TASKS — liste + coches ── */
+  tasks:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12" className="li-w2"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="4 6 5 7 7 5" className="li-chk-mark"/><polyline points="4 12 5 13 7 11" className="li-chk-mark"/><polyline points="4 18 5 19 7 17" className="li-chk-mark"/></svg>),
+  /* ── CAMERA ── */
+  camera:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill={C} fillOpacity=".1"/><circle cx="12" cy="13" r="4" fill={C} fillOpacity=".2" className="li-play"/></svg>),
+  /* ── HISTORY ── */
+  history:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10" className="li-arr-l"/><path d="M3.51 15a9 9 0 1 0 .49-5.1" className="li-arr-l"/><polyline points="12 7 12 12 15.5 13.5" className="li-clock-min"/></svg>),
+  /* ── ADJUST ── */
+  adjust:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><path d="M12 2.5a9.5 9.5 0 0 1 0 19z" fill={C} fillOpacity=".3" className="li-w2" stroke="none"/></svg>),
+  /* ── PALETTE ── */
+  palette:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2v-.5c0-.55-.22-1-.72-1.28a1 1 0 0 1 .22-1.72C15.5 15.5 18 13.9 18 12c0-4.42-2.69-8-9-8z" fill={C} fillOpacity=".1" className="li-info-circle"/><circle cx="6.5" cy="11.5" r="1.5" fill={C} className="li-w1" stroke="none"/><circle cx="9.5" cy="7.5" r="1.5" fill={C} className="li-w2" stroke="none"/><circle cx="14.5" cy="7.5" r="1.5" fill={C} className="li-w3" stroke="none"/><circle cx="17.5" cy="11.5" r="1.5" fill={C} className="li-w4" stroke="none"/></svg>),
+  /* ── SHOPPING-BAG ── */
+  'shopping-bag':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── FILE-EXPORT — signet avec flèche ── */
+  'file-export':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill={C} fillOpacity=".1"/><polyline points="14 2 14 8 20 8"/></g><line x1="8" y1="14" x2="16" y2="14"/><polyline points="12 10 16 14 12 18"/></svg>),
+  /* ── CALENDAR-CHECK ── */
+  'calendar-check':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="17" rx="3" fill={C} fillOpacity=".07"/><g className="li-cal-top"><path d="M3 10h18" strokeWidth={sw}/></g><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><polyline points="9 16 11 18 15 14" className="li-chk-mark"/></svg>),
+  /* ── MAP-MARKED-ALT ── */
+  'map-marked-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-pin"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z" fill={C} fillOpacity=".1"/><circle cx="12" cy="9" r="2.5" fill={C} fillOpacity=".4"/></g></svg>),
+  /* ── ROUTE ── */
+  route:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><circle cx="4" cy="6" r="2.5" fill={C} fillOpacity=".3"/><circle cx="20" cy="18" r="2.5" fill={C} fillOpacity=".3"/><path d="M4 8.5v2A4.5 4.5 0 008.5 15H15.5A4.5 4.5 0 0020 10.5v-3"/></g></svg>),
+  /* ── LOCATION-ARROW — envoyer / navigation ── */
+  'location-arrow':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-plane"><polygon points="3 11 22 2 13 21 11 13 3 11" fill={C} fillOpacity=".15"/></g></svg>),
+};
+
+
+
+function LI({ name, size = 16, color, className = '', style = {} }) {
+  useLICSS();
+  const C = color || 'currentColor';
+  const sw = size < 14 ? 2.5 : size < 20 ? 2 : 1.8;
+  const render = LI_ICONS[name];
+  if (!render) return null;
+  const svg = render(C, sw);
+  return (
+    <span className={`li ${className}`} style={{ width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+      {React.cloneElement(svg, { width: size, height: size, style: { display: 'block' } })}
+    </span>
+  );
+}
+
 const SvgArrowRight = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -908,7 +1173,7 @@ const Loader = ({ onDone }) => {
 
 const ThemeToggle = ({dark, onToggle}) => (
   <button className={`theme-toggle ${dark?'theme-toggle--dark':''}`} onClick={onToggle} title={dark?"Passer en mode clair":"Passer en mode sombre"}>
-    {dark ? <><i className="fas fa-sun"/><span>Clair</span></> : <><i className="fas fa-moon"/><span>Sombre</span></>}
+    {dark ? <><LI name="sun" color="#ffffff"/><span>Clair</span></> : <><LI name="moon" color="#1a1a1a"/><span>Sombre</span></>}
   </button>
 );
 
@@ -996,7 +1261,7 @@ const Navbar = ({dark, onToggle}) => {
       <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`} aria-hidden={!open}>
         <div className="mob-drawer-header">
           <AkafolioLogo size={22} dark={dark} animate={false}/>
-          <button className="mob-drawer-close" onClick={()=>setOpen(false)} aria-label="Fermer le menu"><i className="fas fa-times"/></button>
+          <button className="mob-drawer-close" onClick={()=>setOpen(false)} aria-label="Fermer le menu"><LI name="times" color={dark?"#fff":"#1a1a1a"}/></button>
         </div>
         <nav className="mob-drawer-nav">
           {NAV_LINKS.map((l,i)=>(
@@ -1008,16 +1273,16 @@ const Navbar = ({dark, onToggle}) => {
         </nav>
         <div className="mob-drawer-theme">
           <span className="mob-drawer-theme-label">
-            <i className={`fas fa-${dark?'moon':'sun'}`}/> Thème {dark?'sombre':'clair'}
+            <LI name={dark?'moon':'sun'} color={dark?'#ffffff':'#1a1a1a'}/> Thème {dark?'sombre':'clair'}
           </span>
           <ThemeToggle dark={dark} onToggle={onToggle}/>
         </div>
         <div className="mob-drawer-footer">
-          <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
-          <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
-          <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
-          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><i className="fas fa-globe"/></a>
-          <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
+          <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+          <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
         </div>
       </div>
     </>
@@ -1118,7 +1383,7 @@ const ScrollTop = ({dark}) => {
   return (
     <button ref={btnRef} className={`scroll-top ${vis?'scroll-top--vis':''} ${launching?'scroll-top--launch':''} ${dark?'scroll-top--dark':''}`}
       onClick={go} onMouseEnter={startEngine} onMouseLeave={stopEngine} title="Décollage vers le haut !">
-      <i className="fas fa-rocket"/><div className="rocket-flame"/>{launching && <RocketFlames/>}
+      <LI name="rocket" color="#ff5500"/><div className="rocket-flame"/>{launching && <RocketFlames/>}
     </button>
   );
 };
@@ -1367,13 +1632,8 @@ const AuroraCanvas = ({ dark }) => {
       light: gl.getUniformLocation(prog, 'u_light'),
     };
 
-    const onMouse = e => { mouseRef.current = { x: e.clientX, y: cv.height - e.clientY }; };
-    const onTouch = e => {
-      const t = e.touches[0];
-      mouseRef.current = { x: t.clientX, y: cv.height - t.clientY };
-    };
-    window.addEventListener('mousemove', onMouse);
-    window.addEventListener('touchmove', onTouch, { passive: true });
+    // Mouse interaction désactivée — position fixe au centre
+    mouseRef.current = { x: cv.width * 0.5, y: cv.height * 0.5 };
 
     const render = ts => {
       if (!glRef.current) return;
@@ -1393,8 +1653,7 @@ const AuroraCanvas = ({ dark }) => {
       cancelAnimationFrame(rafRef.current);
       clearTimeout(resizeDeferred);
       ro.disconnect();
-      window.removeEventListener('mousemove', onMouse);
-      window.removeEventListener('touchmove', onTouch);
+      // no mouse listeners to remove
       glRef.current = null;
     };
   }, []);
@@ -1557,7 +1816,7 @@ const Hero = ({ dark }) => {
               </MagBtn>
               <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} mi-glint`}
                 href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
-                <i className="fas fa-download"/> Télécharger CV
+                <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
               </a>
             </div>
 
@@ -1576,8 +1835,8 @@ const Hero = ({ dark }) => {
             <div className="hv4-photo-wrap hv4-photo-wrap--full">
               <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
               <div className="hv4-photo-overlay">
-                <span><i className="fas fa-map-marker-alt"/> Abidjan, CI</span>
-                <span><i className="fas fa-code"/> Full-Stack Dev</span>
+                <span><LI name="map-marker-alt" color={dark?"#aaa":"#666"} size={12}/> Abidjan, CI</span>
+                <span><LI name="code" color="#ff5500" size={12}/> Full-Stack Dev</span>
               </div>
               <div className="hv4-photo-status">
                 <span className="hero-dot"/>
@@ -1617,7 +1876,7 @@ const FeaturedCreation = ({dark}) => {
               </div>
               <div className="cr-desktop-screen">
                 <img src={proj.image} alt="ShopCI desktop" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
-                <div className="cr-screen-ph" style={{display:'none'}}><i className="fas fa-desktop"/></div>
+                <div className="cr-screen-ph" style={{display:'none'}}><LI name="desktop" color={dark?"#555":"#aaa"}/></div>
               </div>
             </div>
           </div>
@@ -1626,11 +1885,11 @@ const FeaturedCreation = ({dark}) => {
               <div className="cr-mobile-notch"/>
               <div className="cr-mobile-screen">
                 <img src="/assets/images/projects/shopci-responsive.jpg" alt="ShopCI mobile" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
-                <div className="cr-screen-ph cr-screen-ph--sm" style={{display:'none'}}><i className="fas fa-mobile-alt"/></div>
+                <div className="cr-screen-ph cr-screen-ph--sm" style={{display:'none'}}><LI name="mobile-alt" color={dark?"#555":"#aaa"}/></div>
               </div>
               <div className="cr-mobile-home"/>
             </div>
-            <div className="cr-resp-badge"><i className="fas fa-check-circle"/> 100% Responsive</div>
+            <div className="cr-resp-badge"><LI name="check-circle" color="#ff5500"/> 100% Responsive</div>
           </div>
           <div className="cr-glow"/>
         </div>
@@ -1642,7 +1901,7 @@ const FeaturedCreation = ({dark}) => {
           </div>
           <div className="cr-tags">{proj.tech.map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
           <p className="cr-desc">{proj.description}</p>
-          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><i className="fas fa-external-link-alt"/> Voir le site</a>
+          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
         </div>
       </div>
     </section>
@@ -2049,7 +2308,7 @@ const PricingTabs = ({dark}) => {
       <div className="ptabs2-mob">
         <StackedCard items={tab.plans} renderCard={(p,idx)=><PricingCard p={p} idx={idx} tilt={true}/>}/>
       </div>
-      <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}><i className="fas fa-info-circle"/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.</p>
+      <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}><LI name="info-circle" color={dark?"#888":"#999"} size={13}/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.</p>
     </div>
   );
 };
@@ -2064,7 +2323,7 @@ const Services = ({dark}) => {
         {SERVICES.map((s,i)=>(
           <TiltCard key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
             <SpotlightCard className="svc-spotlight-inner" style={{height:'100%',width:'100%'}}>
-              <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico mi-pulse"><i className={`fas fa-${s.icon}`}/></div></div>
+              <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico mi-pulse"><LI name={s.icon} color="#ffffff" size={22}/></div></div>
               <h3 className="svc-title">{s.title}</h3><p className="svc-desc">{s.desc}</p>
               <ul className="svc-feat">{SERVICES[i].features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
             </SpotlightCard>
@@ -2077,7 +2336,7 @@ const Services = ({dark}) => {
           renderCard={(s, idx) => (
             <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
               <div className="pricing-card">
-                <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><i className={`fas fa-${s.icon}`}/></div></div>
+                <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><LI name={s.icon} color="#ffffff" size={20}/></div></div>
                 <h3 className="svc-title">{s.title}</h3>
                 <p className="svc-desc">{s.desc}</p>
                 <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
@@ -2188,7 +2447,7 @@ const About = ({dark}) => {
             </div>
             <div className="about-img-wrap">
               <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
-              <div className="about-badges"><span><i className="fas fa-code"/> Pro</span><span><i className="fas fa-lightbulb"/> Créatif</span><span><i className="fas fa-eye"/> Curieux</span></div>
+              <div className="about-badges"><span><LI name="code" color="#ff5500" size={13}/> Pro</span><span><LI name="lightbulb" color="#ff5500" size={13}/> Créatif</span><span><LI name="eye" color={dark?"#fff":"#1a1a1a"}/> Curieux</span></div>
             </div>
           </div>
           <div className="about-right">
@@ -2214,7 +2473,7 @@ const About = ({dark}) => {
           textAlign:'center', color:'var(--muted)', fontSize:'12px',
           marginBottom:'24px', letterSpacing:'0.08em', opacity: 0.7,
         }}>
-          <i className="fas fa-mouse" style={{marginRight:'6px'}}/>
+          <LI name="mouse" color={dark?"#888":"#666"} size={14} style={{marginRight:'6px'}}/>
           Scrollez pour naviguer entre les étapes
         </p>
 
@@ -2226,7 +2485,7 @@ const About = ({dark}) => {
               onClick={()=>setOpenIdx(i)}
               style={{ cursor:'pointer' }}>
               <div className={`exp-step-dot ${openIdx===i?'exp-step-dot--active':''}`}>
-                <i className={`fas fa-${t.icon}`}/>
+                <LI name={t.icon} color="#ff5500" size={14}/>
               </div>
               <div className="exp-step-line"/>
               <span className="exp-step-label">{t.date}</span>
@@ -2253,12 +2512,12 @@ const About = ({dark}) => {
                   <div className="exp-card-hd" style={{ cursor:'default' }}>
                     <div className="exp-card-hd-left">
                       <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
-                        <i className={`fas fa-${t.icon}`}/>
+                        <LI name={t.icon} color="#ff5500" size={14}/>
                       </div>
                       <div className="exp-card-hd-info">
-                        <span className="exp-date"><i className="far fa-calendar-alt"/> {t.date}</span>
+                        <span className="exp-date"><LI name="calendar-alt" color={dark?"#ff5500":"#333"} size={13}/> {t.date}</span>
                         <h4 className="exp-title">{t.title}</h4>
-                        <p className="exp-company"><i className="fas fa-building"/> {t.company}</p>
+                        <p className="exp-company"><LI name="building" color={dark?"#aaa":"#555"} size={13}/> {t.company}</p>
                       </div>
                     </div>
                     {/* Indicateur étape X/N */}
@@ -2313,7 +2572,7 @@ const About = ({dark}) => {
             onClick={goPrev} disabled={openIdx === 0}
             className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
             style={{ opacity: openIdx===0 ? 0.3 : 1, transition:'opacity .2s' }}>
-            <i className="fas fa-arrow-left"/> Précédent
+            <LI name="arrow-left" color={dark?"#fff":"#1a1a1a"} size={14}/> Précédent
           </button>
 
           {/* Dots */}
@@ -2335,7 +2594,7 @@ const About = ({dark}) => {
             onClick={goNext} disabled={openIdx === total - 1}
             className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
             style={{ opacity: openIdx===total-1 ? 0.3 : 1, transition:'opacity .2s' }}>
-            Suivant <i className="fas fa-arrow-right"/>
+            Suivant <LI name="arrow-right" color={dark?"#fff":"#1a1a1a"} size={14}/>
           </button>
         </div>
         </div>{/* /exp-desk-only */}
@@ -2349,12 +2608,12 @@ const About = ({dark}) => {
                 <div className="exp-card-hd" style={{ cursor:'default' }}>
                   <div className="exp-card-hd-left">
                     <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
-                      <i className={`fas fa-${t.icon}`}/>
+                      <LI name={t.icon} color="#ff5500" size={14}/>
                     </div>
                     <div className="exp-card-hd-info">
-                      <span className="exp-date"><i className="far fa-calendar-alt"/> {t.date}</span>
+                      <span className="exp-date"><LI name="calendar-alt" color={dark?"#ff5500":"#333"} size={13}/> {t.date}</span>
                       <h4 className="exp-title">{t.title}</h4>
-                      <p className="exp-company"><i className="fas fa-building"/> {t.company}</p>
+                      <p className="exp-company"><LI name="building" color={dark?"#aaa":"#555"} size={13}/> {t.company}</p>
                     </div>
                   </div>
                   <div style={{ display:'flex', alignItems:'center', gap:'6px', color:'var(--acc)', fontFamily:'var(--fb)', fontSize:'13px', fontWeight:700 }}>
@@ -2402,8 +2661,8 @@ const About = ({dark}) => {
           <h3>Intéressé par mon profil ?</h3>
           <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
           <div className="cta-btns">
-            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
-            <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><i className="fas fa-download"/> Télécharger CV</a>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><LI name="paper-plane" color="#ff5500"/> Me contacter</MagBtn>
+            <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV</a>
           </div>
           </div>
         </div>
@@ -2440,7 +2699,7 @@ const ProjectModal = ({ project, dark, onClose }) => {
             <div className="fd-modal-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
           )}
           <button className="fd-modal-close-btn" onClick={onClose} aria-label="Fermer">
-            <i className="fas fa-times" />
+            <LI name="times" color={dark?"#fff":"#1a1a1a"}/>
           </button>
         </div>
         {/* Body */}
@@ -2461,8 +2720,8 @@ const ProjectModal = ({ project, dark, onClose }) => {
               <a href={project.url} target={project.url.startsWith('http') ? '_blank' : '_self'} rel="noreferrer"
                 className={`btn ${dark ? 'btn--neon' : 'btn--primary'} fd-modal-btn-primary`}>
                 {project.cat === 'demo'
-                  ? <><i className="fas fa-play-circle" />Voir la démo</>
-                  : <><i className="fas fa-external-link-alt" />Voir le site</>}
+                  ? <><LI name="play-circle" color="#ff5500"/>Voir la démo</>
+                  : <><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/>Voir le site</>}
               </a>
             )}
             <button className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'}`} onClick={onClose}>Fermer</button>
@@ -2770,11 +3029,11 @@ const FanDeck = ({ items, dark }) => {
           <div className="fd-nav">
             {/* Retour fan */}
             <button className={`fd-nav-back ${dark ? 'fd-nav-back--dark' : ''}`} onClick={backToFan} title="Retour">
-              <i className="fas fa-th-large" />
+              <LI name="th-large" color={dark?"#fff":"#1a1a1a"}/>
             </button>
             {/* Flèche gauche */}
             <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goPrev(); }} disabled={active === 0} aria-label="Précédent">
-              <i className="fas fa-chevron-left" />
+              <LI name="chevron-left" color={dark?"#fff":"#1a1a1a"}/>
             </button>
             {/* Dots */}
             <div className="fd-nav-dots">
@@ -2788,7 +3047,7 @@ const FanDeck = ({ items, dark }) => {
             </div>
             {/* Flèche droite */}
             <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goNext(); }} disabled={active === total - 1} aria-label="Suivant">
-              <i className="fas fa-chevron-right" />
+              <LI name="chevron-right" color={dark?"#fff":"#1a1a1a"}/>
             </button>
             {/* Compteur */}
             <span className="fd-nav-count">
@@ -2841,9 +3100,9 @@ const SpotlightProjects = ({ items, dark }) => {
         <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
           {!imgErr[proj.id]
             ? <img src={proj.image} alt={proj.title} className="sp-preview-img" onError={()=>setImgErr(e=>({...e,[proj.id]:true}))}/>
-            : <div className="sp-preview-placeholder"><i className="fas fa-code"/></div>}
+            : <div className="sp-preview-placeholder"><LI name="code" color={dark?"#555":"#aaa"}/></div>}
           {proj.cat==='en-ligne' && <div className="sp-live-badge"><span className="hero-dot"/><span>EN LIGNE</span></div>}
-          {proj.isPremium && <div className="sp-prem-badge"><i className="fas fa-star"/> Premium</div>}
+          {proj.isPremium && <div className="sp-prem-badge"><LI name="star" color="#ff5500"/> Premium</div>}
         </div>
         {/* Détails */}
         <div className={`sp-details ${dark?'sp-details--dark':''}`}>
@@ -2855,7 +3114,7 @@ const SpotlightProjects = ({ items, dark }) => {
           <p className="sp-sub">{proj.subtitle}</p>
           <p className="sp-desc">{proj.description}</p>
           <div className="sp-meta">
-            <span className="sp-year"><i className="far fa-calendar-alt"/> {proj.year}</span>
+            <span className="sp-year"><LI name="calendar-alt" color={dark?"#ff5500":"#ff5500"} size={12}/> {proj.year}</span>
             {proj.progress!=null&&(
               <div className="sp-progress-wrap">
                 <div className="sp-progress-track"><div className="sp-progress-fill" style={{width:`${proj.progress}%`}}/></div>
@@ -2868,7 +3127,7 @@ const SpotlightProjects = ({ items, dark }) => {
             <div className="sp-actions">
               <a href={proj.url} target={isExternal?'_blank':'_self'} rel="noreferrer"
                 className={`btn ${dark?'btn--neon':'btn--primary'} sp-cta mi-glint`}>
-                <i className={`fas fa-${isDemo?'play-circle':'external-link-alt'}`}/>{isDemo?'Voir la démo':'Voir le site →'}
+                <LI name={isDemo?'play-circle':'external-link-alt'} color="#ff5500"/>{isDemo?'Voir la démo':'Voir le site →'}
               </a>
             </div>
           )}
@@ -2879,7 +3138,7 @@ const SpotlightProjects = ({ items, dark }) => {
               onClick={goPrev}
               disabled={selected===0}
               aria-label="Projet précédent">
-              <i className="fas fa-chevron-left"/>
+              <LI name="chevron-left" color={dark?"#fff":"#1a1a1a"}/>
             </button>
             <div className="sp-dots">
               {items.map((_,i)=><button key={i} className={`sp-dot ${i===selected?'sp-dot--on':''}`} onClick={()=>setSelected(i)} aria-label={`Projet ${i+1}`}/>)}
@@ -2889,7 +3148,7 @@ const SpotlightProjects = ({ items, dark }) => {
               onClick={goNext}
               disabled={selected===items.length-1}
               aria-label="Projet suivant">
-              <i className="fas fa-chevron-right"/>
+              <LI name="chevron-right" color={dark?"#fff":"#1a1a1a"}/>
             </button>
           </div>
         </div>
@@ -2903,7 +3162,7 @@ const SpotlightProjects = ({ items, dark }) => {
               <div className="sp-thumb-img" style={{background:GRAD[(item.id-1)%GRAD.length]}}>
                 {!imgErr[item.id]
                   ? <img src={item.image} alt={item.title} onError={()=>setImgErr(e=>({...e,[item.id]:true}))}/>
-                  : <i className="fas fa-code"/>}
+                  : <LI name="code" color={dark?"#555":"#aaa"}/>}
                 {item.cat==='en-ligne'&&<div className="sp-thumb-live"/>}
               </div>
               <span className="sp-thumb-title">{item.title}</span>
@@ -2945,7 +3204,7 @@ const Projects = ({dark}) => {
 
 const SkillBand = ({title,icon,items,dir,dark})=>(
   <div className="sk-row">
-    <div className="sk-row-lbl"><i className={`fas fa-${icon}`}/>{title}</div>
+    <div className="sk-row-lbl"><LI name={icon} color="#ff5500" size={14}/>{title}</div>
     <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`}>
       {[...items,...items,...items].map((sk,i)=>(<div key={i} className="sk-item"><img src={sk.icon} alt={sk.name} style={dark&&(sk.icon.includes('flask')||sk.icon.includes('django')||sk.icon.includes('github')||sk.icon.includes('vercel'))?{filter:'brightness(0) invert(1)'}:{}}/><span>{sk.name}</span></div>))}
     </div></div>
@@ -2978,8 +3237,8 @@ const Skills = ({dark}) => {
           <h3>Besoin de ces compétences ?</h3>
           <p>Mettons mes compétences au service de votre projet. Discutons-en !</p>
           <div className="cta-btns">
-            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-paper-plane"/> Me contacter</MagBtn>
-            <MagBtn className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><i className="fas fa-eye"/> Voir mes projets</MagBtn>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><LI name="paper-plane" color="#ff5500"/> Me contacter</MagBtn>
+            <MagBtn className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><LI name="eye" color={dark?"#fff":"#1a1a1a"}/> Voir mes projets</MagBtn>
           </div>
           </div>
         </div>
@@ -3116,9 +3375,9 @@ const Contact = ({dark}) => {
                 <textarea id="message" rows={6} placeholder="Décrivez votre projet…" value={form.message} onChange={onChange} required/>
               </div>
               <MagBtn type="submit" className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-btn-grad-solid`} disabled={sending}>
-                <i className="fas fa-paper-plane"/>{sending?'Envoi en cours…':'Envoyer le message'}{sending&&<i className="fas fa-spinner fa-spin"/>}
+                <LI name="paper-plane" color="#ff5500"/>{sending?'Envoi en cours…':'Envoyer le message'}{sending&&<LI name="spinner" color="#ff5500"/>}
               </MagBtn>
-              <p className="form-privacy"><i className="fas fa-lock"/> Vos données sont sécurisées et ne seront jamais partagées.</p>
+              <p className="form-privacy"><LI name="lock" color={dark?"#888":"#999"} size={13}/> Vos données sont sécurisées et ne seront jamais partagées.</p>
             </form>
           )}
         </div>
@@ -3130,13 +3389,13 @@ const Contact = ({dark}) => {
           <span className={`coj-label ${dark?'coj-label--dark':''}`}>// Où me joindre</span>
           <div className="coj-infos">
             <a href="tel:+2250142507750" className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <i className="fas fa-phone"/><div><b>Téléphone</b><span>+225 01 42 50 77 50</span></div>
+              <LI name="phone" color={dark?"#ff5500":"#ff5500"}/><div><b>Téléphone</b><span>+225 01 42 50 77 50</span></div>
             </a>
             <a href="mailto:wthomasss06@gmail.com" className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <i className="fas fa-envelope"/><div><b>Email</b><span>wthomasss06@gmail.com</span></div>
+              <LI name="envelope" color={dark?"#ff5500":"#ff5500"}/><div><b>Email</b><span>wthomasss06@gmail.com</span></div>
             </a>
             <div className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <i className="fas fa-map-marker-alt"/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div>
+              <LI name="map-marker-alt" color={dark?"#ff5500":"#ff5500"}/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div>
             </div>
           </div>
         </div>
@@ -3150,14 +3409,14 @@ const Contact = ({dark}) => {
           </div>
           <div className="csg-grid">
             {[
-              {ico:'fab fa-github',   label:'GitHub',   url:'https://github.com/wthomasss06-stack'},
-              {ico:'fab fa-linkedin', label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/'},
-              {ico:'fab fa-facebook', label:'Facebook',  url:FACEBOOK_URL},
-              {ico:'fab fa-whatsapp', label:'WhatsApp',  url:'https://wa.me/2250142507750'},
-              {ico:'fas fa-globe',    label:'AKATech',   url:'https://akatech.vercel.app/'},
-              {ico:'fas fa-envelope', label:'Gmail',     url:'mailto:wthomasss06@gmail.com'},
-              {ico:'fas fa-university',label:'UVCI',    url:'mailto:aka.mbollo@uvci.edu.ci'},
-              {ico:'fas fa-file-pdf', label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true},
+              {ico:'github',   label:'GitHub',   url:'https://github.com/wthomasss06-stack'},
+              {ico:'linkedin', label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/'},
+              {ico:'facebook', label:'Facebook',  url:FACEBOOK_URL},
+              {ico:'whatsapp', label:'WhatsApp',  url:'https://wa.me/2250142507750'},
+              {ico:'globe',    label:'AKATech',   url:'https://akatech.vercel.app/'},
+              {ico:'envelope', label:'Gmail',     url:'mailto:wthomasss06@gmail.com'},
+              {ico:'university',label:'UVCI',    url:'mailto:aka.mbollo@uvci.edu.ci'},
+              {ico:'file-pdf', label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true},
             ].map((s,i)=>(
               <a key={i} href={s.url}
                 target={s.url.startsWith('http')?'_blank':'_self'}
@@ -3165,7 +3424,7 @@ const Contact = ({dark}) => {
                 download={s.download||undefined}
                 className={`csg-item ${dark?'csg-item--dark':''}`}
                 title={s.label}>
-                <i className={`${s.ico} csg-ico`}/>
+                <LI name={s.ico} size={22} color="#ff5500"/>
                 <span className="csg-name">{s.label}</span>
               </a>
             ))}
@@ -3179,7 +3438,7 @@ const Contact = ({dark}) => {
             <p><b>Télécharger mon CV</b></p>
             <p>Scannez le QR code ou cliquez</p>
             <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} download>
-              <i className="fas fa-download"/> Télécharger CV
+              <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
             </a>
           </div>
         </div>
@@ -3197,11 +3456,11 @@ const Footer = ({dark}) => (
         <p>Abidjan, Côte d'Ivoire</p>
       </div>
       <div className="footer-links">
-        <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><i className="fab fa-github"/></a>
-        <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"/></a>
-        <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><i className="fab fa-facebook"/></a>
-        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><i className="fas fa-globe"/></a>
-        <a href="mailto:wthomasss06@gmail.com"><i className="fas fa-envelope"/></a>
+        <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+        <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
       </div>
     </div>
   </footer>
