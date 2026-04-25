@@ -2715,6 +2715,8 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   align-items: center;
   gap: 10px;
   flex: 1;
+  min-width: 0;      /* empêche le logo de déborder */
+  overflow: hidden;
 }
 
 /* Center : date · heure */
@@ -2748,6 +2750,8 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   gap: 14px;
   flex: 1;
   justify-content: flex-end;
+  min-width: 0;
+  flex-shrink: 0;
 }
 .nb-avail {
   display: flex;
@@ -2776,13 +2780,22 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 @media (max-width: 768px) {
   .nb-hamburger-only { display: flex; }
   .nb-avail { display: none; }
+  .nb-topbar-right { gap: 8px; }   /* réduit l'espacement sur mobile */
   .nb-topbar-center {
-    font-size: 0.58rem;
-    gap: 5px;
+    font-size: 0.55rem;
+    gap: 4px;
+    flex: 0 1 auto;                /* ne prend que l'espace nécessaire */
   }
+}
+@media (max-width: 600px) {
+  /* Centre masqué dès 600 px pour éviter le chevauchement logo ↔ droite */
+  .nb-topbar-center { display: none; }
+  .nb-topbar-left { flex: 1 1 auto; }
+  .nb-topbar-right { flex: 0 0 auto; gap: 6px; }
 }
 @media (max-width: 480px) {
   .nb-topbar-center { display: none; }
+  .nb-topbar { padding: 0 10px; }  /* réduit le padding sur très petits écrans */
 }
 
 /* ── BOTTOM BAR — nav sections ── */
