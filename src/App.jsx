@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './style.css';
+
 import ScrollDepthScene from './components/ScrollDepthScene';
+import ScrambleText from './components/ScrambleText';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
@@ -1030,77 +1032,64 @@ const Noise = () => (
 // ═══════════════════════════════════════════════════════════════
 // LOADER v4 — page.js style, orange, responsive, dark/light
 // ═══════════════════════════════════════════════════════════════
-const LOADER_CSS_ID = 'akaloader-v4-styles';
+const LOADER_CSS_ID = 'akaloader-v5-styles';
 const LOADER_CSS = `
-@keyframes aka4LoaderScan { 0%{top:-2%} 100%{top:104%} }
-@keyframes aka4FadeUp     { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-@keyframes aka4OrbPulse   { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)} }
-@keyframes aka4DotBlink   { 0%,100%{opacity:.4} 50%{opacity:1} }
-@keyframes aka4BarGlow    { 0%,100%{opacity:.6} 50%{opacity:1} }
-/* backgrounds */
-.ldv4-bg-dark  { position:absolute; inset:0;
-  background:linear-gradient(150deg,#090200 0%,#070100 55%,#0c0300 100%); }
-.ldv4-bg-light { position:absolute; inset:0;
-  background:linear-gradient(150deg,#fdf8f5 0%,#fff5ef 55%,#fef0e8 100%); }
-.ldv4-grid { position:absolute; inset:0; opacity:.055; pointer-events:none;
-  background-image:linear-gradient(rgba(255,85,0,.5) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(255,85,0,.5) 1px,transparent 1px);
-  background-size: clamp(30px,4.5vw,52px) clamp(30px,4.5vw,52px); }
-.ldv4-grid--light { opacity:.04; }
-.ldv4-orb { position:absolute; top:50%; left:50%;
-  width:min(560px,85vw); height:min(560px,85vw); border-radius:50%;
-  background:radial-gradient(circle,rgba(255,85,0,.07) 0%,transparent 65%);
-  pointer-events:none; animation:aka4OrbPulse 3.5s ease-in-out infinite; }
-.ldv4-scan { position:absolute; left:0; right:0; height:1px; pointer-events:none;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,100,30,.45) 50%,transparent 100%);
-  animation:aka4LoaderScan 5s linear infinite 1s; }
-/* inner layout */
-.ldv4-inner { position:relative; z-index:2; display:flex; flex-direction:column;
-  align-items:center; text-align:center; width:100%;
-  padding:0 clamp(16px,5vw,40px); gap:0; }
-.ldv4-logo-wrap  { margin-bottom:clamp(20px,4vh,44px); animation:aka4FadeUp .55s ease .05s both; }
-.ldv4-tag        { display:inline-flex; align-items:center; gap:.5em;
-  padding:.28em .9em; border-radius:100px; border:1px solid rgba(255,85,0,.22);
-  background:rgba(255,85,0,.07); backdrop-filter:blur(8px);
-  font-family:'JetBrains Mono',monospace; letter-spacing:.14em; text-transform:uppercase;
-  font-size:clamp(.5rem,.85vw,.7rem); color:rgba(255,110,30,.7);
-  margin-bottom:clamp(14px,3vh,28px); animation:aka4FadeUp .55s ease .12s both; }
-.ldv4-tag--light { color:rgba(180,60,0,.65); border-color:rgba(255,85,0,.18); background:rgba(255,85,0,.05); }
-.ldv4-tag-dot    { width:5px; height:5px; border-radius:50%; background:#ff5500; display:inline-block;
-  animation:aka4DotBlink 1.4s ease-in-out infinite; }
-.ldv4-num        { font-family:'Syne',sans-serif; font-weight:800; line-height:.88;
-  letter-spacing:-.045em; color:#f4efe8;
-  font-size:clamp(60px,15vw,148px);
-  text-shadow:0 0 50px rgba(255,85,0,.2);
-  margin-bottom:clamp(18px,3.5vh,32px); animation:aka4FadeUp .55s ease .18s both; }
-.ldv4-num--light { color:#1a0800; text-shadow:0 0 30px rgba(255,85,0,.15); }
-.ldv4-num span   { font-size:.34em; vertical-align:super; color:#ff5500; font-weight:700; }
-.ldv4-bar-wrap   { width:min(300px,76vw); position:relative;
-  margin-bottom:clamp(14px,2.5vh,24px); animation:aka4FadeUp .55s ease .24s both; }
-.ldv4-bar-track  { height:2px; width:100%; background:rgba(255,85,0,.1); border-radius:2px;
-  position:relative; overflow:visible; }
-.ldv4-bar-fill   { height:100%; border-radius:2px;
-  background:linear-gradient(90deg,rgba(180,40,0,.55),#ff5500);
-  transition:width .13s linear; box-shadow:0 0 10px rgba(255,85,0,.35); }
-.ldv4-bar-tip    { position:absolute; top:50%; transform:translate(-50%,-50%);
-  width:7px; height:7px; border-radius:50%; background:#ff6520;
-  box-shadow:0 0 0 3px rgba(255,85,0,.18),0 0 12px 4px rgba(255,85,0,.45);
-  transition:left .13s linear; animation:aka4BarGlow 1s ease-in-out infinite; pointer-events:none; }
-.ldv4-msg        { font-family:'JetBrains Mono',monospace; letter-spacing:.16em;
-  text-transform:uppercase; font-size:clamp(.58rem,1.1vw,.78rem);
-  color:rgba(255,130,50,.6); min-height:1.3em;
-  margin-bottom:.5rem; animation:aka4FadeUp .55s ease .3s both; }
-.ldv4-msg--light { color:rgba(160,55,0,.55); }
-.ldv4-sub        { font-family:'JetBrains Mono',monospace; letter-spacing:.28em;
-  text-transform:uppercase; font-size:clamp(.46rem,.82vw,.6rem);
-  color:rgba(255,85,0,.24); animation:aka4FadeUp .55s ease .36s both; }
-.ldv4-sub--light { color:rgba(200,70,0,.22); }
+@keyframes lv5Spin    { to { transform: rotate(360deg) } }
+@keyframes lv5SpinR   { to { transform: rotate(-360deg) } }
+@keyframes lv5Pulse   { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
+@keyframes lv5FadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lv5Scan    { 0%{top:-2%} 100%{top:102%} }
+@keyframes lv5DotBlink{ 0%,100%{opacity:.3} 50%{opacity:1} }
+@keyframes lv5Bar     { 0%,100%{opacity:.55} 50%{opacity:1} }
+@keyframes lv5Glitch  { 0%,100%{clip-path:inset(0 0 100% 0)} 4%{clip-path:inset(8% 0 60% 0)} 8%{clip-path:inset(40% 0 25% 0)} 12%{clip-path:inset(70% 0 5% 0)} 16%{clip-path:inset(0 0 100% 0)} }
+@keyframes lv5Ring1   { 0%{stroke-dashoffset:502} 100%{stroke-dashoffset:0} }
+@keyframes lv5Ring2   { 0%{stroke-dashoffset:-314} 100%{stroke-dashoffset:0} }
+@keyframes lv5Orbit   { 0%{transform:rotate(0deg) translateX(72px) rotate(0deg)} 100%{transform:rotate(360deg) translateX(72px) rotate(-360deg)} }
+@keyframes lv5Orbit2  { 0%{transform:rotate(180deg) translateX(52px) rotate(-180deg)} 100%{transform:rotate(540deg) translateX(52px) rotate(-540deg)} }
+@keyframes lv5Morph   {
+  0%,100% { d:path("M100,30 C130,30 160,55 165,85 C170,115 155,145 130,158 C105,171 75,165 58,148 C41,131 38,105 48,82 C58,59 80,30 100,30Z") }
+  33%     { d:path("M100,25 C140,28 168,60 168,95 C168,130 148,162 118,170 C88,178 55,160 40,132 C25,104 35,68 58,48 C81,28 95,22 100,25Z") }
+  66%     { d:path("M100,35 C125,32 158,52 163,82 C168,112 150,148 125,162 C100,176 68,168 50,148 C32,128 33,98 45,74 C57,50 82,38 100,35Z") }
+}
+.lv5-root { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.lv5-bg   { position:absolute; inset:0; }
+.lv5-bg--dark  { background:radial-gradient(ellipse at 50% 40%, #0e0400 0%, #060100 60%, #000 100%); }
+.lv5-bg--light { background:radial-gradient(ellipse at 50% 40%, #fff8f3 0%, #fdf0e8 60%, #f5e8dc 100%); }
+.lv5-grid { position:absolute; inset:0; pointer-events:none; opacity:.045;
+  background-image:linear-gradient(rgba(255,85,0,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,85,0,.6) 1px,transparent 1px);
+  background-size:48px 48px; }
+.lv5-grid--light { opacity:.03; }
+.lv5-scan { position:absolute; left:0; right:0; height:1px; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,100,30,.5),transparent);
+  animation:lv5Scan 4s linear infinite; }
+.lv5-inner { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:0; }
+.lv5-svg-wrap { position:relative; width:220px; height:220px; animation:lv5FadeUp .5s ease .05s both; }
+.lv5-svg-wrap svg { overflow:visible; }
+.lv5-label { font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(255,100,30,.7); margin-top:28px; animation:lv5FadeUp .5s ease .2s both; }
+.lv5-label--light { color:rgba(180,60,0,.6); }
+.lv5-num { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(52px,12vw,96px); letter-spacing:-.04em;
+  color:#f4efe8; text-shadow:0 0 40px rgba(255,85,0,.25); line-height:1;
+  margin-top:6px; animation:lv5FadeUp .5s ease .28s both; }
+.lv5-num--light { color:#1a0800; text-shadow:0 0 30px rgba(255,85,0,.15); }
+.lv5-num span { font-size:.38em; vertical-align:super; color:#ff5500; }
+.lv5-bar-wrap { width:min(260px,72vw); margin-top:18px; animation:lv5FadeUp .5s ease .35s both; }
+.lv5-bar-track { height:2px; background:rgba(255,85,0,.1); border-radius:2px; position:relative; overflow:visible; }
+.lv5-bar-fill  { height:100%; border-radius:2px; background:linear-gradient(90deg,rgba(180,40,0,.5),#ff5500); transition:width .12s linear; box-shadow:0 0 10px rgba(255,85,0,.4); }
+.lv5-bar-dot   { position:absolute; top:50%; transform:translate(-50%,-50%); width:7px; height:7px; border-radius:50%;
+  background:#ff6520; box-shadow:0 0 0 3px rgba(255,85,0,.18),0 0 14px 4px rgba(255,85,0,.5);
+  transition:left .12s linear; animation:lv5Bar 1s ease-in-out infinite; pointer-events:none; }
+.lv5-msg { font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(255,120,40,.55); margin-top:12px; min-height:1.2em; animation:lv5FadeUp .5s ease .42s both; }
+.lv5-msg--light { color:rgba(160,55,0,.5); }
+.lv5-sub { font-family:'JetBrains Mono',monospace; font-size:.46rem; letter-spacing:.26em; text-transform:uppercase;
+  color:rgba(255,85,0,.22); margin-top:4px; animation:lv5FadeUp .5s ease .48s both; }
+.lv5-sub--light { color:rgba(200,70,0,.2); }
 `;
 
 const Loader = ({ onDone }) => {
   const [pct, setPct] = useState(0);
   const [msg, setMsg] = useState('Initialisation…');
-  // detect saved theme to match loader bg
   const [isLight] = useState(() => {
     try { return localStorage.getItem('aka-theme') === 'light'; } catch { return false; }
   });
@@ -1131,49 +1120,148 @@ const Loader = ({ onDone }) => {
   }, [pct]);
 
   const p = Math.min(100, Math.round(pct));
-  const lt = isLight; // light theme = dark neon bg (see CSS vars naming)
+  const lt = isLight;
+  const acc  = '#ff5500';
+  const acc2 = '#ff8844';
+  const bg   = lt ? '#1a0800' : '#ff5500';
+  const fg   = lt ? '#3d1500' : 'rgba(255,85,0,.18)';
 
   return (
-    <div className="loader">
-      <div className={lt ? 'ldv4-bg-light' : 'ldv4-bg-dark'}/>
-      <div className={`ldv4-grid${lt ? ' ldv4-grid--light' : ''}`}/>
-      <div className="ldv4-orb"/>
-      <div className="ldv4-scan"/>
-      <div className="loader-corner loader-corner--tl"/>
-      <div className="loader-corner loader-corner--tr"/>
-      <div className="loader-corner loader-corner--bl"/>
-      <div className="loader-corner loader-corner--br"/>
-      <div className="ldv4-inner">
-        <div className="ldv4-logo-wrap">
-          <AkafolioLogo
-            size={typeof window !== 'undefined' ? Math.max(44, Math.min(76, Math.round(window.innerWidth * .13))) : 60}
-            dark={!lt}
-            animate={true}
-          />
+    <div className="lv5-root">
+      <div className={lt ? 'lv5-bg lv5-bg--light' : 'lv5-bg lv5-bg--dark'}/>
+      <div className={`lv5-grid${lt?' lv5-grid--light':''}`}/>
+      <div className="lv5-scan"/>
+      <div className="lv5-inner">
+
+        {/* ── SVG époustouflant ── */}
+        <div className="lv5-svg-wrap">
+          <svg viewBox="0 0 200 200" width="220" height="220">
+            {/* Blob morphing de fond */}
+            <defs>
+              <radialGradient id="lv5Grad1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={acc} stopOpacity=".18"/>
+                <stop offset="100%" stopColor={acc} stopOpacity="0"/>
+              </radialGradient>
+              <radialGradient id="lv5Grad2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={acc2} stopOpacity=".9"/>
+                <stop offset="100%" stopColor={acc} stopOpacity=".6"/>
+              </radialGradient>
+              <filter id="lv5Glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="lv5GlowSoft">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            {/* Halo de fond */}
+            <circle cx="100" cy="100" r="88" fill="url(#lv5Grad1)" style={{animation:'lv5Pulse 3s ease-in-out infinite'}}/>
+
+            {/* Anneau extérieur — tireté tournant */}
+            <circle cx="100" cy="100" r="88"
+              fill="none" stroke={acc} strokeWidth="1" strokeOpacity=".15"
+              strokeDasharray="8 6"
+              style={{animation:'lv5Spin 12s linear infinite', transformOrigin:'100px 100px'}}/>
+
+            {/* Arc progress extérieur */}
+            <circle cx="100" cy="100" r="80"
+              fill="none" stroke={acc} strokeWidth="2.5" strokeOpacity=".9"
+              strokeLinecap="round"
+              strokeDasharray="502"
+              strokeDashoffset={502 - (502 * pct / 100)}
+              style={{transform:'rotate(-90deg)', transformOrigin:'100px 100px', transition:'stroke-dashoffset .15s linear', filter:`drop-shadow(0 0 6px ${acc})`}}/>
+
+            {/* Anneau intermédiaire tournant inverse */}
+            <circle cx="100" cy="100" r="66"
+              fill="none" stroke={fg} strokeWidth="1" strokeOpacity=".6"
+              strokeDasharray="4 8"
+              style={{animation:'lv5SpinR 8s linear infinite', transformOrigin:'100px 100px'}}/>
+
+            {/* Anneau fin intérieur */}
+            <circle cx="100" cy="100" r="54"
+              fill="none" stroke={acc} strokeWidth=".8" strokeOpacity=".25"
+              strokeDasharray="3 5"
+              style={{animation:'lv5Spin 6s linear infinite', transformOrigin:'100px 100px'}}/>
+
+            {/* Orbite dot 1 */}
+            <g style={{transformOrigin:'100px 100px', animation:'lv5Spin 3s linear infinite'}}>
+              <circle cx="172" cy="100" r="5" fill={acc} filter="url(#lv5Glow)"/>
+              <circle cx="172" cy="100" r="2.5" fill="#fff" opacity=".9"/>
+            </g>
+
+            {/* Orbite dot 2 — décalée */}
+            <g style={{transformOrigin:'100px 100px', animation:'lv5Spin 5s linear infinite', animationDelay:'-1.8s'}}>
+              <circle cx="154" cy="100" r="3.5" fill={acc2} filter="url(#lv5Glow)" opacity=".8"/>
+            </g>
+
+            {/* Orbite dot 3 — inverse */}
+            <g style={{transformOrigin:'100px 100px', animation:'lv5SpinR 4s linear infinite', animationDelay:'-0.5s'}}>
+              <circle cx="28" cy="100" r="4" fill={acc} filter="url(#lv5Glow)" opacity=".7"/>
+              <circle cx="28" cy="100" r="1.8" fill="#fff" opacity=".85"/>
+            </g>
+
+            {/* Croix centrale + cercle */}
+            <circle cx="100" cy="100" r="22" fill={lt?'rgba(255,85,0,.08)':'rgba(255,85,0,.1)'} stroke={acc} strokeWidth="1" strokeOpacity=".4"/>
+            <line x1="100" y1="82" x2="100" y2="118" stroke={acc} strokeWidth="1.2" strokeOpacity=".5"/>
+            <line x1="82" y1="100" x2="118" y2="100" stroke={acc} strokeWidth="1.2" strokeOpacity=".5"/>
+
+            {/* Logo AKA — initiales stylisées */}
+            <text x="100" y="107" textAnchor="middle"
+              fontFamily="'Syne',sans-serif" fontWeight="800" fontSize="18"
+              fill={acc} filter="url(#lv5GlowSoft)" letterSpacing="-1">
+              AKA
+            </text>
+
+            {/* Tick marks autour de l'anneau */}
+            {Array.from({length:24}).map((_,i)=>{
+              const a = (i/24)*Math.PI*2 - Math.PI/2;
+              const r1=84, r2=i%6===0?77:80;
+              return <line key={i}
+                x1={100+Math.cos(a)*r1} y1={100+Math.sin(a)*r1}
+                x2={100+Math.cos(a)*r2} y2={100+Math.sin(a)*r2}
+                stroke={acc} strokeWidth={i%6===0?1.5:.6} strokeOpacity={i%6===0?.7:.3}/>;
+            })}
+
+            {/* Point indicateur sur l'arc */}
+            {pct > 2 && (()=>{
+              const a = ((pct/100)*2*Math.PI) - Math.PI/2;
+              const r=80;
+              return <circle
+                cx={100+Math.cos(a)*r} cy={100+Math.sin(a)*r}
+                r="4.5" fill={acc} filter="url(#lv5Glow)">
+                <animate attributeName="r" values="4;5.5;4" dur=".8s" repeatCount="indefinite"/>
+              </circle>;
+            })()}
+          </svg>
         </div>
-        <div className={`ldv4-tag${lt ? ' ldv4-tag--light' : ''}`}>
-          <span className="ldv4-tag-dot"/>
+
+        <div className={`lv5-label${lt?' lv5-label--light':''}`}>
+          <span style={{display:'inline-block',width:6,height:6,borderRadius:'50%',background:acc,marginRight:8,verticalAlign:'middle',animation:'lv5DotBlink 1.2s ease-in-out infinite'}}/>
           aka.dev · abidjan
         </div>
-        <div className={`ldv4-num${lt ? ' ldv4-num--light' : ''}`}>
-          {p}<span>%</span>
-        </div>
-        <div className="ldv4-bar-wrap">
-          <div className="ldv4-bar-track">
-            <div className="ldv4-bar-fill" style={{ width:`${pct}%` }}/>
-            <div className="ldv4-bar-tip"  style={{ left:`${Math.min(pct, 99.5)}%` }}/>
+
+        <div className={`lv5-num${lt?' lv5-num--light':''}`}>{p}<span>%</span></div>
+
+        <div className="lv5-bar-wrap">
+          <div className="lv5-bar-track">
+            <div className="lv5-bar-fill" style={{width:`${pct}%`}}/>
+            <div className="lv5-bar-dot"  style={{left:`${Math.min(pct,99.5)}%`}}/>
           </div>
         </div>
-        <div className={`ldv4-msg${lt ? ' ldv4-msg--light' : ''}`}>{msg}</div>
-        <div className={`ldv4-sub${lt ? ' ldv4-sub--light' : ''}`}>AKA ELVIS · AKATECH · ABIDJAN</div>
+
+        <div className={`lv5-msg${lt?' lv5-msg--light':''}`}>{msg}</div>
+        <div className={`lv5-sub${lt?' lv5-sub--light':''}`}>AKA ELVIS · AKATECH · ABIDJAN</div>
       </div>
     </div>
   );
 };
 
+
 const ThemeToggle = ({dark, onToggle}) => (
   <button className={`theme-toggle ${dark?'theme-toggle--dark':''}`} onClick={onToggle} title={dark?"Passer en mode clair":"Passer en mode sombre"}>
-    {dark ? <><LI name="sun" color="#ffffff"/><span>Clair</span></> : <><LI name="moon" color="#1a1a1a"/><span>Sombre</span></>}
+    {dark ? <LI name="sun" color="#ffffff"/> : <LI name="moon" color="#1a1a1a"/>}
   </button>
 );
 
@@ -1383,7 +1471,7 @@ const ScrollTop = ({dark}) => {
   return (
     <button ref={btnRef} className={`scroll-top ${vis?'scroll-top--vis':''} ${launching?'scroll-top--launch':''} ${dark?'scroll-top--dark':''}`}
       onClick={go} onMouseEnter={startEngine} onMouseLeave={stopEngine} title="Décollage vers le haut !">
-      <LI name="rocket" color="#ff5500"/><div className="rocket-flame"/>{launching && <RocketFlames/>}
+      <LI name="rocket" color="#0a0a0a"/><div className="rocket-flame"/>{launching && <RocketFlames/>}
     </button>
   );
 };
@@ -1789,8 +1877,8 @@ const Hero = ({ dark }) => {
 
 
             <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
-              <span className="hv4-name-line" style={{'--d':'0.12s'}}>M'BOLLO</span>
-              <span className="hv4-name-line hv4-name-line--u" style={{'--d':'0.26s'}}>AKA ELVIS</span>
+              <ScrambleText text="M'BOLLO" tag="span" className="hv4-name-line" style={{'--d':'0.12s'}} speed={30} step={0.6} threshold={0.15} once={true}/>
+              <ScrambleText text="AKA ELVIS" tag="span" className="hv4-name-line hv4-name-line--u" style={{"--d":"0.26s"}} speed={28} step={0.5} threshold={0.15} once={true}/>
             </h1>
 
             <div className="hv4-photo-mob hv4-rv" style={{'--d':'0.3s'}}>
@@ -2451,7 +2539,7 @@ const About = ({dark}) => {
             </div>
           </div>
           <div className="about-right">
-            <h3>Développeur Full-Stack · Django &amp; React / Vite &amp; Next.js · Data &amp; Carto</h3>
+            <ScrambleText text="Développeur Full-Stack · Django & React / Vite & Next.js · Data & Carto" tag="h3" speed={22} step={0.4} threshold={0.25} once={true}/>
             <p>Formé en <strong>Réseau et Sécurité Informatique</strong>, je conçois et mets en œuvre des applications web complètes — de l'interface React jusqu'au back-end Python — en appliquant les bonnes pratiques de développement et de sécurité dès la conception.</p>
             <p>À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées <strong>Data &amp; Cartographie</strong> : dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).</p>
             <p>Via mon agence <strong>AKATech</strong>, j'ai livré plus de <strong>10 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels.</p>
@@ -3190,7 +3278,7 @@ const Projects = ({dark}) => {
     /* overflow:hidden + position:relative → empêche le décalage gauche lors du scroll des thumbnails */
     <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`} style={{overflowX:'hidden',position:'relative'}}>
       <WindowChrome title="Projets" dark={dark}/>
-      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Réalisations<br/>récentes.</h2></div>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Mes<br/>projets.</h2></div>
       <div className="pf-toggle-wrap">
         <div className={`pf-toggle ${dark?'pf-toggle--dark':''}`}>
           <span ref={pillRef} className={`pf-pill ${dark?'pf-pill--dark':''}`}/>
@@ -3384,62 +3472,104 @@ const Contact = ({dark}) => {
       </div>
 
       {/* ── OÙ ME JOINDRE — après le formulaire ── */}
-      <div className={`coj-wrap ${dark?'coj-wrap--dark':''}`}>
-        <div className="coj-hd">
-          <span className={`coj-label ${dark?'coj-label--dark':''}`}>// Où me joindre</span>
-          <div className="coj-infos">
-            <a href="tel:+2250142507750" className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <LI name="phone" color={dark?"#ff5500":"#ff5500"}/><div><b>Téléphone</b><span>+225 01 42 50 77 50</span></div>
-            </a>
-            <a href="mailto:wthomasss06@gmail.com" className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <LI name="envelope" color={dark?"#ff5500":"#ff5500"}/><div><b>Email</b><span>wthomasss06@gmail.com</span></div>
-            </a>
-            <div className={`coj-info ${dark?'coj-info--dark':''}`}>
-              <LI name="map-marker-alt" color={dark?"#ff5500":"#ff5500"}/><div><b>Localisation</b><span>Abidjan, Côte d'Ivoire</span></div>
-            </div>
-          </div>
-        </div>
+      {/* ═══════════════════════════════════════════
+          OÙ ME JOINDRE — section cohérente avec le site
+          ═══════════════════════════════════════════ */}
+      <div className={`coj-wrap coj-wrap--v2 ${dark?'coj-wrap--dark':''}`}>
 
-        {/* Grille sociale — icônes TOUTES en orange */}
-        <div className={`csg-root ${dark?'csg-root--dark':''}`}>
-          <div className="csg-heading">
-            <span className="csg-label">// un clic, chaque canal</span>
-            <h4 className="csg-title">UN RÉSEAU.<br/><span className="csg-accent">CHAQUE LIEN.</span></h4>
-            <p className="csg-sub">Retrouvez-moi sur toutes les plateformes.</p>
+        <div style={{position:'relative',zIndex:1}}>
+          {/* ── Header section ── */}
+          <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'48px'}}>
+            <span className="s-lbl">// Où me joindre</span>
+            <h2 className="s-ttl">Restons<br/>connectés.</h2>
           </div>
-          <div className="csg-grid">
+
+          {/* ── 3 infos de contact en cards spotlight ── */}
+          <div className="coj-infos-v2">
             {[
-              {ico:'github',   label:'GitHub',   url:'https://github.com/wthomasss06-stack'},
-              {ico:'linkedin', label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/'},
-              {ico:'facebook', label:'Facebook',  url:FACEBOOK_URL},
-              {ico:'whatsapp', label:'WhatsApp',  url:'https://wa.me/2250142507750'},
-              {ico:'globe',    label:'AKATech',   url:'https://akatech.vercel.app/'},
-              {ico:'envelope', label:'Gmail',     url:'mailto:wthomasss06@gmail.com'},
-              {ico:'university',label:'UVCI',    url:'mailto:aka.mbollo@uvci.edu.ci'},
-              {ico:'file-pdf', label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true},
-            ].map((s,i)=>(
-              <a key={i} href={s.url}
-                target={s.url.startsWith('http')?'_blank':'_self'}
-                rel="noreferrer"
-                download={s.download||undefined}
-                className={`csg-item ${dark?'csg-item--dark':''}`}
-                title={s.label}>
-                <LI name={s.ico} size={22} color="#ff5500"/>
-                <span className="csg-name">{s.label}</span>
-              </a>
+              {ico:'phone',          href:'tel:+2250142507750',          label:'Téléphone',  val:'+225 01 42 50 77 50'},
+              {ico:'envelope',       href:'mailto:wthomasss06@gmail.com',label:'Email',       val:'wthomasss06@gmail.com'},
+              {ico:'map-marker-alt', href:null,                          label:'Localisation',val:"Abidjan, Côte d'Ivoire"},
+            ].map((item,i)=>(
+              <TiltCard key={i} intensity={6} perspective={900} className="coj-v2-card">
+                <SpotlightCard style={{height:'100%'}}>
+                  <div className="coj-v2-card-inner">
+                    <div className="coj-v2-icon"><LI name={item.ico} size={20} color="#ff5500"/></div>
+                    <div className="coj-v2-text">
+                      <span className="coj-v2-label">{item.label}</span>
+                      {item.href
+                        ? <a href={item.href} className="coj-v2-val">{item.val}</a>
+                        : <span className="coj-v2-val">{item.val}</span>}
+                    </div>
+                  </div>
+                </SpotlightCard>
+              </TiltCard>
             ))}
           </div>
-        </div>
 
-        {/* QR + CV */}
-        <div className={`contact-cv ${dark?'contact-cv--dark':''}`}>
-          <div className="cv-qr"><img src="/assets/images/qrcodeCV.png" alt="QR Code CV"/></div>
-          <div>
-            <p><b>Télécharger mon CV</b></p>
-            <p>Scannez le QR code ou cliquez</p>
-            <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} download>
-              <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
-            </a>
+          {/* ═══════════════════════════════════════════
+              GRILLE SOCIALE — style cohérent site
+              ═══════════════════════════════════════════ */}
+          <div className="csg-root-v2">
+            <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'36px'}}>
+              <span className="s-lbl">// un clic, chaque canal</span>
+              <h2 className="s-ttl">
+                UN RÉSEAU.<br/>
+                <ScrambleText text="CHAQUE LIEN." tag="span" className="csg-accent" speed={28} step={0.45} threshold={0.3} once={true}/>
+              </h2>
+              <p className={`csg-sub-v2 ${dark?'csg-sub-v2--dark':''}`}>Retrouvez-moi sur toutes les plateformes.</p>
+            </div>
+
+            <div className="csg-grid-v2">
+              {[
+                {ico:'github',    label:'GitHub',   url:'https://github.com/wthomasss06-stack',                          desc:'Code source'},
+                {ico:'linkedin',  label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',           desc:'Profil pro'},
+                {ico:'facebook',  label:'Facebook',  url:FACEBOOK_URL,                                                   desc:'Page officielle'},
+                {ico:'whatsapp',  label:'WhatsApp',  url:'https://wa.me/2250142507750',                                  desc:'Message direct'},
+                {ico:'globe',     label:'AKATech',   url:'https://akatech.vercel.app/',                                  desc:'Mon agence'},
+                {ico:'envelope',  label:'Gmail',     url:'mailto:wthomasss06@gmail.com',                                 desc:'Email direct'},
+                {ico:'university',label:'UVCI',      url:'mailto:aka.mbollo@uvci.edu.ci',                                desc:'Inst. académique'},
+                {ico:'file-pdf',  label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true,              desc:'Télécharger'},
+              ].map((s,i)=>(
+                <TiltCard key={i} intensity={8} perspective={800} className="csg-v2-item">
+                  <a href={s.url}
+                    target={s.url.startsWith('http')?'_blank':'_self'}
+                    rel="noreferrer"
+                    download={s.download||undefined}
+                    className={`csg-v2-link ${dark?'csg-v2-link--dark':''}`}
+                    title={s.label}>
+                    <div className="csg-v2-icon-wrap">
+                      <LI name={s.ico} size={26} color="#ff5500"/>
+                    </div>
+                    <span className="csg-v2-name">{s.label}</span>
+                    <span className="csg-v2-desc">{s.desc}</span>
+                    <LI name="external-link-alt" size={12} color="rgba(255,85,0,0.4)" className="csg-v2-ext"/>
+                  </a>
+                </TiltCard>
+              ))}
+            </div>
+          </div>
+
+          {/* ── QR + CV — intégré visuellement ── */}
+          <div className={`contact-cv-v2 ${dark?'contact-cv-v2--dark':''}`}>
+            <TiltCard intensity={5} perspective={1000} className="cv-v2-card">
+              <SpotlightCard style={{height:'100%'}}>
+                <div className="cv-v2-inner">
+                  <div className="cv-v2-qr-wrap">
+                    <img src="/assets/images/qrcodeCV.png" alt="QR Code CV" className="cv-v2-qr"/>
+                    <div className="cv-v2-qr-badge"><LI name="mobile-alt" size={12} color="#ff5500"/> Scanner</div>
+                  </div>
+                  <div className="cv-v2-text">
+                    <span className="cv-v2-eyebrow">// document</span>
+                    <h4 className="cv-v2-title">Télécharger<br/>mon CV</h4>
+                    <p className="cv-v2-sub">Scannez le QR code ou cliquez ci-dessous</p>
+                    <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint cv-v2-btn`} download>
+                      <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
+                    </a>
+                  </div>
+                </div>
+              </SpotlightCard>
+            </TiltCard>
           </div>
         </div>
       </div>

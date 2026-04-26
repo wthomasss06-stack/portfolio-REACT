@@ -47,6 +47,7 @@ export default function ScrambleText({
       : text.split('').map(c => c === ' ' ? ' ' : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
 
     let intervalId = null;
+    let repeatId  = null;
 
     const scramble = () => {
       let iteration = 0;
@@ -70,8 +71,15 @@ export default function ScrambleText({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        if (once) observer.disconnect();
-        scramble();
+        if (once) {
+          observer.disconnect();
+          scramble();
+        } else {
+          // Premier lancement immédiat, puis répétition toutes les 10 s
+          scramble();
+          clearInterval(repeatId);
+          repeatId = setInterval(scramble, 10000);
+        }
       },
       { threshold }
     );
@@ -81,6 +89,7 @@ export default function ScrambleText({
     return () => {
       observer.disconnect();
       clearInterval(intervalId);
+      clearInterval(repeatId);
     };
   }, [text, speed, step, threshold, once, startBinary]);
 
