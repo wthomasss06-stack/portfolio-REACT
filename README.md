@@ -47,18 +47,22 @@ Portfolio personnel interactif développé avec **React 18**, présentant mes co
 - **Thème auto** : détection par heure locale (sombre entre 18h et 6h)
 - **Responsive complet** : mobile, tablette, desktop (breakpoints : 1024px · 768px · 480px)
 - **Navigation fluide** : scroll smooth vers les sections + persistance thème (`localStorage`)
-- **Curseur personnalisé** : `CustomCursor` animé
+- **Curseur personnalisé** : `CustomCursor` (dot animé)
 - **Bouton ScrollTop** flottant avec animation
 
 ### 🎭 Effets visuels
 
-- **ScrollDepthScene** : background WebGL Three.js (terrain wireframe + particules) avec zoom caméra synchronisé au scroll via GSAP ScrollTrigger
-- **ScrambleText** : décodage lettre par lettre déclenché à l'entrée dans le viewport
+- **ScrollDepthScene** : background WebGL Three.js (terrain wireframe + particules) avec zoom caméra synchronisé au scroll via GSAP ScrollTrigger — hero blast exit + depth entrance staggeré
+- **ScrambleText** : décodage lettre par lettre déclenché à l'entrée dans le viewport — utilisé dans le Hero (nom), la section À propos et la section Contact
+- **AuroraCanvas** : fond aurora animé canvas (WebGL-like CSS) dans le Hero
+- **PlasmaCanvasBg** : fond plasma animé dans Services, Parcours et Testimonials
 - **AnimatedIcon System (LI)** : 40+ icônes SVG animées CSS natives (sans dépendance externe)
 - **TiltCard** : effet 3D perspective sur mouse/touch avec glow spotlight
 - **SpotlightCard** : carte avec halo lumineux suivant le curseur
+- **StackedCard** : carousel de cartes empilées mobile avec swipe — utilisé dans les Tarifs et le Parcours
 - **FanDeck 3D** : carousel glassmorphism drag & swipe + navigation clavier (←→)
 - **MagBtn** : boutons avec effet ripple + glint animé
+- **PricingAnimIcon** : icônes animées CSS dédiées aux cartes de tarification (rocket, star, clock, check, etc.)
 - **Loader** : écran de chargement avec compteur %, barre, scan line et messages dynamiques
 
 ### 🌐 Réseaux sociaux
@@ -74,44 +78,48 @@ Hover Facebook : `background: #1877F2` (bleu officiel).
 
 ## 📱 Sections du portfolio
 
-### 1. Hero
+Toutes les sections sont des enfants directs de `ScrollDepthScene` (animations depth entrance + hero blast exit). La structure rendue est la suivante :
+
+```
+ScrollDepthScene
+ ├── Hero              (#home)
+ ├── Marquee
+ ├── FeaturedCreation  (#creations)
+ ├── Services          (#services) ← contient PricingTabs
+ ├── About             (#about + #experience)  ← contient Timeline
+ ├── Projects          (#projects)
+ ├── Skills            (#skills)
+ ├── Testimonials
+ └── Contact           (#contact)
+```
+
+### 1. Hero (`#home`)
 - Salutation dynamique selon heure locale (Bonjour 6h–18h / Bonsoir 18h–6h)
 - Horloge temps réel : `Jj JJ · HHh MMmn SSs`
 - Indicateur de disponibilité : `● Disponible — Abidjan, Côte d'Ivoire`
 - Effet typing cyclique : Full-Stack → React & Python → Django & Flask → orienté produit
+- **ScrambleText** sur le nom : `M'BOLLO` + `AKA ELVIS` (décodage lettre par lettre)
+- Fond **AuroraCanvas** animé
 - CTAs : **Voir mes projets ↗** + **Télécharger CV**
 
 ### 2. Marquee
 Défilement infini : React, Django, Flask, Python, TypeScript, Tailwind, MySQL, Vercel, Node.js, Git, REST API, Bootstrap, JavaScript
 
-### 3. Vitrine — Dernière Création (`FeaturedCreation`)
+### 3. Vitrine — Dernière Création (`FeaturedCreation`, `#creations`)
 Mise en avant de **ShopCI** avec mockup desktop + mobile côte à côte, window chrome macOS.
 
-### 4. Services *(carousel mobile, TiltCard)*
+### 4. Services & Tarifs (`#services`)
 
-| # | Service | Description |
-|---|---------|-------------|
-| 01 | Applications Web | Apps CRUD complètes, dashboards de gestion, solutions sur-mesure |
-| 02 | API RESTful | APIs Python/Flask documentées, sécurisées, prêtes production |
-| 03 | Interfaces Responsives | Design et intégration d'interfaces modernes et adaptatives |
-| 04 | Bases de Données | Conception et optimisation MySQL |
-| 05 | Sécurité Applicative | Bonnes pratiques intégrées dès la conception |
-| 06 | Support Technique | Maintenance informatique et assistance utilisateur |
+| # | Service |
+|---|---------|
+| 01 | Applications Web |
+| 02 | API RESTful |
+| 03 | Interfaces Responsives |
+| 04 | Bases de Données |
+| 05 | Sécurité Applicative |
+| 06 | Support Technique |
 
-### 5. À Propos (`About`)
-Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + CTA.
-
-### 6. Expérience & Formation — `Timeline`
-
-| Date | Rôle | Lieu |
-|------|------|------|
-| 2025–2026 | Développeur Freelance Fullstack | AKATech |
-| Mai–Nov. 2025 | Informaticien Stagiaire | Mairie d'Agboville |
-| 2023–2024 | Projet Académique ARTICI | UVCI |
-| 2023–2024 | Licence Réseau & Sécurité Informatique | UVCI (Cert. E-Banking · Réf: CC/24-002485) |
-| 2020–2021 | Baccalauréat Série D | Lycée Moderne d'Arrah (Mention Assez Bien) |
-
-### 7. Tarification — `PricingTabs`
+`PricingTabs` est intégré **dans** `Services` — 4 onglets tarification avec pill animé :
 
 | Onglet | Starter / MVP | Standard / Pro / Scale ⭐ | Premium / Elite / Enterprise |
 |--------|---------------|--------------------------|------------------------------|
@@ -122,7 +130,26 @@ Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + 
 
 > Toutes les offres incluent **Nom de domaine offert (1 an)**. Hébergement inclus selon plan.
 
-### 8. Projets — FanDeck 3D Glassmorphism
+Sur mobile : les plans sont affichés via **`StackedCard`** (swipe vertical).
+
+### 5. À Propos & Parcours (`#about` + `#experience`)
+
+Ces deux sections sont rendues par le même composant `About` :
+
+- **#about** : Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + CTA + fond **PlasmaCanvasBg**
+- **#experience** : Timeline expérience/formation (desktop horizontal), **StackedCard** mobile
+
+**Fil conducteur ScrambleText** : tagline `"Développeur Full-Stack · Django & React / Vite & Next.js · Data & Carto"` décodée à l'entrée dans le viewport.
+
+| Date | Rôle | Lieu |
+|------|------|------|
+| 2025–2026 | Développeur Freelance Fullstack | AKATech |
+| Mai–Nov. 2025 | Informaticien Stagiaire | Mairie d'Agboville |
+| 2023–2024 | Projet Académique ARTICI | UVCI |
+| 2023–2024 | Licence Réseau & Sécurité Informatique | UVCI (Cert. E-Banking · Réf: CC/24-002485) |
+| 2020–2021 | Baccalauréat Série D | Lycée Moderne d'Arrah (Mention Assez Bien) |
+
+### 6. Projets — FanDeck 3D Glassmorphism (`#projects`)
 
 **14 projets** · filtres pill interactifs · drag & swipe · navigation clavier (←→)
 
@@ -132,9 +159,9 @@ Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + 
 | 🔵 Démos | 4 | Chap-chapMAP, ElvisMarket, MonCashJour, LivreurTrack Pro |
 | 🟡 En cours | 1 | LinkedIn Banner Pro (30%) |
 
-> **Carte AKATech spéciale** (`isAgency:true`) : rendu 100% CSS génératif — aurora orbs, grille pulsante, scan line, logo glow vert, pills tech. Image optionnelle : `/assets/images/projects/akatech-preview.jpg`
+> **Carte AKATech spéciale** (`isAgency:true`) : rendu 100% CSS génératif — aurora orbs, grille pulsante, scan line, logo glow vert, pills tech.
 
-### 9. Compétences — `Skills`
+### 7. Compétences (`#skills`)
 
 | Bande | Technologies |
 |-------|-------------|
@@ -143,10 +170,13 @@ Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + 
 | Outils & IA | Git, VS Code, GitHub, ChatGPT, Gemini, Claude AI, PythonAnywhere, Vercel, Netlify |
 | Autres | Windows, Android, Word, Excel, PowerPoint, MS Project, Facebook, Peinture, Maintenance, Support Tech |
 
-### 10. Témoignages — `Testimonials`
-Section de retours clients avec cards glassmorphism.
+4 bandes infinies bidirectionnelles.
 
-### 11. Contact
+### 8. Témoignages
+Cards glassmorphism + fond PlasmaCanvasBg.
+
+### 9. Contact (`#contact`)
+- **ScrambleText** : accroche `"CHAQUE LIEN."` décodée à l'entrée
 - Formulaire FormSubmit (`formsubmit.co/ajax`)
 - Grille sociale 8 liens : GitHub · LinkedIn · Facebook · WhatsApp · AKATech 🌐 · Gmail · UVCI · Mon CV
 - QR Code CV + téléchargement PDF
@@ -155,39 +185,45 @@ Section de retours clients avec cards glassmorphism.
 
 ## 🗂️ Architecture du code
 
-### Composants (`App.jsx`)
+### Composants internes (`App.jsx`)
 
 | Composant | Rôle |
 |-----------|------|
 | `AkafolioLogo` | Logo génératif animé CSS v4 (pill orange, dot pulsant, glow) |
-| `LI` | Système d'icônes animées CSS — 40+ icônes SVG sans dépendance |
-| `Loader` | Écran de chargement avec compteur %, barre, scan line, messages dynamiques |
-| `CustomCursor` | Curseur personnalisé animé |
+| `LI` | Système d'icônes animées CSS — 40+ icônes SVG sans dépendance externe |
+| `PricingAnimIcon` | Icônes animées CSS dédiées aux cartes de tarification |
+| `Loader` | Écran de chargement : compteur %, barre, scan line, messages dynamiques |
+| `CustomCursor` | Dot curseur personnalisé animé |
+| `AuroraCanvas` | Fond aurora animé canvas (Hero) |
+| `PlasmaCanvasBg` | Fond plasma animé (Services, Parcours, Testimonials) |
+| `ParticleCanvas` | Canvas particules — défini, non rendu actuellement |
+| `StackedCard` | Carousel de cartes empilées mobile avec swipe (Tarifs + Parcours) |
 | `ScrollTop` | Bouton retour en haut flottant |
 | `Navbar` | Navigation + drawer mobile + theme toggle |
-| `Hero` | Horloge, typing effect, stats, CTAs |
+| `Hero` | Horloge, ScrambleText nom, AuroraCanvas, typing effect, CTAs |
 | `Marquee` | Défilement infini de technologies |
-| `FeaturedCreation` | Vitrine ShopCI avec mockup desktop/mobile + window chrome |
-| `Services` | 6 services + TiltCard + SpotlightCard, carousel mobile |
+| `FeaturedCreation` | Vitrine ShopCI mockup desktop/mobile + window chrome |
+| `Services` | 6 services + TiltCard + SpotlightCard + PricingTabs + StackedCard mobile |
 | `PricingTabs` | 4 onglets tarification avec pill animé (Portfolio · Vitrine · E-commerce · SaaS) |
-| `About` | Présentation + photo + badges + soft skills |
-| `Timeline` | Expériences et formations avec stagger, barres de progression |
+| `About` | Section About (#about) + Timeline (#experience) dans un seul composant |
 | `FanDeck` | Carousel 3D : Stack → Fan → Focus + drag/swipe + navigation clavier |
 | `Projects` | Filtres pills + FanDeck (14 projets) |
 | `Skills` | 4 bandes infinies bidirectionnelles |
-| `Testimonials` | Retours clients glassmorphism |
-| `Contact` | Formulaire + grille sociale 8 liens + QR Code |
+| `Testimonials` | Retours clients glassmorphism + PlasmaCanvasBg |
+| `Contact` | Formulaire + ScrambleText + grille sociale 8 liens + QR Code |
 | `Footer` | Liens sociaux + copyright |
 | `MagBtn` | Bouton avec ripple + glint |
 | `TiltCard` | Carte 3D tilt perspective mouse/touch |
+| `SpotlightCard` | Carte avec halo lumineux suivant le curseur |
 | `WindowChrome` | Barre macOS décorative |
+| `ProgressBar` | Barre de progression animée (Timeline) |
 
 ### Composants externes (`/components/`)
 
 | Fichier | Rôle |
 |---------|------|
-| `ScrollDepthScene.jsx` | Background WebGL Three.js (terrain wireframe + particules) + GSAP scroll animations : hero blast exit, depth entrance, zoom caméra |
-| `ScrambleText.jsx` | Décodage texte lettre par lettre au scroll (IntersectionObserver) — avec mode binaire optionnel |
+| `ScrollDepthScene.jsx` | Background WebGL Three.js (terrain wireframe + particules) + GSAP ScrollTrigger : hero blast exit, depth entrance staggeré, zoom caméra progressif 2 phases |
+| `ScrambleText.jsx` | Décodage texte lettre par lettre au scroll (IntersectionObserver) — mode binaire optionnel, `speed`, `step`, `threshold`, `once` configurables |
 
 ### Données (`App.jsx`)
 
@@ -197,7 +233,7 @@ Section de retours clients avec cards glassmorphism.
 | `PROJECTS` | `array[14]` | Titre, description, tech, url, image, progress, cat, isAgency, isPremium |
 | `SERVICES` | `array[6]` | Numéro, icône, titre, description, features |
 | `PRICING_TABS` | `array[4]` | Onglets avec plans (badge, price, delivery, features, isPopular) |
-| `FAQ` | `array[5]` | Questions / réponses fréquentes |
+| `FAQ` | `array[5]` | Questions / réponses — défini mais non rendu actuellement |
 | `SKILLS` | `object{4}` | frontend · backend · tools · autres |
 | `TIMELINE` | `array[5]` | Expériences et formations avec barres de progression |
 | `GRAD` | `array[11]` | Gradients fallback cartes (index 10 = vert AKATech) |
@@ -282,9 +318,10 @@ Classes logo v4 :
 - ✅ SEO — Meta tags, Open Graph
 - ✅ Responsive mobile-first (breakpoints : 1024px · 768px · 480px)
 - ✅ Accessibility — ARIA labels, navigation clavier sur FanDeck
-- ✅ Animations CSS natives sans librairie externe (système LI)
+- ✅ Animations CSS natives sans librairie externe (système LI + PricingAnimIcon)
 - ✅ Carte AKATech 100% CSS génératif — aucune image requise
-- ✅ ScrollDepthScene : cleanup RAF + listeners au unmount, `passive: true` sur scroll
+- ✅ ScrollDepthScene : cleanup RAF + listeners au unmount, `passive: true` sur scroll, `ctx.revert()` sur GSAP
+- ✅ ScrambleText : cleanup `IntersectionObserver` + `clearInterval` au unmount
 
 ---
 
@@ -309,6 +346,16 @@ npm run preview  # prévisualiser le build
 }
 ```
 
+### Structure des composants externes
+```
+src/
+ ├── App.jsx
+ ├── style.css
+ └── components/
+      ├── ScrollDepthScene.jsx
+      └── ScrambleText.jsx
+```
+
 ### Image placeholder AKATech
 ```
 /public/assets/images/projects/akatech-preview.jpg
@@ -318,12 +365,24 @@ npm run preview  # prévisualiser le build
 
 ## 📊 Changelog
 
+### [Avril 2026] — v3.3
+
+| Changement | Détail |
+|------------|--------|
+| 🔧 **Structure sections clarifiée** | `PricingTabs` intégré dans `Services` · `Timeline (#experience)` intégré dans `About` — un seul composant par bloc logique |
+| 🔧 **ScrambleText multi-points** | Utilisé dans 3 sections : Hero (nom `M'BOLLO / AKA ELVIS`), About (tagline développeur), Contact (accroche `CHAQUE LIEN.`) |
+| 🔧 **Suppression effet curseur lumineux Hero** | `CustomCursor` (dot) conservé — effet glow/plasma du curseur dans le Hero retiré |
+| 🆕 **PricingAnimIcon** | Icônes animées CSS dédiées aux plans tarifaires (rocket · star · clock · check · building · cpu) |
+| 🆕 **StackedCard dans Parcours** | Carrousel mobile swipeable pour les entrées Timeline (en dehors de la vue desktop) |
+| ℹ️ **FAQ** | Constante `FAQ` définie (5 entrées) — non rendue actuellement |
+| ℹ️ **ParticleCanvas** | Composant défini — non rendu actuellement |
+
 ### [Avril 2026] — v3.2
 
 | Changement | Détail |
 |------------|--------|
 | 🆕 **Projet #14 — Université les Anges** | Site institutionnel HTML/CSS/Bulma/Bootstrap — `cat:"en-ligne"` · 100% |
-| 🆕 **ScrollDepthScene.jsx** | Composant WebGL Three.js + GSAP ScrollTrigger : terrain wireframe animé, zoom caméra progressif sur tout le scroll (phase 1 : plongeon, phase 2 : immersion), hero blast exit, depth entrance staggeré |
+| 🆕 **ScrollDepthScene.jsx** | Composant WebGL Three.js + GSAP ScrollTrigger : terrain wireframe animé, zoom caméra progressif 2 phases (plongeon + immersion), hero blast exit, depth entrance staggeré |
 | 🆕 **ScrambleText.jsx** | Composant de décodage texte lettre par lettre avec `IntersectionObserver`, mode binaire optionnel |
 | 🆕 **Système LI v2** | 40+ icônes SVG animées CSS injectées via `LI_CSS_ID` — remplacement complet de lucide-react |
 | 🆕 **Logo AKATech v4** | Pill orange avec prefix mono `//`, dot pulsant, glow text, scan line — `AKALOGO_CSS_ID` |
@@ -331,7 +390,7 @@ npm run preview  # prévisualiser le build
 | 🆕 **Grille sociale 8 liens** | Ajout WhatsApp + UVCI dans Contact |
 | 🔧 **Timeline enrichie** | Ajout entrée Freelance AKATech (2025–2026) avec barres de progression |
 | 🔧 **Pricing mis à jour** | Nouveaux tarifs et délais sur les 4 onglets |
-| 🔧 **App.jsx** | `Testimonials` ajouté dans `ScrollDepthScene` |
+| 🔧 **App.jsx** | Toutes sections wrappées dans `ScrollDepthScene` |
 
 ### [Avril 2026] — v3.1
 
@@ -346,7 +405,7 @@ npm run preview  # prévisualiser le build
 | Changement | Détail |
 |------------|--------|
 | 🆕 **Logo AKATech v3** | Engrenage, circuit animé, halo, particules, scan line |
-| 🆕 **Facebook** | Ajouté aux 3 emplacements sociaux |
+| 🆕 **Facebook** | Ajouté aux 4 emplacements sociaux |
 | 🆕 **Loader** | Fond `#080400`, scan, brackets, glow dot, messages dynamiques |
 | 🆕 **Navbar** | Actif = underline orange, logo `size=26` |
 | 🔧 **Hover Facebook** | `#1877F2` bleu officiel |
