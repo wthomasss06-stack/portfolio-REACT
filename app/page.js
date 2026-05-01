@@ -1,0 +1,1180 @@
+'use client'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import {
+  ArrowRight, Star, ExternalLink,
+  Globe, ShoppingCart, Cpu, Server, Palette, Wrench,
+  TrendingUp, Users, Clock, Award,
+  MessageCircle, Target, Code, Rocket, Timer, ChevronLeft, ChevronRight,
+} from 'lucide-react'
+import { useTheme } from '@/lib/theme'
+import { SectionEye, AnimatedCounter, LazyImg, MarqueeStrip, SectionCTA, GreenUnderline } from '@/components/ui/index'
+import { SERVICES, PROJECTS, TESTIMONIALS, STATS } from '@/lib/data'
+
+const ICON_MAP = { Globe, ShoppingCart, Cpu, Server, Palette, Wrench }
+
+// ── HERO SLIDES ───────────────────────────────────────────────
+const HERO_SLIDES = [
+  {
+    tag: '// Site Vitrine',
+    title: 'Votre présence digitale,',
+    accent: 'professionnelle & rentable.',
+    sub: "Un site qui travaille pour vous 24h/24 — attirez des clients, gagnez en crédibilité et développez votre activité.",
+    img: '/images/hero-bg.jpg',
+  },
+  {
+    tag: '// E-Commerce',
+    title: 'Vendez en ligne,',
+    accent: 'même quand vous dormez.',
+    sub: "Boutique complète avec paiement Mobile Money, gestion stocks et tableau de bord admin. Livrée en 14 jours.",
+    img: '/images/about-2.jpg',
+  },
+  {
+    tag: '// Application SaaS',
+    title: 'Automatisez vos tâches,',
+    accent: 'scalez votre activité.',
+    sub: "Des applications web sur-mesure pour digitaliser vos processus et économiser des heures de travail chaque semaine.",
+    img: '/images/about-1.jpg',
+  },
+  {
+    tag: '// Portfolio Créatif',
+    title: 'Votre talent mérite',
+    accent: 'une vitrine digitale.',
+    sub: "Portfolios animés, modernes et percutants pour créatifs, graphistes et freelances qui veulent décrocher plus de clients.",
+    img: '/images/about-4.jpg',
+  },
+]
+
+// ── TILT 3D CARD ──────────────────────────────────────────────
+function TiltCard({ children, style = {}, className = '', intensity = 14, perspective = 900 }) {
+  const ref = useRef(null)
+  const glowRef = useRef(null)
+  const rafRef = useRef(null)
+
+  const applyTilt = useCallback((mx, my) => {
+    const el = ref.current; if (!el) return
+    const rect = el.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    const rx = ((my - cy) / (rect.height / 2)) * -intensity
+    const ry = ((mx - cx) / (rect.width / 2)) * intensity
+    const px = ((mx - rect.left) / rect.width) * 100
+    const py = ((my - rect.top) / rect.height) * 100
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      el.style.transform = `perspective(${perspective}px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.04,1.04,1.04)`
+      el.style.transition = 'transform .07s linear'
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(260px circle at ${px}% ${py}%, rgba(34,200,100,.13) 0%, transparent 65%)`
+        glowRef.current.style.opacity = '1'
+      }
+    })
+  }, [intensity, perspective])
+
+  const resetTilt = useCallback(() => {
+    const el = ref.current; if (!el) return
+    cancelAnimationFrame(rafRef.current)
+    el.style.transition = 'transform .45s cubic-bezier(.25,.46,.45,.94)'
+    el.style.transform = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`
+    if (glowRef.current) glowRef.current.style.opacity = '0'
+  }, [perspective])
+
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const onTouchMove = e => {
+      if (!e.touches?.[0]) return
+      applyTilt(e.touches[0].clientX, e.touches[0].clientY)
+    }
+    const onTouchEnd = () => resetTilt()
+    el.addEventListener('touchmove', onTouchMove, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [applyTilt, resetTilt])
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={{ ...style, willChange: 'transform', transformStyle: 'preserve-3d', position: 'relative' }}
+      onMouseMove={e => applyTilt(e.clientX, e.clientY)}
+      onMouseLeave={resetTilt}
+    >
+      <div ref={glowRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0, transition: 'opacity .12s', borderRadius: 18 }} />
+      <div style={{ position: 'relative', zIndex: 1, height: '100%' }}>{children}</div>
+    </div>
+  )
+}
+
+// ── HERO (inchangé) ───────────────────────────────────────────
+function Hero() {
+  const T = useTheme()
+  const [idx, setIdx] = useState(0)
+  const [imgIdx, setImgIdx] = useState(0)
+  const timerRef = useRef(null)
+
+  const layerBgRef  = useRef(null)
+  const layerMidRef = useRef(null)
+  const layerForeRef = useRef(null)
+
+  const next = useCallback(() => {
+    setIdx(i => (i + 1) % HERO_SLIDES.length)
+    setImgIdx(i => (i + 1) % HERO_SLIDES.length)
+  }, [])
+
+  useEffect(() => {
+    timerRef.current = setInterval(next, 5000)
+    return () => clearInterval(timerRef.current)
+  }, [next])
+
+  useEffect(() => {
+    const onMouse = (e) => {
+      const x = (e.clientX - window.innerWidth  / 2) / (window.innerWidth  / 2)
+      const y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)
+      const rotX = y * -5
+      const rotY = x *  5
+      const apply = (el, speed, noRotate = false) => {
+        if (!el) return
+        const mx = x * 50 * speed
+        const my = y * 50 * speed
+        if (noRotate) {
+          el.style.transform = `translate3d(${mx}px,${my}px,0)`
+        } else {
+          el.style.transform = `translate3d(${mx}px,${my}px,0) rotateX(${rotX}deg) rotateY(${rotY}deg)`
+        }
+      }
+      apply(layerBgRef.current,   0.2)
+      apply(layerMidRef.current,  0.5, true)
+      apply(layerForeRef.current, 0.8)
+    }
+    window.addEventListener('mousemove', onMouse)
+    return () => window.removeEventListener('mousemove', onMouse)
+  }, [])
+
+  useEffect(() => {
+    const onScroll = () => {
+      const s = window.pageYOffset
+      if (layerBgRef.current) {
+        const zoom = 1 + s * 0.0005
+        layerBgRef.current.style.transform = `scale(${zoom}) translateY(${s * 0.2}px)`
+        layerBgRef.current.style.filter = `blur(${Math.min(s / 60, 12)}px)`
+      }
+      if (layerMidRef.current) {
+        layerMidRef.current.style.opacity  = Math.max(0, 1 - s / 700)
+        layerMidRef.current.style.transform = `translateY(${s * 0.5 * 0.8}px)`
+        layerMidRef.current.style.filter   = `blur(${s / 100}px)`
+      }
+      if (layerForeRef.current) {
+        layerForeRef.current.style.transform = `translateY(${s * 0.8 * 1.2}px)`
+        layerForeRef.current.style.opacity = Math.max(0, 1 - s / 400)
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const slide = HERO_SLIDES[idx]
+
+  return (
+    <section style={{ height: '100vh', width: '100%', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#030806' }}>
+
+      <div ref={layerBgRef} style={{ position: 'absolute', zIndex: 1, width: '115%', height: '115%', willChange: 'transform, filter', transition: 'transform .1s ease-out', pointerEvents: 'none' }}>
+        <AnimatePresence mode="sync">
+          <motion.div key={imgIdx}
+            initial={{ opacity: 0, scale: 1.06 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: [.4,0,.2,1] }}
+            style={{ position: 'absolute', inset: 0 }}>
+            <img src={HERO_SLIDES[imgIdx].img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </motion.div>
+        </AnimatePresence>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(105deg, rgba(3,8,6,.95) 0%, rgba(3,8,6,.78) 45%, rgba(3,8,6,.28) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 15%, rgba(3,8,6,.92) 100%)' }} />
+        <motion.div
+          style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+          animate={{ background: [
+            'radial-gradient(700px circle at 25% 38%, rgba(34,200,100,.055) 0%, transparent 62%)',
+            'radial-gradient(700px circle at 72% 58%, rgba(34,200,100,.075) 0%, transparent 62%)',
+            'radial-gradient(700px circle at 25% 38%, rgba(34,200,100,.055) 0%, transparent 62%)',
+          ]}}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: .13, pointerEvents: 'none' }} />
+        <motion.div
+          animate={{ top: ['-5%', '105%'] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+          style={{ position: 'absolute', left: 0, right: 0, height: 1, background: 'linear-gradient(90deg,transparent,rgba(34,200,100,.32),transparent)', pointerEvents: 'none' }}
+        />
+      </div>
+
+      <div ref={layerMidRef} style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: 1200, padding: '0 5%', willChange: 'transform, opacity, filter', transition: 'transform .1s ease-out' }}>
+        <div className="hero-content-grid" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '4rem', alignItems: 'center', paddingTop: 80 }}>
+
+          <div style={{ maxWidth: 680 }}>
+            <AnimatePresence mode="wait">
+              <motion.div key={idx}
+                initial={{ opacity: 0, y: 24, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -14, filter: 'blur(2px)' }}
+                transition={{ duration: .6, ease: [.22,1,.36,1] }}>
+
+                <motion.div
+                  className="no-pill-mobile"
+                  initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .5, delay: .1 }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', padding: '.3rem .9rem', borderRadius: 100, background: 'rgba(34,200,100,.1)', border: '1px solid rgba(34,200,100,.25)', marginBottom: '1.8rem', backdropFilter: 'blur(8px)' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c864', animation: 'dot-blink 1.4s ease-in-out infinite' }} />
+                  <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.65rem', fontWeight: 600, color: '#22c864' }}>{slide.tag}</span>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, delay: .15 }}
+                  style={{ fontSize: 'clamp(2.4rem,5.5vw,4.4rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: 'rgba(255,255,255,.92)', letterSpacing: '-.04em', lineHeight: 1.08, marginBottom: '.3rem' }}>
+                  {slide.title}
+                </motion.h1>
+                <motion.h1
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, delay: .22 }}
+                  style={{ fontSize: 'clamp(2.4rem,5.5vw,4.4rem)', fontWeight: 800, fontFamily: "'Dancing Script',cursive", color: '#22c864', letterSpacing: '-.02em', lineHeight: 1.08, marginBottom: '1.6rem' }}>
+                  <GreenUnderline>{slide.accent}</GreenUnderline>
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .6, delay: .3 }}
+                  style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,.6)', lineHeight: 1.75, marginBottom: '2.8rem', maxWidth: 520 }}>
+                  {slide.sub}
+                </motion.p>
+              </motion.div>
+            </AnimatePresence>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .45 }}
+              style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem' }}>
+              <a href="https://wa.me/2250142507750" target="_blank" rel="noreferrer" className="btn-raised" style={{ fontSize: '1rem', padding: '1rem 2.2rem' }}>
+                Démarrer mon projet <ArrowRight size={16} />
+              </a>
+              <Link href="/projects" className="btn-ghost" style={{ fontSize: '1rem', padding: '1rem 2.2rem' }}>
+                Voir les réalisations
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .6, delay: .6 }}
+              className="trust-badges" style={{ display: 'flex', flexWrap: 'wrap', gap: '.6rem' }}>
+              {['✓ Devis gratuit', '✓ Livraison garantie', '✓ Formation incluse', '✓ Support 48h'].map((b, bi) => (
+                <motion.span key={b}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .65 + bi * .07 }}
+                  style={{ padding: '.28rem .8rem', borderRadius: 100, background: 'rgba(34,200,100,.08)', border: '1px solid rgba(34,200,100,.18)', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '.85rem', color: '#66ffaa', backdropFilter: 'blur(6px)' }}>
+                  {b}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }} className="hide-mobile">
+            <TiltCard intensity={13} perspective={800} style={{ borderRadius: 18 }}>
+              <motion.div initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .35 }}>
+                <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="sku-card"
+                  style={{ padding: '.85rem 1.2rem', display: 'flex', alignItems: 'center', gap: '.7rem', backdropFilter: 'blur(14px)', background: T.light ? 'rgba(255,255,255,.92)' : 'rgba(11,26,16,.88)', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(120deg,transparent 30%,rgba(34,200,100,.07) 50%,transparent 70%)', backgroundSize: '200% 100%', animation: 'shimmer 3.2s ease-in-out infinite', pointerEvents: 'none' }} />
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(34,200,100,.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <TrendingUp size={18} style={{ color: '#22c864' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.9rem', fontWeight: 800, color: '#22c864' }}>+10</div>
+                    <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.52rem', color: T.textMuted, textTransform: 'uppercase', letterSpacing: '.06em' }}>Projets livrés</div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </TiltCard>
+
+            <TiltCard intensity={10} perspective={800} style={{ borderRadius: 18 }}>
+              <motion.div initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .48 }}>
+                <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                  className="sku-card"
+                  style={{ padding: '.75rem 1rem', display: 'flex', alignItems: 'center', gap: '.6rem', backdropFilter: 'blur(14px)', background: T.light ? 'rgba(255,255,255,.92)' : 'rgba(11,26,16,.88)', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(120deg,transparent 30%,rgba(34,200,100,.07) 50%,transparent 70%)', backgroundSize: '200% 100%', animation: 'shimmer 4s ease-in-out infinite .9s', pointerEvents: 'none' }} />
+                  <div style={{ display: 'flex' }}>
+                    {[1,2,3,4,5].map(s => <Star key={s} size={12} style={{ color: '#22c864' }} fill="#22c864" />)}
+                  </div>
+                  <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.75rem', fontWeight: 700, color: T.textMain }}>100% satisfaits</span>
+                </motion.div>
+              </motion.div>
+            </TiltCard>
+
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .7 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '.4rem', paddingTop: '.5rem' }}>
+              {HERO_SLIDES.map((_, i) => (
+                <button key={i} onClick={() => { setIdx(i); setImgIdx(i); clearInterval(timerRef.current); timerRef.current = setInterval(next, 5000) }}
+                  style={{ width: 4, height: i === idx ? 28 : 8, borderRadius: 2, background: i === idx ? '#22c864' : 'rgba(34,200,100,.25)', border: 'none', cursor: 'pointer', transition: 'all .35s', display: 'block' }} />
+              ))}
+            </motion.div>
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .8, duration: .6 }}
+          style={{ marginTop: '3.5rem' }}>
+          <div className="stats-bar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: 'rgba(34,200,100,.12)', borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(34,200,100,.12)', backdropFilter: 'blur(12px)' }}>
+            {STATS.map(({ val, suffix, label }, si) => (
+              <motion.div key={label}
+                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .9 + si * .08 }}
+                whileHover={{ background: 'rgba(34,200,100,.07)', transition: { duration: .2 } }}
+                style={{ padding: '1.5rem', background: 'rgba(3,8,6,.7)', textAlign: 'center', cursor: 'default' }}>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.9rem', fontWeight: 800, color: '#22c864', lineHeight: 1 }}>
+                  <AnimatedCounter target={val} suffix={suffix} />
+                </div>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.6rem', color: 'rgba(255,255,255,.35)', textTransform: 'uppercase', letterSpacing: '.08em', marginTop: '.4rem' }}>{label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      <div ref={layerForeRef} style={{ position: 'absolute', inset: 0, zIndex: 20, pointerEvents: 'none', willChange: 'transform, opacity', transition: 'transform .1s ease-out' }}>
+        {[
+          { left: '12%', top: '22%', s: 4, op: .22, dur: 3.8, dy: 0 },
+          { left: '28%', top: '65%', s: 3, op: .12, dur: 5.1, dy: 1.2 },
+          { left: '55%', top: '28%', s: 4, op: .26, dur: 4.4, dy: 0.6 },
+          { left: '70%', top: '72%', s: 3, op: .10, dur: 6.2, dy: 1.8 },
+          { left: '83%', top: '18%', s: 4, op: .18, dur: 3.2, dy: 0.3 },
+          { left: '92%', top: '52%', s: 3, op: .14, dur: 4.9, dy: 2.1 },
+        ].map((p, i) => (
+          <motion.div key={i}
+            style={{ position: 'absolute', width: p.s, height: p.s, borderRadius: '50%', background: '#22c864', left: p.left, top: p.top, opacity: p.op }}
+            animate={{ y: [0, -20, 0] }}
+            transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.dy }}
+          />
+        ))}
+      </div>
+
+      <div style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: .28, zIndex: 15, pointerEvents: 'none' }}>
+        <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.6rem', letterSpacing: '.18em', textTransform: 'uppercase', marginBottom: '.4rem', color: '#fff' }}>Scroll</span>
+        <motion.div animate={{ scaleY: [1, 1.4, 1], opacity: [.5, 1, .5] }} transition={{ duration: 1.6, repeat: Infinity }}
+          style={{ width: 1, height: 36, background: 'linear-gradient(to bottom, rgba(255,255,255,.8), transparent)' }} />
+      </div>
+
+    </section>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── UTILITAIRES EFFETS ────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+// Blur + slide reveal (hentat.html)
+function BlurReveal({ children, delay = 0, direction = 'up', style = {}, className = '', once = true }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once, margin: '-60px' })
+  const dirMap = { up: { y: 40, x: 0 }, right: { y: 0, x: 40 }, down: { y: -40, x: 0 }, left: { y: 0, x: -40 } }
+  const off = dirMap[direction] || { y: 40, x: 0 }
+  return (
+    <motion.div
+      ref={ref}
+      style={style}
+      className={className}
+      initial={{ opacity: 0, filter: 'blur(12px)', ...off }}
+      animate={inView ? { opacity: 1, filter: 'blur(0px)', x: 0, y: 0 } : {}}
+      transition={{ duration: 0.85, ease: [0.2, 0.8, 0.2, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// Letter-by-letter reveal (hentat.html)
+// once: false → rejoue dans les deux sens (scroll down ET scroll up)
+function LetterReveal({ text, style = {}, className = '', stagger = 0.028 }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: false, margin: '-50px' })
+  return (
+    <span ref={ref} className={className} style={{ display: 'inline', ...style }}>
+      {[...text].map((char, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, filter: 'blur(4px)', y: 10 }}
+          animate={inView
+            ? { opacity: 1, filter: 'blur(0px)', y: 0 }
+            : { opacity: 0, filter: 'blur(4px)', y: 10 }
+          }
+          transition={{ duration: 0.42, ease: 'easeOut', delay: i * stagger }}
+          style={{ display: 'inline-block', whiteSpace: 'pre' }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </span>
+  )
+}
+
+// ── ANIMATED BEAM (une vrai co.html) ─────────────────────────
+function AnimatedBeamGrid({ containerRef, nodeIds, connections }) {
+  const svgRef = useRef(null)
+  const [paths, setPaths] = useState([])
+
+  const draw = useCallback(() => {
+    if (!svgRef.current || !containerRef?.current) return
+    const cRect = containerRef.current.getBoundingClientRect()
+    const mainEl = document.getElementById(nodeIds.center)
+    if (!mainEl) return
+    const mRect = mainEl.getBoundingClientRect()
+    const tx = mRect.left - cRect.left + mRect.width / 2
+    const ty = mRect.top  - cRect.top  + mRect.height / 2
+
+    const built = connections.map((conn, idx) => {
+      const fromEl = document.getElementById(conn.id)
+      if (!fromEl) return null
+      const r = fromEl.getBoundingClientRect()
+      const sx = r.left - cRect.left + r.width / 2
+      const sy = r.top  - cRect.top  + r.height / 2
+      // Quadratic bezier control point
+      const cx = (sx + tx) / 2 + (conn.cx || 0)
+      const cy = (sy + ty) / 2 + (conn.cy || 0)
+      return { d: `M ${sx} ${sy} Q ${cx} ${cy} ${tx} ${ty}`, color: conn.color, delay: `${idx * 0.4}s`, id: conn.id }
+    }).filter(Boolean)
+    setPaths(built)
+  }, [containerRef, connections, nodeIds])
+
+  useEffect(() => {
+    const timer = setTimeout(draw, 80)
+    window.addEventListener('resize', draw)
+    return () => { clearTimeout(timer); window.removeEventListener('resize', draw) }
+  }, [draw])
+
+  return (
+    <svg ref={svgRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1, overflow: 'visible' }}>
+      <defs>
+        {paths.map((p, i) => (
+          <linearGradient key={i} id={`bg-${i}`} gradientUnits="userSpaceOnUse"
+            x1={p.d.split(' ')[1]} y1={p.d.split(' ')[2]}
+            x2={p.d.split(' ')[p.d.split(' ').length - 2]}
+            y2={p.d.split(' ')[p.d.split(' ').length - 1]}>
+            <stop offset="0%" stopColor={p.color} stopOpacity="0" />
+            <stop offset="40%" stopColor={p.color} stopOpacity="0.6" />
+            <stop offset="100%" stopColor={p.color} stopOpacity="0" />
+          </linearGradient>
+        ))}
+      </defs>
+      {paths.map((p, i) => (
+        <g key={i}>
+          {/* Base line */}
+          <path d={p.d} fill="none" stroke="rgba(34,200,100,0.08)" strokeWidth="1.5" />
+          {/* Animated glow dash */}
+          <path
+            d={p.d}
+            fill="none"
+            stroke={`url(#bg-${i})`}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeDasharray="50 300"
+            style={{ animation: 'beamFlow 2.8s linear infinite', animationDelay: p.delay }}
+          />
+        </g>
+      ))}
+      <style>{`
+        @keyframes beamFlow {
+          from { stroke-dashoffset: 350; }
+          to   { stroke-dashoffset: 0; }
+        }
+      `}</style>
+    </svg>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── NOS SERVICES — avec AnimatedBeam + BlurReveal ────────────
+// ═══════════════════════════════════════════════════════════════
+function ServicesPreview() {
+  const T = useTheme()
+  const ref = useRef(null)
+  const beamContainerRef = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  const serviceIcons = [
+    { id: 'svc-beam-0', Icon: Globe,        label: 'Site Vitrine',  color: '#22c864' },
+    { id: 'svc-beam-1', Icon: ShoppingCart, label: 'E-Commerce',   color: '#4ade80' },
+    { id: 'svc-beam-2', Icon: Cpu,          label: 'SaaS App',     color: '#22c864' },
+    { id: 'svc-beam-3', Icon: Server,       label: 'Back-end',     color: '#86efac' },
+    { id: 'svc-beam-4', Icon: Palette,      label: 'UI/UX Design', color: '#4ade80' },
+    { id: 'svc-beam-5', Icon: Wrench,       label: 'Maintenance',  color: '#22c864' },
+  ]
+
+  const beamConnections = serviceIcons.map((s, i) => ({
+    id: s.id,
+    color: s.color,
+    cx: (i < 3 ? 30 : -30),
+    cy: (i < 3 ? 20 : -20),
+  }))
+
+  return (
+    <section ref={ref} style={{ padding: '7rem 5%', background: T.bg, position: 'relative', overflow: 'hidden' }}>
+      <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: .25 }} />
+      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+
+        {/* ── HEADER BlurReveal ── */}
+        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+          <BlurReveal delay={0}>
+            <SectionEye label="// Nos Services" center />
+          </BlurReveal>
+          <BlurReveal delay={0.15}>
+            <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.8rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em', lineHeight: 1.15 }}>
+              <LetterReveal text="Des solutions qui travaillent" stagger={0.022} />
+              <br />
+              <LetterReveal text="pour vous, " stagger={0.022} />
+              <GreenUnderline><span className="text-gradient"><LetterReveal text="même quand vous dormez" stagger={0.022} /></span></GreenUnderline>
+            </h2>
+          </BlurReveal>
+        </div>
+
+        {/* ── BEAM CONSTELLATION ── */}
+        <BlurReveal delay={0.2} style={{ marginBottom: '4rem' }}>
+          <div
+            ref={beamContainerRef}
+            style={{ position: 'relative', padding: '2.5rem 1rem', borderRadius: 20, background: T.light ? 'rgba(34,200,100,.03)' : 'rgba(34,200,100,.025)', border: `1px solid ${T.border}`, overflow: 'visible' }}
+          >
+            <AnimatedBeamGrid
+              containerRef={beamContainerRef}
+              nodeIds={{ center: 'svc-beam-center' }}
+              connections={beamConnections}
+            />
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr) auto repeat(3,1fr)', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 2 }}>
+              {/* Left 3 icons */}
+              {serviceIcons.slice(0, 3).map((s) => {
+                const Icon = s.Icon
+                return (
+                  <div key={s.id} id={s.id}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5rem', padding: '.8rem', borderRadius: 14, background: T.light ? 'rgba(255,255,255,.9)' : 'rgba(11,26,16,.8)', border: `1px solid ${T.border}`, backdropFilter: 'blur(8px)', justifySelf: 'center' }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(34,200,100,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={20} style={{ color: T.green }} />
+                    </div>
+                    <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.6rem', fontWeight: 600, color: T.textMuted, whiteSpace: 'nowrap' }}>{s.label}</span>
+                  </div>
+                )
+              })}
+
+              {/* Center node */}
+              <div id="svc-beam-center"
+                style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg, rgba(34,200,100,.25), rgba(34,200,100,.08))', border: '2px solid rgba(34,200,100,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(12px)', justifySelf: 'center', boxShadow: '0 0 40px rgba(34,200,100,.2)', flexShrink: 0 }}>
+                <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.75rem', fontWeight: 900, color: '#22c864', textAlign: 'center', letterSpacing: '-.03em' }}>AKA<br/>TECH</span>
+              </div>
+
+              {/* Right 3 icons */}
+              {serviceIcons.slice(3).map((s) => {
+                const Icon = s.Icon
+                return (
+                  <div key={s.id} id={s.id}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5rem', padding: '.8rem', borderRadius: 14, background: T.light ? 'rgba(255,255,255,.9)' : 'rgba(11,26,16,.8)', border: `1px solid ${T.border}`, backdropFilter: 'blur(8px)', justifySelf: 'center' }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(34,200,100,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={20} style={{ color: T.green }} />
+                    </div>
+                    <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.6rem', fontWeight: 600, color: T.textMuted, whiteSpace: 'nowrap' }}>{s.label}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </BlurReveal>
+
+        {/* ── SERVICE CARDS with BlurReveal alternating directions ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '1.2rem' }}>
+          {SERVICES.map(({ icon, n, title, desc, price, del }, i) => {
+            const Icon = ICON_MAP[icon] || Globe
+            const directions = ['up', 'right', 'up', 'left', 'up', 'right']
+            return (
+              <BlurReveal key={title} delay={i * 0.08} direction={directions[i % directions.length]}>
+                <motion.div className="sku-card"
+                  whileHover={{ y: -5 }}
+                  style={{ padding: '1.8rem', position: 'relative', overflow: 'hidden', height: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.2rem' }}>
+                    <div style={{ width: 50, height: 50, borderRadius: 12, background: 'rgba(34,200,100,.1)', border: `1px solid ${T.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon size={22} style={{ color: T.green }} />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.65rem', fontWeight: 600, color: T.greenSub, letterSpacing: '.1em', marginBottom: '.2rem' }}>{n}</div>
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: T.textMain, fontFamily: "'Syne',sans-serif" }}>{title}</h3>
+                    </div>
+                  </div>
+                  <p style={{ fontSize: '.83rem', color: T.textSub, lineHeight: 1.7, marginBottom: '1.2rem' }}>{desc}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '.9rem', borderTop: `1px solid ${T.border}` }}>
+                    <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.9rem', fontWeight: 800, color: T.green }}>{price}</span>
+                    <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.62rem', color: T.textMuted, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                      <Timer size={11} style={{ color: T.green }} />{del}
+                    </span>
+                  </div>
+                </motion.div>
+              </BlurReveal>
+            )
+          })}
+        </div>
+
+        <BlurReveal delay={0.5} style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <Link href="/services" className="btn-ghost" style={{ fontSize: '.9rem' }}>
+            Voir tous les services <ArrowRight size={14} />
+          </Link>
+        </BlurReveal>
+      </div>
+    </section>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── BUILT ON TRUST — BlurReveal alternés + LetterReveal ──────
+// ═══════════════════════════════════════════════════════════════
+function WhyUs() {
+  const T = useTheme()
+  const items = [
+    { n: '01', title: 'Livraison dans les délais', desc: "Pas de mauvaises surprises. Chaque projet est livré à la date convenue, avec un suivi régulier jusqu'à la mise en ligne." },
+    { n: '02', title: 'Design 100% sur mesure',   desc: "Votre site est unique, pensé pour votre activité. Zéro template, zéro copier-coller — une identité visuelle qui vous ressemble." },
+    { n: '03', title: 'Support & Formation inclus', desc: "Vous repartez autonome. Une formation est incluse pour gérer votre site facilement, sans dépendre d'un technicien." },
+    { n: '04', title: 'SEO & Performance optimisés', desc: "Un site rapide, visible sur Google. Vos clients vous trouvent plus facilement — et votre crédibilité monte instantanément." },
+  ]
+  const dirs = ['right', 'up', 'left', 'up']
+  return (
+    <section style={{ padding: '7rem 5%', background: T.bgAlt, position: 'relative', overflow: 'hidden' }}>
+      {/* Big decorative number in bg */}
+      <div style={{ position: 'absolute', right: '-2%', top: '50%', transform: 'translateY(-50%)', fontFamily: "'Syne',sans-serif", fontSize: 'clamp(12rem,22vw,20rem)', fontWeight: 900, color: T.light ? 'rgba(34,200,100,.04)' : 'rgba(34,200,100,.03)', lineHeight: 1, pointerEvents: 'none', userSelect: 'none', letterSpacing: '-.05em' }}>
+        TRUST
+      </div>
+
+      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <BlurReveal>
+            <SectionEye label="// Built on Trust" center />
+          </BlurReveal>
+          <BlurReveal delay={0.12}>
+            <h2 style={{ fontSize: 'clamp(1.9rem,3vw,2.6rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em' }}>
+              Pourquoi les entrepreneurs{' '}
+              <GreenUnderline><span className="text-gradient">
+                <LetterReveal text="choisissent AKATech." stagger={0.03} />
+              </span></GreenUnderline>
+            </h2>
+          </BlurReveal>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '1rem' }}>
+          {items.map(({ n, title, desc }, i) => (
+            <BlurReveal key={n} delay={i * 0.1} direction={dirs[i]}>
+              <motion.div className="sku-card"
+                whileHover={{ y: -4 }}
+                style={{ padding: '1.8rem', height: '100%', position: 'relative', overflow: 'hidden' }}>
+                {/* Hover glow corner */}
+                <div style={{ position: 'absolute', top: 0, right: 0, width: 80, height: 80, background: 'radial-gradient(circle at 100% 0%, rgba(34,200,100,.1), transparent 70%)', pointerEvents: 'none' }} />
+                <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '.9rem', fontWeight: 800, color: T.green, opacity: .3, lineHeight: 1, marginBottom: '.8rem' }}>{n}</div>
+                <h3 style={{ fontSize: '.95rem', fontWeight: 700, color: T.textMain, fontFamily: "'Syne',sans-serif", marginBottom: '.4rem' }}>
+                  <LetterReveal text={title} stagger={0.025} />
+                </h3>
+                <p style={{ fontSize: '.8rem', color: T.textSub, lineHeight: 1.6 }}>{desc}</p>
+              </motion.div>
+            </BlurReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── PROCESS — Sticky stacking sections (vrai_cta.html) ───────
+// ═══════════════════════════════════════════════════════════════
+function Process() {
+  const T = useTheme()
+
+  const steps = [
+    {
+      n: '01', icon: MessageCircle,
+      title: "On vous écoute",
+      desc: "Vous décrivez votre projet, vos objectifs et votre budget. Devis gratuit et personnalisé, sans engagement.",
+      bg: T.light ? '#f4faf5' : '#030c06',
+      shadow: false,
+    },
+    {
+      n: '02', icon: Target,
+      title: "On planifie",
+      desc: "On définit ensemble la meilleure solution : technologies, design, délais et fonctionnalités.",
+      bg: T.light ? '#ffffff' : '#051208',
+      shadow: true,
+    },
+    {
+      n: '03', icon: Code,
+      title: "On développe",
+      desc: "Votre solution prend vie avec un code propre et un design soigné. Vous suivez l'avancement à chaque étape.",
+      bg: T.light ? '#f4faf5' : '#030c06',
+      shadow: true,
+    },
+    {
+      n: '04', icon: Rocket,
+      title: "On livre & on forme",
+      desc: "Mise en ligne, tests, formation et support inclus. Vous repartez avec un outil prêt à attirer des clients.",
+      bg: T.light ? '#e8f8ec' : '#061a0a',
+      shadow: true,
+    },
+  ]
+
+  return (
+    <section style={{ position: 'relative' }}>
+      {/* Section header — sticky au-dessus de tout */}
+      <div style={{ position: 'sticky', top: 0, zIndex: 50, textAlign: 'center', padding: '2.5rem 5% 1.5rem', background: steps[0].bg, borderBottom: `1px solid ${T.border}` }}>
+        <BlurReveal>
+          <SectionEye label="// Notre Processus" center />
+        </BlurReveal>
+        <BlurReveal delay={0.1}>
+          <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.8rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em', margin: 0 }}>
+            De l'idée à la{' '}
+            <GreenUnderline><span className="text-gradient">
+              <LetterReveal text="mise en ligne" stagger={0.04} />
+            </span></GreenUnderline>
+          </h2>
+        </BlurReveal>
+      </div>
+
+      {/* Sticky stacking steps */}
+      {steps.map(({ n, icon: Icon, title, desc, bg, shadow }, i) => (
+        <div
+          key={n}
+          style={{
+            position: 'sticky',
+            top: 96, // hauteur du header sticky
+            zIndex: i + 1,
+            minHeight: '70vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: bg,
+            borderRadius: i > 0 ? '28px 28px 0 0' : 0,
+            boxShadow: shadow ? '0 -24px 60px rgba(0,0,0,0.22)' : 'none',
+            padding: '4rem 5%',
+          }}
+        >
+          <BlurReveal delay={0.05}>
+            <div style={{ maxWidth: 720, width: '100%', display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '3rem', alignItems: 'center' }}>
+              {/* Step number + icon */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: 80, height: 80, borderRadius: 24, background: 'rgba(34,200,100,.12)', border: '1px solid rgba(34,200,100,.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={32} style={{ color: '#22c864' }} />
+                </div>
+                <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '3.5rem', fontWeight: 900, color: 'rgba(34,200,100,.12)', lineHeight: 1, letterSpacing: '-.04em' }}>{n}</span>
+              </div>
+
+              {/* Content */}
+              <div>
+                <h3 style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em', marginBottom: '1rem' }}>
+                  <LetterReveal text={title} stagger={0.035} />
+                </h3>
+                <p style={{ fontSize: '1.05rem', color: T.textSub, lineHeight: 1.8, maxWidth: 480 }}>{desc}</p>
+                {/* Progress indicator */}
+                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '.4rem' }}>
+                  {steps.map((_, si) => (
+                    <div key={si} style={{ height: 3, borderRadius: 2, flex: si <= i ? 2 : 1, background: si <= i ? '#22c864' : T.border, transition: 'all .4s' }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </BlurReveal>
+        </div>
+      ))}
+
+      {/* Spacer to make last step un-stick properly */}
+      <div style={{ height: '5vh', background: steps[steps.length - 1].bg }} />
+    </section>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── RÉALISATIONS — Expanding accordion (carrosel_anime.html) ─
+// ═══════════════════════════════════════════════════════════════
+function ProjectsCarousel() {
+  const T = useTheme()
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  const CARDS = [
+    ...PROJECTS.filter(p => p.id === 12 || p.id === 11),
+    ...PROJECTS.filter(p => p.id !== 12 && p.id !== 11).slice(0, 4),
+  ]
+
+  const [activeIdx, setActiveIdx] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const autoRef = useRef(null)
+
+  useEffect(() => {
+    if (!inView || isHovered) return
+    autoRef.current = setInterval(() => {
+      setActiveIdx(i => (i + 1) % CARDS.length)
+    }, 3200)
+    return () => clearInterval(autoRef.current)
+  }, [inView, isHovered, CARDS.length])
+
+  return (
+    <section ref={ref} style={{ padding: '7rem 5%', background: T.bg, position: 'relative', overflow: 'hidden' }}>
+      <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: .2 }} />
+      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <BlurReveal direction="left">
+              <SectionEye label="// Réalisations" />
+            </BlurReveal>
+            <BlurReveal delay={0.1} direction="left">
+              <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.8rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em' }}>
+                Nos dernières{' '}
+                <GreenUnderline>
+                  <span className="text-gradient">
+                    <LetterReveal text="réalisations livrées" stagger={0.03} />
+                  </span>
+                </GreenUnderline>
+              </h2>
+            </BlurReveal>
+          </div>
+          <BlurReveal direction="right">
+            <Link href="/projects" className="btn-ghost" style={{ padding: '.65rem 1.4rem', fontSize: '.82rem' }}>
+              Toutes les réalisations <ArrowRight size={13} />
+            </Link>
+          </BlurReveal>
+        </div>
+
+        {/* ── Expanding accordion gallery ── */}
+        <BlurReveal delay={0.2}>
+          <div
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{ display: 'flex', gap: 6, height: 480, borderRadius: 20, overflow: 'hidden', width: '100%', justifyContent: 'center' }}
+          >
+            {CARDS.map((project, i) => {
+              const isActive = i === activeIdx
+              return (
+                <div
+                  key={project.title}
+                  onMouseEnter={() => setActiveIdx(i)}
+                  onClick={() => setActiveIdx(i)}
+                  style={{
+                    position: 'relative',
+                    height: '100%',
+                    flex: isActive ? '5 0 0' : '1 0 0',
+                    minWidth: isActive ? 0 : 52,
+                    maxWidth: isActive ? 520 : 80,
+                    borderRadius: 14,
+                    overflow: 'hidden',
+                    cursor: isActive ? 'default' : 'pointer',
+                    transition: 'flex 0.55s cubic-bezier(0.25, 1, 0.5, 1), max-width 0.55s cubic-bezier(0.25, 1, 0.5, 1)',
+                  }}
+                >
+                  {/* Background image */}
+                  <img
+                    src={project.img}
+                    alt={project.title}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform .6s ease', transform: isActive ? 'scale(1.04)' : 'scale(1.08)' }}
+                  />
+
+                  {/* Collapsed tint */}
+                  {!isActive && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(3,8,6,.65)', backdropFilter: 'blur(1px)' }} />
+                  )}
+
+                  {/* Active gradient */}
+                  {isActive && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(3,8,6,.95) 0%, rgba(3,8,6,.3) 50%, transparent 100%)' }} />
+                  )}
+
+                  {/* Collapsed index */}
+                  {!isActive && (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.6rem', fontWeight: 800, color: 'rgba(255,255,255,.4)', textTransform: 'uppercase', letterSpacing: '.12em', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+                        {project.title.slice(0, 12)}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Active content */}
+                  <div style={{ position: 'absolute', inset: 0, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', opacity: isActive ? 1 : 0, transition: 'opacity .3s ease .15s', pointerEvents: isActive ? 'auto' : 'none' }}>
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={isActive ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                      transition={{ duration: 0.55, delay: 0.1, ease: [.22,1,.36,1] }}
+                    >
+                      {/* Badges */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem', marginBottom: '.7rem', flexWrap: 'wrap' }}>
+                        <span className="no-pill-mobile" style={{ padding: '.22rem .65rem', borderRadius: 100, background: 'rgba(34,200,100,.18)', border: '1px solid rgba(34,200,100,.4)', color: '#22c864', fontFamily: "'Syne',sans-serif", fontSize: '.6rem', fontWeight: 700 }}>{project.type}</span>
+                        {project.live && (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '.2rem .55rem', borderRadius: 100, background: 'rgba(34,200,100,.88)', fontFamily: "'Syne',sans-serif", fontSize: '.55rem', color: '#fff', fontWeight: 700 }}>
+                            <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#fff', animation: 'dot-blink 1.4s ease-in-out infinite' }} />
+                            LIVE
+                          </span>
+                        )}
+                        <span style={{ marginLeft: 'auto', fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1rem', color: '#22c864' }}>{project.result}</span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 style={{ fontFamily: "'Syne',sans-serif", fontSize: '1.3rem', fontWeight: 800, color: '#fff', marginBottom: '.5rem', lineHeight: 1.2 }}>
+                        {project.title}
+                      </h3>
+                      <p style={{ fontFamily: 'sans-serif', fontSize: '.82rem', color: 'rgba(255,255,255,.65)', lineHeight: 1.55, marginBottom: '1rem' }}>
+                        {project.desc?.slice(0, 90)}…
+                      </p>
+
+                      {/* Tech pills */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem', marginBottom: '1rem' }}>
+                        {project.tech?.slice(0, 3).map(t => (
+                          <span key={t} style={{ padding: '.18rem .55rem', borderRadius: 100, background: 'rgba(34,200,100,.07)', border: '1px solid rgba(34,200,100,.2)', fontFamily: "'Syne',sans-serif", fontSize: '.6rem', fontWeight: 600, color: '#22c864' }}>{t}</span>
+                        ))}
+                      </div>
+
+                      {project.url && (
+                        <a href={project.url} target="_blank" rel="noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: '#22c864', fontSize: '.75rem', fontFamily: "'Syne',sans-serif", fontWeight: 700, textDecoration: 'none', padding: '.4rem .9rem', borderRadius: 100, border: '1px solid rgba(34,200,100,.3)', background: 'rgba(34,200,100,.08)', transition: 'all .2s' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34,200,100,.2)' }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34,200,100,.08)' }}
+                        >
+                          Voir le projet <ExternalLink size={11} />
+                        </a>
+                      )}
+                    </motion.div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Dot indicators */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '.45rem', marginTop: '1.8rem' }}>
+            {CARDS.map((_, i) => (
+              <button key={i} onClick={() => setActiveIdx(i)}
+                style={{ width: i === activeIdx ? 28 : 8, height: 8, borderRadius: 4, background: i === activeIdx ? '#22c864' : 'rgba(34,200,100,.2)', border: 'none', cursor: 'pointer', transition: 'all .35s' }} />
+            ))}
+          </div>
+        </BlurReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── TESTIMONIALS (inchangé) ───────────────────────────────────
+function Testimonials() {
+  const T = useTheme()
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const [idx, setIdx] = useState(0)
+  const t = TESTIMONIALS[idx]
+
+  useEffect(() => {
+    const timer = setInterval(() => setIdx(i => (i + 1) % TESTIMONIALS.length), 5000)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <section ref={ref} style={{ padding: '7rem 5%', background: T.bgAlt, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle,rgba(34,200,100,.05),transparent 65%)', pointerEvents: 'none' }} />
+      <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <BlurReveal>
+            <SectionEye label="// Témoignages" center />
+          </BlurReveal>
+          <BlurReveal delay={0.1}>
+            <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.6rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em' }}>
+              Ce que disent nos <GreenUnderline><span className="text-gradient">clients</span></GreenUnderline>
+            </h2>
+          </BlurReveal>
+        </div>
+
+        <BlurReveal delay={0.2}>
+        <AnimatePresence mode="wait">
+          <motion.div key={idx} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: .4 }}
+            className="sku-card" style={{ padding: '2.5rem', textAlign: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.2rem' }}>
+              {[1,2,3,4,5].map(s => <Star key={s} size={18} fill="#22c864" style={{ color: '#22c864' }} />)}
+            </div>
+            <blockquote style={{ fontSize: '1.05rem', color: T.textMain, lineHeight: 1.75, fontStyle: 'italic', marginBottom: '2rem', maxWidth: 640, margin: '0 auto 2rem' }}>
+              "{t.text}"
+            </blockquote>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+              <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(34,200,100,.35)' }}>
+                <LazyImg src={t.img} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  placeholder={<div style={{ width: 52, height: 52, background: 'rgba(34,200,100,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c864', fontFamily: "'Syne',sans-serif", fontWeight: 700 }}>{t.name[0]}</div>} />
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontWeight: 700, color: T.textMain, fontFamily: "'Syne',sans-serif", fontSize: '.9rem' }}>{t.name}</div>
+                <div style={{ fontSize: '.72rem', color: T.textMuted, fontFamily: "'Syne',sans-serif" }}>{t.role}</div>
+              </div>
+              <span className="no-pill-mobile" style={{ marginLeft: 'auto', padding: '.3rem .8rem', borderRadius: 100, background: 'rgba(34,200,100,.12)', border: '1px solid rgba(34,200,100,.25)', color: '#22c864', fontFamily: "'Syne',sans-serif", fontSize: '.65rem', fontWeight: 600 }}>{t.result}</span>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '.5rem', marginTop: '1.5rem' }}>
+          {TESTIMONIALS.map((_, i) => (
+            <button key={i} onClick={() => setIdx(i)}
+              style={{ width: i === idx ? 24 : 8, height: 8, borderRadius: 4, background: i === idx ? '#22c864' : 'rgba(34,200,100,.2)', border: 'none', cursor: 'pointer', transition: 'all .3s' }} />
+          ))}
+        </div>
+        </BlurReveal>
+      </div>
+    </section>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ── STICKY STACKING CTA — effet vrai_cta.html ─────────────────
+// ═══════════════════════════════════════════════════════════════
+function StickyCTABlock({ message, cta, href = 'https://wa.me/2250142507750', variant = 'default', zIndex = 2, rounded = false }) {
+  const T = useTheme()
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: false, margin: '-20%' })
+
+  const isDark = variant === 'dark' || variant === 'default'
+  const isStrong = variant === 'strong'
+
+  const bg = isStrong
+    ? (T.light ? '#f0fdf4' : '#061a0a')
+    : isDark
+      ? (T.light ? '#ffffff' : '#051208')
+      : (T.light ? '#f4faf5' : '#030c06')
+
+  const borderTop = rounded ? '28px 28px 0 0' : '0'
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex,
+        background: bg,
+        borderRadius: borderTop,
+        boxShadow: rounded ? '0 -24px 60px rgba(0,0,0,.28)' : 'none',
+        overflow: 'hidden',
+        minHeight: '60vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '5rem 5%',
+      }}
+    >
+      {/* Grid background */}
+      <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: T.light ? .3 : .15 }} />
+
+      {/* Radial glow */}
+      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 700, height: 400, borderRadius: '50%', background: isStrong ? 'radial-gradient(ellipse,rgba(34,200,100,.12),transparent 65%)' : 'radial-gradient(ellipse,rgba(34,200,100,.06),transparent 65%)', pointerEvents: 'none' }} />
+
+      <motion.div
+        initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+        animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+        transition={{ duration: .8, ease: [.22,1,.36,1] }}
+        style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 700 }}
+      >
+        {isStrong && (
+          <motion.div
+            initial={{ opacity: 0, scale: .9 }}
+            animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: .1, duration: .5 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', padding: '.3rem .9rem', borderRadius: 100, background: 'rgba(34,200,100,.1)', border: '1px solid rgba(34,200,100,.25)', marginBottom: '1.5rem', backdropFilter: 'blur(8px)' }}
+          >
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c864', animation: 'dot-blink 1.4s ease-in-out infinite' }} />
+            <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '.65rem', fontWeight: 700, color: '#22c864', letterSpacing: '.1em', textTransform: 'uppercase' }}>Prêt à démarrer ?</span>
+          </motion.div>
+        )}
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: .15, duration: .65, ease: [.22,1,.36,1] }}
+          style={{ fontSize: isStrong ? 'clamp(1.5rem,3.2vw,2.4rem)' : 'clamp(1.2rem,2.5vw,1.8rem)', fontWeight: 800, fontFamily: "'Syne',sans-serif", color: T.textMain, letterSpacing: '-.03em', lineHeight: 1.3, marginBottom: '2rem' }}
+        >
+          {message}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: .28, duration: .55 }}
+          style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}
+        >
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-raised"
+            style={{ fontSize: '1rem', padding: '1rem 2.2rem' }}
+          >
+            {cta} <ArrowRight size={16} />
+          </a>
+          {isStrong && (
+            <Link href="/projects" className="btn-ghost" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
+              Voir les projets
+            </Link>
+          )}
+        </motion.div>
+
+        {/* Trust pills */}
+        {isStrong && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ delay: .45 }}
+            className="trust-badges"
+            style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.5rem', marginTop: '1.8rem' }}
+          >
+            {['✓ Devis gratuit', '✓ Livraison garantie', '✓ Support 48h'].map((b, bi) => (
+              <span key={b} style={{ padding: '.25rem .75rem', borderRadius: 100, background: 'rgba(34,200,100,.07)', border: '1px solid rgba(34,200,100,.18)', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '.78rem', color: '#66ffaa' }}>{b}</span>
+            ))}
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  )
+}
+
+// ── HOME PAGE ────────────────────────────────────────────────
+export default function HomePage() {
+  return (
+    <div style={{ paddingTop: 0 }}>
+      <Hero />
+      <MarqueeStrip />
+      <ServicesPreview />
+
+      {/* Sticky stacking CTA block 1 */}
+      <div style={{ position: 'relative' }}>
+        <StickyCTABlock
+          message="Vous avez une idée de projet ? On en parle — c'est gratuit et sans engagement."
+          cta="Discuter sur WhatsApp"
+          variant="default"
+          zIndex={2}
+          rounded={false}
+        />
+        <div style={{ position: 'relative', zIndex: 3 }}>
+          <WhyUs />
+        </div>
+      </div>
+
+      <Process />
+      <MarqueeStrip />
+      <ProjectsCarousel />
+
+      {/* Sticky stacking CTA block 2 — strong variant avec effet vrai_cta.html */}
+      <div style={{ position: 'relative' }}>
+        <StickyCTABlock
+          message="Ces projets ont été livrés dans les délais, avec formation incluse. Le vôtre peut l'être aussi."
+          cta="Démarrer mon projet"
+          variant="strong"
+          zIndex={2}
+          rounded={false}
+        />
+        <div style={{ position: 'relative', zIndex: 3 }}>
+          <Testimonials />
+        </div>
+      </div>
+
+      {/* Final sticky CTA */}
+      <StickyCTABlock
+        message="Comme eux, donnez à votre activité la présence digitale qu'elle mérite."
+        cta="Rejoindre nos clients →"
+        variant="dark"
+        zIndex={2}
+        rounded={true}
+      />
+    </div>
+  )
+}

@@ -1,455 +1,169 @@
-# 🚀 Portfolio AKAFOLIO v3 — Elvis M'BOLLO
+# AKATech — Agence Web & Solutions Digitales
 
-> Portfolio professionnel moderne d'un développeur web Full-Stack spécialisé en Python, React et MySQL — Version React
+> Site vitrine de l'agence **AKATech**, spécialisée dans la conception de solutions web sur-mesure pour les entreprises et startups en Côte d'Ivoire et en Afrique de l'Ouest.
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live-success?style=for-the-badge)](https://akafolio160502.vercel.app/)
-[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
-[![Last Update](https://img.shields.io/badge/Mise%20à%20jour-Avril%202026-FF5500?style=for-the-badge)]()
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+🌐 **Live** → [akatech-agencenext.vercel.app](https://akatech-agencenext.vercel.app)
 
 ---
 
-## 🎯 À propos
+## ✨ Aperçu
 
-Portfolio personnel interactif développé avec **React 18**, présentant mes compétences, projets et expériences en développement web. Conçu avec une approche moderne incluant animations fluides, design Neo-Brutalism/Glassmorphism, navigation single-page et logo animé génératif.
-
-**Objectif** : Démontrer mes compétences en développement frontend/backend et ma capacité à créer des interfaces modernes, performantes et accessibles.
+AKATech est une agence digitale basée à **Abidjan, Côte d'Ivoire**, proposant des services allant de la création de sites web à la mise en place de plateformes SaaS complètes. Ce site vitrine présente nos services, nos projets réalisés, notre processus de travail et nos formules tarifaires.
 
 ---
 
-## 🌐 Démo en ligne
+## 🛠️ Stack Technique
 
-🔗 **[Voir le portfolio](https://akafolio160502.vercel.app/)**
-
-### Projets phares en production :
-
-- **[AKATech](https://akatech.vercel.app/)** ⭐ — Site officiel de l'agence digitale (100%) — *carte générative CSS spéciale*
-- **[ShopCI](https://shop-ci.vercel.app/)** — Marketplace e-commerce multi-vendeurs (65%)
-- **[TechFlow](https://techflow-ten.vercel.app/)** — Site vitrine professionnel (97%)
-- **[TerraSafe](https://wthomassss06.pythonanywhere.com)** — Plateforme foncière sécurisée (85%)
-- **[Tati](https://tatii.vercel.app/)** — Portfolio & vitrine moderne (100%)
-- **[MK](https://mory01ff.vercel.app/)** — Portfolio graphiste client (100%)
-- **[ManoBeat 777](https://xxx-x.vercel.app/)** — Portfolio beatmaker ivoirien (100%)
-- **[New Horizon Service](https://new-horizonservice.vercel.app/)** — Location de résidences meublées (100%)
-- **[Université les Anges](https://universitelesanges.vercel.app/)** — Site institutionnel (100%)
+| Technologie | Rôle |
+|---|---|
+| **Next.js 14** (App Router) | Framework frontend, routing, export statique |
+| **React 18** | UI & composants |
+| **Framer Motion** | Animations & micro-interactions |
+| **Lucide React** | Système d'icônes |
+| **CSS Variables** | Thème dark/light skeumorphique (vert / noir) |
+| **JavaScript (ES6+)** | Logique applicative |
 
 ---
 
-## ✨ Caractéristiques
-
-### 🎨 Design & Interface
-
-- **Architecture React** : Single Page Application (SPA) avec composants réutilisables
-- **Design Neo-Brutalism** (mode clair) + **Glassmorphism** (mode sombre) avec animations fluides
-- **2 modes d'affichage** :
-  - 🌙 **Mode Sombre** (par défaut) — orange vif sur fond noir profond
-  - ☀️ **Mode Clair** — orange bold sur fond blanc éditorial
-- **Thème auto** : détection par heure locale (sombre entre 18h et 6h)
-- **Responsive complet** : mobile, tablette, desktop (breakpoints : 1024px · 768px · 480px)
-- **Navigation fluide** : scroll smooth vers les sections + persistance thème (`localStorage`)
-- **Curseur personnalisé** : `CustomCursor` (dot animé)
-- **Bouton ScrollTop** flottant avec animation
-
-### 🎭 Effets visuels
-
-- **ScrollDepthScene** : background WebGL Three.js (terrain wireframe + particules) avec zoom caméra synchronisé au scroll via GSAP ScrollTrigger — hero blast exit + depth entrance staggeré
-- **ScrambleText** : décodage lettre par lettre déclenché à l'entrée dans le viewport — utilisé dans le Hero (nom), la section À propos et la section Contact
-- **AuroraCanvas** : fond aurora animé canvas (WebGL-like CSS) dans le Hero
-- **PlasmaCanvasBg** : fond plasma animé dans Services, Parcours et Testimonials
-- **AnimatedIcon System (LI)** : 40+ icônes SVG animées CSS natives (sans dépendance externe)
-- **TiltCard** : effet 3D perspective sur mouse/touch avec glow spotlight
-- **SpotlightCard** : carte avec halo lumineux suivant le curseur
-- **StackedCard** : carousel de cartes empilées mobile avec swipe — utilisé dans les Tarifs et le Parcours
-- **FanDeck 3D** : carousel glassmorphism drag & swipe + navigation clavier (←→)
-- **MagBtn** : boutons avec effet ripple + glint animé
-- **PricingAnimIcon** : icônes animées CSS dédiées aux cartes de tarification (rocket, star, clock, check, etc.)
-- **Loader** : écran de chargement avec compteur %, barre, scan line et messages dynamiques
-
-### 🌐 Réseaux sociaux
-
-```jsx
-const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61577494705852";
-```
-
-Présent aux 4 emplacements : drawer mobile · section Contact · grille sociale · Footer.
-Hover Facebook : `background: #1877F2` (bleu officiel).
-
----
-
-## 📱 Sections du portfolio
-
-Toutes les sections sont des enfants directs de `ScrollDepthScene` (animations depth entrance + hero blast exit). La structure rendue est la suivante :
+## 📁 Structure du projet
 
 ```
-ScrollDepthScene
- ├── Hero              (#home)
- ├── Marquee
- ├── FeaturedCreation  (#creations)
- ├── Services          (#services) ← contient PricingTabs
- ├── About             (#about + #experience)  ← contient Timeline
- ├── Projects          (#projects)
- ├── Skills            (#skills)
- ├── Testimonials
- └── Contact           (#contact)
+akatech-agencenext/
+├── app/
+│   ├── page.js                      # Accueil
+│   ├── globals.css                  # Styles globaux + responsive
+│   ├── layout.js                    # Layout racine (Navbar, Footer, PWA)
+│   ├── about/
+│   │   └── AboutClient.js           # Équipe, Timeline, Valeurs, Stats
+│   ├── services/
+│   │   └── ServicesClient.js        # Services, Tech Stack, Process
+│   ├── projects/
+│   │   └── ProjectsClient.js        # Galerie filtrée par catégorie
+│   ├── pricing/
+│   │   └── PricingClient.js         # Onglets formules, Comparatif, FAQ
+│   ├── blog/
+│   │   ├── BlogClient.js            # Liste articles, Recherche, Newsletter
+│   │   └── [slug]/
+│   │       └── BlogArticleClient.js # Article individuel
+│   └── contact/
+│       └── ContactClient.js         # Formulaire WhatsApp, Canaux, FAQ
+├── components/
+│   ├── layout/
+│   │   ├── Navbar.js
+│   │   └── Footer.js
+│   └── ui/
+│       ├── index.js                 # SectionEye, AnimatedCounter, LazyImg, MarqueeStrip…
+│       ├── AuroraHero.js            # Background animé pour les héros
+│       ├── OrbHero.js
+│       └── Loader.js
+├── lib/
+│   ├── data.js                      # Données statiques (projets, services, blog…)
+│   └── theme.js                     # Hook useTheme (dark/light)
+├── public/
+│   ├── images/                      # Photos about, clients
+│   ├── favicon.svg
+│   ├── manifest.json
+│   └── sw.js                        # Service Worker (PWA)
+├── next.config.js
+├── jsconfig.json
+└── package.json
 ```
 
-### 1. Hero (`#home`)
-- Salutation dynamique selon heure locale (Bonjour 6h–18h / Bonsoir 18h–6h)
-- Horloge temps réel : `Jj JJ · HHh MMmn SSs`
-- Indicateur de disponibilité : `● Disponible — Abidjan, Côte d'Ivoire`
-- Effet typing cyclique : Full-Stack → React & Python → Django & Flask → orienté produit
-- **ScrambleText** sur le nom : `M'BOLLO` + `AKA ELVIS` (décodage lettre par lettre)
-- Fond **AuroraCanvas** animé
-- CTAs : **Voir mes projets ↗** + **Télécharger CV**
+---
 
-### 2. Marquee
-Défilement infini : React, Django, Flask, Python, TypeScript, Tailwind, MySQL, Vercel, Node.js, Git, REST API, Bootstrap, JavaScript
+## 📄 Pages
 
-### 3. Vitrine — Dernière Création (`FeaturedCreation`, `#creations`)
-Mise en avant de **ShopCI** avec mockup desktop + mobile côte à côte, window chrome macOS.
-
-### 4. Services & Tarifs (`#services`)
-
-| # | Service |
-|---|---------|
-| 01 | Applications Web |
-| 02 | API RESTful |
-| 03 | Interfaces Responsives |
-| 04 | Bases de Données |
-| 05 | Sécurité Applicative |
-| 06 | Support Technique |
-
-`PricingTabs` est intégré **dans** `Services` — 4 onglets tarification avec pill animé :
-
-| Onglet | Starter / MVP | Standard / Pro / Scale ⭐ | Premium / Elite / Enterprise |
-|--------|---------------|--------------------------|------------------------------|
-| **Portfolio** | 70 000 FCFA / 3–5j | 120 000 FCFA / 5–7j | 180 000 FCFA / 7–10j |
-| **Site Vitrine** | 150 000 FCFA / 5j | 270 000 FCFA / 7–10j | 450 000 FCFA / 10–14j |
-| **E-commerce** | 400 000 FCFA / 14j | 650 000 FCFA / 21j | 1 000 000 FCFA / 30j |
-| **App SaaS** | 700 000 FCFA / 3–4 sem | Sur devis / 4–6 sem | À partir de 2 500 000 FCFA / 6–10 sem |
-
-> Toutes les offres incluent **Nom de domaine offert (1 an)**. Hébergement inclus selon plan.
-
-Sur mobile : les plans sont affichés via **`StackedCard`** (swipe vertical).
-
-### 5. À Propos & Parcours (`#about` + `#experience`)
-
-Ces deux sections sont rendues par le même composant `About` :
-
-- **#about** : Photo de profil + badges flottants (Pro · Créatif · Curieux) + soft skills + CTA + fond **PlasmaCanvasBg**
-- **#experience** : Timeline expérience/formation (desktop horizontal), **StackedCard** mobile
-
-**Fil conducteur ScrambleText** : tagline `"Développeur Full-Stack · Django & React / Vite & Next.js · Data & Carto"` décodée à l'entrée dans le viewport.
-
-| Date | Rôle | Lieu |
-|------|------|------|
-| 2025–2026 | Développeur Freelance Fullstack | AKATech |
-| Mai–Nov. 2025 | Informaticien Stagiaire | Mairie d'Agboville |
-| 2023–2024 | Projet Académique ARTICI | UVCI |
-| 2023–2024 | Licence Réseau & Sécurité Informatique | UVCI (Cert. E-Banking · Réf: CC/24-002485) |
-| 2020–2021 | Baccalauréat Série D | Lycée Moderne d'Arrah (Mention Assez Bien) |
-
-### 6. Projets — FanDeck 3D Glassmorphism (`#projects`)
-
-**14 projets** · filtres pill interactifs · drag & swipe · navigation clavier (←→)
-
-| Filtre | Nb | Projets |
-|--------|----|---------|
-| 🟢 En ligne | 9 | ShopCI, TechFlow, TerraSafe, Tati, MK, ManoBeat 777, New Horizon Service, **AKATech** ⭐, **Université les Anges** |
-| 🔵 Démos | 4 | Chap-chapMAP, ElvisMarket, MonCashJour, LivreurTrack Pro |
-| 🟡 En cours | 1 | LinkedIn Banner Pro (30%) |
-
-> **Carte AKATech spéciale** (`isAgency:true`) : rendu 100% CSS génératif — aurora orbs, grille pulsante, scan line, logo glow vert, pills tech.
-
-### 7. Compétences (`#skills`)
-
-| Bande | Technologies |
-|-------|-------------|
-| Frontend | React, JavaScript, TypeScript, Next.js, Tailwind, HTML5, CSS3, Bootstrap |
-| Backend | Python, Flask, Django, Node.js, MySQL |
-| Outils & IA | Git, VS Code, GitHub, ChatGPT, Gemini, Claude AI, PythonAnywhere, Vercel, Netlify |
-| Autres | Windows, Android, Word, Excel, PowerPoint, MS Project, Facebook, Peinture, Maintenance, Support Tech |
-
-4 bandes infinies bidirectionnelles.
-
-### 8. Témoignages
-Cards glassmorphism + fond PlasmaCanvasBg.
-
-### 9. Contact (`#contact`)
-- **ScrambleText** : accroche `"CHAQUE LIEN."` décodée à l'entrée
-- Formulaire FormSubmit (`formsubmit.co/ajax`)
-- Grille sociale 8 liens : GitHub · LinkedIn · Facebook · WhatsApp · AKATech 🌐 · Gmail · UVCI · Mon CV
-- QR Code CV + téléchargement PDF
+| Route | Description |
+|---|---|
+| `/` | Accueil — Hero, Services, Process, Projets, Témoignages |
+| `/about` | À propos — Équipe, Timeline, Valeurs, Stats |
+| `/services` | Services — Détail complet, Tech Stack, Process |
+| `/projects` | Projets — Galerie filtrée par catégorie |
+| `/pricing` | Tarifs — Onglets par formule, Comparatif, FAQ |
+| `/blog` | Blog — Articles, Recherche, Newsletter |
+| `/blog/[slug]` | Article individuel |
+| `/contact` | Contact — Formulaire WhatsApp, Canaux, FAQ |
 
 ---
 
-## 🗂️ Architecture du code
-
-### Composants internes (`App.jsx`)
-
-| Composant | Rôle |
-|-----------|------|
-| `AkafolioLogo` | Logo génératif animé CSS v4 (pill orange, dot pulsant, glow) |
-| `LI` | Système d'icônes animées CSS — 40+ icônes SVG sans dépendance externe |
-| `PricingAnimIcon` | Icônes animées CSS dédiées aux cartes de tarification |
-| `Loader` | Écran de chargement : compteur %, barre, scan line, messages dynamiques |
-| `CustomCursor` | Dot curseur personnalisé animé |
-| `AuroraCanvas` | Fond aurora animé canvas (Hero) |
-| `PlasmaCanvasBg` | Fond plasma animé (Services, Parcours, Testimonials) |
-| `ParticleCanvas` | Canvas particules — défini, non rendu actuellement |
-| `StackedCard` | Carousel de cartes empilées mobile avec swipe (Tarifs + Parcours) |
-| `ScrollTop` | Bouton retour en haut flottant |
-| `Navbar` | Navigation + drawer mobile + theme toggle |
-| `Hero` | Horloge, ScrambleText nom, AuroraCanvas, typing effect, CTAs |
-| `Marquee` | Défilement infini de technologies |
-| `FeaturedCreation` | Vitrine ShopCI mockup desktop/mobile + window chrome |
-| `Services` | 6 services + TiltCard + SpotlightCard + PricingTabs + StackedCard mobile |
-| `PricingTabs` | 4 onglets tarification avec pill animé (Portfolio · Vitrine · E-commerce · SaaS) |
-| `About` | Section About (#about) + Timeline (#experience) dans un seul composant |
-| `FanDeck` | Carousel 3D : Stack → Fan → Focus + drag/swipe + navigation clavier |
-| `Projects` | Filtres pills + FanDeck (14 projets) |
-| `Skills` | 4 bandes infinies bidirectionnelles |
-| `Testimonials` | Retours clients glassmorphism + PlasmaCanvasBg |
-| `Contact` | Formulaire + ScrambleText + grille sociale 8 liens + QR Code |
-| `Footer` | Liens sociaux + copyright |
-| `MagBtn` | Bouton avec ripple + glint |
-| `TiltCard` | Carte 3D tilt perspective mouse/touch |
-| `SpotlightCard` | Carte avec halo lumineux suivant le curseur |
-| `WindowChrome` | Barre macOS décorative |
-| `ProgressBar` | Barre de progression animée (Timeline) |
-
-### Composants externes (`/components/`)
-
-| Fichier | Rôle |
-|---------|------|
-| `ScrollDepthScene.jsx` | Background WebGL Three.js (terrain wireframe + particules) + GSAP ScrollTrigger : hero blast exit, depth entrance staggeré, zoom caméra progressif 2 phases |
-| `ScrambleText.jsx` | Décodage texte lettre par lettre au scroll (IntersectionObserver) — mode binaire optionnel, `speed`, `step`, `threshold`, `once` configurables |
-
-### Données (`App.jsx`)
-
-| Constante | Type | Contenu |
-|-----------|------|---------|
-| `FACEBOOK_URL` | `string` | URL page Facebook officielle |
-| `PROJECTS` | `array[14]` | Titre, description, tech, url, image, progress, cat, isAgency, isPremium |
-| `SERVICES` | `array[6]` | Numéro, icône, titre, description, features |
-| `PRICING_TABS` | `array[4]` | Onglets avec plans (badge, price, delivery, features, isPopular) |
-| `FAQ` | `array[5]` | Questions / réponses — défini mais non rendu actuellement |
-| `SKILLS` | `object{4}` | frontend · backend · tools · autres |
-| `TIMELINE` | `array[5]` | Expériences et formations avec barres de progression |
-| `GRAD` | `array[11]` | Gradients fallback cartes (index 10 = vert AKATech) |
-| `BADGE_LIGHT/DARK` | `object` | Couleurs badges filtres selon thème |
-| `CAT_LABELS` | `object` | Tous / En ligne / Démos / En cours |
-| `LI_ICONS` | `object{40+}` | Dictionnaire icônes SVG animées CSS |
-
----
-
-## 🎨 Variables CSS (`style.css`)
-
-```css
-/* Mode SOMBRE (défaut) */
-:root {
-  --ink:     #F0F0F0;
-  --paper:   #0A0A0A;
-  --acc:     #FF5500;   /* Orange principal */
-  --acc-2:   #FF6B1A;
-  --border:  #333333;
-  --shadow:  4px 4px 0 #333;
-  --fd: 'Unbounded', sans-serif;
-  --fb: 'Space Mono', monospace;
-}
-
-/* Mode CLAIR */
-.app--light {
-  --ink:    #0D0D0D;
-  --paper:  #FFFFFF;
-  --acc:    #FF5500;
-  --border: #0D0D0D;
-  --shadow: 4px 4px 0 #0D0D0D;
-}
-```
-
-Classes spéciales carte AKATech :
-`.fd-card--agency` · `.fd-agency-card` · `.fd-agency-grid` · `.fd-agency-orb` · `.fd-agency-scan` · `.fd-agency-logo` · `.fd-agency-pill` · `.fd-agency-live`
-
-Classes logo v4 :
-`.aka4-wrap` · `.aka4-scan` · `.aka4-pill` · `.aka4-dot` · `.aka4-prefix` · `.aka4-aka` · `.aka4-tech`
-
----
-
-## 🎯 Projets hébergés
-
-### 🟢 En Production (9)
-
-| Projet | Description | Technologies | Statut | Lien |
-|--------|-------------|--------------|--------|------|
-| **AKATech** ⭐ | Site officiel agence digitale | Next.js 15, Framer Motion, WebGL Aurora | 100% | [→](https://akatech.vercel.app/) |
-| **ShopCI** | Marketplace multi-vendeurs | React, Django, Bootstrap 5 | 65% | [→](https://shop-ci.vercel.app/) |
-| **TechFlow** | Site vitrine professionnel | HTML/Tailwind, JavaScript | 97% | [→](https://techflow-ten.vercel.app/) |
-| **TerraSafe** | Plateforme foncière anti-arnaque | Flask, MySQL, Bootstrap 5 | 85% | [→](https://wthomassss06.pythonanywhere.com) |
-| **Tati** | Portfolio double vitrine | React, Tailwind, Framer Motion | 100% | [→](https://tatii.vercel.app/) |
-| **MK** | Portfolio sur-mesure graphiste | React, Tailwind, Framer Motion | 100% | [→](https://mory01ff.vercel.app/) |
-| **ManoBeat 777** | Portfolio beatmaker ivoirien | React, Tailwind, Howler.js | 100% | [→](https://xxx-x.vercel.app/) |
-| **New Horizon Service** | Location de résidences meublées | Next.js, Flask, MySQL | 100% | [→](https://new-horizonservice.vercel.app/) |
-| **Université les Anges** | Site institutionnel | HTML, CSS, Bulma, Bootstrap | 100% | [→](https://universitelesanges.vercel.app/) |
-
-### 🔵 Démos Fonctionnelles (4)
-
-| Projet | Description | Technologies |
-|--------|-------------|--------------|
-| **Chap-chapMAP** | Navigation GPS intelligente | JavaScript, Leaflet.js, OSRM API, Geolocation API |
-| **ElvisMarket** | Interface e-commerce avec panier dynamique | HTML+JS vanilla, Tailwind, LocalStorage |
-| **MonCashJour** | Gestion de ventes + analytics + export CSV | HTML+JS vanilla, Tailwind, Chart.js |
-| **LivreurTrack Pro** | Suivi logistique + validation photo | JavaScript, Bootstrap 5, LocalStorage, Camera API |
-
-### 🟡 En Développement (1)
-
-| Projet | Technologies | Statut |
-|--------|--------------|--------|
-| **LinkedIn Banner Pro** | JavaScript, Canvas API, Tailwind CSS | 30% |
-
----
-
-## ⚡ Performance & SEO
-
-- ✅ React 18 — `useCallback`, `useRef`, cleanup (`clearInterval`, `cancelAnimationFrame`)
-- ✅ Logo CSS injecté une seule fois via `document.getElementById(AKALOGO_CSS_ID)` et `LI_CSS_ID`
-- ✅ Lazy loading images avec fallback placeholder
-- ✅ Build Vite optimisé (code splitting)
-- ✅ SEO — Meta tags, Open Graph
-- ✅ Responsive mobile-first (breakpoints : 1024px · 768px · 480px)
-- ✅ Accessibility — ARIA labels, navigation clavier sur FanDeck
-- ✅ Animations CSS natives sans librairie externe (système LI + PricingAnimIcon)
-- ✅ Carte AKATech 100% CSS génératif — aucune image requise
-- ✅ ScrollDepthScene : cleanup RAF + listeners au unmount, `passive: true` sur scroll, `ctx.revert()` sur GSAP
-- ✅ ScrambleText : cleanup `IntersectionObserver` + `clearInterval` au unmount
-
----
-
-## 📦 Installation & Démarrage
+## 🚀 Installation & Démarrage
 
 ```bash
-git clone https://github.com/wthomasss06-stack/portfolio-akafolio.git
-cd portfolio-akafolio
+# Cloner le dépôt
+git clone https://github.com/wthomasss06-stack/akatech-agencenext.git
+cd akatech-agencenext
+
+# Installer les dépendances
 npm install
-npm run dev      # développement
-npm run build    # production
-npm run preview  # prévisualiser le build
-```
 
-### Dépendances principales
+# Lancer en développement
+npm run dev
+# → http://localhost:3000
 
-```json
-{
-  "react": "^18.x",
-  "three": "^0.x",
-  "gsap": "^3.x"
-}
-```
+# Build production
+npm run build
 
-### Structure des composants externes
-```
-src/
- ├── App.jsx
- ├── style.css
- └── components/
-      ├── ScrollDepthScene.jsx
-      └── ScrambleText.jsx
-```
-
-### Image placeholder AKATech
-```
-/public/assets/images/projects/akatech-preview.jpg
+# Preview du build
+npm start
 ```
 
 ---
 
-## 📊 Changelog
+## ☁️ Déploiement
 
-### [Avril 2026] — v3.3
+### Vercel (recommandé)
 
-| Changement | Détail |
-|------------|--------|
-| 🔧 **Structure sections clarifiée** | `PricingTabs` intégré dans `Services` · `Timeline (#experience)` intégré dans `About` — un seul composant par bloc logique |
-| 🔧 **ScrambleText multi-points** | Utilisé dans 3 sections : Hero (nom `M'BOLLO / AKA ELVIS`), About (tagline développeur), Contact (accroche `CHAQUE LIEN.`) |
-| 🔧 **Suppression effet curseur lumineux Hero** | `CustomCursor` (dot) conservé — effet glow/plasma du curseur dans le Hero retiré |
-| 🆕 **PricingAnimIcon** | Icônes animées CSS dédiées aux plans tarifaires (rocket · star · clock · check · building · cpu) |
-| 🆕 **StackedCard dans Parcours** | Carrousel mobile swipeable pour les entrées Timeline (en dehors de la vue desktop) |
-| ℹ️ **FAQ** | Constante `FAQ` définie (5 entrées) — non rendue actuellement |
-| ℹ️ **ParticleCanvas** | Composant défini — non rendu actuellement |
+```bash
+vercel --prod
+```
 
-### [Avril 2026] — v3.2
+> ⚠️ Pour un déploiement Vercel, retirer `output: 'export'` dans `next.config.js` si présent.
 
-| Changement | Détail |
-|------------|--------|
-| 🆕 **Projet #14 — Université les Anges** | Site institutionnel HTML/CSS/Bulma/Bootstrap — `cat:"en-ligne"` · 100% |
-| 🆕 **ScrollDepthScene.jsx** | Composant WebGL Three.js + GSAP ScrollTrigger : terrain wireframe animé, zoom caméra progressif 2 phases (plongeon + immersion), hero blast exit, depth entrance staggeré |
-| 🆕 **ScrambleText.jsx** | Composant de décodage texte lettre par lettre avec `IntersectionObserver`, mode binaire optionnel |
-| 🆕 **Système LI v2** | 40+ icônes SVG animées CSS injectées via `LI_CSS_ID` — remplacement complet de lucide-react |
-| 🆕 **Logo AKATech v4** | Pill orange avec prefix mono `//`, dot pulsant, glow text, scan line — `AKALOGO_CSS_ID` |
-| 🆕 **Section Testimonials** | Retours clients glassmorphism |
-| 🆕 **Grille sociale 8 liens** | Ajout WhatsApp + UVCI dans Contact |
-| 🔧 **Timeline enrichie** | Ajout entrée Freelance AKATech (2025–2026) avec barres de progression |
-| 🔧 **Pricing mis à jour** | Nouveaux tarifs et délais sur les 4 onglets |
-| 🔧 **App.jsx** | Toutes sections wrappées dans `ScrollDepthScene` |
+### Hébergement statique
 
-### [Avril 2026] — v3.1
+Le build génère un dossier `/out/` utilisable sur tout hébergeur statique (Netlify, GitHub Pages, cPanel…).
 
-| Changement | Détail |
-|------------|--------|
-| 🆕 **Projet AKATech #13** | Carte générative CSS : aurora orbs, grille pulsante, scan line, logo glow vert, pills, badge EN LIGNE · `isAgency:true` |
-| 🆕 **GRAD[10]** | Gradient vert forêt `#060e09 → #0a2a12` |
-| 🆕 **9 classes CSS agency** | `.fd-card--agency` + `.fd-agency-*` dans `style.css` |
-
-### [Mars 2026] — v3.0
-
-| Changement | Détail |
-|------------|--------|
-| 🆕 **Logo AKATech v3** | Engrenage, circuit animé, halo, particules, scan line |
-| 🆕 **Facebook** | Ajouté aux 4 emplacements sociaux |
-| 🆕 **Loader** | Fond `#080400`, scan, brackets, glow dot, messages dynamiques |
-| 🆕 **Navbar** | Actif = underline orange, logo `size=26` |
-| 🔧 **Hover Facebook** | `#1877F2` bleu officiel |
-
-### [Janvier 2026] — v2.0
-- FanDeck 3D glassmorphism, filtres pill, PricingTabs, Window Chrome macOS
-
-### [2025] — v1.0
-- Version initiale SPA React
+```bash
+npm run build
+# Uploader le contenu de /out/
+```
 
 ---
 
-## 🔗 Liens utiles
+## 🎨 Thème & Design
 
-| | |
+- **Palette** : Vert néon `#22c864` sur fond noir profond `#060e09`
+- **Style** : Dark luxury, skeumorphique, animations fluides
+- **Typographie** : Syne (titres), Inter / System UI (corps)
+- **Motion** : Framer Motion — entrées au scroll, transitions de pages, micro-interactions
+- **AuroraHero** : Background animé sur tous les héros de pages
+
+---
+
+## 📐 Responsive & UX
+
+- **Mobile-first** — breakpoints à 640px et 768px
+- **Héros uniformes** — tous les héros de pages partagent `padding: 9rem 5% 6rem` avec `min-height: 420px` sur desktop
+- **Floating pills** — les badges/pills flottants sur les cartes sont masqués sur mobile via `.no-pill-mobile` pour un rendu épuré
+- **PWA** — Service Worker + Manifest pour installation sur mobile
+
+---
+
+## 📞 Contact
+
+| Canal | Info |
 |---|---|
-| 🌐 Portfolio | [akafolio160502.vercel.app](https://akafolio160502.vercel.app/) |
-| 🏢 AKATech | [akatech.vercel.app](https://akatech.vercel.app/) |
-| 🛒 ShopCI | [shop-ci.vercel.app](https://shop-ci.vercel.app/) |
-| 🏠 TechFlow | [techflow-ten.vercel.app](https://techflow-ten.vercel.app/) |
-| 🏡 TerraSafe | [wthomassss06.pythonanywhere.com](https://wthomassss06.pythonanywhere.com) |
-| 🎨 Tati | [tatii.vercel.app](https://tatii.vercel.app/) |
-| 🖌️ MK | [mory01ff.vercel.app](https://mory01ff.vercel.app/) |
-| 🎵 ManoBeat 777 | [xxx-x.vercel.app](https://xxx-x.vercel.app/) |
-| 🏘️ New Horizon | [new-horizonservice.vercel.app](https://new-horizonservice.vercel.app/) |
-| 🎓 Université les Anges | [universitelesanges.vercel.app](https://universitelesanges.vercel.app/) |
+| 📱 WhatsApp | [+225 01 42 50 77 50](https://wa.me/2250142507750) |
+| 📧 Email | [wthomasss06@gmail.com](mailto:wthomasss06@gmail.com) |
+| 🌍 Portfolio | [akafolio160502.vercel.app](https://akafolio160502.vercel.app) |
+| 📍 Localisation | Abidjan, Côte d'Ivoire |
 
 ---
 
-## 📧 Contact
+## 👨‍💻 Auteur
 
-**M'BOLLO AKA Elvis** — Développeur Web Full-Stack — Abidjan, Côte d'Ivoire
-
-- 📧 [wthomasss06@gmail.com](mailto:wthomasss06@gmail.com)
-- 📧 [aka.mbollo@uvci.edu.ci](mailto:aka.mbollo@uvci.edu.ci)
-- 📱 [+225 01 42 50 77 50](tel:+2250142507750)
-- 💬 [WhatsApp](https://wa.me/2250142507750)
-- 💼 [LinkedIn](https://www.linkedin.com/in/m-bollo-aka-60a1b1340/)
-- 🐙 [GitHub @wthomasss06-stack](https://github.com/wthomasss06-stack)
-- 📘 [Facebook](https://web.facebook.com/profile.php?id=61577494705852)
-- 📍 Abidjan, Côte d'Ivoire
+Développé par **Aka W. Thomas** — Développeur Full-Stack (React / Next.js / Flask / Django)
 
 ---
 
-## 📄 Licence
-
-© 2026 Elvis M'BOLLO. Tous droits réservés.
+*© 2025 AKATech. Tous droits réservés.*
