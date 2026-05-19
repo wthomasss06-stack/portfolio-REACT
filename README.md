@@ -2,8 +2,7 @@
 
 <img src="public/assets/images/logo-akatech.png" alt="AKATech Logo" width="200" />
 
-<br />
-<br />
+<br /><br />
 
 # ✦ AKAFOLIO — Elvis M'BOLLO
 
@@ -26,46 +25,82 @@
 
 <br />
 
-*SPA · Neo-Brutalism × Glassmorphism · Galerie WebGL 3D · Animations immersives*
+*SPA · 3 Versions · Neo-Brutalism × Glassmorphism · WebGL · Animations immersives*
 
 </div>
 
 ---
 
-## 🎯 À propos du projet
+## 🎯 À propos
 
-**AKAFOLIO** est mon portfolio personnel interactif — une vitrine technique conçue pour impressionner au premier regard. Il combine un design **Neo-Brutalism** tranchant avec des animations WebGL fluides, une galerie 3D de projets scrollable, et une identité visuelle forte centrée sur l'orange `#FF5500`.
+**AKAFOLIO** est mon portfolio personnel interactif — une vitrine technique conçue pour impressionner au premier regard. Il embarque **trois expériences distinctes** servies dynamiquement selon le contexte (device + préférence utilisateur), toutes construites sur mesure sans composants UI tiers.
 
-Tout est construit sur mesure : pas de composants UI tiers, pas de CSS framework inutile. Chaque animation, chaque interaction, chaque pixel a été pensé pour refléter mon niveau d'exigence en tant que développeur Full-Stack.
+---
+
+## 🔀 Architecture — 3 Versions
+
+Le point d'entrée `main.jsx` détecte automatiquement le device et sert la bonne version :
+
+```
+Visiteur arrive
+      │
+      ├─ Largeur > 900px  ──► Mode Win95 (défaut) → basculable en Mode Moderne Desktop
+      │
+      └─ Largeur ≤ 900px  ──► AppMobile directement (aucun switcher affiché)
+```
+
+| Version | Fichiers | Chargement |
+|---|---|---|
+| 🖥️ **Desktop** | `App.jsx` + `style.css` | Mode "Moderne" sur écrans > 900px |
+| 📱 **Mobile** | `Appmobile.jsx` + `stylemobile.css` | Automatique sur écrans ≤ 900px |
+| 🖥️ **Win95** | `Win95Portfolio.jsx` | Mode par défaut au premier chargement (desktop) |
+
+### Routage (`main.jsx`)
+
+- **CSS dynamique** : `style.css` ou `stylemobile.css` injecté via `<style id="dynamic-portfolio-styles">` selon `isMobile`
+- **Détection device** : `window.matchMedia('(max-width: 900px)')` + listener resize
+- **Persistance** : le mode choisi (win95/modern) est sauvegardé dans `localStorage`
+- **Switcher Win95 ↔ Moderne** : bouton fixe visible uniquement sur desktop
 
 ---
 
 ## ✨ Fonctionnalités
 
-### 🎮 Galerie de projets WebGL — OGL
-Galerie 3D scrollable avec une courbure en arc de cercle. Les projets défilent horizontalement en WebGL pur via la librairie **OGL** (ultra-légère). Effet de distorsion ondulatoire sur chaque carte en temps réel.
+### 🖥️ Version Desktop (`App.jsx`)
 
-### 🖥️ Héro animé
-Fond de terrain wireframe Three.js + particules synchronisées au scroll via **GSAP ScrollTrigger**. Texte animé avec **Pressure Text** sur le nom, tagline ScrambleText.
+| Section | Description |
+|---|---|
+| **Loader** | Écran de chargement animé avec scan line |
+| **Navbar** | Topbar : logo, horloge temps réel, statut disponible, bouton thème neo-brutalism |
+| **Hero** | Fond wireframe Three.js, TextPressure sur le nom, toujours en mode sombre |
+| **Sticky Panels** | Services défilants GSAP ScrollTrigger |
+| **About** | Portrait + description, typographie premium |
+| **Timeline** | Parcours chronologique animé ScrollReveal |
+| **Skills** | Icônes SVG animées CSS (40+ technologies) |
+| **Showcase** | Cartes services en carousel |
+| **Pricing** | Plans tarifaires 4 catégories, tabs neo-brutalism |
+| **Galerie OGL** | Galerie WebGL 3D scrollable — cartes rectangulaires avec distorsion |
+| **Testimonials** | Avis clients en carousel horizontal |
+| **Contact** | Formulaire + grille de liens sociaux, titre ScrollReveal |
+| **Footer** | SVG animé + CV card + bas de page cliquable AKATech |
+| **Win95 Easter Egg** | Interface rétro Windows 95 complète |
 
-### 📜 Sections immersives
-- **À propos** — merge élégant titre + texte, typographie premium (Outfit + Plus Jakarta Sans)
-- **Parcours** — Timeline animée avec révélation au scroll
-- **Skills** — Icônes SVG animées CSS, 40+ technologies
-- **Services** — Sticky panels en cascade (GSAP ScrollTrigger)
-- **Tarifs** — Carousel neo-brutalism 4 catégories de plans
-- **Contact** — Formulaire avec grille de liens sociaux et beam animé
+### 📱 Version Mobile (`Appmobile.jsx`)
+Interface entièrement repensée pour le tactile avec `stylemobile.css` dédié — expérience optimisée pour les petits écrans.
 
-### 🌙 Thèmes
-| Mode | Palette | Détail |
+### 🕹️ Version Win95 (`Win95Portfolio.jsx`)
+Easter egg interactif : interface Windows 95 complète avec fenêtres, icônes de bureau, menu Démarrer.
+
+---
+
+## 🌙 Thèmes (Desktop)
+
+| Mode | Palette | Déclencheur |
 |---|---|---|
-| **Sombre** (défaut) | `#0A0A0A` + `#FF5500` | Heure 18h–6h |
-| **Clair** | `#F2EDE8` + `#0A0A0A` | Neo-Brutalism éditorial |
+| **Sombre** (défaut) | `#0A0A0A` fond + `#FF5500` accent | 18h–6h ou manuel |
+| **Clair** | `#F2EDE8` fond + `#0A0A0A` texte | Manuel (bouton neo-brutalism) |
 
-Le Hero reste **toujours sombre**, quel que soit le thème actif.
-
-### 🚀 Easter Egg Windows 95
-Un mode secret `Win95Portfolio.jsx` accessible via commande cachée — interface complète style rétro Win95.
+> Le Hero reste **toujours sombre**, quel que soit le thème actif.
 
 ---
 
@@ -73,14 +108,17 @@ Un mode secret `Win95Portfolio.jsx` accessible via commande cachée — interfac
 
 | Couche | Technologies |
 |---|---|
-| **Frontend** | React 18, Vite 5, JSX |
-| **Styles** | Vanilla CSS custom, variables CSS, Scope Reset |
-| **Typographie** | Outfit, Plus Jakarta Sans, Space Mono, Syne |
+| **Orchestration** | `main.jsx` — routage device + injection CSS dynamique |
+| **Frontend Desktop** | React 18, Vite 5, `App.jsx` |
+| **Frontend Mobile** | React 18, `Appmobile.jsx` |
+| **Styles Desktop** | `style.css` — variables CSS, thèmes, animations |
+| **Styles Mobile** | `stylemobile.css` — layout mobile-first dédié |
+| **Typographie** | Outfit (titres), Plus Jakarta Sans (corps), Space Mono, Syne |
 | **3D & WebGL** | OGL (galerie projets), Three.js (hero background) |
 | **Animations** | GSAP 3 + ScrollTrigger, ScrollReveal, CSS natif |
-| **Composants** | ScrambleText, TextPressure, RotatingText, TargetCursor |
+| **Composants** | ScrambleText, TextPressure, RotatingText, TargetCursor, ScrollFloat |
 | **Formulaire** | FormSubmit (sans backend) |
-| **Déploiement** | Vercel (CI/CD via GitHub) |
+| **Déploiement** | Vercel (CI/CD GitHub) |
 
 ---
 
@@ -90,24 +128,37 @@ Un mode secret `Win95Portfolio.jsx` accessible via commande cachée — interfac
 elvis-portfolio/
 ├── public/
 │   ├── assets/
-│   │   ├── images/           # Logo, QR code, images projets
+│   │   ├── images/           # Logo AKATech, QR code CV, images projets
 │   │   └── qrcodeCV.png
 │   └── demos/                # Démos HTML standalone des projets
+│
 ├── src/
-│   ├── App.jsx               # ★ Composants principaux + données PROJECTS/PRICING
-│   ├── Appmobile.jsx         # Version mobile dédiée
-│   ├── Win95Portfolio.jsx    # Easter egg Windows 95
-│   ├── style.css             # Variables CSS, thèmes, animations globales
-│   ├── stylemobile.css       # Styles mobile spécifiques
-│   ├── scope-reset.css       # Reset CSS isolé
+│   │
+│   ├── main.jsx              # ★ Routeur principal — détection device, injection CSS
+│   │
+│   ├── ── VERSION DESKTOP ──
+│   ├── App.jsx               # Composants desktop + données (PROJECTS, PRICING…)
+│   ├── style.css             # Styles desktop : variables, thèmes clair/sombre, animations
+│   │
+│   ├── ── VERSION MOBILE ──
+│   ├── Appmobile.jsx         # Composants mobile dédiés
+│   ├── stylemobile.css       # Styles mobile-first dédiés
+│   │
+│   ├── ── EASTER EGG ──
+│   ├── Win95Portfolio.jsx    # Interface Windows 95 complète
+│   │
+│   ├── scope-reset.css       # Reset CSS global isolé
+│   ├── index.css             # Styles de base
+│   │
 │   └── components/
-│       ├── ScrollDepthScene.jsx   # Background WebGL Three.js
+│       ├── ScrollDepthScene.jsx   # Background WebGL Three.js + GSAP
 │       ├── ScrambleText.jsx       # Décodage texte au scroll
 │       ├── ScrollReveal.jsx       # Révélation au scroll
 │       ├── TextPressure.jsx       # Effet pression typographique
 │       ├── RotatingText.jsx       # Texte rotatif animé
 │       ├── TargetCursor.jsx       # Curseur personnalisé
 │       └── ScrollFloat.jsx        # Flottement au scroll
+│
 ├── index.html
 ├── vite.config.js
 └── package.json
@@ -154,13 +205,13 @@ npm run preview
 | **New Horizon Service** | Location résidences meublées | Next.js, Flask, MySQL | [→ Voir](https://new-horizonservice.vercel.app/) |
 | **Université les Anges** | Site institutionnel | HTML, CSS, Bulma | [→ Voir](https://universitelesanges.vercel.app/) |
 
-> 4 démos supplémentaires (Chap-chapMAP, ElvisMarket, MonCashJour, LivreurTrack Pro) accessibles directement depuis la galerie du portfolio.
+> 4 démos supplémentaires accessibles depuis la galerie du portfolio.
 
 ---
 
 ## 💼 Services & Tarifs
 
-> 💡 Tous les plans incluent un **nom de domaine offert (1 an)** et un hébergement selon le plan.
+> 💡 Tous les plans incluent un **nom de domaine offert (1 an)**.
 
 <details>
 <summary><b>🖥️ Portfolio personnel</b></summary>
@@ -211,7 +262,7 @@ npm run preview
 ## 📦 Variables CSS clés
 
 ```css
-/* Thème sombre (défaut) */
+/* Thème sombre (défaut) — style.css */
 :root {
   --accent:  #FF5500;
   --text:    #F2EDE8;
@@ -234,20 +285,20 @@ body.light-mode {
 ## 📅 Changelog
 
 ### v3.4 — Mai 2026
+- 🏗️ Architecture clarifiée : **3 versions distinctes** (Desktop / Mobile / Win95) via `main.jsx`
 - 🎨 Nouvelle typographie : **Outfit** (titres) + **Plus Jakarta Sans** (texte)
-- 🃏 Galerie projets OGL redessinée : cartes **rectangulaires paysage** (800×550)
+- 🃏 Galerie OGL redessinée : cartes **rectangulaires paysage** (800×550)
 - 🌙 Hero **verrouillé en mode sombre** permanent
-- 🔲 Bouton thème en **Neo-Brutalism** (border + box-shadow décalé)
-- 📍 `.nb-bottombar` repositionné en **bas à droite**
-- 🔗 **AKATech** cliquable dans le footer → `akatech.vercel.app`
-- ✍️ Footer bas de page : texte **noir en mode clair**
-- 📐 Titre "Mes Réalisations" avec `ScrollReveal` (taille grand titre)
-- 📝 Contact : titre "Restons connectés." animé `ScrollReveal`
+- 🔲 Bouton thème en **Neo-Brutalism** (border + box-shadow décalé + rebond au clic)
+- 📍 `.nb-bottombar` repositionné en bas à droite
+- 🔗 **AKATech** cliquable dans le footer
+- ✍️ Footer bas de page : texte noir en mode clair
+- 📐 Titre "Mes Réalisations" + "Restons connectés." animés `ScrollReveal`
 
 ### v3.3 — Avril 2026
-- `PricingAnimIcon` : icônes CSS animées pour les plans tarifaires
+- `PricingAnimIcon` : icônes CSS animées pour les plans
 - `StackedCard` dans Timeline mobile
-- `ScrambleText` sur 3 sections (Hero, About, Contact)
+- `ScrambleText` sur Hero, About, Contact
 
 ### v3.2 — Avril 2026
 - `ScrollDepthScene` WebGL Three.js + GSAP ScrollTrigger
@@ -280,6 +331,6 @@ body.light-mode {
 
 <div align="center">
 
-Made with ❤️ in Abidjan · © 2026 Elvis M'BOLLO — AKATech · Tous droits réservés
+Made with ❤️ in Abidjan · © 2026 Elvis M'BOLLO — [AKATech](https://akatech.vercel.app/) · Tous droits réservés
 
 </div>
