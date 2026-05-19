@@ -1,0 +1,3826 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import ScrollDepthScene from './components/ScrollDepthScene';
+import ScrambleText from './components/ScrambleText';
+
+
+/* ── SVG icon replacements (pas de dépendance lucide-react) ── */
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ANIMATED ICON SYSTEM — Lordicon-style
+// Usage :  <LI name="rocket" size={18} color="#ff5500" className="..." style={{}}/>
+// ═══════════════════════════════════════════════════════════════════════════════
+const LI_CSS_ID = 'li-anim-global-v2';
+const LI_CSS = `
+.li{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex-shrink:0;line-height:1;}
+@keyframes li-sun-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.li-sun-rays{animation:li-sun-spin 8s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-moon-rock{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+.li-moon{animation:li-moon-rock 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-x-pop{0%{transform:scale(.5) rotate(-30deg);opacity:0}70%{transform:scale(1.12) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.li-x{animation:li-x-pop .35s cubic-bezier(.175,.885,.32,1.275) both;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-rocket-fly{0%,100%{transform:translateY(0) rotate(-45deg)}50%{transform:translateY(-4px) rotate(-45deg)}}
+@keyframes li-flame{0%,100%{opacity:.5;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1.3)}}
+.li-rocket{animation:li-rocket-fly 1.6s ease-in-out infinite;}
+.li-flame{animation:li-flame .45s ease-in-out infinite;transform-origin:bottom;transform-box:fill-box;}
+@keyframes li-dl{0%,100%{transform:translateY(0)}40%{transform:translateY(4px)}70%{transform:translateY(-1px)}}
+.li-dl-arrow{animation:li-dl 1.4s ease-in-out infinite;}
+@keyframes li-pin-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes li-pin-ring{0%{r:0;opacity:.7}100%{r:7;opacity:0}}
+.li-pin{animation:li-pin-bounce 1.8s ease-in-out infinite;}
+.li-pin-ring{animation:li-pin-ring 1.8s ease-out infinite;transform-origin:12px 18px;}
+@keyframes li-brace-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-2.5px)}}
+@keyframes li-brace-r{0%,100%{transform:translateX(0)}50%{transform:translateX(2.5px)}}
+.li-brace-l{animation:li-brace-l 1.8s ease-in-out infinite;}
+.li-brace-r{animation:li-brace-r 1.8s ease-in-out infinite;}
+@keyframes li-chk-ring{0%{stroke-dashoffset:72}100%{stroke-dashoffset:0}}
+@keyframes li-chk-mark{0%{stroke-dashoffset:20}100%{stroke-dashoffset:0}}
+.li-chk-ring{stroke-dasharray:72;animation:li-chk-ring .5s ease-out both;}
+.li-chk-mark{stroke-dasharray:20;animation:li-chk-mark .4s ease-out .3s both;}
+@keyframes li-ext{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,-2px)}}
+.li-ext-arrow{animation:li-ext 1.5s ease-in-out infinite;}
+@keyframes li-min-hand{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes li-hr-hand{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.li-clock-min{animation:li-min-hand 4s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-clock-hr{animation:li-hr-hand 48s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-info-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.li-info-circle{animation:li-info-pulse 2.2s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-bulb-glow{0%,100%{filter:drop-shadow(0 0 0px rgba(255,220,0,.0));opacity:.7}50%{filter:drop-shadow(0 0 6px rgba(255,220,0,.9));opacity:1}}
+.li-bulb{animation:li-bulb-glow 2s ease-in-out infinite;}
+@keyframes li-eye-blink{0%,85%,100%{transform:scaleY(1)}92%{transform:scaleY(.08)}}
+@keyframes li-pupil{0%,100%{transform:translateX(0)}30%{transform:translateX(2px)}70%{transform:translateX(-2px)}}
+.li-eye-wrap{animation:li-eye-blink 3.5s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-pupil{animation:li-pupil 3.5s ease-in-out infinite;}
+@keyframes li-wheel{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(4px);opacity:.2}}
+.li-wheel{animation:li-wheel 1.5s ease-in-out infinite;}
+@keyframes li-cal-page{0%,70%,100%{transform:rotateX(0)}30%{transform:rotateX(-25deg)}}
+.li-cal-top{animation:li-cal-page 2.8s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+@keyframes li-win{0%,100%{opacity:.2}50%{opacity:1}}
+.li-w1{animation:li-win 1.8s ease-in-out infinite;}
+.li-w2{animation:li-win 1.8s ease-in-out infinite .35s;}
+.li-w3{animation:li-win 1.8s ease-in-out infinite .7s;}
+.li-w4{animation:li-win 1.8s ease-in-out infinite 1.05s;}
+@keyframes li-arr-r{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+@keyframes li-arr-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-4px)}}
+.li-arr-r{animation:li-arr-r 1.2s ease-in-out infinite;}
+.li-arr-l{animation:li-arr-l 1.2s ease-in-out infinite;}
+@keyframes li-plane{0%,55%{transform:translate(0,0) rotate(-45deg);opacity:1}50%{transform:translate(5px,-5px) rotate(-45deg);opacity:0}51%{transform:translate(-5px,5px) rotate(-45deg);opacity:0}100%{transform:translate(0,0) rotate(-45deg);opacity:1}}
+.li-plane{animation:li-plane 2.2s ease-in-out infinite;}
+@keyframes li-play-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes li-play-ring{0%{r:9;opacity:.6}100%{r:14;opacity:0}}
+.li-play{animation:li-play-pulse 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+.li-play-ring{animation:li-play-ring 1.8s ease-out infinite;}
+@keyframes li-grid-g{0%,100%{transform:scale(1)}50%{transform:scale(.78);opacity:.5}}
+.li-g1{animation:li-grid-g 2s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+.li-g2{animation:li-grid-g 2s ease-in-out infinite .25s;transform-origin:center;transform-box:fill-box;}
+.li-g3{animation:li-grid-g 2s ease-in-out infinite .5s;transform-origin:center;transform-box:fill-box;}
+.li-g4{animation:li-grid-g 2s ease-in-out infinite .75s;transform-origin:center;transform-box:fill-box;}
+@keyframes li-chev-r{0%,100%{transform:translateX(0)}50%{transform:translateX(2px)}}
+@keyframes li-chev-l{0%,100%{transform:translateX(0)}50%{transform:translateX(-2px)}}
+.li-chev-r{animation:li-chev-r 1s ease-in-out infinite;}
+.li-chev-l{animation:li-chev-l 1s ease-in-out infinite;}
+@keyframes li-star-spin{0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.18)}100%{transform:rotate(360deg) scale(1)}}
+.li-star{animation:li-star-spin 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.li-spinner{animation:li-spin .7s linear infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-phone-ring{0%,55%,100%{transform:rotate(0)}10%{transform:rotate(-18deg)}20%{transform:rotate(18deg)}30%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}50%{transform:rotate(0)}}
+.li-phone{animation:li-phone-ring 2.5s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-shackle{0%,100%{transform:translateY(0)}40%{transform:translateY(-3px)}70%{transform:translateY(1px)}}
+@keyframes li-lock-glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 4px currentColor)}}
+.li-shackle{animation:li-shackle 2.5s ease-in-out infinite;transform-origin:12px 11px;transform-box:fill-box;}
+.li-lock-body{animation:li-lock-glow 2.5s ease-in-out infinite;}
+@keyframes li-env-flap{0%,60%,100%{transform:rotateX(0)}20%{transform:rotateX(-50deg)}40%{transform:rotateX(-30deg)}}
+.li-env-flap{animation:li-env-flap 2.5s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+@keyframes li-globe-orbit{0%{stroke-dashoffset:62;opacity:.2}100%{stroke-dashoffset:0;opacity:.7}}
+@keyframes li-globe-merid{0%{rx:5.5;ry:9.5}25%{rx:9;ry:9.5}50%{rx:5.5;ry:9.5}75%{rx:1.2;ry:9.5}100%{rx:5.5;ry:9.5}}
+.li-globe-orbit{animation:li-globe-orbit 2.6s ease-in-out infinite;}
+.li-globe-merid{animation:li-globe-merid 3.4s ease-in-out infinite;}
+@keyframes li-gh-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+.li-gh{animation:li-gh-bounce 2s ease-in-out infinite;}
+@keyframes li-li-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+.li-li{animation:li-li-pulse 2s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-fb-sway{0%,100%{transform:rotate(0)}30%{transform:rotate(-4deg)}70%{transform:rotate(4deg)}}
+.li-fb{animation:li-fb-sway 3s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-wa-ring{0%{r:0;opacity:.6}100%{r:10;opacity:0}}
+@keyframes li-wa-bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.li-wa-ring{animation:li-wa-ring 1.8s ease-out infinite;}
+.li-wa{animation:li-wa-bounce 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-screen-fx{0%,100%{opacity:1}88%{opacity:1}90%{opacity:.15}93%{opacity:1}96%{opacity:.5}98%{opacity:1}}
+.li-screen{animation:li-screen-fx 5s ease-in-out infinite;}
+@keyframes li-mob-vibe{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg)}40%{transform:rotate(5deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}
+.li-mob{animation:li-mob-vibe 1.8s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-col-glow{0%,100%{opacity:.4}50%{opacity:1}}
+.li-col1{animation:li-col-glow 2s ease-in-out infinite;}
+.li-col2{animation:li-col-glow 2s ease-in-out infinite .4s;}
+.li-col3{animation:li-col-glow 2s ease-in-out infinite .8s;}
+@keyframes li-pdf-flip{0%,70%,100%{transform:rotateY(0)}30%{transform:rotateY(-30deg)}}
+.li-pdf-page{animation:li-pdf-flip 2.5s ease-in-out infinite;transform-origin:left center;transform-box:fill-box;}
+@keyframes li-db{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08);opacity:.7}}
+.li-db{animation:li-db 1.8s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
+`;
+
+function useLICSS(){
+  useEffect(()=>{
+    if(!document.getElementById(LI_CSS_ID)){
+      const s=document.createElement('style');s.id=LI_CSS_ID;s.textContent=LI_CSS;
+      document.head.appendChild(s);
+    }
+  },[]);
+}
+
+const LI_ICONS = {
+  /* ── SUN — cercle épuré + rayons fins ── */
+  sun:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="4"/><g className="li-sun-rays"><line x1="12" y1="3" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21"/><line x1="3" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="21" y2="12"/><line x1="5.64" y1="5.64" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="18.36" y2="18.36"/><line x1="5.64" y1="18.36" x2="7.05" y2="16.95"/><line x1="16.95" y1="7.05" x2="18.36" y2="5.64"/></g></svg>),
+  /* ── MOON — croissant minimal ── */
+  moon:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><path className="li-moon" d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" fill={C} fillOpacity=".1"/></svg>),
+  /* ── TIMES — croix fine style iOS ── */
+  times:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-x"><line x1="17" y1="7" x2="7" y2="17"/><line x1="7" y1="7" x2="17" y2="17"/></g></svg>),
+  /* ── ROCKET — style Telegram/envoyer ── */
+  rocket:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-rocket"><path d="M12 2.5C8 2.5 4.5 6 4.5 10.5c0 3 1.5 5.5 3.5 7l1 4h6l1-4c2-1.5 3.5-4 3.5-7C19.5 6 16 2.5 12 2.5z" fill={C} fillOpacity=".1"/><circle cx="12" cy="10" r="2.5" fill={C} fillOpacity=".35"/><path d="M9.5 17.5l-2 1.5M14.5 17.5l2 1.5"/></g><g className="li-flame" transform="translate(11.5 21)"><ellipse cx="0" cy="0" rx="1.5" ry="2" fill="#ff5500" stroke="none" opacity=".85"/></g></svg>),
+  /* ── DOWNLOAD — flèche vers le bas dans plateau ── */
+  download:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-dl-arrow"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/></g><path d="M5 19h14" strokeWidth={sw*.9}/></svg>),
+  /* ── MAP-MARKER — goutte épurée ── */
+  'map-marker-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle className="li-pin-ring" cx="12" cy="19" r="0" stroke={C} fill="none" strokeWidth="1"/><g className="li-pin"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z" fill={C} fillOpacity=".1"/><circle cx="12" cy="9" r="2.5" fill={C} fillOpacity=".4"/></g></svg>),
+  /* ── CODE — sliders égaliseur (filtre style new) ── */
+  code:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-brace-l"><line x1="5" y1="6" x2="5" y2="18"/><circle cx="5" cy="9" r="1.8" fill={C} strokeWidth="0"/></g><g className="li-brace-r"><line x1="12" y1="4" x2="12" y2="18"/><circle cx="12" cy="14" r="1.8" fill={C} strokeWidth="0"/></g><g className="li-ext-arrow"><line x1="19" y1="6" x2="19" y2="18"/><circle cx="19" cy="10" r="1.8" fill={C} strokeWidth="0"/></g></svg>),
+  /* ── DESKTOP — écran arrondi minimal ── */
+  desktop:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="13" rx="3" fill={C} fillOpacity=".08"/><rect className="li-screen" x="4" y="6" width="16" height="9" rx="2" fill={C} fillOpacity=".2" stroke="none"/><path d="M8 21h8M12 17v4"/></svg>),
+  /* ── MOBILE — téléphone rectangle arrondi (new phone style image) ── */
+  'mobile-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-mob"><rect x="6" y="1.5" width="12" height="21" rx="3.5" fill={C} fillOpacity=".08"/><circle cx="12" cy="19" r="1" fill={C} stroke="none"/></g></svg>),
+  /* ── CHECK-CIRCLE — coche dans cercle épuré ── */
+  'check-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" className="li-chk-ring" fill={C} fillOpacity=".08"/><polyline className="li-chk-mark" points="8 12 11 15 16 9"/></svg>),
+  /* ── EXTERNAL-LINK — share box (upward arrow new style) ── */
+  'external-link-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><path d="M12 3v10M9 6l3-3 3 3"/></g><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>),
+  /* ── CLOCK — montre arrondie, aiguilles fines ── */
+  clock:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><line className="li-clock-hr" x1="12" y1="12" x2="12" y2="7.5"/><line className="li-clock-min" x1="12" y1="12" x2="15.5" y2="12"/><circle cx="12" cy="12" r="1" fill={C} stroke="none"/></svg>),
+  /* ── INFO-CIRCLE — i minimaliste ── */
+  'info-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-info-circle"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".08"/><circle cx="12" cy="8" r=".8" fill={C} stroke="none"/><line x1="12" y1="11" x2="12" y2="16.5" strokeWidth={sw*1.1}/></g></svg>),
+  /* ── LIGHTBULB — ampoule épurée ── */
+  lightbulb:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-bulb"><path d="M9 18h6M10 21h4"/><path d="M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z" fill={C} fillOpacity=".1"/></g></svg>),
+  /* ── EYE — œil géométrique fin ── */
+  eye:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-eye-wrap"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z" fill={C} fillOpacity=".08"/><circle className="li-pupil" cx="12" cy="12" r="3" fill={C} fillOpacity=".2"/><circle className="li-pupil" cx="12" cy="12" r="1.5" fill={C} stroke="none"/></g></svg>),
+  /* ── MOUSE — molette style bookmark ── */
+  mouse:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><rect x="7" y="2" width="10" height="16" rx="5" fill={C} fillOpacity=".08"/><line x1="12" y1="6" x2="12" y2="10" className="li-wheel" strokeWidth={sw+.5}/></svg>),
+  /* ── CALENDAR — agenda épuré ── */
+  'calendar-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="17" rx="3" fill={C} fillOpacity=".07"/><g className="li-cal-top"><path d="M3 10h18" strokeWidth={sw}/></g><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><rect x="7.5" y="14" width="3" height="3" rx="1" fill={C} fillOpacity=".5" stroke="none"/><rect x="13.5" y="14" width="3" height="3" rx="1" fill={C} fillOpacity=".5" stroke="none"/></svg>),
+  /* ── BUILDING — immeuble avec fenêtres lumineuses ── */
+  building:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="19" rx="2" fill={C} fillOpacity=".07"/><line x1="3" y1="22" x2="21" y2="22"/><rect className="li-w1" x="7" y="7" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w2" x="14" y="7" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w3" x="7" y="13" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><rect className="li-w4" x="14" y="13" width="3" height="3" rx="1" fill={C} fillOpacity=".7" stroke="none"/><path d="M10 22v-4h4v4"/></svg>),
+  /* ── ARROW-LEFT — flèche fine ── */
+  'arrow-left':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-l"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 6 4 12 10 18"/></g></svg>),
+  /* ── ARROW-RIGHT — flèche fine ── */
+  'arrow-right':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></g></svg>),
+  /* ── PAPER-PLANE — avion Telegram style (Send new) ── */
+  'paper-plane':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-plane"><path d="M21.5 2.5L10 13.5M21.5 2.5L14.5 21.5l-4.5-8-8-4.5 19.5-6.5z" fill={C} fillOpacity=".12"/><path d="M21.5 2.5L10 13.5m0 0l3 7 8.5-19"/></g></svg>),
+  /* ── PLAY-CIRCLE — play épuré ── */
+  'play-circle':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle className="li-play-ring" cx="12" cy="12" r="9" stroke={C} fill="none" strokeWidth="1" opacity=".4"/><g className="li-play"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".09"/><path d="M10 8.5l6 3.5-6 3.5V8.5z" fill={C} fillOpacity=".6" stroke={C} strokeLinejoin="round"/></g></svg>),
+  /* ── TH-LARGE — grid 2×2 coins arrondis ── */
+  'th-large':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw}><rect className="li-g1" x="2.5" y="2.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g2" x="13.5" y="2.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g3" x="2.5" y="13.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/><rect className="li-g4" x="13.5" y="13.5" width="8" height="8" rx="2" fill={C} fillOpacity=".2"/></svg>),
+  /* ── CHEVRON-LEFT / RIGHT — minimal ── */
+  'chevron-left':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline className="li-chev-l" points="14 18 8 12 14 6"/></svg>),
+  'chevron-right':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline className="li-chev-r" points="10 18 16 12 10 6"/></svg>),
+  /* ── STAR → HEART (wishlist new style) ── */
+  star:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path className="li-star" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".2"/></svg>),
+  /* ── SPINNER — arc de cercle qui tourne ── */
+  spinner:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" stroke={C} strokeOpacity=".15" strokeWidth={sw}/><path className="li-spinner" d="M12 2.5a9.5 9.5 0 0 1 9.5 9.5"/></svg>),
+  /* ── PHONE → mobile rectangle (new phone style) ── */
+  phone:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-phone"><rect x="5.5" y="1.5" width="13" height="21" rx="3.5" fill={C} fillOpacity=".1"/><circle cx="12" cy="19.5" r="1" fill={C} stroke="none"/></g></svg>),
+  /* ── LOCK — cadenas minimal arrondi ── */
+  lock:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path className="li-shackle" d="M8 11V7.5a4 4 0 0 1 8 0V11"/><g className="li-lock-body"><rect x="4" y="11" width="16" height="11" rx="3" fill={C} fillOpacity=".12"/><circle cx="12" cy="16.5" r="1.5" fill={C} fillOpacity=".6" stroke="none"/></g></svg>),
+  /* ── ENVELOPE — enveloppe ouverte style send ── */
+  envelope:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="15" rx="3" fill={C} fillOpacity=".08"/><path className="li-env-flap" d="M2 8l10 7 10-7"/></svg>),
+  /* ── GLOBE — sphère avec meridiens ── */
+  globe:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><ellipse cx="12" cy="12" rx="4.5" ry="9.5" stroke={C} strokeWidth={sw*.8} strokeDasharray="60" className="li-globe-orbit"/><ellipse className="li-globe-merid" cx="12" cy="12" rx="4.5" ry="9.5" stroke={C} strokeWidth={sw*.7} opacity=".5"/><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".4"/></svg>),
+  /* ── GITHUB ── */
+  github:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none"><g className="li-gh"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" stroke={C} fill="none" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/></g></svg>),
+  /* ── LINKEDIN ── */
+  linkedin:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-li"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" fill={C} fillOpacity=".15"/><rect x="2" y="9" width="4" height="12" fill={C} fillOpacity=".2"/><circle cx="4" cy="4" r="2" fill={C} fillOpacity=".5"/></g></svg>),
+  /* ── FACEBOOK ── */
+  facebook:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-fb"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill={C} fillOpacity=".18"/></g></svg>),
+  /* ── WHATSAPP — bulle Telegram ── */
+  whatsapp:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><circle className="li-wa-ring" cx="12" cy="12" r="0" stroke={C} fill="none" strokeWidth="1.2"/><g className="li-wa"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" fill={C} fillOpacity=".1"/><path d="M9.5 11a.5.5 0 0 0 1 0V10a.5.5 0 0 0-1 0v1zm0 0a5 5 0 0 0 5 5h.5a.5.5 0 0 0 0-1H14" stroke={C} strokeWidth={sw*.9}/></g></svg>),
+  /* ── UNIVERSITY — institution épurée ── */
+  university:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><line x1="2" y1="22" x2="22" y2="22"/><line x1="2" y1="11" x2="22" y2="11"/><polygon points="12 2 22 7 2 7 12 2" fill={C} fillOpacity=".18"/><rect className="li-col1" x="4.5" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/><rect className="li-col2" x="11" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/><rect className="li-col3" x="17.5" y="11" width="2" height="11" rx="1" fill={C} fillOpacity=".45" stroke="none"/></svg>),
+  /* ── FILE-PDF — signet bookmark (save new style) ── */
+  'file-pdf':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-pdf-page"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill={C} fillOpacity=".1"/><polyline points="14 2 14 8 20 8"/></g><text x="6.5" y="18" fontSize="5.5" fontWeight="700" fill={C} stroke="none" fontFamily="monospace">PDF</text></svg>),
+  /* ── SERVER — rack épuré ── */
+  server:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2.5" width="20" height="6" rx="2" fill={C} fillOpacity=".12"/><rect x="2" y="10.5" width="20" height="6" rx="2" fill={C} fillOpacity=".12"/><rect x="2" y="18" width="20" height="4" rx="2" fill={C} fillOpacity=".12"/><circle cx="19" cy="5.5" r="1.5" fill={C} className="li-w1" stroke="none"/><circle cx="19" cy="13.5" r="1.5" fill={C} className="li-w2" stroke="none"/><circle cx="19" cy="20" r="1.2" fill={C} className="li-w3" stroke="none"/></svg>),
+  /* ── DATABASE ── */
+  database:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3" fill={C} fillOpacity=".18" className="li-w1"/><path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" className="li-w2"/><path d="M3 15v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4" className="li-w3"/></svg>),
+  /* ── SHIELD-ALT — bouclier arrondi + coche ── */
+  'shield-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V6L12 2z" fill={C} fillOpacity=".1" className="li-info-circle"/><polyline points="9 12 11 14 15 10" className="li-chk-mark"/></svg>),
+  /* ── TOOLS — clé + tournevis croisés ── */
+  tools:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z" fill={C} fillOpacity=".12"/></g></svg>),
+  /* ── USERS ── */
+  users:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill={C} fillOpacity=".08"/><circle cx="9" cy="7" r="4" fill={C} fillOpacity=".15" className="li-w2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75" className="li-w1"/></svg>),
+  /* ── SHOPPING-CART ── */
+  'shopping-cart':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── SEARCH ── */
+  search:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-info-circle"><circle cx="11" cy="11" r="8" fill={C} fillOpacity=".08"/></g><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>),
+  /* ── HOME ── */
+  home:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 21V10.5z" fill={C} fillOpacity=".1" className="li-w2"/><path d="M9 22.5V15h6v7.5"/></svg>),
+  /* ── USER ── */
+  user:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="7" r="4.5" fill={C} fillOpacity=".15" className="li-play"/><path d="M4 21v-1a8 8 0 0 1 16 0v1" fill={C} fillOpacity=".08"/></svg>),
+  /* ── PAINT-BRUSH ── */
+  'paint-brush':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".1"/><line x1="15.5" y1="8" x2="8.5" y2="15"/></g></svg>),
+  /* ── HEADPHONES ── */
+  headphones:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-mob"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z" fill={C} fillOpacity=".2"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" fill={C} fillOpacity=".2"/></g></svg>),
+  /* ── MUSIC ── */
+  music:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-arr-r"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill={C} fillOpacity=".25"/><circle cx="18" cy="16" r="3" fill={C} fillOpacity=".25"/></g></svg>),
+  /* ── CHART-LINE — waveform (sound new style) ── */
+  'chart-line':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><line x1="2" y1="20" x2="22" y2="20" opacity=".3"/><polyline points="5 15 9 9 13 13 17 7 21 11"/></g></svg>),
+  /* ── FILTER — sliders équaliseur (new style) ── */
+  filter:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-dl-arrow"><line x1="5" y1="4" x2="5" y2="20"/><circle cx="5" cy="8" r="2" fill={C} stroke="none"/></g><line x1="12" y1="4" x2="12" y2="20"/><circle cx="12" cy="15" r="2" fill={C} stroke="none" className="li-w2"/><g className="li-ext-arrow"><line x1="19" y1="4" x2="19" y2="20"/><circle cx="19" cy="11" r="2" fill={C} stroke="none"/></g></svg>),
+  /* ── TASKS — liste + coches ── */
+  tasks:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12" className="li-w2"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="4 6 5 7 7 5" className="li-chk-mark"/><polyline points="4 12 5 13 7 11" className="li-chk-mark"/><polyline points="4 18 5 19 7 17" className="li-chk-mark"/></svg>),
+  /* ── CAMERA ── */
+  camera:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" fill={C} fillOpacity=".1"/><circle cx="12" cy="13" r="4" fill={C} fillOpacity=".2" className="li-play"/></svg>),
+  /* ── HISTORY ── */
+  history:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10" className="li-arr-l"/><path d="M3.51 15a9 9 0 1 0 .49-5.1" className="li-arr-l"/><polyline points="12 7 12 12 15.5 13.5" className="li-clock-min"/></svg>),
+  /* ── ADJUST ── */
+  adjust:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><path d="M12 2.5a9.5 9.5 0 0 1 0 19z" fill={C} fillOpacity=".3" className="li-w2" stroke="none"/></svg>),
+  /* ── PALETTE ── */
+  palette:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2v-.5c0-.55-.22-1-.72-1.28a1 1 0 0 1 .22-1.72C15.5 15.5 18 13.9 18 12c0-4.42-2.69-8-9-8z" fill={C} fillOpacity=".1" className="li-info-circle"/><circle cx="6.5" cy="11.5" r="1.5" fill={C} className="li-w1" stroke="none"/><circle cx="9.5" cy="7.5" r="1.5" fill={C} className="li-w2" stroke="none"/><circle cx="14.5" cy="7.5" r="1.5" fill={C} className="li-w3" stroke="none"/><circle cx="17.5" cy="11.5" r="1.5" fill={C} className="li-w4" stroke="none"/></svg>),
+  /* ── SHOPPING-BAG ── */
+  'shopping-bag':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── FILE-EXPORT — signet avec flèche ── */
+  'file-export':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill={C} fillOpacity=".1"/><polyline points="14 2 14 8 20 8"/></g><line x1="8" y1="14" x2="16" y2="14"/><polyline points="12 10 16 14 12 18"/></svg>),
+  /* ── CALENDAR-CHECK ── */
+  'calendar-check':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="17" rx="3" fill={C} fillOpacity=".07"/><g className="li-cal-top"><path d="M3 10h18" strokeWidth={sw}/></g><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><polyline points="9 16 11 18 15 14" className="li-chk-mark"/></svg>),
+  /* ── MAP-MARKED-ALT ── */
+  'map-marked-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-pin"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z" fill={C} fillOpacity=".1"/><circle cx="12" cy="9" r="2.5" fill={C} fillOpacity=".4"/></g></svg>),
+  /* ── ROUTE ── */
+  route:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><circle cx="4" cy="6" r="2.5" fill={C} fillOpacity=".3"/><circle cx="20" cy="18" r="2.5" fill={C} fillOpacity=".3"/><path d="M4 8.5v2A4.5 4.5 0 008.5 15H15.5A4.5 4.5 0 0020 10.5v-3"/></g></svg>),
+  /* ── LOCATION-ARROW — envoyer / navigation ── */
+  'location-arrow':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-plane"><polygon points="3 11 22 2 13 21 11 13 3 11" fill={C} fillOpacity=".15"/></g></svg>),
+};
+
+
+
+function LI({ name, size = 16, color, className = '', style = {} }) {
+  useLICSS();
+  const C = color || 'currentColor';
+  const sw = size < 14 ? 2.5 : size < 20 ? 2 : 1.8;
+  const render = LI_ICONS[name];
+  if (!render) return null;
+  const svg = render(C, sw);
+  return (
+    <span className={`li ${className}`} style={{ width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+      {React.cloneElement(svg, { width: size, height: size, style: { display: 'block' } })}
+    </span>
+  );
+}
+
+const SvgArrowRight = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </svg>
+);
+const SvgStar = ({ size = 14, strokeWidth = 2.5 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+);
+const SvgCheck = ({ size = 13, strokeWidth = 3 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+const SvgGlobe = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+const SvgShoppingCart = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+);
+const SvgCpu = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="4" width="16" height="16" rx="2"/>
+    <rect x="9" y="9" width="6" height="6"/>
+    <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
+    <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+    <line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/>
+    <line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+  </svg>
+);
+
+// ─── Logo AKATech — PNG sans fond ───────────────────
+const AkafolioLogo = ({ size = 58, dark = true, onClick, animate = true }) => {
+  return (
+    <img
+      src="/assets/images/logo-akatech.png"
+      alt="AKATech Logo"
+      onClick={onClick}
+      style={{
+        width: size,
+        height: size,
+        objectFit: 'contain',
+        cursor: onClick ? 'pointer' : 'default',
+        flexShrink: 0,
+        display: 'block',
+        filter: animate ? 'drop-shadow(0 0 6px rgba(255,120,0,.45))' : 'none',
+        transition: 'filter .3s',
+      }}
+    />
+  );
+};
+
+
+const WindowChrome = ({ title, dark, inner = false }) => (
+  <div className={`win-chrome${inner ? ' win-chrome--inner' : ' win-chrome--section'}`}>
+    <span className="win-chrome-title">{title}</span>
+    <div className="win-chrome-dots">
+      <span className={`wc-dot wc-dot--min ${dark?'wc-dot--dk':''}`} aria-hidden title="Réduire">&#x2212;</span>
+      <span className={`wc-dot wc-dot--max ${dark?'wc-dot--dk':''}`} aria-hidden title="Agrandir">&#x25A1;</span>
+      <span className={`wc-dot wc-dot--cls ${dark?'wc-dot--dk':''}`} aria-hidden title="Fermer">&#x2715;</span>
+    </div>
+  </div>
+);
+
+const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61577494705852";
+
+const PROJECTS = [
+  { id:1, title:"ShopCI", subtitle:"Marketplace E-commerce", cat:"en-ligne", progress:65,
+    description:"Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
+    image:"/assets/images/projects/monmarket-preview.jpg",
+    tech:["React","Django","Bootstrap 5","Vercel + PythonAnywhere"],
+    stats:[{icon:"users",label:"Multi-vendeurs"},{icon:"shopping-cart",label:"Panier temps réel"},{icon:"shield-alt",label:"Paiement sécurisé"}],
+    url:"https://shop-ci.vercel.app/", year:"2024", isPremium:true },
+  { id:2, title:"TechFlow", subtitle:"Site Vitrine Professionnel", cat:"en-ligne", progress:97,
+    description:"Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
+    image:"/assets/images/projects/techflow-preview.jpg",
+    tech:["HTML / Tailwind CSS","JavaScript","Vercel"],
+    stats:[{icon:"users",label:"Tailwind CSS"},{icon:"shopping-cart",label:"UI propre & responsive"},{icon:"shield-alt",label:"Déployé en production"}],
+    url:"https://techflow-ten.vercel.app/", year:"2024", isPremium:true },
+  { id:3, title:"TerraSafe", subtitle:"Marketplace Foncière", cat:"en-ligne", progress:85,
+    description:"Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
+    image:"/assets/images/projects/terrasafe-preview.jpg",
+    tech:["Python/Flask","MySQL","JavaScript","Bootstrap 5"],
+    stats:[{icon:"database",label:"MySQL + Flask"},{icon:"lock",label:"Auth sécurisée"},{icon:"search",label:"Recherche avancée"}],
+    url:"https://wthomassss06.pythonanywhere.com", year:"2024", isPremium:true },
+  { id:4, title:"Chap-chapMAP", subtitle:"Navigation Intelligente", cat:"demo", progress:100,
+    description:"Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
+    image:"/assets/images/projects/chapchapmap-preview.jpg",
+    tech:["JavaScript","Leaflet.js","OSRM API","Geolocation API"],
+    stats:[{icon:"map-marked-alt",label:"API Leaflet"},{icon:"route",label:"Calcul itinéraires"},{icon:"location-arrow",label:"GPS temps réel"}],
+    url:"/demos/chap-chapMAP.html", year:"2023" },
+  { id:5, title:"ElvisMarket", subtitle:"Interface E-commerce", cat:"demo", progress:100,
+    description:"Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
+    image:"/assets/images/projects/elvismarket-preview.jpg",
+    tech:["HTML + JS vanilla","Tailwind CSS","LocalStorage"],
+    stats:[{icon:"shopping-bag",label:"Panier dynamique"},{icon:"filter",label:"Filtres avancés"},{icon:"mobile-alt",label:"Responsive"}],
+    url:"/demos/projet2.html", year:"2023" },
+  { id:6, title:"MonCashJour", subtitle:"Gestion de Ventes", cat:"demo", progress:100,
+    description:"Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
+    image:"/assets/images/projects/moncashjour-preview.jpg",
+    tech:["HTML + JS vanilla","Tailwind CSS","Chart.js"],
+    stats:[{icon:"chart-line",label:"Analytiques"},{icon:"file-export",label:"Export CSV"},{icon:"history",label:"Historique"}],
+    url:"/demos/projet1.html", year:"2023" },
+  { id:7, title:"LivreurTrack Pro", subtitle:"Suivi Logistique", cat:"demo", progress:100,
+    description:"Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
+    image:"/assets/images/projects/livreurtrack-preview.jpg",
+    tech:["JavaScript","Bootstrap 5","LocalStorage","Camera API"],
+    stats:[{icon:"tasks",label:"Workflow 5 étapes"},{icon:"camera",label:"Validation photo"},{icon:"history",label:"Historique complet"}],
+    url:"/demos/projet3.html", year:"2023" },
+  { id:8, title:"LinkedIn Banner Pro", subtitle:"Générateur SaaS", cat:"en-cours", progress:30,
+    description:"Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
+    image:"/assets/images/projects/linkedin-banner-preview.jpg",
+    tech:["JavaScript","Canvas API","Tailwind CSS"],
+    stats:[{icon:"paint-brush",label:"Éditeur visuel"},{icon:"eye",label:"Preview temps réel"},{icon:"download",label:"Export PNG"}],
+    url:"/demos/projet7.html", year:"2025" },
+  { id:9, title:"Tati", subtitle:"Portfolio & Vitrine Moderne", cat:"en-ligne", progress:100,
+    description:"Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair, design 100% responsive.",
+    image:"/assets/images/projects/tati-preview.jpg",
+    tech:["React","Tailwind CSS","Framer Motion","Vercel"],
+    stats:[{icon:"user",label:"Portfolio & Vitrine"},{icon:"adjust",label:"Thème sombre/clair"},{icon:"mobile-alt",label:"100% Responsive"}],
+    url:"https://tatii.vercel.app/", year:"2024", isPremium:true },
+  { id:10, title:"MK", subtitle:"Portfolio Graphiste Client", cat:"en-ligne", progress:100,
+    description:"Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
+    image:"/assets/images/projects/mk-preview.jpg",
+    tech:["React","Tailwind CSS","Framer Motion","Vercel"],
+    stats:[{icon:"paint-brush",label:"Galerie créative"},{icon:"star",label:"Design sur-mesure"},{icon:"globe",label:"En production"}],
+    url:"https://mory01ff.vercel.app/", year:"2024", isPremium:true },
+  { id:11, title:"ManoBeat 777", subtitle:"Portfolio Beatmaker", cat:"en-ligne", progress:100,
+    description:"Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp en quelques clics.",
+    image:"/assets/images/projects/beatstore-preview.jpg",
+    tech:["React","Tailwind CSS","Howler.js","Vercel"],
+    stats:[{icon:"headphones",label:"Écoute en ligne"},{icon:"whatsapp",label:"Achat via WhatsApp"},{icon:"music",label:"Catalogue beats"}],
+    url:"https://xxx-x.vercel.app/", year:"2025", isPremium:true },
+  { id:12, title:"New Horizon Service", subtitle:"Location de Résidences", cat:"en-ligne", progress:100,
+    description:"Plateforme de location de résidences meublées haut de gamme. Interface moderne côté client, backend Flask sécurisé avec API REST, recherche avancée et gestion des disponibilités.",
+    image:"/assets/images/projects/newhorizon-preview.jpg",
+    tech:["Next.js","Flask","Python","MySQL","Vercel"],
+    stats:[{icon:"home",label:"Résidences meublées"},{icon:"search",label:"Recherche avancée"},{icon:"calendar-check",label:"Réservation en ligne"}],
+    url:"https://new-horizonservice.vercel.app/", year:"2025", isPremium:true },
+  { id:13, title:"AKATech", subtitle:"Agence Digitale Abidjan", cat:"en-ligne", progress:100,
+    description:"Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions web modernes : sites vitrines, e-commerce, SaaS. Aurora WebGL, animations Framer Motion, design vert/noir premium.",
+    image:"/assets/images/projects/akatech-preview.jpg",
+    tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
+    stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
+    url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
+  { id:14, title:"Université les Anges", subtitle:"Site Institutionnel", cat:"en-ligne", progress:100,
+    description:"Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
+    image:"/assets/images/projects/universitelesanges-preview.jpg",
+    tech:["HTML","CSS","Bulma","Bootstrap","Vercel"],
+    stats:[{icon:"university",label:"Site institutionnel"},{icon:"mobile-alt",label:"Responsive"},{icon:"globe",label:"En production"}],
+    url:"https://universitelesanges.vercel.app/", year:"2025", isPremium:true },
+];
+
+const SERVICES = [
+  { n:"01", icon:"code",       title:"Applications Web",       desc:"Apps CRUD complètes, dashboards de gestion, solutions sur-mesure.", features:["Applications CRUD complètes","Dashboards de gestion","Solutions sur-mesure"] },
+  { n:"02", icon:"server",     title:"API RESTful",             desc:"APIs Python/Flask documentées, sécurisées, prêtes pour la production.", features:["API RESTful avec Python","Documentation complète","Sécurité intégrée"] },
+  { n:"03", icon:"mobile-alt", title:"Interfaces Responsives",  desc:"Design et intégration d'interfaces modernes et adaptatives.", features:["Design responsive","UX optimale","Performance maximale"] },
+  { n:"04", icon:"database",   title:"Bases de Données",        desc:"Conception et optimisation de bases de données MySQL.", features:["Modélisation de données","Requêtes SQL optimisées","Intégrité des données"] },
+  { n:"05", icon:"shield-alt", title:"Sécurité Applicative",    desc:"Bonnes pratiques de sécurité intégrées dès la conception.", features:["Protection des données","Gestion des accès","Sécurisation Python"] },
+  { n:"06", icon:"tools",      title:"Support Technique",       desc:"Maintenance informatique et assistance technique utilisateur.", features:["Maintenance matérielle","Support utilisateur","Résolution de problèmes"] },
+];
+
+const PRICING_TABS = [
+  {
+    key:"portfolio", label:"Portfolio", icon:"Star",
+    plans:[
+      { badge:"STARTER",  price:"70 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
+        features:["3 pages","Design responsive","Section projets","Formulaire contact","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+      { badge:"STANDARD", price:"120 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
+        features:["5 pages","Animations modernes","Projets détaillés","SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+      { badge:"PREMIUM",  price:"180 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
+        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+    ]
+  },
+  {
+    key:"vitrine", label:"Site Vitrine", icon:"Globe",
+    plans:[
+      { badge:"STARTER", price:"150 000 FCFA", title:"Starter", delivery:"5 jours",
+        features:["5 pages","Design responsive","Formulaire contact","SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support"] },
+      { badge:"PRO",     price:"270 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
+        features:["10 pages","Design premium","Blog intégré","SEO avancé","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h"] },
+      { badge:"ELITE",   price:"450 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
+        features:["15 à 20 pages","Design sur mesure","CMS complet","SEO + Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","➕ Page supp. : 20 000 FCFA"] },
+    ]
+  },
+  {
+    key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
+    plans:[
+      { badge:"STARTER", price:"400 000 FCFA",   title:"Starter", delivery:"14 jours",
+        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+      { badge:"PRO",     price:"650 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
+        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin"] },
+      { badge:"ELITE",   price:"1 000 000 FCFA", title:"Elite",   delivery:"30 jours",
+        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe"] },
+    ]
+  },
+  {
+    key:"saas", label:"App SaaS", icon:"Cpu",
+    plans:[
+      { badge:"MVP",        price:"700 000 FCFA",         title:"MVP",        delivery:"3 à 4 semaines",
+        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","🌐 Nom de domaine offert (1 an)","🛠 1 mois support","⚠️ Hébergement inclus 1–3 mois"] },
+      { badge:"SCALE",      price:"Sur devis",            title:"Scale",      delivery:"4 à 6 semaines", isPopular:true,
+        features:["Multi-tenant","Analytics temps réel","Intégrations (paiement, email…)","Support prioritaire","1 200 000 – 2 000 000 FCFA"] },
+      { badge:"ENTERPRISE", price:"À partir de 2 500 000 FCFA", title:"Enterprise", delivery:"6 à 10 semaines",
+        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe"] },
+    ]
+  },
+];
+
+const FAQ = [
+  { q:"Combien coûte un site web ?", a:"Les projets commencent à partir de 60 000 FCFA pour un site vitrine simple. Le prix final dépend des fonctionnalités demandées." },
+  { q:"Combien de temps prend la création d'un site ?", a:"Un site vitrine est livré en 5 à 10 jours. Un projet plus complexe (e-commerce, SaaS) peut prendre plusieurs semaines selon la complexité." },
+  { q:"Puis-je modifier mon site moi-même ?", a:"Oui. Une formation rapide est incluse dans la plupart des offres pour que vous puissiez gérer votre site facilement." },
+  { q:"Proposez-vous un support après la livraison ?", a:"Oui. Un support technique est disponible après la livraison pour vous accompagner si nécessaire." },
+  { q:"Les prix sont-ils fixes ?", a:"Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées. Un devis gratuit est établi après discussion." },
+];
+
+const SKILLS = {
+  frontend: [
+    { name:"React",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+    { name:"JavaScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
+    { name:"TypeScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
+    { name:"Next.js",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+    { name:"Tailwind",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
+    { name:"HTML5",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
+    { name:"CSS3",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+    { name:"Bootstrap",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" },
+  ],
+  backend: [
+    { name:"Python",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+    { name:"Flask",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" },
+    { name:"Django",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" },
+    { name:"Node.js", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+    { name:"MySQL",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  ],
+  tools: [
+    { name:"Git",           icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+    { name:"VS Code",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" },
+    { name:"GitHub",        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+    { name:"ChatGPT",       icon:"https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" },
+    { name:"Gemini",        icon:"https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" },
+    { name:"Claude AI",     icon:"https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.svg" },
+    { name:"PythonAnywhere",icon:"https://www.pythonanywhere.com/static/anywhere/images/PA-logo.svg" },
+    { name:"Vercel",        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg" },
+    { name:"Netlify",       icon:"https://logo.svgcdn.com/logos/netlify.svg" },
+  ],
+  autres: [
+    { name:"Windows",     icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg" },
+    { name:"Android",     icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" },
+    { name:"Word",        icon:"https://img.icons8.com/fluency/48/microsoft-word-2019.png" },
+    { name:"Excel",       icon:"https://img.icons8.com/fluency/48/microsoft-excel-2019.png" },
+    { name:"PowerPoint",  icon:"https://img.icons8.com/fluency/48/microsoft-powerpoint-2019.png" },
+    { name:"MS Project",  icon:"https://img.icons8.com/fluency/48/microsoft-project-2019.png" },
+    { name:"Facebook",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" },
+    { name:"Peinture",    icon:"https://img.icons8.com/fluency/48/paint-palette.png" },
+    { name:"Maintenance", icon:"https://img.icons8.com/fluency/48/maintenance.png" },
+    { name:"Support Tech",icon:"https://img.icons8.com/fluency/48/technical-support.png" },
+  ],
+};
+
+const TIMELINE = [
+  { date:"2025 – 2026", icon:"rocket", title:"Développeur Freelance Fullstack", company:"AKATech",
+    items:[
+      "Conception et déploiement de plus de 10 applications web (SaaS, e-commerce, plateformes)",
+      "Développement d'API REST avec Django et Flask",
+      "Mise en place de dashboards et systèmes de gestion de données",
+    ],
+    progLabels:["Apps web","API REST","Dashboards","Déploiement"],
+    progValues:[95,88,82,90],
+    tags:["Freelance","Full-Stack","Django","React","SaaS","Data"] },
+  { date:"Mai – Nov. 2025", icon:"briefcase", title:"Informaticien Stagiaire", company:"Mairie d'Agboville",
+    items:["Maintenance du parc informatique et du réseau","Support technique aux utilisateurs","Contribution à la gestion et à la numérisation des données","Appui à la création d'outils numériques internes"],
+    progLabels:["Maintenance","Support","Gestion","Outils"],
+    progValues:[90,85,75,80] },
+  { date:"2023-2024", icon:"laptop-code", title:"Projet Académique – ARTICI", company:"UVCI",
+    items:["Plateforme web de promotion de l'artisanat local","Travail collaboratif en équipe pluridisciplinaire","Optimisation des performances","Intégration de bonnes pratiques de sécurité"],
+    progLabels:["Frontend","Backend","Perf.","Sécurité"],
+    progValues:[80,75,85,90] },
+  { date:"2023-2024", icon:"graduation-cap", title:"Licence en Réseau et Sécurité Informatique", company:"UVCI",
+    desc:"Formation complète en développement web, bases de données et sécurité des applications.", tags:["Certification E-Banking","Réf: CC/24-002485"] },
+  { date:"2020-2021", icon:"school", title:"Baccalauréat Série D", company:"Lycée Moderne d'Arrah", desc:"Mention : Assez Bien" },
+];
+
+const GRAD = [
+  "linear-gradient(135deg,#0d1b2a,#1a3a5c)",
+  "linear-gradient(135deg,#0a1628,#1e3a5f)",
+  "linear-gradient(135deg,#1a0a2e,#2d1b69)",
+  "linear-gradient(135deg,#0d2818,#1a4a2e)",
+  "linear-gradient(135deg,#2a0a0a,#5c1a1a)",
+  "linear-gradient(135deg,#1a1a0a,#3a3a1a)",
+  "linear-gradient(135deg,#0a1a2a,#1a3050)",
+  "linear-gradient(135deg,#1a0a28,#3a1a58)",
+  "linear-gradient(135deg,#0a2a1a,#1a5a3a)",
+  "linear-gradient(135deg,#2a1a0a,#5a3a1a)",
+  "linear-gradient(135deg,#060e09,#0a2a12)",  // AKATech — vert forêt profond
+];
+
+const BADGE_LIGHT = {"en-ligne":"#C94B2A","demo":"#A0522D","en-cours":"#E06B2A"};
+const BADGE_DARK  = {"en-ligne":"#00ff88","demo":"#ff4466","en-cours":"#ffaa00"};
+const CAT_LABELS  = {all:"Tous","en-ligne":"En ligne","demo":"Démos","en-cours":"En cours"};
+
+function useInView(thr=0.1){
+  const r=useRef(null); const [v,setV]=useState(false);
+  useEffect(()=>{
+    const o=new IntersectionObserver(([e])=>{ if(e.isIntersecting) setV(true); },{threshold:thr});
+    if(r.current) o.observe(r.current);
+    return ()=>o.disconnect();
+  },[thr]);
+  return [r,v];
+}
+
+function useRipple() {
+  const ref = useRef(null);
+  const trigger = useCallback((e) => {
+    const el = ref.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.4;
+    const x = (e.clientX ?? e.touches?.[0]?.clientX ?? rect.left + rect.width/2) - rect.left - size/2;
+    const y = (e.clientY ?? e.touches?.[0]?.clientY ?? rect.top + rect.height/2) - rect.top  - size/2;
+    const wave = document.createElement('span');
+    wave.className = 'mi-ripple-wave';
+    wave.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+    el.classList.add('mi-ripple-host');
+    el.appendChild(wave);
+    setTimeout(() => wave.remove(), 600);
+  }, []);
+  return [ref, trigger];
+}
+
+const MagBtn = ({ className='', onClick, children, ...rest }) => {
+  const [ref, ripple] = useRipple();
+  return (
+    <button ref={ref} className={`mi-ripple-host mi-glint ${className}`}
+      onClick={e => { ripple(e); onClick?.(e); }} {...rest}>{children}</button>
+  );
+};
+
+// ── Vrai 3D Tilt Card — mouse (PC) + touch natif (mobile) ──────
+const TiltCard = ({ children, className='', style={}, onClick, intensity=12, perspective=900 }) => {
+  const ref     = useRef(null);
+  const glowRef = useRef(null);
+  const rafRef  = useRef(null);
+
+  // Fonction centrale : applique le tilt à partir de coordonnées écran
+  const applyTilt = useCallback((mx, my, intens) => {
+    const el = ref.current; if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width  / 2;
+    const cy = rect.top  + rect.height / 2;
+    const rx = ((my - cy) / (rect.height / 2)) * -intens;
+    const ry = ((mx - cx) / (rect.width  / 2)) *  intens;
+    const px = ((mx - rect.left) / rect.width)  * 100;
+    const py = ((my - rect.top)  / rect.height) * 100;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      el.style.transform = `perspective(${perspective}px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.03,1.03,1.03)`;
+      el.style.transition = 'transform .08s linear';
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(280px circle at ${px}% ${py}%, rgba(255,85,0,.13) 0%, transparent 68%)`;
+        glowRef.current.style.opacity = '1';
+      }
+    });
+  }, [perspective]);
+
+  const resetTilt = useCallback(() => {
+    const el = ref.current; if (!el) return;
+    cancelAnimationFrame(rafRef.current);
+    el.style.transition = 'transform .45s cubic-bezier(.25,.46,.45,.94)';
+    el.style.transform  = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
+    if (glowRef.current) glowRef.current.style.opacity = '0';
+  }, [perspective]);
+
+  // Mouse (PC) — via React synthetic (fiable sur desktop)
+  const onMouseMove  = useCallback(e => applyTilt(e.clientX, e.clientY, intensity),       [applyTilt, intensity]);
+  const onMouseLeave = useCallback(()  => resetTilt(),                                      [resetTilt]);
+
+  // Touch (mobile) — listeners natifs ajoutés via useEffect
+  // (les synthetic onTouchMove de React peuvent perdre e.touches sur certains navigateurs mobiles)
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    // Intensité réduite sur mobile (doigt = geste plus ample)
+    const mobIntensity = intensity * 0.65;
+
+    const onTouchMove = e => {
+      if (!e.touches || !e.touches[0]) return;
+      applyTilt(e.touches[0].clientX, e.touches[0].clientY, mobIntensity);
+    };
+    const onTouchEnd = () => resetTilt();
+
+    el.addEventListener('touchmove', onTouchMove, { passive: true });
+    el.addEventListener('touchend',  onTouchEnd,  { passive: true });
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchmove',   onTouchMove);
+      el.removeEventListener('touchend',    onTouchEnd);
+      el.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [applyTilt, resetTilt, intensity]);
+
+  return (
+    <div
+      ref={ref}
+      className={`tilt3d ${className}`}
+      style={{ ...style, willChange:'transform', transformStyle:'preserve-3d' }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <div ref={glowRef} className="tilt3d-glow"/>
+      {children}
+    </div>
+  );
+};
+
+const SpotlightCard = ({ children, className='', style={} }) => {
+  const ref = useRef(null);
+  const layerRef = useRef(null);
+  const onMove = useCallback(e => {
+    const el = ref.current; if (!el || !layerRef.current) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    layerRef.current.style.background =
+      `radial-gradient(320px circle at ${x}px ${y}px, rgba(255,85,0,.09) 0%, transparent 70%)`;
+  }, []);
+  return (
+    <div ref={ref} className={`mi-spotlight ${className}`} style={style} onMouseMove={onMove}>
+      <div ref={layerRef} className="mi-spotlight-layer" style={{display:'block',position:'absolute',inset:0,pointerEvents:'none',zIndex:0,transition:'background .08s'}}/>{children}
+    </div>
+  );
+};
+
+function useStagger(thr=0.08){ const [r,v] = useInView(thr); return [r, v]; }
+
+/* ── usePhotoColor : couleur si la section est active (scroll à son niveau) ── */
+function usePhotoColor() {
+  const ref = useRef(null);
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const el = ref.current; if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const mid = window.innerHeight * 0.5;
+      setActive(rect.top <= mid && rect.bottom >= mid);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    return () => { window.removeEventListener('scroll', check); window.removeEventListener('resize', check); };
+  }, []);
+  return [ref, active];
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STACKED CARD — swipe horizontal, mobile uniquement
+   Swipe gauche → carte suivante (s'envole vers l'arrière)
+   Swipe droite → carte précédente (revient vers l'avant)
+   Cartes fantômes = prochaines cartes en attente.
+   ══════════════════════════════════════════════════════════════ */
+const StackedCard = ({ items, renderCard }) => {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [prevIdx,   setPrevIdx]   = useState(null);
+  const [dir,       setDir]       = useState(1); // 1=forward, -1=backward
+  const total    = items.length;
+  const busy     = useRef(false);
+  const touchX0  = useRef(null);
+  const activeRef= useRef(0);
+  useEffect(() => { activeRef.current = activeIdx; }, [activeIdx]);
+
+  const goTo = useCallback((next) => {
+    if (busy.current) return;
+    const cur = activeRef.current;
+    if (next < 0 || next >= total) return;
+    busy.current = true;
+    setDir(next > cur ? 1 : -1);
+    setPrevIdx(cur);
+    setActiveIdx(next);
+    setTimeout(() => { setPrevIdx(null); busy.current = false; }, 480);
+  }, [total]);
+
+  const onTouchStart = e => { touchX0.current = e.touches[0].clientX; };
+  const onTouchEnd   = e => {
+    if (touchX0.current === null) return;
+    const dx = touchX0.current - e.changedTouches[0].clientX;
+    touchX0.current = null;
+    if (Math.abs(dx) < 40) return; // trop petit → ignoré
+    goTo(dx > 0 ? activeRef.current + 1 : activeRef.current - 1);
+  };
+
+  return (
+    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+         style={{ userSelect:'none', touchAction:'pan-y' }}>
+
+      {/* Barre de progression */}
+      <div className="sc-progress-bar">
+        <div className="sc-progress-fill"
+             style={{ width:`${((activeIdx+1)/total)*100}%` }}/>
+      </div>
+      <div className="sc-counter">
+        <span className="sc-counter-cur">{String(activeIdx+1).padStart(2,'0')}</span>
+        <span className="sc-counter-sep"> / </span>
+        <span>{String(total).padStart(2,'0')}</span>
+      </div>
+
+      {/* Zone empilée */}
+      <div className="sc-stack-area">
+        {/* Cartes fantômes = prochaines cartes en attente */}
+        {[2,1].map(offset => {
+          const gi = activeIdx + offset;
+          if (gi >= total) return null; // plus de cartes → pas de fantôme
+          return (
+            <div key={`g${offset}`} className="sc-ghost" style={{
+              opacity: 1 - offset * 0.22,
+              filter: `blur(${offset * 0.8}px)`,
+              transform: `translateY(${-offset * 8}px) scale(${1 - offset * 0.03})`,
+            }} aria-hidden>
+              {renderCard(items[gi], gi)}
+            </div>
+          );
+        })}
+
+        {/* Carte sortante */}
+        {prevIdx !== null && (
+          <div className={`sc-card sc-card--exit-${dir > 0 ? 'back' : 'fwd'}`}
+               key={`p${prevIdx}`}>
+            {renderCard(items[prevIdx], prevIdx)}
+          </div>
+        )}
+
+        {/* Carte active */}
+        <div className={`sc-card sc-card--enter-${dir > 0 ? 'fwd' : 'back'}`}
+             key={`a${activeIdx}`}>
+          {renderCard(items[activeIdx], activeIdx)}
+        </div>
+      </div>
+
+      {/* Dots de navigation (tap) */}
+      <div className="sc-dots">
+        {items.map((_,i) => (
+          <button key={i}
+            className={`sc-dot${i===activeIdx?' sc-dot--on':''}`}
+            onClick={()=>goTo(i)}
+            aria-label={`Carte ${i+1}`}/>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+function useReveal(thr=0.1){
+  const ref = useRef(null);
+  useEffect(()=>{
+    const el = ref.current; if (!el) return;
+    el.classList.add('mi-reveal');
+    const o = new IntersectionObserver(([e])=>{
+      if (e.isIntersecting) { el.classList.add('mi-reveal--vis'); o.disconnect(); }
+    },{threshold:thr});
+    o.observe(el);
+    return ()=>o.disconnect();
+  },[thr]);
+  return ref;
+}
+
+const ProgressBar = ({ value=0, label='', visible=false }) => {
+  const fillRef = useRef(null);
+  useEffect(()=>{ if (fillRef.current) { fillRef.current.style.width = visible ? `${value}%` : '0%'; } },[visible, value]);
+  return (
+    <div>
+      <div className="mi-progress-row">
+        {label && <span className="mi-progress-label">{label}</span>}
+        <span className="mi-progress-val">{value}%</span>
+      </div>
+      <div className="mi-progress-track"><div ref={fillRef} className="mi-progress-fill"/></div>
+    </div>
+  );
+};
+
+const ParticleCanvas = ({global: isGlobal = false, light: isLight = false}) => {
+  const cvRef = useRef(null);
+  useEffect(()=>{
+    const cv = cvRef.current; if(!cv) return;
+    const ctx = cv.getContext('2d'); let raf;
+    const COLORS = isLight ? ['#ff8c00','#ff6b00','#ffa533','#ffb347','#e65c00'] : ['#00ff88','#7EE787','#00e676','#69f0ae','#b9f6ca'];
+    const CONN_COLOR = isLight ? '#ff8c00' : '#00ff88';
+    const resize = () => { cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; };
+    resize(); window.addEventListener('resize', resize);
+    const mouse = { x: null, y: null };
+    // Canvas a pointer-events:none → impossible de catcher mousemove sur lui.
+    // On écoute window et on convertit en coords locales si besoin.
+    const onWindowMouse = e => {
+      if (isGlobal) {
+        mouse.x = e.clientX; mouse.y = e.clientY;
+      } else {
+        const rect = cv.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      }
+    };
+    const onWindowLeave = () => { mouse.x = null; mouse.y = null; };
+    window.addEventListener('mousemove', onWindowMouse);
+    window.addEventListener('mouseleave', onWindowLeave);
+    const pts = Array.from({length:110},()=>({
+      x: Math.random()*cv.width, y: Math.random()*cv.height,
+      r: Math.random()*2.2+0.7, vx:(Math.random()-.5)*0.8, vy:(Math.random()-.5)*0.8,
+      c: COLORS[Math.floor(Math.random()*COLORS.length)], a: Math.random()*.55+.28,
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,cv.width,cv.height);
+
+      // ── Lignes d'attraction vers le curseur ──
+      if (mouse.x !== null) {
+        pts.forEach(p => {
+          const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+          if (d < 180) {
+            ctx.globalAlpha = (1 - d / 180) * 0.22;
+            ctx.strokeStyle = CONN_COLOR;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        });
+      }
+
+      pts.forEach(p=>{
+        if (mouse.x !== null) {
+          const dx = mouse.x - p.x, dy = mouse.y - p.y, d = Math.hypot(dx, dy);
+          if (d < 160) { const force = (160 - d) / 160, angle = Math.atan2(dy, dx); p.vx -= Math.cos(angle) * force * 1.4; p.vy -= Math.sin(angle) * force * 1.4; }
+        }
+        const spd = Math.hypot(p.vx, p.vy);
+        if (spd > 1.5) { p.vx = (p.vx/spd)*1.5; p.vy = (p.vy/spd)*1.5; }
+        p.vx *= 0.995; p.vy *= 0.995;
+        if (Math.abs(p.vx) < 0.15) p.vx += (Math.random()-.5)*0.25;
+        if (Math.abs(p.vy) < 0.15) p.vy += (Math.random()-.5)*0.25;
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>cv.width) p.vx*=-1; if(p.y<0||p.y>cv.height) p.vy*=-1;
+        ctx.save(); ctx.globalAlpha=p.a*.35;
+        const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*10);
+        g.addColorStop(0,p.c); g.addColorStop(1,'transparent');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*10,0,Math.PI*2); ctx.fill(); ctx.restore();
+        ctx.globalAlpha=p.a; ctx.fillStyle=p.c; ctx.shadowBlur=12; ctx.shadowColor=p.c;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+        ctx.globalAlpha=1; ctx.shadowBlur=0;
+      });
+      for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.hypot(dx,dy);
+        if(d<140){ ctx.globalAlpha=(1-d/140)*.28; ctx.strokeStyle=CONN_COLOR; ctx.lineWidth=.7;
+          ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); ctx.globalAlpha=1; }
+      }
+
+      // ── Halo curseur ──
+      if (mouse.x !== null) {
+        const cg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 90);
+        cg.addColorStop(0, CONN_COLOR.replace(')', ',0.12)').replace('rgb','rgba').replace('#ff8c00','rgba(255,140,0,0.12)').replace('#00ff88','rgba(0,255,136,0.12)'));
+        cg.addColorStop(1, 'transparent');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = isLight ? 'rgba(255,140,0,0.10)' : 'rgba(0,255,136,0.10)';
+        ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 90, 0, Math.PI * 2); ctx.fill();
+      }
+
+      raf=requestAnimationFrame(draw);
+    };
+    draw();
+    return ()=>{
+      cancelAnimationFrame(raf); window.removeEventListener('resize',resize);
+      window.removeEventListener('mousemove', onWindowMouse);
+      window.removeEventListener('mouseleave', onWindowLeave);
+    };
+  },[isLight]);
+  return <canvas ref={cvRef} className={isGlobal ? "particle-canvas particle-canvas--global" : "particle-canvas"}/>
+};
+
+const CustomCursor = () => {
+  const dotRef = useRef(null);
+  useEffect(()=>{
+    const dot = dotRef.current; if(!dot) return;
+    const move = e => { dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; };
+    const over = e => {
+      if(e.target.closest('a,button,[role=button],.sk-m-card,.c3d-card,.c3d-arrow,.mob-arr')) dot.classList.add('cursor-hover');
+      else dot.classList.remove('cursor-hover');
+    };
+    window.addEventListener('mousemove', move); window.addEventListener('mouseover', over);
+    return ()=>{ window.removeEventListener('mousemove', move); window.removeEventListener('mouseover', over); };
+  },[]);
+  return <div ref={dotRef} className="cursor-dot"/>;
+};
+
+const Noise = () => (
+  <svg className="noise" xmlns="http://www.w3.org/2000/svg">
+    <filter id="nf"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <rect width="100%" height="100%" filter="url(#nf)"/>
+  </svg>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// LOADER v4 — page.js style, orange, responsive, dark/light
+// ═══════════════════════════════════════════════════════════════
+const Loader = ({ onDone }) => {
+  const [pct, setPct] = useState(0);
+  const isLight = (() => { try { return localStorage.getItem('aka-theme') === 'light'; } catch { return false; } })();
+  const bg   = isLight ? '#f5f0e8' : '#0f0800';
+  const ink  = isLight ? '#0f0800' : '#f5f0e8';
+
+  useEffect(() => {
+    const t = setInterval(() => setPct(p => {
+      const n = p + Math.random() * 7 + 2;
+      if (n >= 100) { clearInterval(t); setTimeout(onDone, 400); return 100; }
+      return n;
+    }), 55);
+    return () => clearInterval(t);
+  }, [onDone]);
+
+  const p = Math.min(100, Math.round(pct));
+
+  return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:9999,
+      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28,
+      background: bg,
+      fontFamily:"'Arial Black', 'Arial', sans-serif",
+    }}>
+      <style>{`
+        @keyframes nbLogoBob { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-8px) rotate(1deg)} }
+        @keyframes nbBarShine {
+          0%   { background-position: -200% center; }
+          100% { background-position:  300% center; }
+        }
+        @keyframes nbDotBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+      `}</style>
+
+      {/* Logo */}
+      <img
+        src="/assets/images/logo-akatech.png"
+        alt="AKATech"
+        style={{
+          width:110, height:110, objectFit:'contain',
+          animation:'nbLogoBob 1.8s ease-in-out infinite',
+          filter:`drop-shadow(4px 4px 0px ${ink})`,
+        }}
+      />
+
+      {/* Neo-brut card */}
+      <div style={{
+        border:`3px solid ${ink}`,
+        boxShadow:`6px 6px 0 ${ink}`,
+        background: bg,
+        padding:'20px 28px',
+        display:'flex', flexDirection:'column', gap:14,
+        width:'min(320px, 80vw)',
+      }}>
+        {/* "Loading...." label */}
+        <div style={{
+          fontSize:18, fontWeight:900, letterSpacing:'.06em',
+          color: ink, textTransform:'uppercase',
+          display:'flex', alignItems:'baseline', gap:2,
+        }}>
+          Loading
+          {[0,1,2,3].map(i=>(
+            <span key={i} style={{
+              animation:`nbDotBlink .8s ease-in-out ${i*0.18}s infinite`,
+              display:'inline-block',
+            }}>.</span>
+          ))}
+        </div>
+
+        {/* Progress bar */}
+        <div style={{
+          border:`3px solid ${ink}`,
+          height:22, background: isLight ? '#e8e0d0' : '#1a0f00',
+          overflow:'hidden', position:'relative',
+        }}>
+          <div style={{
+            position:'absolute', inset:0, right:`${100-pct}%`,
+            background:`linear-gradient(90deg, #ff5500 0%, #ff8800 45%, #ffbb00 55%, #ff5500 100%)`,
+            backgroundSize:'200% 100%',
+            animation: p < 100 ? 'nbBarShine 1.2s linear infinite' : 'none',
+            transition:'right .06s linear',
+          }}/>
+        </div>
+
+        {/* Percentage */}
+        <div style={{
+          fontSize:13, fontWeight:900, letterSpacing:'.1em',
+          color:'#ff5500', textAlign:'right',
+          fontFamily:"'Courier New', monospace",
+        }}>{p}%</div>
+      </div>
+    </div>
+  );
+};
+
+
+const ThemeToggle = ({dark, onToggle}) => (
+  <button className={`theme-toggle ${dark?'theme-toggle--dark':''}`} onClick={onToggle} title={dark?"Passer en mode clair":"Passer en mode sombre"}>
+    {dark ? <LI name="sun" color="#ffffff"/> : <LI name="moon" color="#1a1a1a"/>}
+  </button>
+);
+
+const NAV_LINKS = [
+  {id:"home",label:"Accueil"},{id:"creations",label:"Vitrine"},{id:"services",label:"Services"},
+  {id:"about",label:"À propos"},{id:"experience",label:"Parcours"},
+  {id:"projects",label:"Projets"},{id:"skills",label:"Skills"},{id:"contact",label:"Contact"}
+];
+
+/* ── LiveClock : date + heure temps réel ── */
+function useLiveClock() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = now.toLocaleDateString('fr-CI', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  return { dateStr, timeStr };
+}
+
+const Navbar = ({dark, onToggle}) => {
+  const [active,setActive]=useState("home");
+  const [scrolled,setScrolled]=useState(false);
+  const [open,setOpen]=useState(false);
+  const { dateStr, timeStr } = useLiveClock();
+
+  useEffect(()=>{
+    const fn=()=>{
+      setScrolled(window.scrollY>40);
+      document.querySelectorAll('section[id]').forEach(s=>{
+        const absTop=s.getBoundingClientRect().top+window.scrollY;
+        if(window.scrollY>=absTop-120) setActive(s.id);
+      });
+    };
+    fn();
+    window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
+  },[]);
+  const go=id=>{ setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };
+
+  return (
+    <>
+      {open&&<div className="mob-overlay" onClick={()=>setOpen(false)}/>}
+
+      {/* ── HEADER TOP BAR — logo gauche | date+heure centre | dispo droite ── */}
+      <header className={`nb-topbar ${scrolled?'nb-topbar--scrolled':''} ${dark?'nb-topbar--dark':''}`}>
+        {/* Gauche : logo + nom */}
+        <div className="nb-topbar-left" onClick={()=>go('home')} style={{cursor:'pointer'}}>
+          <AkafolioLogo size={38} dark={dark} animate={false}/>
+        </div>
+
+        {/* Centre : date + heure */}
+        <div className="nb-topbar-center">
+          <span className="nb-date">{dateStr}</span>
+          <span className="nb-sep">·</span>
+          <span className="nb-time">{timeStr}</span>
+        </div>
+
+        {/* Droite : disponibilité + theme toggle */}
+        <div className="nb-topbar-right">
+          <span className="nb-avail">
+            <span className="nb-avail-dot"/>
+            disponible · Abidjan, CI
+          </span>
+          <ThemeToggle dark={dark} onToggle={onToggle}/>
+          <button className={`nav-hamburger ${open?'nav-hamburger--open':''} ${dark?'nav-hamburger--dark':''} nb-hamburger-only`} onClick={()=>setOpen(o=>!o)} aria-label="Menu" aria-expanded={open}>
+            <span/><span/><span/>
+          </button>
+        </div>
+      </header>
+
+      {/* ── NAV BOTTOM BAR — sections links fixed en bas ── */}
+      <nav className={`nb-bottombar ${scrolled?'nb-bottombar--scrolled':''} ${dark?'nb-bottombar--dark':''}`}>
+        <div className="nb-bottombar-inner">
+          {NAV_LINKS.map(l=>(
+            <button key={l.id} className={`nb-nav-link ${active===l.id?'nb-nav-link--active':''}`} onClick={()=>go(l.id)}>
+              {l.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── MOBILE DRAWER ── */}
+      <div className={`mob-drawer ${open?'mob-drawer--open':''} ${dark?'mob-drawer--dark':''}`} aria-hidden={!open}>
+        <div className="mob-drawer-header">
+          <AkafolioLogo size={32} dark={dark} animate={false}/>
+          <button className="mob-drawer-close" onClick={()=>setOpen(false)} aria-label="Fermer le menu"><LI name="times" color={dark?"#fff":"#1a1a1a"}/></button>
+        </div>
+        <nav className="mob-drawer-nav">
+          {NAV_LINKS.map((l,i)=>(
+            <button key={l.id} className={`mob-drawer-link ${active===l.id?'mob-drawer-link--active':''} ${open?'mob-drawer-link--in':''}`}
+              style={{animationDelay:`${i*0.055}s`}} onClick={()=>go(l.id)}>
+              <span className="mob-drawer-num">0{i+1}</span><span>{l.label}</span><SvgArrowRight size={14}/>
+            </button>
+          ))}
+        </nav>
+        <div className="mob-drawer-theme">
+          <span className="mob-drawer-theme-label">
+            <LI name={dark?'moon':'sun'} color={dark?'#ffffff':'#1a1a1a'}/> Thème {dark?'sombre':'clair'}
+          </span>
+          <ThemeToggle dark={dark} onToggle={onToggle}/>
+        </div>
+        <div className="mob-drawer-footer">
+          <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+          <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const RocketFlames = () => (
+  <svg className="rocket-big-flames" xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 40 100" style={{position:'absolute',bottom:'-70px',left:'50%',transform:'translateX(-50%)',width:'40px',height:'80px',pointerEvents:'none',zIndex:9999}}>
+    <ellipse cx="20" cy="10" rx="7" ry="14" fill="#FF5500" opacity="0.95">
+      <animate attributeName="ry" values="14;20;11;18;14" dur=".18s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".95;1;.85;1;.95" dur=".22s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="20" cy="22" rx="5" ry="16" fill="#FF8C00" opacity="0.8">
+      <animate attributeName="ry" values="16;22;12;20;16" dur=".22s" repeatCount="indefinite"/>
+      <animate attributeName="cx"  values="20;19;21;20;20" dur=".15s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="20" cy="38" rx="3" ry="12" fill="#FFD600" opacity="0.6">
+      <animate attributeName="ry" values="12;18;8;16;12" dur=".25s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".6;.9;.4;.8;.6" dur=".2s" repeatCount="indefinite"/>
+    </ellipse>
+    <circle cx="12" cy="18" r="2.5" fill="#FF5500" opacity="0.5">
+      <animate attributeName="cy" values="18;30;18" dur=".3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".5;0;.5" dur=".3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="28" cy="20" r="2" fill="#FF8C00" opacity="0.5">
+      <animate attributeName="cy" values="20;34;20" dur=".35s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".5;0;.5" dur=".35s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+);
+
+const ScrollTop = ({dark}) => {
+  const [vis,setVis]=useState(false); const [launching,setLaunch]=useState(false);
+  const btnRef=useRef(null); const audioCtx=useRef(null); const engineRef=useRef(null);
+  useEffect(()=>{
+    const fn=()=>{ const footer=document.querySelector('footer'); if(footer) setVis(footer.getBoundingClientRect().top<window.innerHeight); };
+    window.addEventListener('scroll',fn); return ()=>window.removeEventListener('scroll',fn);
+  },[]);
+  const getCtx=()=>{ if(!audioCtx.current||audioCtx.current.state==='closed') audioCtx.current=new(window.AudioContext||window.webkitAudioContext)(); if(audioCtx.current.state==='suspended') audioCtx.current.resume(); return audioCtx.current; };
+  const makeNoise=(ctx,loop=true)=>{ const sz=ctx.sampleRate*2,buf=ctx.createBuffer(1,sz,ctx.sampleRate),d=buf.getChannelData(0); for(let i=0;i<sz;i++) d[i]=Math.random()*2-1; const src=ctx.createBufferSource(); src.buffer=buf; src.loop=loop; return src; };
+  const startEngine=()=>{
+    if(engineRef.current) return;
+    try{
+      const ctx=getCtx(),now=ctx.currentTime,master=ctx.createGain();
+      master.gain.setValueAtTime(0,now); master.gain.linearRampToValueAtTime(1,now+0.25); master.connect(ctx.destination);
+      const ng=makeNoise(ctx),fg=ctx.createBiquadFilter(); fg.type='lowpass'; fg.frequency.value=140; fg.Q.value=0.9;
+      const gg=ctx.createGain(); gg.gain.value=0.55; ng.connect(fg); fg.connect(gg); gg.connect(master); ng.start();
+      const nj=makeNoise(ctx),fj=ctx.createBiquadFilter(); fj.type='bandpass'; fj.frequency.value=480; fj.Q.value=0.7;
+      const gj=ctx.createGain(); gj.gain.value=0.40; nj.connect(fj); fj.connect(gj); gj.connect(master); nj.start();
+      const nh=makeNoise(ctx),fh=ctx.createBiquadFilter(); fh.type='highpass'; fh.frequency.value=1800;
+      const gh=ctx.createGain(); gh.gain.value=0.18; nh.connect(fh); fh.connect(gh); gh.connect(master); nh.start();
+      const osc=ctx.createOscillator(); osc.type='sawtooth'; osc.frequency.value=48;
+      const lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=3.5;
+      const lg=ctx.createGain(); lg.gain.value=7; lfo.connect(lg); lg.connect(osc.frequency); lfo.start();
+      const ws=ctx.createWaveShaper(),cv2=new Float32Array(512);
+      for(let i=0;i<512;i++){const x=(i*2)/512-1; cv2[i]=(3+200)*x/(Math.PI+200*Math.abs(x));} ws.curve=cv2; ws.oversample='4x';
+      const og=ctx.createGain(); og.gain.value=0.32; osc.connect(ws); ws.connect(og); og.connect(master); osc.start();
+      const sub=ctx.createOscillator(); sub.type='sine'; sub.frequency.value=28;
+      const sg=ctx.createGain(); sg.gain.value=0.38; sub.connect(sg); sg.connect(master); sub.start();
+      engineRef.current={master,nodes:[ng,nj,nh,osc,lfo,sub]};
+    }catch(e){}
+  };
+  const stopEngine=()=>{
+    if(!engineRef.current) return;
+    try{
+      const ctx=getCtx(),now=ctx.currentTime,{master,nodes}=engineRef.current;
+      master.gain.cancelScheduledValues(now); master.gain.setValueAtTime(master.gain.value,now);
+      master.gain.linearRampToValueAtTime(0,now+0.3);
+      setTimeout(()=>{nodes.forEach(n=>{try{n.stop();}catch(_){}});engineRef.current=null;},350);
+    }catch(e){engineRef.current=null;}
+  };
+  const playLaunch=()=>{
+    stopEngine();
+    try{
+      const ctx=getCtx(),now=ctx.currentTime;
+      const boom=ctx.createOscillator(); boom.type='sine'; boom.frequency.setValueAtTime(120,now); boom.frequency.exponentialRampToValueAtTime(22,now+0.18);
+      const bg=ctx.createGain(); bg.gain.setValueAtTime(0.7,now); bg.gain.exponentialRampToValueAtTime(0.001,now+0.22);
+      boom.connect(bg); bg.connect(ctx.destination); boom.start(now); boom.stop(now+0.25);
+      const sz=Math.floor(ctx.sampleRate*2.2),nb=ctx.createBuffer(1,sz,ctx.sampleRate),nd=nb.getChannelData(0);
+      for(let i=0;i<sz;i++) nd[i]=Math.random()*2-1;
+      const ns=ctx.createBufferSource(); ns.buffer=nb;
+      const wf=ctx.createBiquadFilter(); wf.type='bandpass'; wf.frequency.setValueAtTime(100,now); wf.frequency.exponentialRampToValueAtTime(4000,now+1.8); wf.Q.value=1.0;
+      const wg=ctx.createGain(); wg.gain.setValueAtTime(0,now); wg.gain.linearRampToValueAtTime(0.65,now+0.06); wg.gain.setValueAtTime(0.65,now+0.5); wg.gain.exponentialRampToValueAtTime(0.001,now+2.2);
+      ns.connect(wf); wf.connect(wg); wg.connect(ctx.destination); ns.start(now); ns.stop(now+2.2);
+      const ru=ctx.createOscillator(); ru.type='sawtooth'; ru.frequency.setValueAtTime(60,now); ru.frequency.linearRampToValueAtTime(42,now+1.5);
+      const rg=ctx.createGain(); rg.gain.setValueAtTime(0,now); rg.gain.linearRampToValueAtTime(0.35,now+0.08); rg.gain.setValueAtTime(0.35,now+0.6); rg.gain.exponentialRampToValueAtTime(0.001,now+1.6);
+      const rw=ctx.createWaveShaper(),rc=new Float32Array(256);
+      for(let i=0;i<256;i++){const x=(i*2)/256-1; rc[i]=(Math.PI+180)*x/(Math.PI+180*Math.abs(x));} rw.curve=rc;
+      ru.connect(rw); rw.connect(rg); rg.connect(ctx.destination); ru.start(now); ru.stop(now+1.6);
+    }catch(e){}
+  };
+  const go=()=>{
+    playLaunch(); setLaunch(true);
+    if(btnRef.current){ for(let i=0;i<8;i++){ const p=document.createElement('div'); p.className='rocket-fire-particle'; p.style.setProperty('--xo',`${(Math.random()-0.5)*30}px`); p.style.animationDelay=`${i*0.1}s`; btnRef.current.appendChild(p); setTimeout(()=>p.remove(),1000); } }
+    setTimeout(()=>{ window.scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>setLaunch(false),800); },300);
+  };
+  return (
+    <button ref={btnRef} className={`scroll-top ${vis?'scroll-top--vis':''} ${launching?'scroll-top--launch':''} ${dark?'scroll-top--dark':''}`}
+      onClick={go} onMouseEnter={startEngine} onMouseLeave={stopEngine} title="Téléportation vers le haut ! 🛸">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
+        strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
+        style={{ overflow: 'visible', display: 'block' }}>
+        <defs>
+          <linearGradient id="beamGradM" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ff5500" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#ff5500" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <polygon className="st-ufo-beam" points="12,14 2,24 22,24" fill="url(#beamGradM)" stroke="none" />
+        <g className="st-ufo-g">
+          <path d="M8 10c0-2.5 1.8-4 4-4s4 1.5 4 4" fill="currentColor" fillOpacity=".2" />
+          <path d="M2 12c0-1.5 3-2.5 10-2.5s10 1 10 2.5-3 2.5-10 2.5-10-1-10-2.5z" fill="#ff5500" />
+          <path d="M5 12.5c0 1.2 2.8 2.2 7 2.2s7-1 7-2.2" />
+          <circle cx="7"  cy="12.2" r="0.9" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="12.7" r="0.9" fill="currentColor" stroke="none" />
+          <circle cx="17" cy="12.2" r="0.9" fill="currentColor" stroke="none" />
+        </g>
+      </svg>
+      <div className="rocket-flame"/>{launching && <RocketFlames/>}
+    </button>
+  );
+};
+
+/* ══════════════════════════════════════════════
+   PLASMA CANVAS BG — version légère pour bandeaux
+   Même shader plasma, optimisé pour petits conteneurs
+   ══════════════════════════════════════════════ */
+const PlasmaCanvasBg = ({ intensity = 1.0 }) => {
+  const cvRef  = useRef(null);
+  const rafRef = useRef(null);
+  const glRef  = useRef(null);
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const gl = cv.getContext('webgl') || cv.getContext('experimental-webgl');
+    if (!gl) { glRef.current = null; return; }
+    glRef.current = gl;
+
+    const resize = () => {
+      const p = cv.parentElement;
+      cv.width  = Math.round((p ? p.offsetWidth  : cv.offsetWidth)  * 0.5);
+      cv.height = Math.round((p ? p.offsetHeight : cv.offsetHeight) * 0.5);
+      if (cv.width  < 1) cv.width  = 320;
+      if (cv.height < 1) cv.height = 120;
+      gl.viewport(0, 0, cv.width, cv.height);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(cv.parentElement || cv);
+
+    const vert = `attribute vec2 a; void main(){gl_Position=vec4(a,0.,1.);}`;
+    const frag = `
+      precision mediump float;
+      uniform vec2  u_res;
+      uniform float u_time;
+      #define TAU 6.28318530
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_res;
+        vec2 p  = uv * 2.0 - 1.0; p.x *= u_res.x / u_res.y;
+        float t = u_time * 0.55;
+        float v = 0.0;
+        v += sin(p.x * 5.0 + t);
+        v += sin(p.y * 4.5 + t * 0.85);
+        v += sin((p.x + p.y) * 3.5 + t * 0.7);
+        float cx = p.x + 0.5 * sin(t * 0.38);
+        float cy = p.y + 0.5 * cos(t * 0.30);
+        v += sin(sqrt(90.0*(cx*cx+cy*cy)+1.0)+t);
+        v += sin((p.x-p.y)*2.8+t*0.6)*0.5;
+        v = v*0.5+0.5;
+        vec3 a2 = vec3(0.04,  0.02,  0.01);
+        vec3 b2 = vec3(0.18,  0.07,  0.01);
+        vec3 c2 = vec3(1.0,   0.333, 0.0);
+        vec3 d2 = vec3(1.0,   0.549, 0.0);
+        vec3 e2 = vec3(1.0,   0.85,  0.55);
+        vec3 col;
+        if      (v < 0.22) col = mix(a2, b2, v/0.22);
+        else if (v < 0.52) col = mix(b2, c2, (v-0.22)/0.30);
+        else if (v < 0.78) col = mix(c2, d2, (v-0.52)/0.26);
+        else               col = mix(d2, e2, (v-0.78)/0.22);
+        col *= (0.75 + 0.25*sin(t*0.45));
+        float vig = 1.0 - smoothstep(0.3, 1.2, length(uv-0.5)*1.8);
+        col *= vig * 0.9 + 0.1;
+        float grain = fract(sin(dot(gl_FragCoord.xy,vec2(127.1,311.7))+u_time*80.)*43758.5)*0.022-0.011;
+        gl_FragColor = vec4(clamp(col+grain,0.,1.),1.0);
+      }
+    `;
+
+    const comp = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, comp(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, comp(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const aLoc = gl.getAttribLocation(prog, 'a');
+    gl.enableVertexAttribArray(aLoc);
+    gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes  = gl.getUniformLocation(prog, 'u_res');
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+
+    const render = ts => {
+      if (!glRef.current) return;
+      rafRef.current = requestAnimationFrame(render);
+      gl.uniform2f(uRes, cv.width, cv.height);
+      gl.uniform1f(uTime, ts * 0.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    rafRef.current = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      glRef.current = null;
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={cvRef}
+      className="plasma-bg-canvas"
+      aria-hidden
+      style={{ position:'absolute', inset:0, width:'100%', height:'100%',
+               pointerEvents:'none', zIndex:0, opacity: intensity,
+               imageRendering:'pixelated', display:'block' }}
+    />
+  );
+};
+
+/* ══════════════════════════════════════════════
+   PLASMA CANVAS — WebGL background hero
+   Shader plasma AKAfolio : noir profond → orange #FF5500 → ambre
+   ══════════════════════════════════════════════ */
+const AuroraCanvas = ({ dark }) => {
+  const cvRef   = useRef(null);
+  const rafRef  = useRef(null);
+  const glRef   = useRef(null);
+  const uRef    = useRef({});
+  const darkRef = useRef(dark);
+  const mouseRef= useRef({ x: 0, y: 0 });
+  const lastTs  = useRef(0);
+  const INTERVAL= 1000 / 60;
+
+  useEffect(() => { darkRef.current = dark; }, [dark]);
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const gl = cv.getContext('webgl') || cv.getContext('experimental-webgl');
+    if (!gl) return;
+    glRef.current = gl;
+
+    const SCALE = 0.75;
+    const resize = () => {
+      const parent = cv.parentElement;
+      const w = parent ? parent.getBoundingClientRect().width  : cv.offsetWidth;
+      const h = parent ? parent.getBoundingClientRect().height : (cv.offsetHeight || window.innerHeight);
+      cv.width  = Math.round(w * SCALE);
+      cv.height = Math.round(h * SCALE);
+      if (cv.width < 1)  cv.width  = Math.round(window.innerWidth  * SCALE);
+      if (cv.height < 1) cv.height = Math.round(window.innerHeight * SCALE);
+      gl.viewport(0, 0, cv.width, cv.height);
+    };
+    resize();
+    const resizeDeferred = setTimeout(resize, 150);
+    const ro = new ResizeObserver(resize);
+    ro.observe(cv);
+
+    const vert = `attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.,1.);}`;
+
+    /* ── Plasma shader — palette AKAfolio : noir #0A0A0A → orange #FF5500 → ambre #FF8C00 ── */
+    const frag = `
+      precision highp float;
+      uniform vec2  u_res;
+      uniform float u_time;
+      uniform vec2  u_mouse;
+      uniform float u_light;
+      #define TAU 6.28318530
+
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_res;
+        vec2 p  = uv * 2.0 - 1.0; p.x *= u_res.x / u_res.y;
+        vec2 m  = (u_mouse / u_res) * 2.0 - 1.0; m.x *= u_res.x / u_res.y;
+        float t = u_time * 0.5;
+
+        /* layered plasma sines */
+        float v = 0.0;
+        v += sin(p.x * 5.0 + t);
+        v += sin(p.y * 4.5 + t * 0.85);
+        v += sin((p.x + p.y) * 3.5 + t * 0.7);
+        float cx = p.x + 0.55 * sin(t * 0.38) + m.x * 0.28;
+        float cy = p.y + 0.55 * cos(t * 0.30) + m.y * 0.28;
+        v += sin(sqrt(90.0 * (cx*cx + cy*cy) + 1.0) + t);
+        /* extra diagonal wave for richness */
+        v += sin((p.x - p.y) * 2.8 + t * 0.6) * 0.5;
+        v = v * 0.5 + 0.5; /* normalise 0..1 */
+
+        /* AKAfolio palette :
+           a = noir profond   #0A0A0A  (0.04, 0.04, 0.04)
+           b = gris chaud     #1C1008  (0.11, 0.063, 0.031)
+           c = orange vif     #FF5500  (1.0,  0.333, 0.0)
+           d = ambre brillant #FF8C00  (1.0,  0.549, 0.0)
+           e = blanc chaud    #FFF0D8  (1.0,  0.94,  0.847) */
+        vec3 a = vec3(0.04,  0.04,  0.04);
+        vec3 b = vec3(0.11,  0.063, 0.031);
+        vec3 c = vec3(1.0,   0.333, 0.0);
+        vec3 d = vec3(1.0,   0.549, 0.0);
+        vec3 e = vec3(1.0,   0.94,  0.847);
+
+        vec3 col;
+        if      (v < 0.25) col = mix(a, b, v * 4.0);
+        else if (v < 0.55) col = mix(b, c, (v - 0.25) / 0.30);
+        else if (v < 0.80) col = mix(c, d, (v - 0.55) / 0.25);
+        else               col = mix(d, e, (v - 0.80) / 0.20);
+
+        /* pulsing brightness */
+        col *= 0.78 + 0.22 * sin(t * 0.45);
+
+        /* vignette douce */
+        float vig = 1.0 - smoothstep(0.45, 1.35, length(uv - 0.5) * 1.9);
+        col *= vig;
+
+        /* bottom darkness — conserve le noir en bas */
+        col *= mix(0.08, 1.0, smoothstep(0.0, 0.38, uv.y));
+
+        /* mouse orange glow */
+        float mdist = length(p - m);
+        col += vec3(1.0, 0.333, 0.0) * exp(-mdist * 2.8) * 0.22;
+
+        /* mode clair : légèrement plus clair */
+        col = mix(col, col * 1.18 + vec3(0.02, 0.01, 0.0), u_light * 0.35);
+
+        /* grain subtil */
+        float grain = fract(sin(dot(gl_FragCoord.xy, vec2(127.1, 311.7)) + u_time * 80.0) * 43758.5) * 0.025 - 0.0125;
+        col += grain;
+
+        gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+      }
+    `;
+
+    const compile = (type, src) => {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    uRef.current = {
+      res:   gl.getUniformLocation(prog, 'u_res'),
+      time:  gl.getUniformLocation(prog, 'u_time'),
+      mouse: gl.getUniformLocation(prog, 'u_mouse'),
+      light: gl.getUniformLocation(prog, 'u_light'),
+    };
+
+    // Mouse interaction désactivée — position fixe au centre
+    mouseRef.current = { x: cv.width * 0.5, y: cv.height * 0.5 };
+
+    const render = ts => {
+      if (!glRef.current) return;
+      rafRef.current = requestAnimationFrame(render);
+      if (ts - lastTs.current < INTERVAL) return;
+      lastTs.current = ts;
+      const u = uRef.current;
+      gl.uniform2f(u.res, cv.width, cv.height);
+      gl.uniform1f(u.time, ts * 0.001);
+      gl.uniform2f(u.mouse, mouseRef.current.x, mouseRef.current.y);
+      gl.uniform1f(u.light, darkRef.current ? 0.0 : 1.0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    };
+    rafRef.current = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      clearTimeout(resizeDeferred);
+      ro.disconnect();
+      // no mouse listeners to remove
+      glRef.current = null;
+    };
+  }, []);
+
+  return <canvas ref={cvRef} className="aurora-canvas" aria-hidden />;
+};
+
+const Hero = ({ dark }) => {
+  const phrases = ["Full-Stack","React & Python","Django & Flask","orienté produit","orienté Data & Carto"];
+  const [wi,setWi]=useState(0); const [typed,setTyped]=useState(''); const [del,setDel]=useState(false); const [ch,setCh]=useState(0); const [now,setNow]=useState(new Date());
+
+  const heroRef    = useRef(null);
+  const [photoColorRef, heroPhotoColor] = usePhotoColor();
+  const bgRef      = useRef(null);   // aurora bg layer — zooms on scroll
+  const sceneRef   = useRef(null);   // grid wrapper — rotates on mouse
+  const fadeRef    = useRef(null);   // inner grid — fades+blurs on scroll
+  const leftRef    = useRef(null);
+  const rightRef   = useRef(null);
+  const cardARef   = useRef(null);
+  const cardBRef   = useRef(null);
+  const raysRef    = useRef(null);
+  const cursorRef  = useRef(null);
+  const dustRef    = useRef(null);
+  const rafRef     = useRef(null);
+  const mTarget    = useRef({ x:0, y:0 });
+  const mCurrent   = useRef({ x:typeof window!=='undefined'?window.innerWidth/2:0, y:typeof window!=='undefined'?window.innerHeight/2:0 });
+
+  /* ── lerp mouse loop ── */
+  useEffect(() => {
+    const onMove = e => { mTarget.current.x=e.clientX; mTarget.current.y=e.clientY; };
+    window.addEventListener('mousemove', onMove);
+    const loop = () => {
+      mCurrent.current.x += (mTarget.current.x - mCurrent.current.x) * 0.07;
+      mCurrent.current.y += (mTarget.current.y - mCurrent.current.y) * 0.07;
+      const mx=mCurrent.current.x, my=mCurrent.current.y;
+      const W=window.innerWidth, H=window.innerHeight;
+      /* light cursor */
+      if(cursorRef.current){ cursorRef.current.style.left=`${mx}px`; cursorRef.current.style.top=`${my}px`; }
+      /* god rays follow cursor */
+      const gx=50-(mx/W-0.5)*28, gy=50-(my/H-0.5)*20;
+      if(raysRef.current) raysRef.current.style.background=`radial-gradient(circle at ${gx}% ${gy}%, rgba(255,85,0,0.15) 0%, transparent 55%)`;
+      /* scene rotation (like hhjjj layer-mid) */
+      if(sceneRef.current){
+        const rx=(my/H-0.5)*10, ry=(mx/W-0.5)*-10;
+        sceneRef.current.style.transform=`perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      }
+      /* depth offsets per layer */
+      const dx=(W/2-mx)/(W/2), dy=(H/2-my)/(H/2);
+      if(bgRef.current)    bgRef.current.style.transform   =`translate3d(${dx*-8}px,${dy*-6}px,0) scale(1.04)`;
+      if(leftRef.current)  leftRef.current.style.transform  =`translate3d(${dx*12}px,${dy*8}px,0)`;
+      if(rightRef.current) rightRef.current.style.transform =`translate3d(${dx*-20}px,${dy*-14}px,0) rotateY(${dx*-2}deg) rotateX(${dy*1.5}deg)`;
+      if(cardARef.current) cardARef.current.style.transform =`translate3d(${dx*28}px,${dy*20}px,0)`;
+      if(cardBRef.current) cardBRef.current.style.transform =`translate3d(${dx*-34}px,${dy*-24}px,0)`;
+      rafRef.current=requestAnimationFrame(loop);
+    };
+    rafRef.current=requestAnimationFrame(loop);
+    return()=>{ window.removeEventListener('mousemove',onMove); cancelAnimationFrame(rafRef.current); };
+  },[]);
+
+  /* ── dust canvas ── */
+  useEffect(()=>{
+    const cv=dustRef.current; if(!cv) return;
+    const ctx=cv.getContext('2d'); let id;
+    const resize=()=>{ cv.width=cv.parentElement?.offsetWidth||window.innerWidth; cv.height=cv.parentElement?.offsetHeight||window.innerHeight; };
+    resize(); window.addEventListener('resize',resize);
+    const pts=Array.from({length:90},()=>({ x:Math.random()*cv.width, y:Math.random()*cv.height, r:Math.random()*1.5+0.2, vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35, op:Math.random()*.4+.05 }));
+    const tick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); pts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=cv.width; if(p.x>cv.width)p.x=0; if(p.y<0)p.y=cv.height; if(p.y>cv.height)p.y=0; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${p.op})`; ctx.fill(); }); id=requestAnimationFrame(tick); };
+    tick();
+    return()=>{ cancelAnimationFrame(id); window.removeEventListener('resize',resize); };
+  },[]);
+
+  /* ── scroll: zoom bg + fade+blur text (starts at 50% vh) ── */
+  useEffect(()=>{
+    const onScroll=()=>{
+      const s=window.pageYOffset, vh=window.innerHeight;
+      /* bg zoom like hhjjj layer-bg */
+      if(bgRef.current) bgRef.current.style.transform=`scale(${1+s/4000}) translate3d(0,${s*0.3}px,0)`;
+      /* text fade only after 50% scroll */
+      const start=vh*0.5, end=vh*1.0;
+      const p=Math.min(1,Math.max(0,(s-start)/(end-start)));
+      if(fadeRef.current){
+        fadeRef.current.style.opacity=`${1-p}`;
+        fadeRef.current.style.filter=`blur(${p*10}px)`;
+        fadeRef.current.style.transform=`translateY(${s*0.1}px)`;
+      }
+    };
+    window.addEventListener('scroll',onScroll,{passive:true});
+    return()=>window.removeEventListener('scroll',onScroll);
+  },[]);
+
+  useEffect(()=>{ const t=setInterval(()=>setNow(new Date()),1000); return()=>clearInterval(t); },[]);
+  const hour=now.getHours(), isDaytime=hour>=6&&hour<18;
+  const DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'], MONTHS=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const pad=n=>String(n).padStart(2,'0');
+  const dateStr=`${DAYS[now.getDay()]} ${pad(now.getDate())} ${MONTHS[now.getMonth()]}`;
+  const timeStr=`${pad(hour)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  useEffect(()=>{
+    const w=phrases[wi];
+    const t=setTimeout(()=>{ if(!del&&ch<w.length){setTyped(w.slice(0,ch+1));setCh(c=>c+1);} else if(!del&&ch===w.length){setTimeout(()=>setDel(true),1800);} else if(del&&ch>0){setTyped(w.slice(0,ch-1));setCh(c=>c-1);} else if(del&&ch===0){setDel(false);setWi(i=>(i+1)%phrases.length);} },del?45:90);
+    return()=>clearTimeout(t);
+  },[ch,del,wi]);
+
+  return (
+    <section id="home" ref={el => { heroRef.current = el; photoColorRef.current = el; }} className={`hero hv4 hv4-cinematic ${dark?'hero--dark':''}`}>
+
+      {/* ── film grain ── */}
+      <div className="hv4-grain" aria-hidden/>
+
+      
+
+      {/* ── god rays ── */}
+      <div className="hv4-god-rays" ref={raysRef} aria-hidden/>
+
+      {/* ── aurora bg layer (zoom on scroll, parallax on mouse) ── */}
+      <div className="hv4-bg-layer" ref={bgRef} aria-hidden>
+        <AuroraCanvas dark={dark}/>
+      </div>
+
+      {/* ── scan line ── */}
+      <div className="hv4-scan" aria-hidden/>
+
+      
+
+      {/* ── scene wrapper: handles perspective rotation ── */}
+      <div className="hv4-scene-wrap" ref={sceneRef}>
+
+        {/* ── fade wrapper: handles scroll fade/blur/translateY ── */}
+        <div className="hero-content hv4-grid" ref={fadeRef}>
+
+          {/* ════ LEFT ════ */}
+          <div className="hv4-left" ref={leftRef}>
+
+
+            <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
+              <ScrambleText text="M'BOLLO" tag="span" className="hv4-name-line" style={{'--d':'0.12s'}} speed={30} step={0.6} threshold={0.15} once={true}/>
+              <ScrambleText text="AKA ELVIS" tag="span" className="hv4-name-line hv4-name-line--u" style={{"--d":"0.26s"}} speed={28} step={0.5} threshold={0.15} once={true}/>
+            </h1>
+
+            <div className="hv4-photo-mob hv4-rv" style={{'--d':'0.3s'}}>
+              <div className="hv4-photo-mob-inner">
+                <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
+                <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
+              </div>
+            </div>
+
+            <p className="hv4-typed hv4-rv" style={{'--d':'0.42s'}}>
+              Développeur&nbsp;<span className="hero-word">{typed}</span><span className="cursor">|</span>
+            </p>
+
+            <p className="hv4-desc hv4-rv" style={{'--d':'0.56s'}}>
+              Développeur web orienté produits, spécialisé Django &amp; React.<br/>
+              Je construis des applications pensées pour des usages réels.
+            </p>
+
+            <div className="hv4-ctas hv4-rv" style={{'--d':'0.7s'}}>
+              <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-btn-grad-solid`}
+                onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+                Voir mes projets <span>↗</span>
+              </MagBtn>
+              <a className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} mi-glint`}
+                href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
+                <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
+              </a>
+            </div>
+
+            <div className="hv4-stats hv4-rv" style={{'--d':'0.85s'}}>
+              {[['14','Projets'],['3+','Années exp.'],['9','En prod.'],['33','Outils']].map(([n,l])=>(
+                <div key={l} className="hv4-stat">
+                  <span className="hv4-stat-n">{n}</span>
+                  <span className="hv4-stat-l">{l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ════ RIGHT ════ */}
+          <div className="hv4-right hv4-rv" style={{'--d':'0.32s'}} ref={rightRef}>
+            <div className="hv4-photo-wrap hv4-photo-wrap--full">
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
+              <div className="hv4-photo-overlay">
+                <span><LI name="map-marker-alt" color={dark?"#aaa":"#666"} size={12}/> Abidjan, CI</span>
+                <span><LI name="code" color="#ff5500" size={12}/> Full-Stack Dev</span>
+              </div>
+              <div className="hv4-photo-status">
+                <span className="hero-dot"/>
+                <span>Open to work · Freelance &amp; CDI</span>
+              </div>
+            </div>
+          </div>
+
+        </div>{/* /hv4-grid */}
+      </div>{/* /hv4-scene-wrap */}
+
+      <div className="hero-scroll"><span>scroll</span><div className="hsl"/></div>
+
+    </section>
+  );
+};
+const Marquee = ({dark}) => {
+  const words=["React","Django","Flask","Python","TypeScript","Tailwind","MySQL","Vercel","Node.js","Git","REST API","Bootstrap","JavaScript"];
+  const d=[...words,...words];
+  return (<div className={`marquee ${dark?'marquee--dark':''}`}><div className="marquee-track">{d.map((w,i)=><span key={i} className="mw">{w}<span className="mdot">◆</span></span>)}</div></div>);
+};
+
+const FeaturedCreation = ({dark}) => {
+  const [ref,vis]=useInView(0.08);
+  const proj=PROJECTS.find(p=>p.id===1);
+  return (
+    <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
+      <WindowChrome title="Vitrine" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Dernière<br/>création.</h2></div>
+      <div className="cr-showcase">
+        <div className="cr-mockups">
+          <div className="cr-desktop-wrap">
+            <div className="cr-desktop-shell">
+              <div className="cr-desktop-bar">
+                <span className="cr-dot cr-dot--r"/><span className="cr-dot cr-dot--y"/><span className="cr-dot cr-dot--g"/>
+                <span className="cr-bar-url">shop-ci.vercel.app</span>
+              </div>
+              <div className="cr-desktop-screen">
+                <img src={proj.image} alt="ShopCI desktop" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
+                <div className="cr-screen-ph" style={{display:'none'}}><LI name="desktop" color={dark?"#555":"#aaa"}/></div>
+              </div>
+            </div>
+          </div>
+          <div className="cr-mobile-wrap">
+            <div className="cr-mobile-shell">
+              <div className="cr-mobile-notch"/>
+              <div className="cr-mobile-screen">
+                <img src="/assets/images/projects/shopci-responsive.jpg" alt="ShopCI mobile" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
+                <div className="cr-screen-ph cr-screen-ph--sm" style={{display:'none'}}><LI name="mobile-alt" color={dark?"#555":"#aaa"}/></div>
+              </div>
+              <div className="cr-mobile-home"/>
+            </div>
+            <div className="cr-resp-badge"><LI name="check-circle" color="#ff5500"/> 100% Responsive</div>
+          </div>
+          <div className="cr-glow"/>
+        </div>
+        <div className="cr-info">
+          <div><h3 className="cr-title">ShopCI</h3><p className="cr-sub">Marketplace E-commerce</p></div>
+          <div className="cr-meta-block">
+            <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
+            <div className="cr-meta-row"><span className="cr-ml">Mon rôle</span><span className="cr-mv">Conception et développement</span></div>
+          </div>
+          <div className="cr-tags">{proj.tech.map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
+          <p className="cr-desc">{proj.description}</p>
+          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ─── Icônes animées Lordicon-style — système complet v2 ──────────────────────
+const PANIM_CSS_ID = 'pricing-anim-icons-v2';
+const PANIM_CSS = `
+@keyframes paiGlobeOrbit  { 0%{stroke-dashoffset:62;opacity:.25} 60%{opacity:1} 100%{stroke-dashoffset:0;opacity:.7} }
+@keyframes paiBlink       { 0%,100%{opacity:.3} 50%{opacity:1} }
+@keyframes paiToolWobble  { 0%,100%{transform:rotate(-18deg)} 50%{transform:rotate(18deg)} }
+@keyframes paiGlow        { 0%,100%{filter:drop-shadow(0 0 3px rgba(255,85,0,.35))} 50%{filter:drop-shadow(0 0 8px rgba(255,85,0,.75))} }
+@keyframes paiSpinSlow    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes paiCross       { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.1)} }
+@keyframes paiCapWobble   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+@keyframes paiPlusPulse   { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.2);opacity:1} }
+@keyframes paiWarnFlash   { 0%,100%{opacity:.5} 40%{opacity:1} 60%{opacity:.7} }
+@keyframes paiCartBounce  { 0%,100%{transform:translateY(0)} 45%{transform:translateY(-3px)} 65%{transform:translateY(1px)} }
+@keyframes paiCheckDraw   { 0%{stroke-dashoffset:20;opacity:0} 100%{stroke-dashoffset:0;opacity:1} }
+@keyframes paiRocketFly   { 0%,100%{transform:translateY(0) rotate(-45deg)} 50%{transform:translateY(-3px) rotate(-45deg)} }
+@keyframes paiShieldPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+@keyframes paiTagSlide    { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+@keyframes paiDbLayer     { 0%,100%{transform:translateY(0);opacity:.7} 50%{transform:translateY(-1.5px);opacity:1} }
+@keyframes paiHeadBob     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+@keyframes paiMobileTap   { 0%,100%{transform:scale(1)} 50%{transform:scale(.92)} }
+@keyframes paiCalFlip     { 0%,100%{transform:rotateX(0deg)} 50%{transform:rotateX(8deg)} }
+@keyframes paiPhonePing   { 0%,60%,100%{transform:rotate(0deg)} 10%{transform:rotate(-8deg)} 20%{transform:rotate(8deg)} 30%{transform:rotate(-6deg)} 40%{transform:rotate(6deg)} }
+@keyframes paiClockTick   { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+@keyframes paiStarSpin    { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.15) rotate(180deg)} }
+@keyframes paiMapPin      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2.5px)} }
+@keyframes paiDownload    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+@keyframes paiCode        { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-2px)} }
+@keyframes paiCodeRight   { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+@keyframes paiLock        { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(.88)} }
+.pai-root       { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; animation:paiGlow 2.4s ease-in-out infinite; }
+.pai-globe-eq   { animation: paiGlobeOrbit 2.6s ease-in-out infinite; }
+.pai-blink1     { animation: paiBlink 1.6s ease-in-out infinite; }
+.pai-blink2     { animation: paiBlink 1.6s ease-in-out infinite .5s; }
+.pai-blink3     { animation: paiBlink 1.6s ease-in-out infinite 1s; }
+.pai-tool       { animation: paiToolWobble 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-spin       { animation: paiSpinSlow 4s linear infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cross      { animation: paiCross 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cap        { animation: paiCapWobble 1.8s ease-in-out infinite; transform-origin:50% 100%; transform-box:fill-box; }
+.pai-plus       { animation: paiPlusPulse 1.6s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-warn       { animation: paiWarnFlash 1.2s ease-in-out infinite; }
+.pai-cart       { animation: paiCartBounce 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-check-draw { animation: paiCheckDraw .6s ease forwards; stroke-dasharray:20; stroke-dashoffset:20; }
+.pai-rocket     { animation: paiRocketFly 1.5s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-shield     { animation: paiShieldPulse 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-tag        { animation: paiTagSlide 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-db         { animation: paiDbLayer 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-head       { animation: paiHeadBob 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-mobile     { animation: paiMobileTap 2.2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-cal        { animation: paiCalFlip 2s ease-in-out infinite; transform-origin:50% 0%; transform-box:fill-box; }
+.pai-phone      { animation: paiPhonePing 2.5s ease-in-out infinite 1s; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-clock-hand { animation: paiClockTick 2s linear infinite; transform-origin:12px 12px; }
+.pai-star-anim  { animation: paiStarSpin 3s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-map        { animation: paiMapPin 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-dl         { animation: paiDownload 1.6s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-code-l     { animation: paiCode 1.8s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-code-r     { animation: paiCodeRight 1.8s ease-in-out infinite .15s; transform-origin:50% 50%; transform-box:fill-box; }
+.pai-lock-body  { animation: paiLock 2s ease-in-out infinite; transform-origin:50% 50%; transform-box:fill-box; }
+`;
+
+function usePAnimCSS(){
+  useEffect(()=>{
+    if(!document.getElementById(PANIM_CSS_ID)){
+      const s=document.createElement('style'); s.id=PANIM_CSS_ID; s.textContent=PANIM_CSS;
+      document.head.appendChild(s);
+    }
+  },[]);
+}
+
+const PricingAnimIcon = ({ type, size=20 }) => {
+  usePAnimCSS();
+  const C='#ff5500', Cm='rgba(255,85,0,.22)', Cr='rgba(200,40,40,.7)';
+  if (type==='globe') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4"/>
+        <ellipse cx="12" cy="12" rx="5.5" ry="9.5" stroke={C} strokeWidth="1.2" opacity=".45" strokeDasharray="62" className="pai-globe-eq"/>
+        <line x1="2.5" y1="12" x2="21.5" y2="12" stroke={C} strokeWidth="1.2" opacity=".5"/>
+        <path d="M4.5 8C7 9.2 17 9.2 19.5 8" stroke={C} strokeWidth=".9" opacity=".35"/>
+        <path d="M4.5 16C7 14.8 17 14.8 19.5 16" stroke={C} strokeWidth=".9" opacity=".35"/>
+      </svg>
+    </span>
+  );
+  if (type==='server') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2.5" width="20" height="5.5" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="5.25" r="2.2" fill={C} className="pai-blink1"/>
+        <line x1="4.5" y1="5.25" x2="14" y2="5.25" stroke={C} strokeWidth="1" opacity=".4"/>
+        <rect x="2" y="10" width="20" height="5.5" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="12.75" r="2.2" fill={C} className="pai-blink2"/>
+        <line x1="4.5" y1="12.75" x2="14" y2="12.75" stroke={C} strokeWidth="1" opacity=".4"/>
+        <rect x="2" y="17.5" width="20" height="4" rx="1.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <circle cx="18.5" cy="19.5" r="2" fill={C} className="pai-blink3"/>
+        <line x1="4.5" y1="19.5" x2="13" y2="19.5" stroke={C} strokeWidth="1" opacity=".4"/>
+      </svg>
+    </span>
+  );
+  if (type==='tools') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-tool">
+          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.77 3.77z"
+            stroke={C} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='cross') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cross">
+          <circle cx="12" cy="12" r="9.5" stroke={Cr} strokeWidth="1.4" fill="rgba(200,40,40,.08)"/>
+          <line x1="8" y1="8" x2="16" y2="16" stroke={Cr} strokeWidth="2" strokeLinecap="round"/>
+          <line x1="16" y1="8" x2="8" y2="16" stroke={Cr} strokeWidth="2" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='grad') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cap">
+          <path d="M12 3L2 9l10 6 10-6-10-6z" stroke={C} strokeWidth="1.5" fill={Cm} strokeLinejoin="round"/>
+          <path d="M6 12v4.5c0 1.5 2.7 3.5 6 3.5s6-2 6-3.5V12" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+          <line x1="22" y1="9" x2="22" y2="14" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='plus') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-plus">
+          <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="12" y1="7" x2="12" y2="17" stroke={C} strokeWidth="2" strokeLinecap="round"/>
+          <line x1="7" y1="12" x2="17" y2="12" stroke={C} strokeWidth="2" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='warn') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-warn">
+          <path d="M12 2.5L1.5 20.5h21L12 2.5z" stroke="#ffaa00" strokeWidth="1.5" fill="rgba(255,170,0,.12)" strokeLinejoin="round"/>
+          <line x1="12" y1="10" x2="12" y2="15" stroke="#ffaa00" strokeWidth="2" strokeLinecap="round"/>
+          <circle cx="12" cy="18" r="1" fill="#ffaa00"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='cart') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-cart">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke={C} strokeWidth="1.4" fill={Cm} strokeLinejoin="round"/>
+          <line x1="3" y1="6" x2="21" y2="6" stroke={C} strokeWidth="1.4"/>
+          <path d="M16 10a4 4 0 01-8 0" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='rocket') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-rocket">
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l4-4-3-3-4 4z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <path d="M19.5 3.5a4.5 4.5 0 00-4.5.5l-5 5 3 3 5-5a4.5 4.5 0 00.5-4.5z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <circle cx="10.5" cy="13.5" r="1.5" fill={C} className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='shield') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-shield">
+          <path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.35C17.25 23.15 21 18.25 21 13V7L12 2z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <polyline points="9 12 11 14 15 10" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-check-draw"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='tag') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-tag">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="7" y1="7" x2="7.01" y2="7" stroke={C} strokeWidth="2.5" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='database') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="5" rx="9" ry="3" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-db"/>
+        <path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5" stroke={C} strokeWidth="1.4"/>
+        <path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" stroke={C} strokeWidth="1.4"/>
+      </svg>
+    </span>
+  );
+  if (type==='phone') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-phone">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 11.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 8.66a16 16 0 006.29 6.29l1.02-1.02a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='mail') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="4" width="20" height="16" rx="2" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-blink1"/>
+        <polyline points="2,4 12,13 22,4" stroke={C} strokeWidth="1.4" strokeLinejoin="round"/>
+      </svg>
+    </span>
+  );
+  if (type==='map') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-map">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <circle cx="12" cy="10" r="3" stroke={C} strokeWidth="1.4" fill={C} opacity=".4" className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='download') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-dl">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+          <polyline points="7 10 12 15 17 10" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="12" y1="15" x2="12" y2="3" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='code') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <polyline points="16 18 22 12 16 6" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-code-r"/>
+        <polyline points="8 6 2 12 8 18" stroke={C} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="pai-code-l"/>
+      </svg>
+    </span>
+  );
+  if (type==='lock') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="11" width="18" height="11" rx="2" stroke={C} strokeWidth="1.4" fill={Cm} className="pai-lock-body"/>
+        <path d="M7 11V7a5 5 0 0110 0v4" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        <circle cx="12" cy="16" r="1.5" fill={C} className="pai-blink1"/>
+      </svg>
+    </span>
+  );
+  if (type==='star') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-star-anim">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='clock') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9.5" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <line x1="12" y1="7" x2="12" y2="12" stroke={C} strokeWidth="1.8" strokeLinecap="round" className="pai-clock-hand"/>
+        <line x1="12" y1="12" x2="15" y2="14" stroke={C} strokeWidth="1.4" strokeLinecap="round"/>
+        <circle cx="12" cy="12" r="1.2" fill={C}/>
+      </svg>
+    </span>
+  );
+  if (type==='mobile') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <g className="pai-mobile">
+          <rect x="5" y="2" width="14" height="20" rx="2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+          <line x1="9" y1="18" x2="15" y2="18" stroke={C} strokeWidth="1.8" strokeLinecap="round"/>
+          <circle cx="12" cy="5" r="1" fill={C} className="pai-blink2"/>
+        </g>
+      </svg>
+    </span>
+  );
+  if (type==='analytics') return (
+    <span className="pai-root" style={{width:size,height:size}}>
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="2" width="20" height="20" rx="2" stroke={C} strokeWidth="1.4" fill={Cm}/>
+        <polyline points="6 16 10 10 14 13 18 7" stroke={C} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="pai-blink1"/>
+        <circle cx="18" cy="7" r="1.5" fill={C} className="pai-blink2"/>
+      </svg>
+    </span>
+  );
+  return null;
+};
+
+// Map emoji → type d'icône animée (couvre TOUS les emojis utilisés dans PRICING_TABS)
+const EMOJI_ICON_MAP = {
+  '🌐': 'globe',   // Nom de domaine
+  '🖥': 'server',  // Hébergement
+  '🛠': 'tools',   // Support
+  '❌': 'cross',   // Non inclus
+  '🎓': 'grad',    // Formation
+  '➕': 'plus',    // Extra / page supp.
+  '⚠️': 'warn',   // Avertissement
+  '🚀': 'rocket',  // Déploiement
+  '🔒': 'lock',    // Sécurité
+  '📊': 'analytics', // Analytics
+  '📱': 'mobile',  // Mobile
+};
+
+// Composant universel pour les features pricing — appliqué à TOUS les onglets
+const AnimPricingFeature = ({ text, dark }) => {
+  for (const [emoji, iconType] of Object.entries(EMOJI_ICON_MAP)) {
+    if (text.startsWith(emoji)) {
+      return (
+        <li style={{display:'flex',alignItems:'center',gap:'8px',padding:'3px 0',listStyle:'none'}}>
+          <PricingAnimIcon type={iconType} size={18}/>
+          <span style={{fontSize:'0.875rem'}}>{text.slice(emoji.length).trim()}</span>
+        </li>
+      );
+    }
+  }
+  return (
+    <li><span className={`pc3-check ${dark?'pc3-check--dark':''}`}><SvgCheck size={11} strokeWidth={3}/></span>{text}</li>
+  );
+};
+
+// Rétro-compatibilité
+const PortfolioPricingFeature = AnimPricingFeature;
+
+const LUCIDE_TAB_ICONS = { Globe: SvgGlobe, ShoppingCart: SvgShoppingCart, Cpu: SvgCpu, Star: SvgStar };
+const ANIM_TAB_ICONS   = { Globe: ()=><PricingAnimIcon type="globe" size={15}/>, ShoppingCart: ()=><PricingAnimIcon type="cart" size={15}/>, Cpu: ()=><PricingAnimIcon type="code" size={15}/>, Star: ()=><PricingAnimIcon type="star" size={15}/> };
+const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations." };
+
+const PricingTabs = ({dark}) => {
+  const [activeTab,setActiveTab]=useState(0); const [animKey,setAnimKey]=useState(0);
+  const pillRef=useRef(null); const btnRefs=useRef([]); const tab=PRICING_TABS[activeTab];
+  useEffect(()=>{
+    const pill=pillRef.current,btn=btnRefs.current[activeTab];
+    if(!pill||!btn) return;
+    const parent=btn.parentElement.getBoundingClientRect(),r=btn.getBoundingClientRect();
+    pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
+  },[activeTab]);
+  const switchTab=(i)=>{ setActiveTab(i); setAnimKey(k=>k+1); };
+  const strikePrice=(s)=>{
+    const n=parseInt(s.replace(/\s/g,'').replace('FCFA',''));
+    return isNaN(n)?s:Math.round(n*1.25).toLocaleString('fr-FR')+' FCFA';
+  };
+  const PricingCard=({p,idx=0,tilt=false})=>{
+    const inner=(
+      <div className={`pc3-card ${p.isPopular?'pc3-card--pop':''} ${dark?'pc3-card--dark':''}`}>
+        {p.isPopular&&<div className={`pc3-pop-label ${dark?'pc3-pop-label--dark':''}`}><PricingAnimIcon type="star" size={12}/> PLUS POPULAIRE</div>}
+        <div className="pc3-top">
+          <span className="pc3-num">0{idx+1}</span>
+          <span className="pc3-promo-badge"><PricingAnimIcon type="star" size={11}/> −25%</span>
+        </div>
+        <div className="pc3-plan">{p.badge}</div>
+        <p className="pc3-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
+        <div className="pc3-prices">
+          <span className="pc3-original">{strikePrice(p.price)}</span>
+          <div className="pc3-discounted">
+            <span className="pc3-amount">{p.price.replace(' FCFA','')}</span>
+            <span className="pc3-currency"> FCFA</span>
+          </div>
+        </div>
+        <p className="pc3-delivery"><PricingAnimIcon type="clock" size={15}/> {p.delivery}</p>
+        <div className="pc3-sep"/>
+        <ul className="pc3-feat">{p.features.map((f,fi)=>(
+          <AnimPricingFeature key={fi} text={f} dark={dark}/>
+        ))}</ul>
+        <div className="pc3-ctas">
+          <a href="https://akatech.vercel.app/pricing/" target="_blank" rel="noreferrer"
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint pc3-cta`}>
+            <SvgGlobe size={14}/> Détails
+          </a>
+          <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-glint pc3-cta`}
+            onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>
+            Me contacter <SvgArrowRight size={14}/>
+          </MagBtn>
+        </div>
+      </div>
+    );
+    return tilt?<TiltCard intensity={8} perspective={1000} style={{height:'100%'}}>{inner}</TiltCard>:inner;
+  };
+  return (
+    <div className={`ptabs2 ${dark?'ptabs2--dark':''}`}>
+      <div className={`ptabs2-toggle-wrap ${dark?'ptabs2-toggle-wrap--dark':''}`}>
+        <div className={`ptabs2-toggle ${dark?'ptabs2-toggle--dark':''}`}>
+          <span ref={pillRef} className={`ptabs2-pill ${dark?'ptabs2-pill--dark':''}`}/>
+          {PRICING_TABS.map((t,i)=>{const AnimIcon=ANIM_TAB_ICONS[t.icon];return(<button key={t.key} ref={el=>btnRefs.current[i]=el} className={`ptabs2-tab ${i===activeTab?'ptabs2-tab--active':''} ${dark?'ptabs2-tab--dark':''}`} onClick={()=>switchTab(i)}>{AnimIcon&&<AnimIcon/>}<span>{t.label}</span></button>);})}
+        </div>
+      </div>
+      <div key={animKey} className="pc3-grid ptabs2-desk">{tab.plans.map((p,i)=><PricingCard key={i} p={p} idx={i} tilt={true}/>)}</div>
+      <div className="ptabs2-mob">
+        <StackedCard items={tab.plans} renderCard={(p,idx)=><PricingCard p={p} idx={idx} tilt={true}/>}/>
+      </div>
+      <p className={`ptabs-note ${dark?'ptabs-note--dark':''}`}><LI name="info-circle" color={dark?"#888":"#999"} size={13}/> Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées.</p>
+    </div>
+  );
+};
+
+const Services = ({dark}) => {
+  const [ref,vis]=useInView();
+  return (
+    <section id="services" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="Services & Tarifs" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Ce que je<br/>fais bien.</h2></div>
+      <div className={`svc-grid ${vis?'anim':''} svc-desk mi-stagger ${vis?'mi-stagger--vis':''}`}>
+        {SERVICES.map((s,i)=>(
+          <TiltCard key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
+            <SpotlightCard className="svc-spotlight-inner" style={{height:'100%',width:'100%'}}>
+              <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico mi-pulse"><LI name={s.icon} color="#ffffff" size={22}/></div></div>
+              <h3 className="svc-title">{s.title}</h3><p className="svc-desc">{s.desc}</p>
+              <ul className="svc-feat">{SERVICES[i].features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
+            </SpotlightCard>
+          </TiltCard>
+        ))}
+      </div>
+      <div className="svc-mob">
+        <StackedCard
+          items={SERVICES}
+          renderCard={(s, idx) => (
+            <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
+              <div className="pricing-card">
+                <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><LI name={s.icon} color="#ffffff" size={20}/></div></div>
+                <h3 className="svc-title">{s.title}</h3>
+                <p className="svc-desc">{s.desc}</p>
+                <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
+              </div>
+            </TiltCard>
+          )}
+        />
+      </div>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginTop:'60px'}}><span className="s-lbl">Tarifs</span><h2 className="s-ttl" style={{fontSize:'clamp(24px,3.5vw,44px)'}}>Mes offres.</h2></div>
+      <PricingTabs dark={dark}/>
+    </section>
+  );
+};
+
+const About = ({dark}) => {
+  const [r1,v1] = useInView();
+  const [aboutPhotoRef, aboutPhotoColor] = usePhotoColor();
+  const [openIdx, setOpenIdx] = useState(0);
+
+  const total         = TIMELINE.length;
+  const expSectionRef = useRef(null);
+  const scrollAccum   = useRef(0);
+  const lastTouchY    = useRef(null);
+  // Ref miroir — toujours à jour dans les handlers natifs (évite le stale-closure)
+  const openIdxRef    = useRef(0);
+  useEffect(() => { openIdxRef.current = openIdx; }, [openIdx]);
+
+  const STEP_THRESH = 60;
+
+  const goNext = () => setOpenIdx(i => Math.min(total - 1, i + 1));
+  const goPrev = () => setOpenIdx(i => Math.max(0, i - 1));
+
+  const isSectionVisible = () => {
+    const el = expSectionRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.5;
+  };
+
+  // Un seul useEffect, monté une fois — lit openIdxRef au lieu de openIdx
+  useEffect(() => {
+    const isMobile = () => window.innerWidth <= 768;
+
+    const onWheel = e => {
+      if (isMobile() || !isSectionVisible()) return;
+      const cur       = openIdxRef.current;
+      const goingDown = e.deltaY > 0;
+      const goingUp   = e.deltaY < 0;
+      // Aux extrémités → libérer le scroll de page
+      if ((cur === 0 && goingUp) || (cur === total - 1 && goingDown)) {
+        scrollAccum.current = 0;
+        return;
+      }
+      e.preventDefault();
+      scrollAccum.current += e.deltaY;
+      if (scrollAccum.current >= STEP_THRESH) {
+        setOpenIdx(i => Math.min(total - 1, i + 1));
+        scrollAccum.current = 0;
+      } else if (scrollAccum.current <= -STEP_THRESH) {
+        setOpenIdx(i => Math.max(0, i - 1));
+        scrollAccum.current = 0;
+      }
+    };
+    const onTouchStart = e => {
+      if (isMobile() || !isSectionVisible()) return;
+      lastTouchY.current = e.touches[0].clientY;
+    };
+    const onTouchMove = e => {
+      if (isMobile() || !isSectionVisible() || lastTouchY.current === null) return;
+      const cur = openIdxRef.current;
+      const dy  = lastTouchY.current - e.touches[0].clientY;
+      if ((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0)) return;
+      e.preventDefault();
+    };
+    const onTouchEnd = e => {
+      if (isMobile() || !isSectionVisible() || lastTouchY.current === null) return;
+      const cur = openIdxRef.current;
+      const dy  = lastTouchY.current - (e.changedTouches[0]?.clientY ?? lastTouchY.current);
+      if (!((cur === 0 && dy < 0) || (cur === total - 1 && dy > 0))) {
+        if      (dy >  40) setOpenIdx(i => Math.min(total - 1, i + 1));
+        else if (dy < -40) setOpenIdx(i => Math.max(0, i - 1));
+      }
+      lastTouchY.current = null;
+    };
+    window.addEventListener('wheel',      onWheel,      { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true  });
+    window.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true  });
+    return () => {
+      window.removeEventListener('wheel',      onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove',  onTouchMove);
+      window.removeEventListener('touchend',   onTouchEnd);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // [] intentionnel — on lit via ref pour éviter le stale closure
+
+  return (
+    <>
+      <section id="about" ref={el => { r1.current = el; aboutPhotoRef.current = el; }} className={dark?'section--dark':''}>
+        <WindowChrome title="À propos" dark={dark}/>
+        <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Alors,<br/>c'est moi.</h2></div>
+        <SpotlightCard className={`about-grid ${v1?'anim':''} mi-stagger ${v1?'mi-stagger--vis':''}`}>
+          <div className="about-left">
+            <div className={`about-quote ${dark?'about-quote--dark':''}`} style={{position:'relative',overflow:'hidden'}}>
+              <PlasmaCanvasBg intensity={0.82}/>
+              <div style={{position:'relative',zIndex:1}}><p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p><span>— Kevin Ressegaire</span></div>
+            </div>
+            <div className="about-img-wrap">
+              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
+              <div className="about-badges"><span><LI name="code" color="#ff5500" size={13}/> Pro</span><span><LI name="lightbulb" color="#ff5500" size={13}/> Créatif</span><span><LI name="eye" color={dark?"#fff":"#1a1a1a"}/> Curieux</span></div>
+            </div>
+          </div>
+          <div className="about-right">
+            <ScrambleText text="Développeur Full-Stack · Django & React / Vite & Next.js · Data & Carto" tag="h3" speed={22} step={0.4} threshold={0.25} once={true}/>
+            <p>Formé en <strong>Réseau et Sécurité Informatique</strong>, je conçois et mets en œuvre des applications web complètes — de l'interface React jusqu'au back-end Python — en appliquant les bonnes pratiques de développement et de sécurité dès la conception.</p>
+            <p>À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées <strong>Data &amp; Cartographie</strong> : dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).</p>
+            <p>Via mon agence <strong>AKATech</strong>, j'ai livré plus de <strong>10 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels.</p>
+            <div className={`about-tags ${dark?'about-tags--dark':''}`}>{["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}</div>
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
+          </div>
+        </SpotlightCard>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          EXPÉRIENCE & FORMATION — Timeline scroll-hijack
+          ═══════════════════════════════════════════════════════ */}
+      <section id="experience" ref={expSectionRef} className={dark?'section--dark':''}>
+        <WindowChrome title="Parcours" dark={dark}/>
+        <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Expérience &amp;<br/>Formation.</h2></div>
+
+        {/* ── Hint scroll ── */}
+        <p style={{
+          textAlign:'center', color:'var(--muted)', fontSize:'12px',
+          marginBottom:'24px', letterSpacing:'0.08em', opacity: 0.7,
+        }}>
+          <LI name="mouse" color={dark?"#888":"#666"} size={14} style={{marginRight:'6px'}}/>
+          Scrollez pour naviguer entre les étapes
+        </p>
+
+        {/* ── Timeline horizontale ── */}
+        <div className={`exp-steps ${dark?'exp-steps--dark':''}`}>
+          {TIMELINE.map((t,i)=>(
+            <button key={i}
+              className={`exp-step ${openIdx===i?'exp-step--active':''} ${dark?'exp-step--dark':''}`}
+              onClick={()=>setOpenIdx(i)}
+              style={{ cursor:'pointer' }}>
+              <div className={`exp-step-dot ${openIdx===i?'exp-step-dot--active':''}`}>
+                <LI name={t.icon} color="#ff5500" size={14}/>
+              </div>
+              <div className="exp-step-line"/>
+              <span className="exp-step-label">{t.date}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* ── Carte unique animée (desktop) ── */}
+        <div className="exp-desk-only">
+        <div style={{ position:'relative', minHeight:'320px' }}>
+          {TIMELINE.map((t, i) => {
+            const active = openIdx === i;
+            return (
+              <div key={i} style={{
+                position: active ? 'relative' : 'absolute',
+                top: 0, left: 0, right: 0,
+                opacity: active ? 1 : 0,
+                transform: active ? 'translateX(0) scale(1)' : `translateX(${i < openIdx ? '-60px' : '60px'}) scale(0.97)`,
+                transition: 'opacity .38s ease, transform .38s cubic-bezier(.4,0,.2,1)',
+                pointerEvents: active ? 'auto' : 'none',
+              }}>
+                <div className={`exp-card exp-card--open ${dark?'exp-card--dark':''}`}>
+                  {/* Header */}
+                  <div className="exp-card-hd" style={{ cursor:'default' }}>
+                    <div className="exp-card-hd-left">
+                      <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
+                        <LI name={t.icon} color="#ff5500" size={14}/>
+                      </div>
+                      <div className="exp-card-hd-info">
+                        <span className="exp-date"><LI name="calendar-alt" color={dark?"#ff5500":"#333"} size={13}/> {t.date}</span>
+                        <h4 className="exp-title">{t.title}</h4>
+                        <p className="exp-company"><LI name="building" color={dark?"#aaa":"#555"} size={13}/> {t.company}</p>
+                      </div>
+                    </div>
+                    {/* Indicateur étape X/N */}
+                    <div style={{
+                      display:'flex', alignItems:'center', gap:'6px',
+                      color:'var(--acc)', fontFamily:'var(--fb)', fontSize:'13px', fontWeight:700,
+                    }}>
+                      {openIdx + 1}<span style={{color:'var(--muted)'}}>/ {total}</span>
+                    </div>
+                  </div>
+
+                  {/* Corps */}
+                  <div className="exp-card-body" style={{ maxHeight:'600px', opacity:1, overflow:'hidden' }}>
+                    <div className="exp-card-inner">
+                      {t.items && t.progLabels && (
+                        <div className="exp-prog-row">
+                          {t.progLabels.map((l,j)=>(
+                            <div key={j} className="exp-prog-item">
+                              <span className="exp-prog-label">{l}</span>
+                              <div className="exp-prog-track">
+                                <div className="exp-prog-fill exp-prog-fill--on"
+                                  style={{transitionDelay:`${j*0.08+0.1}s`, width:`${(t.progValues||[90,85,75,80])[j]}%`}}/>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {t.desc && <p className="exp-desc">{t.desc}</p>}
+                      {t.items && (
+                        <ul className="exp-list">
+                          {t.items.map((li,j)=>(
+                            <li key={j}><span className="exp-arrow">→</span>{li}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {t.tags && (
+                        <div className="exp-tags">
+                          {t.tags.map(tag=><span key={tag} className={dark?'exp-tag--dark':''}>{tag}</span>)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Boutons navigation manuels (desktop) ── */}
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:'16px', marginTop:'32px' }}>
+          <button
+            onClick={goPrev} disabled={openIdx === 0}
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
+            style={{ opacity: openIdx===0 ? 0.3 : 1, transition:'opacity .2s' }}>
+            <LI name="arrow-left" color={dark?"#fff":"#1a1a1a"} size={14}/> Précédent
+          </button>
+
+          {/* Dots */}
+          <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
+            {TIMELINE.map((_,i)=>(
+              <button key={i} onClick={()=>setOpenIdx(i)}
+                style={{
+                  width: openIdx===i ? '28px' : '8px',
+                  height:'8px', borderRadius:'4px',
+                  background: openIdx===i ? 'var(--acc)' : 'var(--muted-2)',
+                  border:'none', cursor:'pointer',
+                  transition:'width .3s var(--spring), background .2s',
+                  padding:0,
+                }}/>
+            ))}
+          </div>
+
+          <button
+            onClick={goNext} disabled={openIdx === total - 1}
+            className={`btn ${dark?'btn--ghost-neon':'btn--ghost'}`}
+            style={{ opacity: openIdx===total-1 ? 0.3 : 1, transition:'opacity .2s' }}>
+            Suivant <LI name="arrow-right" color={dark?"#fff":"#1a1a1a"} size={14}/>
+          </button>
+        </div>
+        </div>{/* /exp-desk-only */}
+
+        {/* ── StackedCard Parcours — mobile uniquement (EN DEHORS de exp-desk-only) ── */}
+        <div className="exp-sc-mob">
+          <StackedCard
+            items={TIMELINE}
+            renderCard={(t, i) => (
+              <div className={`exp-card exp-card--open ${dark?'exp-card--dark':''}`}>
+                <div className="exp-card-hd" style={{ cursor:'default' }}>
+                  <div className="exp-card-hd-left">
+                    <div className={`exp-dot exp-dot--on ${dark?'exp-dot--dark':''}`}>
+                      <LI name={t.icon} color="#ff5500" size={14}/>
+                    </div>
+                    <div className="exp-card-hd-info">
+                      <span className="exp-date"><LI name="calendar-alt" color={dark?"#ff5500":"#333"} size={13}/> {t.date}</span>
+                      <h4 className="exp-title">{t.title}</h4>
+                      <p className="exp-company"><LI name="building" color={dark?"#aaa":"#555"} size={13}/> {t.company}</p>
+                    </div>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:'6px', color:'var(--acc)', fontFamily:'var(--fb)', fontSize:'13px', fontWeight:700 }}>
+                    {i + 1}<span style={{color:'var(--muted)'}}>/ {total}</span>
+                  </div>
+                </div>
+                <div className="exp-card-body" style={{ maxHeight:'600px', opacity:1, overflow:'hidden' }}>
+                  <div className="exp-card-inner">
+                    {t.items && t.progLabels && (
+                      <div className="exp-prog-row">
+                        {t.progLabels.map((l,j)=>(
+                          <div key={j} className="exp-prog-item">
+                            <span className="exp-prog-label">{l}</span>
+                            <div className="exp-prog-track">
+                              <div className="exp-prog-fill exp-prog-fill--on"
+                                style={{transitionDelay:`${j*0.08+0.1}s`, width:`${(t.progValues||[90,85,75,80])[j]}%`}}/>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {t.desc && <p className="exp-desc">{t.desc}</p>}
+                    {t.items && (
+                      <ul className="exp-list">
+                        {t.items.map((li,j)=>(
+                          <li key={j}><span className="exp-arrow">→</span>{li}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {t.tags && (
+                      <div className="exp-tags">
+                        {t.tags.map(tag=><span key={tag} className={dark?'exp-tag--dark':''}>{tag}</span>)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          />
+        </div>
+
+        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{ marginTop:'48px', position:'relative', overflow:'hidden' }}>
+          <PlasmaCanvasBg intensity={0.78}/>
+          <div style={{position:'relative',zIndex:1,display:'contents'}}>
+          <h3>Intéressé par mon profil ?</h3>
+          <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
+          <div className="cta-btns">
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><LI name="paper-plane" color="#ff5500"/> Me contacter</MagBtn>
+            <a className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV</a>
+          </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════
+   PROJECT MODAL — fenêtre détail projet (utilisé par FanDeck)
+   ══════════════════════════════════════════════════════════ */
+const ProjectModal = ({ project, dark, onClose }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (project) { requestAnimationFrame(() => setVisible(true)); document.body.style.overflow = 'hidden'; }
+    else { setVisible(false); document.body.style.overflow = ''; }
+    const onKey = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('keydown', onKey); };
+  }, [project, onClose]);
+
+  if (!project) return null;
+
+  return (
+    <div className={`fd-modal-bg ${visible ? 'fd-modal-bg--show' : ''}`}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className={`fd-modal ${dark ? 'fd-modal--dark' : ''} ${visible ? 'fd-modal--show' : ''}`}>
+        {/* Image */}
+        <div className="fd-modal-img-wrap" style={{ background: GRAD[(project.id - 1) % GRAD.length] }}>
+          <img src={project.image} alt={project.title} className="fd-modal-img"
+            onError={e => { e.target.style.display = 'none'; }} />
+          <div className="fd-modal-img-grad" />
+          {project.cat === 'en-ligne' && (
+            <div className="fd-modal-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
+          )}
+          <button className="fd-modal-close-btn" onClick={onClose} aria-label="Fermer">
+            <LI name="times" color={dark?"#fff":"#1a1a1a"}/>
+          </button>
+        </div>
+        {/* Body */}
+        <div className="fd-modal-body">
+          <div className="fd-modal-meta">
+            <span className="fd-modal-tag">{CAT_LABELS[project.cat]}</span>
+            <span className="fd-modal-year">{project.year}</span>
+            <span className="fd-modal-num">#{String(project.id).padStart(2,'0')}</span>
+          </div>
+          <h3 className="fd-modal-title">{project.title}</h3>
+          <p className="fd-modal-sub">{project.subtitle}</p>
+          <p className="fd-modal-desc">{project.description}</p>
+          <div className="fd-modal-techs">
+            {project.tech.map(t => <span key={t}>{t}</span>)}
+          </div>
+          <div className="fd-modal-actions">
+            {project.url && (
+              <a href={project.url} target={project.url.startsWith('http') ? '_blank' : '_self'} rel="noreferrer"
+                className={`btn ${dark ? 'btn--neon' : 'btn--primary'} fd-modal-btn-primary`}>
+                {project.cat === 'demo'
+                  ? <><LI name="play-circle" color="#ff5500"/>Voir la démo</>
+                  : <><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/>Voir le site</>}
+              </a>
+            )}
+            <button className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'}`} onClick={onClose}>Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════════
+   FAN DECK — effet éventail inspiré portfolio.html
+   ══════════════════════════════════════════════════════════ */
+const FanDeck = ({ items, dark }) => {
+  const [phase,    setPhase]   = useState('stack');   // 'stack' | 'fan' | 'focus'
+  const [active,   setActive]  = useState(0);
+  const [modal,    setModal]   = useState(null);
+  const [dragging, setDragging]= useState(false);
+  const [dragDx,   setDragDx]  = useState(0);
+
+  const deckRef    = useRef(null);
+  const touchX0    = useRef(null);
+  const touchY0    = useRef(null);
+  const dragLocked = useRef(false); // true = scroll vertical verrouillé
+  const isDragMove = useRef(false);
+  const total = items.length;
+
+  // Reset sur changement de filtre
+  useEffect(() => { setPhase('stack'); setActive(0); setDragDx(0); }, [items]);
+
+  /* ── Navigation ── */
+  const goPrev = useCallback(() => setActive(a => Math.max(0, a - 1)), []);
+  const goNext = useCallback(() => setActive(a => Math.min(total - 1, a + 1)), [total]);
+
+  // Clavier ← →
+  useEffect(() => {
+    if (phase !== 'focus') return;
+    const fn = e => {
+      if (e.key === 'ArrowLeft')  goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [phase, goPrev, goNext]);
+
+  /* ── Clic sur le deck empilé → ouvre le fan ── */
+  const handleStackClick = () => { if (phase === 'stack') setPhase('fan'); };
+
+  /* ── Clic sur une carte en mode fan → passe en focus ── */
+  const handleFanCardClick = (e, idx) => {
+    e.stopPropagation();
+    setActive(idx);
+    setPhase('focus');
+  };
+
+  /* ── Clic sur la carte active en mode focus → ouvre la modal ── */
+  const handleFocusCardClick = (e, item) => {
+    e.stopPropagation();
+    if (!isDragMove.current) setModal(item);
+  };
+
+  /* ── Retour fan depuis focus ── */
+  const backToFan = e => {
+    e.stopPropagation();
+    setPhase('fan');
+    setDragDx(0);
+  };
+
+  /* ════════════════════════════════════════════════════
+     DRAG / SWIPE — mode focus uniquement
+     ════════════════════════════════════════════════════ */
+  // Mouse
+  const onMouseDown = e => {
+    if (phase !== 'focus') return;
+    touchX0.current = e.clientX;
+    isDragMove.current = false;
+    setDragging(true);
+  };
+  const onMouseMove = useCallback(e => {
+    if (!dragging || touchX0.current === null) return;
+    const dx = e.clientX - touchX0.current;
+    if (Math.abs(dx) > 4) isDragMove.current = true;
+    setDragDx(dx);
+  }, [dragging]);
+  const onMouseUp = useCallback(e => {
+    if (!dragging) return;
+    const dx = e.clientX - (touchX0.current ?? e.clientX);
+    commitDrag(dx);
+    touchX0.current = null;
+    setDragging(false);
+  }, [dragging, active, total]); // eslint-disable-line
+
+  // Touch
+  const onTouchStart = e => {
+    touchX0.current = e.touches[0].clientX;
+    touchY0.current = e.touches[0].clientY;
+    dragLocked.current = false;
+    isDragMove.current = false;
+    if (phase === 'stack') setPhase('fan');
+  };
+  const onTouchMove = useCallback(e => {
+    if (phase !== 'focus' || touchX0.current === null) return;
+    const dx = e.touches[0].clientX - touchX0.current;
+    const dy = e.touches[0].clientY - (touchY0.current ?? 0);
+    // Verrouille direction au premier mouvement
+    if (!dragLocked.current) {
+      dragLocked.current = true;
+      if (Math.abs(dy) > Math.abs(dx)) return; // scroll vertical → ignore
+    }
+    if (Math.abs(dx) > 4) { isDragMove.current = true; e.preventDefault(); }
+    setDragDx(dx);
+    setDragging(true);
+  }, [phase]);
+  const onTouchEnd = useCallback(e => {
+    if (phase === 'fan') { /* déjà ouvert via onTouchStart */ return; }
+    if (phase !== 'focus') return;
+    const dx = e.changedTouches[0].clientX - (touchX0.current ?? 0);
+    commitDrag(dx);
+    touchX0.current = null;
+    touchY0.current = null;
+    setDragging(false);
+  }, [phase, active, total]); // eslint-disable-line
+
+  const commitDrag = dx => {
+    const threshold = 60;
+    if (dx < -threshold && active < total - 1) setActive(a => a + 1);
+    else if (dx > threshold && active > 0)     setActive(a => a - 1);
+    setDragDx(0);
+  };
+
+  // Attach touchmove passive:false pour e.preventDefault()
+  useEffect(() => {
+    const el = deckRef.current; if (!el) return;
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    return () => el.removeEventListener('touchmove', onTouchMove);
+  }, [onTouchMove]);
+
+  /* ════════════════════════════════════════════════════
+     Calcul positions par phase
+     ════════════════════════════════════════════════════ */
+  // STACK : cartes empilées légèrement décalées
+  const stackStyle = i => ({
+    transform: `rotate(${(i - (total-1)/2) * 3}deg) translateY(${i * -3}px)`,
+    zIndex: total - i,
+    opacity: 1,
+    transition: 'transform .45s cubic-bezier(.34,1.4,.64,1)',
+  });
+
+  // FAN : éventail bien espacé, zIndex croissant = carte du dessus visible
+  const fanStyle = i => {
+    if (total === 1) return { transform: 'rotate(0deg) translateY(-60px)', zIndex: 1, opacity: 1, transition: 'transform .45s cubic-bezier(.34,1.4,.64,1)' };
+    // Spread adaptatif : plus de cartes = spread plus large
+    const spread = Math.min(38, 6 + total * 4);
+    const angle  = -spread + (i / (total - 1)) * spread * 2;
+    // On sépare horizontalement aussi pour éviter le chevauchement
+    const cardW  = typeof window !== 'undefined' ? Math.min(240, window.innerWidth * 0.52) : 220;
+    const gap    = Math.min(cardW * 0.42, 100); // espacement horizontal entre cartes
+    const cx     = (total - 1) / 2;
+    const tx     = (i - cx) * gap;
+    const ty     = -Math.abs(i - cx) * 18 - 50; // cartes latérales légèrement plus basses
+    return {
+      transform: `translateX(${tx}px) translateY(${ty}px) rotate(${angle}deg)`,
+      zIndex: i + 1,
+      opacity: 1,
+      transition: `transform .48s cubic-bezier(.34,1.4,.64,1) ${i * 0.03}s`,
+    };
+  };
+
+  // FOCUS : carte active centrée grande, voisines sur les côtés visibles mais dégagées
+  const focusStyle = (i, liveOffset) => {
+    const rel = i - active; // distance depuis l'active
+    const absRel = Math.abs(rel);
+    if (absRel > 2) return { opacity: 0, pointerEvents: 'none', zIndex: 0, transform: `translateX(${rel > 0 ? 200 : -200}%) scale(0.5)`, transition: 'all .42s cubic-bezier(.25,.46,.45,.94)' };
+
+    // Décalage live (drag en cours)
+    const dragOffset = dragging || dragDx !== 0 ? liveOffset : 0;
+
+    const cardW = typeof window !== 'undefined' ? Math.min(240, window.innerWidth * 0.52) : 220;
+    const sideOffset = cardW * 0.7 + 24; // distance centre→carte latérale
+
+    const baseX = rel === 0 ? 0 : rel > 0 ? sideOffset : -sideOffset;
+    const scale = rel === 0 ? 1 : 0.72;
+    const opacity = rel === 0 ? 1 : 0.45;
+    const rotY = rel === 0 ? 0 : rel > 0 ? 8 : -8;
+    const ty = rel === 0 ? -20 : 30;
+
+    return {
+      transform: `translateX(${baseX + dragOffset}px) translateY(${ty}px) scale(${scale}) perspective(800px) rotateY(${rotY}deg)`,
+      zIndex: rel === 0 ? 10 : (absRel === 1 ? 5 : 2),
+      opacity,
+      pointerEvents: rel === 0 ? 'all' : 'none',
+      transition: dragging ? 'none' : `transform .42s cubic-bezier(.25,.46,.45,.94), opacity .3s ease`,
+    };
+  };
+
+  const getCardStyle = i => {
+    if (phase === 'stack') return stackStyle(i);
+    if (phase === 'fan')   return fanStyle(i);
+    // focus
+    const vel = Math.sign(dragDx) === -1 ? 1 : -1;
+    const resistance = 0.35;
+    const live = dragging ? dragDx * resistance : dragDx * resistance;
+    return focusStyle(i, live);
+  };
+
+  /* ════ RENDER ════ */
+  return (
+    <>
+      <div
+        className={`fd-root fd-root--${phase} ${dark ? 'fd-root--dark' : ''}`}
+        ref={deckRef}
+        onClick={phase === 'stack' ? handleStackClick : undefined}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={e => { if (dragging) onMouseUp(e); }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* ── Deck ── */}
+        <div className="fd-wrap" style={{ cursor: phase === 'focus' ? (dragging ? 'grabbing' : 'grab') : 'pointer' }}>
+          {items.map((item, i) => {
+            const style = getCardStyle(i);
+            const isActive = phase === 'focus' && i === active;
+            const isAgency = !!item.isAgency;
+            return (
+              <div
+                key={item.id}
+                className={`fd-card ${isActive ? 'fd-card--active' : ''} ${isAgency ? 'fd-card--agency' : ''}`}
+                style={style}
+                onClick={e => {
+                  if (phase === 'fan')   handleFanCardClick(e, i);
+                  if (phase === 'focus' && isActive) handleFocusCardClick(e, item);
+                }}
+              >
+                {/* ── Carte spéciale AKATech ── */}
+                {isAgency ? (
+                  <div className="fd-agency-card">
+                    {/* Grille animée en arrière-plan */}
+                    <div className="fd-agency-grid" aria-hidden />
+                    {/* Aurora orbs */}
+                    <div className="fd-agency-orb fd-agency-orb--1" aria-hidden />
+                    <div className="fd-agency-orb fd-agency-orb--2" aria-hidden />
+                    {/* Scan line */}
+                    <div className="fd-agency-scan" aria-hidden />
+                    {/* Logo text */}
+                    <div className="fd-agency-logo">
+                      <span className="fd-agency-aka">AKA</span><span className="fd-agency-tech">Tech</span>
+                    </div>
+                    <div className="fd-agency-tagline">Agence Digitale · Abidjan</div>
+                    {/* Tech pills */}
+                    <div className="fd-agency-pills">
+                      {item.tech.map(t => <span key={t} className="fd-agency-pill">{t}</span>)}
+                    </div>
+                    {/* Live badge */}
+                    <div className="fd-agency-live"><span className="fd-agency-dot"/><span>EN LIGNE</span></div>
+                    {/* Overlay label en fan/focus */}
+                    <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`} style={{background:'linear-gradient(to top,rgba(3,8,6,.92) 0%,transparent 60%)'}}>
+                      <span className="fd-card-label" style={{color:'#22c864'}}>{item.title}</span>
+                      <span className="fd-card-sub">{item.subtitle}</span>
+                      {isActive && <span className="fd-card-cta" style={{color:'#22c864',borderColor:'rgba(34,200,100,.4)'}}>Visiter l'agence →</span>}
+                    </div>
+                    <div className="fd-card-num" style={{color:'rgba(34,200,100,.5)'}}>#13</div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="fd-card-img" style={{ background: GRAD[(item.id - 1) % GRAD.length] }}>
+                      <img src={item.image} alt={item.title} onError={e => { e.target.style.display = 'none'; }} />
+                      <div className="fd-card-img-grad" />
+                      {item.cat === 'en-ligne' && (
+                        <div className="fd-card-live"><span className="c3d-live-dot" /><span>EN LIGNE</span></div>
+                      )}
+                    </div>
+                    <div className={`fd-card-overlay ${isActive || phase === 'fan' ? 'fd-card-overlay--show' : ''}`}>
+                      <span className="fd-card-label">{item.title}</span>
+                      <span className="fd-card-sub">{item.subtitle}</span>
+                      {isActive && <span className="fd-card-cta">Cliquer pour voir →</span>}
+                    </div>
+                    <div className="fd-card-num">#{String(item.id).padStart(2,'0')}</div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── UI par phase ── */}
+        {phase === 'stack' && (
+          <p className="fd-hint">
+            <span className="fd-hint-line" />
+            Cliquer pour ouvrir
+            <span className="fd-hint-line" />
+          </p>
+        )}
+
+        {phase === 'fan' && (
+          <p className="fd-hint fd-hint--fan">
+            <span className="fd-hint-line" />
+            Choisir une carte
+            <span className="fd-hint-line" />
+          </p>
+        )}
+
+        {phase === 'focus' && (
+          <div className="fd-nav">
+            {/* Retour fan */}
+            <button className={`fd-nav-back ${dark ? 'fd-nav-back--dark' : ''}`} onClick={backToFan} title="Retour">
+              <LI name="th-large" color={dark?"#fff":"#1a1a1a"}/>
+            </button>
+            {/* Flèche gauche */}
+            <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goPrev(); }} disabled={active === 0} aria-label="Précédent">
+              <LI name="chevron-left" color={dark?"#fff":"#1a1a1a"}/>
+            </button>
+            {/* Dots */}
+            <div className="fd-nav-dots">
+              {items.map((_, i) => (
+                <button key={i}
+                  className={`fd-nav-dot ${i === active ? 'fd-nav-dot--on' : ''}`}
+                  onClick={e => { e.stopPropagation(); setActive(i); }}
+                  aria-label={`Projet ${i + 1}`}
+                />
+              ))}
+            </div>
+            {/* Flèche droite */}
+            <button className={`fd-nav-arr ${dark ? 'fd-nav-arr--dark' : ''}`} onClick={e => { e.stopPropagation(); goNext(); }} disabled={active === total - 1} aria-label="Suivant">
+              <LI name="chevron-right" color={dark?"#fff":"#1a1a1a"}/>
+            </button>
+            {/* Compteur */}
+            <span className="fd-nav-count">
+              <span className="fd-nav-count-n">{String(active + 1).padStart(2, '0')}</span>
+              /{String(total).padStart(2, '0')}
+            </span>
+          </div>
+        )}
+
+        {/* Compteur bas (stack + fan) */}
+        {phase !== 'focus' && (
+          <div className={`fd-counter ${dark ? 'fd-counter--dark' : ''}`}>
+            <span>{total}</span> projet{total > 1 ? 's' : ''}
+          </div>
+        )}
+      </div>
+
+      <ProjectModal project={modal} dark={dark} onClose={() => setModal(null)} />
+    </>
+  );
+};
+
+/* ══ SPOTLIGHT PROJECTS ══ */
+const SpotlightProjects = ({ items, dark }) => {
+  const [selected, setSelected] = useState(0);
+  const [imgErr, setImgErr] = useState({});
+  const thumbsRef = useRef(null);
+
+  const goPrev = () => setSelected(s => Math.max(0, s - 1));
+  const goNext = () => setSelected(s => Math.min(items.length - 1, s + 1));
+
+  useEffect(() => {
+    const rail = thumbsRef.current; if (!rail) return;
+    const thumb = rail.children[selected];
+    if (!thumb) return;
+    const targetLeft = thumb.offsetLeft - (rail.clientWidth - thumb.clientWidth) / 2;
+    rail.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+  }, [selected]);
+  useEffect(() => { setSelected(0); setImgErr({}); }, [items]);
+
+  const proj = items[selected] ?? items[0];
+  if (!proj) return null;
+  const isExternal = proj.url?.startsWith('http');
+  const isDemo = proj.cat === 'demo';
+
+  return (
+    <div className={`sp-root ${dark?'sp-root--dark':''}`}>
+      <div className="sp-viewer">
+        {/* Preview */}
+        <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
+          {!imgErr[proj.id]
+            ? <img src={proj.image} alt={proj.title} className="sp-preview-img" onError={()=>setImgErr(e=>({...e,[proj.id]:true}))}/>
+            : <div className="sp-preview-placeholder"><LI name="code" color={dark?"#555":"#aaa"}/></div>}
+          {proj.cat==='en-ligne' && <div className="sp-live-badge"><span className="hero-dot"/><span>EN LIGNE</span></div>}
+          {proj.isPremium && <div className="sp-prem-badge"><LI name="star" color="#ff5500"/> Premium</div>}
+        </div>
+        {/* Détails */}
+        <div className={`sp-details ${dark?'sp-details--dark':''}`}>
+          <div className="sp-num">{String(selected+1).padStart(2,'0')}</div>
+          <div className="sp-title-wrap">
+            <h3 className="sp-title">{proj.title}</h3>
+            <span className={`sp-cat-badge sp-cat-badge--${proj.cat}`}>{CAT_LABELS[proj.cat]}</span>
+          </div>
+          <p className="sp-sub">{proj.subtitle}</p>
+          <p className="sp-desc">{proj.description}</p>
+          <div className="sp-meta">
+            <span className="sp-year"><LI name="calendar-alt" color={dark?"#ff5500":"#ff5500"} size={12}/> {proj.year}</span>
+            {proj.progress!=null&&(
+              <div className="sp-progress-wrap">
+                <div className="sp-progress-track"><div className="sp-progress-fill" style={{width:`${proj.progress}%`}}/></div>
+                <span className="sp-progress-pct">{proj.progress}%</span>
+              </div>
+            )}
+          </div>
+          <div className="sp-techs">{proj.tech.map(t=><span key={t} className="sp-tech">{t}</span>)}</div>
+          {proj.url&&(
+            <div className="sp-actions">
+              <a href={proj.url} target={isExternal?'_blank':'_self'} rel="noreferrer"
+                className={`btn ${dark?'btn--neon':'btn--primary'} sp-cta mi-glint`}>
+                <LI name={isDemo?'play-circle':'external-link-alt'} color="#ff5500"/>{isDemo?'Voir la démo':'Voir le site →'}
+              </a>
+            </div>
+          )}
+          {/* Navigation : boutons slide + dots */}
+          <div className="sp-nav-row">
+            <button
+              className={`sp-nav-btn ${dark?'sp-nav-btn--dark':''}`}
+              onClick={goPrev}
+              disabled={selected===0}
+              aria-label="Projet précédent">
+              <LI name="chevron-left" color={dark?"#fff":"#1a1a1a"}/>
+            </button>
+            <div className="sp-dots">
+              {items.map((_,i)=><button key={i} className={`sp-dot ${i===selected?'sp-dot--on':''}`} onClick={()=>setSelected(i)} aria-label={`Projet ${i+1}`}/>)}
+            </div>
+            <button
+              className={`sp-nav-btn ${dark?'sp-nav-btn--dark':''}`}
+              onClick={goNext}
+              disabled={selected===items.length-1}
+              aria-label="Projet suivant">
+              <LI name="chevron-right" color={dark?"#fff":"#1a1a1a"}/>
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* Thumbnails */}
+      <div className="sp-thumbs-wrap">
+        <div className="sp-thumbs" ref={thumbsRef}>
+          {items.map((item,i)=>(
+            <button key={item.id} className={`sp-thumb ${i===selected?'sp-thumb--active':''} ${dark?'sp-thumb--dark':''}`}
+              onClick={()=>setSelected(i)} title={item.title}>
+              <div className="sp-thumb-img" style={{background:GRAD[(item.id-1)%GRAD.length]}}>
+                {!imgErr[item.id]
+                  ? <img src={item.image} alt={item.title} onError={()=>setImgErr(e=>({...e,[item.id]:true}))}/>
+                  : <LI name="code" color={dark?"#555":"#aaa"}/>}
+                {item.cat==='en-ligne'&&<div className="sp-thumb-live"/>}
+              </div>
+              <span className="sp-thumb-title">{item.title}</span>
+              {i===selected&&<div className="sp-thumb-bar"/>}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Projects = ({dark}) => {
+  const [filter,setFilter]=useState('all');
+  const filtered=filter==='all'?PROJECTS:PROJECTS.filter(p=>p.cat===filter);
+  const count=k=>k==='all'?PROJECTS.length:PROJECTS.filter(p=>p.cat===k).length;
+  const pillRef=useRef(null); const btnRefs=useRef([]); const keys=Object.keys(CAT_LABELS);
+  useEffect(()=>{
+    const pill=pillRef.current,idx=keys.indexOf(filter),btn=btnRefs.current[idx];
+    if(!pill||!btn) return;
+    const parent=btn.parentElement.getBoundingClientRect(),r=btn.getBoundingClientRect();
+    pill.style.width=`${r.width}px`; pill.style.height=`${r.height}px`; pill.style.transform=`translateX(${r.left-parent.left}px)`;
+  },[filter]);
+  return (
+    /* overflow:hidden + position:relative → empêche le décalage gauche lors du scroll des thumbnails */
+    <section id="projects" className={`projects-section ${dark?'projects-section--dark':''}`} style={{overflowX:'hidden',position:'relative'}}>
+      <WindowChrome title="Projets" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Mes<br/>projets.</h2></div>
+      <div className="pf-toggle-wrap">
+        <div className={`pf-toggle ${dark?'pf-toggle--dark':''}`}>
+          <span ref={pillRef} className={`pf-pill ${dark?'pf-pill--dark':''}`}/>
+          {Object.entries(CAT_LABELS).map(([k,v],i)=>(<button key={k} ref={el=>btnRefs.current[i]=el} className={`pf-tab ${filter===k?'pf-tab--active':''} ${dark?'pf-tab--dark':''}`} onClick={()=>setFilter(k)}>{v}<span className={`pf-count ${filter===k?'pf-count--active':''} ${dark?'pf-count--dark':''}`}>{count(k)}</span></button>))}
+        </div>
+      </div>
+      <SpotlightProjects key={filter} items={filtered} dark={dark}/>
+    </section>
+  );
+};
+
+const SkillBand = ({title,icon,items,dir,dark})=>(
+  <div className="sk-row">
+    <div className="sk-row-lbl"><LI name={icon} color="#ff5500" size={14}/>{title}</div>
+    <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`}>
+      {[...items,...items,...items].map((sk,i)=>(<div key={i} className="sk-item"><img src={sk.icon} alt={sk.name} style={dark&&(sk.icon.includes('flask')||sk.icon.includes('django')||sk.icon.includes('github')||sk.icon.includes('vercel'))?{filter:'brightness(0) invert(1)'}:{}}/><span>{sk.name}</span></div>))}
+    </div></div>
+  </div>
+);
+
+const Skills = ({dark}) => {
+  const [ref,vis]=useInView();
+  const master=[...SKILLS.frontend.slice(0,4),...SKILLS.backend.slice(0,3)];
+  return (
+    <section id="skills" className="skills-section" ref={ref}>
+      <div className="skills-inner">
+        <WindowChrome title="Skills" dark={dark}/>
+        <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Mes outils<br/>de travail.</h2></div>
+        <div className="sk-mastery-wrap">
+          <div className="sk-label-tag"><span>//</span> maîtrise principale</div>
+          <div className={`sk-mastery ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
+            {master.map((sk,i)=>(<TiltCard key={i} className="sk-m-card" style={{animationDelay:`${i*0.07}s`}}><div className="sk-m-glow"/><img src={sk.icon} alt={sk.name} style={dark&&(sk.icon.includes('flask')||sk.icon.includes('django'))?{filter:'brightness(0) invert(1)'}:{}}/><span>{sk.name}</span></TiltCard>))}
+          </div>
+        </div>
+        <div className="sk-bands">
+          <SkillBand title="Frontend"    icon="laptop-code" items={SKILLS.frontend} dir="left"  dark={dark}/>
+          <SkillBand title="Backend"     icon="server"      items={SKILLS.backend}  dir="right" dark={dark}/>
+          <SkillBand title="Outils & IA" icon="tools"       items={SKILLS.tools}    dir="left"  dark={dark}/>
+          <SkillBand title="Autres"      icon="plus-circle" items={SKILLS.autres}   dir="right" dark={dark}/>
+        </div>
+        <div className={`cta-band ${dark?'cta-band--neon':''}`} style={{position:'relative',overflow:'hidden'}}>
+          <PlasmaCanvasBg intensity={0.78}/>
+          <div style={{position:'relative',zIndex:1,display:'contents'}}>
+          <h3>Besoin de ces compétences ?</h3>
+          <p>Mettons mes compétences au service de votre projet. Discutons-en !</p>
+          <div className="cta-btns">
+            <MagBtn className={`btn ${dark?'btn--neon':'btn--cta-light'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}><LI name="paper-plane" color="#ff5500"/> Me contacter</MagBtn>
+            <MagBtn className={`btn ${dark?'btn--ghost-neon':'btn--cta-ghost-light'} mi-glint`} onClick={()=>document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}><LI name="eye" color={dark?"#fff":"#1a1a1a"}/> Voir mes projets</MagBtn>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ─── Témoignages clients ─────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  { name:"Koné Ibrahima", role:"Fondateur · TechFlow", avatar:"K",
+    text:"Elvis a livré notre site vitrine en un temps record. Design moderne, responsive, exactement ce qu'on voulait. Très professionnel.", stars:5 },
+  { name:"Calvin Dexter", role:"Gérant · New Horizon Service", avatar:"C",
+    text:"La plateforme de location est impeccable. Les clients peuvent réserver facilement, le backend est solide. Je recommande à 100%.", stars:5 },
+  { name:"Mory Koné", role:"Graphiste · MK Portfolio", avatar:"M",
+    text:"Mon portfolio reflète parfaitement mon univers créatif. Elvis a su traduire ma vision en une expérience visuelle mémorable.", stars:5 },
+  { name:"Tatiana D.", role:"Influenceuse · Tatii", avatar:"T",
+    text:"Super boulot ! Mon site de présentation est élégant, rapide et je reçois beaucoup de compliments. Merci Elvis !", stars:5 },
+  { name:"Manobeat 777", role:"Beatmaker · ManoBeat", avatar:"B",
+    text:"La boutique de beats marche très bien. Les clients achètent facilement via WhatsApp. Interface propre et professionnel.", stars:5 },
+];
+
+const Testimonials = ({dark}) => {
+  const [ref,vis]=useInView(0.08);
+  const [active,setActive]=useState(0);
+  const total=TESTIMONIALS.length;
+  const t=TESTIMONIALS[active];
+
+  /* ── Auto-slide toutes les 4s ── */
+  useEffect(()=>{
+    const id=setInterval(()=>setActive(a=>(a+1)%total),10000);
+    return()=>clearInterval(id);
+  },[total]);
+
+  return (
+    <section ref={ref} className={`testi-section ${dark?'section--dark':''}`}>
+      <WindowChrome title="Témoignages" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}>
+        <span className="s-lbl">// clients</span>
+        <h2 className="s-ttl">Ils m'ont<br/>fait confiance.</h2>
+      </div>
+      <div className={`testi-wrap ${vis?'testi-wrap--vis':''}`}>
+        {/* Compteur */}
+        <div className={`testi-counter ${dark?'testi-counter--dark':''}`}>
+          <span className="testi-count-cur">{String(active+1).padStart(2,'0')}</span>
+          <span className="testi-count-sep"> / </span>
+          <span>{String(total).padStart(2,'0')}</span>
+          <span className="testi-plus">+4 clients</span>
+        </div>
+        {/* Card active — slide auto */}
+        <div key={active} className={`testi-card testi-card--auto ${dark?'testi-card--dark':''}`}>
+          <div className="testi-quote-icon">"</div>
+          <p className="testi-text">{t.text}</p>
+          <div className="testi-stars">{'★'.repeat(t.stars)}</div>
+          <div className="testi-author">
+            <div className={`testi-avatar ${dark?'testi-avatar--dark':''}`}>{t.avatar}</div>
+            <div>
+              <div className="testi-name">{t.name}</div>
+              <div className="testi-role">{t.role}</div>
+            </div>
+          </div>
+          {/* Barre de progression 4s */}
+          <div className="testi-progress"><div className="testi-progress-fill"/></div>
+        </div>
+        {/* Dots uniquement — pas de boutons ← → */}
+        <div className="testi-dots-only">
+          {TESTIMONIALS.map((_,i)=>(
+            <button key={i} className={`testi-dot ${i===active?'testi-dot--on':''} ${dark?'testi-dot--dark':''}`} onClick={()=>setActive(i)}/>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ════════════════════════════════════════════
+   ANIMATED BEAM — nœuds connectés au logo AKATech
+   (portée depuis App.jsx, version mobile avec IDs uniques)
+   ════════════════════════════════════════════ */
+function AnimatedBeamMobile({ dark }) {
+  const containerId = 'mob-coj-container'
+  const svgId       = 'mob-coj-svg'
+  const centerId    = 'mob-cojn-center'
+
+  const nodeLinks = [
+    { id:'mob-cojn-github',   href:'https://github.com/wthomasss06-stack',                        label:'GitHub',   icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> },
+    { id:'mob-cojn-linkedin',  href:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',          label:'LinkedIn',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> },
+    { id:'mob-cojn-facebook',  href:'https://web.facebook.com/profile.php?id=61577494705852',      label:'Facebook',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> },
+    { id:'mob-cojn-whatsapp',  href:'https://wa.me/2250142507750',                                 label:'WhatsApp',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg> },
+    { id:'mob-cojn-akatech',   href:'https://akatech.vercel.app/',                                 label:'AKATech',   icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg> },
+    { id:'mob-cojn-gmail',     href:'mailto:wthomasss06@gmail.com',                                label:'Gmail',     icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg> },
+    { id:'mob-cojn-uvci',      href:'https://uvci.edu.ci/',                                        label:'UVCI',      icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+    { id:'mob-cojn-cv',        href:'/assets/CV_MBOLLO_AKA_ELVIS.pdf',                            label:'Mon CV',    download:true, icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> },
+  ]
+
+  useEffect(() => {
+    const container = document.getElementById(containerId)
+    const svg       = document.getElementById(svgId)
+    const centerEl  = document.getElementById(centerId)
+    if (!container || !svg || !centerEl) return
+
+    const nodeIds = nodeLinks.map(n => n.id)
+    const colors  = ['#FF5500','#ff7733','#FF5500','#ffaa44','#FF5500','#ff7733','#ffaa44','#FF5500']
+    const phases  = [0, 0.37, 0.74, 1.11, 1.48, 1.85, 2.22, 2.59]
+    let paths = [], animating = false, started = false, startTime = null
+    const DURATION = 2400
+
+    const getCenter = el => {
+      const cr = container.getBoundingClientRect(), er = el.getBoundingClientRect()
+      return { x: er.left - cr.left + er.width / 2, y: er.top - cr.top + er.height / 2 }
+    }
+    const buildPaths = () => {
+      svg.querySelectorAll('.mob-anim-path,.mob-base-path').forEach(p => p.remove()); paths = []
+      const circleEl = centerEl.querySelector('.mob-node-circle')
+      if (!circleEl) return
+      const target = getCenter(circleEl)
+      nodeIds.forEach((id, i) => {
+        const el = document.getElementById(id); if (!el) return
+        const circEl = el.querySelector('.mob-node-circle'); if (!circEl) return
+        const src = getCenter(circEl)
+        const mx = (src.x + target.x) / 2, my = (src.y + target.y) / 2
+        const dx = target.x - src.x, dy = target.y - src.y, perp = i % 2 === 0 ? 1 : -1
+        const d = `M ${src.x} ${src.y} Q ${mx - dy*0.18*perp} ${my + dx*0.18*perp} ${target.x} ${target.y}`
+        const base = document.createElementNS('http://www.w3.org/2000/svg','path')
+        base.setAttribute('d',d); base.setAttribute('class','mob-base-path'); base.setAttribute('fill','none')
+        base.setAttribute('stroke',colors[i]); base.setAttribute('stroke-width','1.2')
+        base.setAttribute('stroke-dasharray','4 8'); base.setAttribute('opacity','0.15')
+        svg.appendChild(base)
+        const anim = document.createElementNS('http://www.w3.org/2000/svg','path')
+        anim.setAttribute('d',d); anim.setAttribute('class','mob-anim-path'); anim.setAttribute('fill','none')
+        anim.setAttribute('stroke',colors[i]); anim.setAttribute('stroke-width','3'); anim.setAttribute('stroke-linecap','round'); anim.setAttribute('opacity','0')
+        svg.appendChild(anim)
+        const len = anim.getTotalLength(); anim.setAttribute('stroke-dasharray',`${len*0.18} ${len}`)
+        paths.push({ anim, len, phase: phases[i] })
+      })
+    }
+    const loop = ts => {
+      if (!animating) { requestAnimationFrame(loop); return }
+      if (!startTime) startTime = ts
+      const elapsed = ts - startTime
+      paths.forEach(p => {
+        const t = ((elapsed / DURATION) + p.phase) % 1
+        p.anim.style.strokeDashoffset = String(-p.len * t)
+        p.anim.setAttribute('opacity', (Math.sin(t * Math.PI) * 0.9).toFixed(3))
+      })
+      requestAnimationFrame(loop)
+    }
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        animating = e.isIntersecting
+        if (animating && !started) { started = true; buildPaths(); requestAnimationFrame(loop) }
+      })
+    }, { threshold: 0.1 })
+    obs.observe(container)
+    let rt; const onResize = () => { clearTimeout(rt); rt = setTimeout(buildPaths, 120) }
+    window.addEventListener('resize', onResize)
+    return () => { obs.disconnect(); window.removeEventListener('resize', onResize) }
+  }, [])
+
+  return (
+    <div className={`mob-beam-outer ${dark?'mob-beam-outer--dark':''}`}>
+      <div className="mob-beam-container" id={containerId}>
+        <svg className="mob-beam-svg" id={svgId} xmlns="http://www.w3.org/2000/svg" />
+        <div className="mob-beam-grid">
+          {/* Rangée haute */}
+          <div className="mob-beam-row">
+            {nodeLinks.slice(0,4).map(n => (
+              <a key={n.id} id={n.id}
+                href={n.href}
+                target={n.href.startsWith('mailto')||n.href.startsWith('/')?'_self':'_blank'}
+                rel="noreferrer"
+                download={n.download||undefined}
+                className="mob-node-link">
+                <div className="mob-node-circle">{n.icon}</div>
+                <span className="mob-node-label">{n.label}</span>
+              </a>
+            ))}
+          </div>
+          {/* Centre */}
+          <div className="mob-beam-row mob-beam-row--center">
+            <div id={centerId} className="mob-node-link" style={{pointerEvents:'none'}}>
+              <div className="mob-node-circle mob-node-main">
+                <img
+                  src="/assets/images/logo-akatech.png"
+                  alt="AKATech"
+                  style={{width:'58px',height:'58px',objectFit:'contain',borderRadius:'50%'}}
+                  onError={e=>{e.target.style.display='none'}}
+                />
+              </div>
+              <span className="mob-node-label" style={{color:'rgba(255,85,0,.8)'}}>AKATech</span>
+            </div>
+          </div>
+          {/* Rangée basse */}
+          <div className="mob-beam-row">
+            {nodeLinks.slice(4).map(n => (
+              <a key={n.id} id={n.id}
+                href={n.href}
+                target={n.href.startsWith('mailto')||n.href.startsWith('/')?'_self':'_blank'}
+                rel="noreferrer"
+                download={n.download||undefined}
+                className="mob-node-link">
+                <div className="mob-node-circle">{n.icon}</div>
+                <span className="mob-node-label">{n.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ════════════════════════════════════════════
+   GITHUB INTERACTIVE CARD — version mobile
+   (portée depuis App.jsx avec layout adapté)
+   ════════════════════════════════════════════ */
+function GitHubInteractiveCard({ dark }) {
+  const GH_USER = 'wthomasss06-stack'
+  const [activeTab, setActiveTab] = useState('grid')
+  const [tooltip, setTooltip] = useState({ show: false, text: '', x: 0, y: 0 })
+  const [terminalLines, setTerminalLines] = useState([])
+  const [isPushing, setIsPushing] = useState(false)
+  const [logs, setLogs] = useState([
+    { id: 1, time: 'Il y a 10 min',   repo: 'shop-ci',      msg: 'fix: validation du panier et mobile money API', commits: 2 },
+    { id: 2, time: 'Il y a 2 heures', repo: 'akatech',      msg: 'feat: ajout des animations GSAP de survol',     commits: 1 },
+    { id: 3, time: 'Hier',            repo: 'terrasafe',    msg: 'security: validation CSRF sur le formulaire',   commits: 3 },
+    { id: 4, time: 'Il y a 3 jours',  repo: 'chap-chapMAP', msg: 'refactor: optimisation des couches Leaflet',    commits: 1 },
+  ])
+  const [ghLoading, setGhLoading] = useState(true)
+  const [ghUser, setGhUser] = useState(null)
+  const [ghRepos, setGhRepos] = useState([])
+  const [contributions, setContributions] = useState([])
+  const [ghStats, setGhStats] = useState({ totalContribs: '…', longestStreak: '…', thisMonth: '…', topLang: 'React / Python' })
+
+  const buildFallbackGrid = useCallback(() => {
+    const data = [], today = new Date(), startDate = new Date()
+    startDate.setDate(today.getDate() - 364)
+    startDate.setDate(startDate.getDate() - startDate.getDay())
+    for (let i = 0; i < 371; i++) {
+      const d = new Date(startDate); d.setDate(startDate.getDate() + i)
+      const isWeekend = [0,6].includes(d.getDay()); let count = 0; const rand = Math.random()
+      if (isWeekend) { if (rand > 0.85) count = Math.floor(Math.random()*3)+1 }
+      else { if (rand > 0.45) { count = rand > 0.92 ? Math.floor(Math.random()*8)+5 : rand > 0.72 ? Math.floor(Math.random()*4)+2 : 1 } }
+      let level = 0; if (count > 0) level = count<=2?1:count<=4?2:count<=7?3:4
+      data.push({ date: d, count, level })
+    }
+    return data
+  }, [])
+
+  useEffect(() => {
+    const headers = { Accept: 'application/vnd.github.v3+json' }
+    const buildGrid = (apiContribs) => {
+      const today = new Date(), startDate = new Date(); startDate.setDate(today.getDate() - 364)
+      const dow = startDate.getDay(), alignedStart = new Date(startDate); alignedStart.setDate(startDate.getDate() - dow)
+      const cMap = {}; apiContribs.forEach(d => { cMap[d.date] = d })
+      const grid = []
+      for (let i = 0; i < 371; i++) {
+        const d = new Date(alignedStart); d.setDate(alignedStart.getDate() + i)
+        if (d > today) { grid.push({ date: d, count: 0, level: 0 }); continue }
+        const key = d.toISOString().split('T')[0], c = cMap[key] || { count: 0, level: 0 }
+        grid.push({ date: d, count: c.count, level: c.level })
+      }
+      return grid
+    }
+    Promise.all([
+      fetch(`https://api.github.com/users/${GH_USER}`, { headers }).then(r => r.json()),
+      fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=stars`, { headers }).then(r => r.json()),
+      fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`).then(r => r.json()),
+    ]).then(([user, repos, contribData]) => {
+      if (user && !user.message) setGhUser(user)
+      if (Array.isArray(repos)) setGhRepos(repos.filter(r => !r.fork).sort((a,b) => (b.stargazers_count||0)-(a.stargazers_count||0)).slice(0,4))
+      if (contribData?.contributions?.length) {
+        setContributions(buildGrid(contribData.contributions))
+        const all = contribData.contributions, total = all.reduce((s,d) => s+d.count, 0)
+        let maxStreak=0, streak=0; all.forEach(d => { if(d.count>0){streak++;maxStreak=Math.max(maxStreak,streak)}else streak=0 })
+        const now = new Date(), thisMonth = all.filter(d => { const dt=new Date(d.date); return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear() }).reduce((s,d)=>s+d.count,0)
+        setGhStats({ totalContribs: total, longestStreak: maxStreak, thisMonth, topLang: 'React / Python' })
+      } else { setContributions(buildFallbackGrid()) }
+      setGhLoading(false)
+    }).catch(() => { setContributions(buildFallbackGrid()); setGhLoading(false) })
+  }, [buildFallbackGrid])
+
+  const handleSquareHover = (e, day) => {
+    const rect = e.currentTarget.getBoundingClientRect(), parentRect = e.currentTarget.offsetParent?.getBoundingClientRect() || rect
+    const dateStr = day.date?.toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' }) || '—'
+    setTooltip({ show:true, text:`${day.count} contribution${day.count>1?'s':''} · ${dateStr}`, x: rect.left-parentRect.left+rect.width/2, y: rect.top-parentRect.top-36 })
+  }
+  const handleSquareLeave = () => setTooltip(p => ({...p, show:false}))
+
+  const runPushSimulation = () => {
+    if (isPushing) return; setIsPushing(true); setTerminalLines([])
+    const lines = [
+      `wthomasss06-stack@mobile:~$ git add .`,
+      `wthomasss06-stack@mobile:~$ git status`,
+      `On branch main · Changes to be committed:`,
+      `  modified:   src/Appmobile.jsx`,
+      `wthomasss06-stack@mobile:~$ git commit -m "feat: GitHubCard mobile intégré"`,
+      `wthomasss06-stack@mobile:~$ git push origin main`,
+      `Enumerating objects: 5, done.`,
+      `Writing objects: 100% (3/3), 412 bytes | 412.00 KiB/s, done.`,
+      `To github.com:${GH_USER}/elvis-portfolio.git`,
+      `   7c28fb3..b4a1e9f  main -> main`,
+      `wthomasss06-stack@mobile:~$ _`,
+    ]
+    let cur = 0
+    const next = () => {
+      if (cur < lines.length) { setTerminalLines(p => [...p, lines[cur++]]); setTimeout(next, cur<=3 ? 600 : 250) }
+      else { setIsPushing(false); setLogs(p => [{ id:Date.now(), time:"À l'instant", repo:'elvis-portfolio', msg:'feat: GitHubCard mobile intégré', commits:1 }, ...p]) }
+    }
+    setTimeout(next, 200)
+  }
+
+  const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
+
+  return (
+    <div className={`ghm-card ${dark?'ghm-card--dark':''}`}>
+      {/* Header */}
+      <div className="ghm-header">
+        <div className="ghm-header-left">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--acc,#ff5500)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>
+          <div>
+            <h3 className="ghm-title">Activité GitHub</h3>
+            <a href={`https://github.com/${GH_USER}`} target="_blank" rel="noreferrer" className="ghm-user">@{GH_USER}{ghUser && <span> · {ghUser.public_repos} repos</span>}</a>
+          </div>
+        </div>
+        <span className="ghm-live-badge"><span className="ghm-pulse"/>{ghLoading ? 'Chargement…' : 'Live'}</span>
+      </div>
+
+      {/* Tabs */}
+      <div className="ghm-tabs">
+        {[['grid','Contributions'],['repos','Dépôts'],['feed','Commits']].map(([key,lbl]) => (
+          <button key={key} className={`ghm-tab ${activeTab===key?'ghm-tab--active':''}`} onClick={() => setActiveTab(key)}>{lbl}</button>
+        ))}
+      </div>
+
+      {/* Body */}
+      <div className="ghm-body">
+        {activeTab === 'grid' && (
+          <div>
+            <div className="ghm-stats">
+              <div className="ghm-stat"><span className="ghm-stat-num">{ghLoading?'…':ghStats.totalContribs.toLocaleString('fr')}</span><span className="ghm-stat-lbl">Contribs 365j</span></div>
+              <div className="ghm-stat"><span className="ghm-stat-num">{ghLoading?'…':`${ghStats.longestStreak}j`}</span><span className="ghm-stat-lbl">Série max</span></div>
+              <div className="ghm-stat"><span className="ghm-stat-num">{ghLoading?'…':`${ghStats.thisMonth}`}</span><span className="ghm-stat-lbl">Ce mois</span></div>
+            </div>
+            <div className="ghm-grid-scroll">
+              <div className="ghm-months">{months.map((m,i)=><span key={i}>{m}</span>)}</div>
+              <div className="ghm-grid-wrap">
+                <div className="ghm-days"><span>D</span><span></span><span>M</span><span></span><span>J</span><span></span><span>S</span></div>
+                <div className="ghm-grid">
+                  {contributions.map((day,idx) => (
+                    <div key={idx} className={`ghm-sq level-${day.level}`}
+                      onMouseEnter={e=>handleSquareHover(e,day)} onMouseLeave={handleSquareLeave}/>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="ghm-legend"><span>Moins</span>{[0,1,2,3,4].map(l=><div key={l} className={`ghm-sq level-${l}`}/>)}<span>Plus</span></div>
+            {tooltip.show && <div className="ghm-tooltip" style={{left:tooltip.x,top:tooltip.y}}>{tooltip.text}<div className="ghm-tooltip-arrow"/></div>}
+          </div>
+        )}
+
+        {activeTab === 'repos' && (
+          <div className="ghm-repos">
+            {ghLoading ? <div className="ghm-loading">Chargement des dépôts…</div> :
+            (ghRepos.length > 0 ? ghRepos : [
+              { name:'ShopCI',       description:'Marketplace E-commerce avec mobile money.', stargazers_count:14, forks_count:4, language:'JavaScript' },
+              { name:'TerraSafe',    description:"Plateforme foncière anti-arnaque.",          stargazers_count:8,  forks_count:2, language:'Python' },
+              { name:'AKATech',      description:'Site officiel de mon agence digitale.',       stargazers_count:21, forks_count:5, language:'TypeScript' },
+              { name:'chap-chapMAP', description:"Cartographie interactive de livraison.",      stargazers_count:5,  forks_count:1, language:'JavaScript' },
+            ]).map((repo,i) => {
+              const langColor = { JavaScript:'#f1e05a', Python:'#3572A5', TypeScript:'#2b7489', HTML:'#e34c26', CSS:'#563d7c' }
+              const color = langColor[repo.language] || '#FF5500'
+              return (
+                <div key={i} className="ghm-repo">
+                  <div className="ghm-repo-hd">
+                    <span className="ghm-repo-name">{repo.html_url?<a href={repo.html_url} target="_blank" rel="noreferrer">{repo.name}</a>:repo.name}</span>
+                    <div className="ghm-repo-stats"><span>★ {repo.stargazers_count||0}</span><span>⌥ {repo.forks_count||0}</span></div>
+                  </div>
+                  <p className="ghm-repo-desc">{repo.description}</p>
+                  <div className="ghm-repo-bar"><div style={{width:'70%',background:color,height:'100%',borderRadius:'999px'}}/></div>
+                  <span className="ghm-repo-lang" style={{color}}>{repo.language||'Web'}</span>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {activeTab === 'feed' && (
+          <div className="ghm-feed">
+            <div className="ghm-logs">
+              {logs.map(log => (
+                <div key={log.id} className="ghm-log">
+                  <div className="ghm-log-hd"><span className="ghm-log-repo">{GH_USER}/{log.repo}</span><span className="ghm-log-time">{log.time}</span></div>
+                  <p className="ghm-log-msg">{log.msg}</p>
+                  <span className="ghm-log-commits">{log.commits} commit{log.commits>1?'s':''} pushed</span>
+                </div>
+              ))}
+            </div>
+            <div className="ghm-terminal">
+              <div className="ghm-term-hd"><span className="ghm-dot ghm-dot-r"/><span className="ghm-dot ghm-dot-y"/><span className="ghm-dot ghm-dot-g"/><span className="ghm-term-title">bash — {GH_USER}@github:~</span></div>
+              <div className="ghm-term-body">
+                <div className="ghm-term-welcome">Prêt pour la simulation de commit.</div>
+                {terminalLines.map((line,idx) => <div key={idx} className="ghm-term-line">{line}</div>)}
+                {isPushing && <div className="ghm-term-cursor"/>}
+              </div>
+              <button className="ghm-push-btn" onClick={runPushSimulation} disabled={isPushing}>
+                {isPushing ? 'Pushing…' : '▶ Simuler un Git Push'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+const Contact = ({dark}) => {
+  const [ref,vis]=useInView();
+  const [form,setForm]=useState({name:'',email:'',projectType:'',message:''});
+  const [sending,setSending]=useState(false); const [sent,setSent]=useState(false);
+  const onChange=e=>setForm(f=>({...f,[e.target.id]:e.target.value}));
+  const onSubmit=async e=>{
+    e.preventDefault(); setSending(true);
+    try{
+      await fetch('https://formsubmit.co/ajax/wthomasss06@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:form.name,email:form.email,'Type de projet':form.projectType,message:form.message,_subject:`🚀 Nouveau contact : ${form.name}`,_template:'table',_captcha:'false'})});
+      setSent(true); setForm({name:'',email:'',projectType:'',message:''});
+    }catch{ alert('❌ Erreur. Contactez-moi sur WhatsApp : +225 01 42 50 77 50'); }
+    finally{ setSending(false); }
+  };
+  return (
+    <section id="contact" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="Contact" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Transformons<br/>votre idée.</h2></div>
+
+      {/* ── Formulaire + bloc code ── */}
+      <div className={`contact-grid ${vis?'anim':''} mi-stagger ${vis?'mi-stagger--vis':''}`}>
+        <div className="contact-left">
+          <div className="contact-status"><span className="cdot"/><span>Disponible maintenant</span></div>
+          <div className="code-block">
+            <div className="code-hd"><span className="cd"/><span className="cy"/><span className="cg"/><span>contact.js</span></div>
+            <div className="code-body">
+              <div><span className="ck">const</span> [<span className="cv">responseTime</span>] = <span className="cs">"&lt;24h"</span>;</div>
+              <div><span className="ck">const</span> [<span className="cv">availability</span>] = <span className="cs">"100%"</span>;</div>
+              <div><span className="ck">const</span> [<span className="cv">status</span>] = <span className="cs">"ready"</span>;</div>
+              <div><span className="cc">{'// 🚀 Prêt pour de nouveaux défis !'}</span></div>
+            </div>
+          </div>
+        </div>
+        <div className="contact-right">
+          <h3>Envoyez-moi un message</h3>
+          <p>Remplissez le formulaire et je vous réponds rapidement.</p>
+          {sent?(
+            <div className="form-success"><div className="form-ok">✓</div><p>Message envoyé ! Je vous réponds sous 24h. 🚀</p></div>
+          ):(
+            <form className={`cform ${dark?'cform--dark':''}`} onSubmit={onSubmit}>
+              <div className="form-row">
+                <div className="ff"><label htmlFor="name">Nom complet *</label><input id="name" type="text" placeholder="Jean Kouassi" value={form.name} onChange={onChange} required/></div>
+                <div className="ff"><label htmlFor="email">Email *</label><input id="email" type="email" placeholder="jean@exemple.com" value={form.email} onChange={onChange} required/></div>
+              </div>
+              <div className="ff">
+                <label htmlFor="projectType">Type de projet *</label>
+                <select id="projectType" value={form.projectType} onChange={onChange} required>
+                  <option value="">Sélectionnez votre besoin…</option>
+                  <option value="site-vitrine">Site Vitrine</option>
+                  <option value="e-commerce">E-commerce</option>
+                  <option value="application-web">Application Web</option>
+                  <option value="api">API / Backend</option>
+                  <option value="maintenance">Maintenance / Support</option>
+                  <option value="recrutement">Candidature spontanée</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <div className="ff">
+                <label htmlFor="message">Message *</label>
+                <textarea id="message" rows={6} placeholder="Décrivez votre projet…" value={form.message} onChange={onChange} required/>
+              </div>
+              <MagBtn type="submit" className={`btn ${dark?'btn--neon':'btn--primary'} btn--full mi-btn-grad-solid`} disabled={sending}>
+                <LI name="paper-plane" color="#ff5500"/>{sending?'Envoi en cours…':'Envoyer le message'}{sending&&<LI name="spinner" color="#ff5500"/>}
+              </MagBtn>
+              <p className="form-privacy"><LI name="lock" color={dark?"#888":"#999"} size={13}/> Vos données sont sécurisées et ne seront jamais partagées.</p>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {/* ── OÙ ME JOINDRE — après le formulaire ── */}
+      {/* ═══════════════════════════════════════════
+          OÙ ME JOINDRE — section cohérente avec le site
+          ═══════════════════════════════════════════ */}
+      <div className={`coj-wrap coj-wrap--v2 ${dark?'coj-wrap--dark':''}`}>
+
+        <div style={{position:'relative',zIndex:1}}>
+          {/* ── GitHub Interactive Card ── */}
+          <div style={{marginBottom:'40px'}}>
+            <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'24px'}}>
+              <span className="s-lbl">// Activité GitHub</span>
+            </div>
+            <GitHubInteractiveCard dark={dark}/>
+          </div>
+
+          {/* ── Header + Animated Beam ── */}
+          <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'32px'}}>
+            <span className="s-lbl">// Où me joindre</span>
+            <h2 className="s-ttl">Restons<br/>connectés.</h2>
+          </div>
+
+          {/* ── Nœuds connectés ── */}
+          <AnimatedBeamMobile dark={dark}/>
+
+          {/* ── 3 infos de contact en cards spotlight ── */}
+          <div className="coj-infos-v2">
+            {[
+              {ico:'phone',          href:'tel:+2250142507750',          label:'Téléphone',  val:'+225 01 42 50 77 50'},
+              {ico:'envelope',       href:'mailto:wthomasss06@gmail.com',label:'Email',       val:'wthomasss06@gmail.com'},
+              {ico:'map-marker-alt', href:null,                          label:'Localisation',val:"Abidjan, Côte d'Ivoire"},
+            ].map((item,i)=>(
+              <TiltCard key={i} intensity={6} perspective={900} className="coj-v2-card">
+                <SpotlightCard style={{height:'100%'}}>
+                  <div className="coj-v2-card-inner">
+                    <div className="coj-v2-icon"><LI name={item.ico} size={20} color="#ff5500"/></div>
+                    <div className="coj-v2-text">
+                      <span className="coj-v2-label">{item.label}</span>
+                      {item.href
+                        ? <a href={item.href} className="coj-v2-val">{item.val}</a>
+                        : <span className="coj-v2-val">{item.val}</span>}
+                    </div>
+                  </div>
+                </SpotlightCard>
+              </TiltCard>
+            ))}
+          </div>
+
+          {/* ═══════════════════════════════════════════
+              GRILLE SOCIALE — style cohérent site
+              ═══════════════════════════════════════════ */}
+          <div className="csg-root-v2">
+            <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'36px'}}>
+              <span className="s-lbl">// un clic, chaque canal</span>
+              <h2 className="s-ttl">
+                UN RÉSEAU.<br/>
+                <ScrambleText text="CHAQUE LIEN." tag="span" className="csg-accent" speed={28} step={0.45} threshold={0.3} once={true}/>
+              </h2>
+              <p className={`csg-sub-v2 ${dark?'csg-sub-v2--dark':''}`}>Retrouvez-moi sur toutes les plateformes.</p>
+            </div>
+
+            <div className="csg-grid-v2">
+              {[
+                {ico:'github',    label:'GitHub',   url:'https://github.com/wthomasss06-stack',                          desc:'Code source'},
+                {ico:'linkedin',  label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',           desc:'Profil pro'},
+                {ico:'facebook',  label:'Facebook',  url:FACEBOOK_URL,                                                   desc:'Page officielle'},
+                {ico:'whatsapp',  label:'WhatsApp',  url:'https://wa.me/2250142507750',                                  desc:'Message direct'},
+                {ico:'globe',     label:'AKATech',   url:'https://akatech.vercel.app/',                                  desc:'Mon agence'},
+                {ico:'envelope',  label:'Gmail',     url:'mailto:wthomasss06@gmail.com',                                 desc:'Email direct'},
+                {ico:'university',label:'UVCI',      url:'mailto:aka.mbollo@uvci.edu.ci',                                desc:'Inst. académique'},
+                {ico:'file-pdf',  label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true,              desc:'Télécharger'},
+              ].map((s,i)=>(
+                <TiltCard key={i} intensity={8} perspective={800} className="csg-v2-item">
+                  <a href={s.url}
+                    target={s.url.startsWith('http')?'_blank':'_self'}
+                    rel="noreferrer"
+                    download={s.download||undefined}
+                    className={`csg-v2-link ${dark?'csg-v2-link--dark':''}`}
+                    title={s.label}>
+                    <div className="csg-v2-icon-wrap">
+                      <LI name={s.ico} size={26} color="#ff5500"/>
+                    </div>
+                    <span className="csg-v2-name">{s.label}</span>
+                    <span className="csg-v2-desc">{s.desc}</span>
+                    <LI name="external-link-alt" size={12} color="rgba(255,85,0,0.4)" className="csg-v2-ext"/>
+                  </a>
+                </TiltCard>
+              ))}
+            </div>
+          </div>
+
+          {/* ── QR + CV — intégré visuellement ── */}
+          <div className={`contact-cv-v2 ${dark?'contact-cv-v2--dark':''}`}>
+            <TiltCard intensity={5} perspective={1000} className="cv-v2-card">
+              <SpotlightCard style={{height:'100%'}}>
+                <div className="cv-v2-inner">
+                  <div className="cv-v2-qr-wrap">
+                    <img src="/assets/images/qrcodeCV.png" alt="QR Code CV" className="cv-v2-qr"/>
+                    <div className="cv-v2-qr-badge"><LI name="mobile-alt" size={12} color="#ff5500"/> Scanner</div>
+                  </div>
+                  <div className="cv-v2-text">
+                    <span className="cv-v2-eyebrow">// document</span>
+                    <h4 className="cv-v2-title">Télécharger<br/>mon CV</h4>
+                    <p className="cv-v2-sub">Scannez le QR code ou cliquez ci-dessous</p>
+                    <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint cv-v2-btn`} download>
+                      <LI name="download" color={dark?"#ffffff":"#1a1a1a"}/> Télécharger CV
+                    </a>
+                  </div>
+                </div>
+              </SpotlightCard>
+            </TiltCard>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Footer = ({dark}) => (
+  <footer className={`footer ${dark?'footer--dark':'footer--light'}`}>
+    <div className="footer-inner">
+      <div className="footer-logo"><AkafolioLogo size={38} dark={dark} animate={false}/></div>
+      <div className="footer-mid">
+        <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
+        <p>Abidjan, Côte d'Ivoire</p>
+      </div>
+      <div className="footer-links">
+        <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+        <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
+      </div>
+    </div>
+  </footer>
+);
+
+const getAutoLight = () => { try { const h = new Date().getHours(); return h < 6 || h >= 18; } catch { return true; } };
+
+export default function App() {
+  const [loaded,setLoaded]=useState(false);
+  const [light,setLight]=useState(()=>{
+    try {
+      const saved=localStorage.getItem('aka-theme');
+      if(saved==='light') return true;
+      if(saved==='dark') return false;
+      return getAutoLight();
+    } catch { return getAutoLight(); }
+  });
+
+  const toggleDark=()=>setLight(l=>{
+    const next=!l;
+    try { localStorage.setItem('aka-theme',next?'light':'dark'); } catch {}
+    return next;
+  });
+  const dark=!light;
+  return !loaded ? (
+    <Loader onDone={()=>setLoaded(true)}/>
+  ) : (
+    <div className={`app ${light?'app--light':''}`}>
+      <CustomCursor/>
+      <Navbar dark={dark} onToggle={toggleDark}/>
+      <ScrollTop dark={dark}/>
+      <main>
+  <ScrollDepthScene dark={dark}>
+    <Hero dark={dark}/>
+    <Marquee dark={dark}/>
+    <FeaturedCreation dark={dark}/>
+    <Services dark={dark}/>
+    <About dark={dark}/>
+    <Projects dark={dark}/>
+    <Skills dark={dark}/>
+    <Testimonials dark={dark}/>
+    <Contact dark={dark}/>
+  </ScrollDepthScene>
+</main>
+      <Footer dark={dark}/>
+    </div>
+  );
+}

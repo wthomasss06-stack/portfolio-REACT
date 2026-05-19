@@ -1,0 +1,32 @@
+/* ════════════════════════════════════════════════
+   scope-reset.css
+   Neutralise les règles globales de style.css
+   qui fuient sur la version mobile (Appmobile).
+   
+   IMPORTANT : ce fichier doit être importé APRÈS
+   style.css dans main.jsx.
+   ════════════════════════════════════════════════ */
+
+/* Quand on est sur mobile (classe .mobile-root sur le wrapper),
+   on remet le curseur et la font par défaut */
+body:has(.mobile-root) {
+  cursor: auto !important;
+  font-family: 'Unbounded', 'Space Mono', sans-serif;
+  background: var(--paper, #0A0A0A);
+  color: var(--ink, #F0F0F0);
+}
+
+/* Tailwind utilities ne doivent pas affecter mobile —
+   on ne peut pas les annuler facilement, mais les 
+   composants Appmobile utilisent leurs propres classes */
+
+/* Reset cursor custom sur mobile */
+@media (max-width: 900px) {
+  body {
+    cursor: auto !important;
+  }
+  /* Empêcher les fonts de style.css de dominer */
+  .app {
+    font-family: 'Unbounded', 'Space Mono', sans-serif !important;
+  }
+}

@@ -1,0 +1,25 @@
+npm run dev
+
+
+npm run build
+
+
+npm run preview
+
+Comportement : au scroll horizontal, la carte actuelle s'envole vers les larrierre une nouvelle carte arrive jusaque ce que la fin des carte  Les 2 cartes fantômes attend leur tour jusqua la fin , pour Parcours ce nest tourjour pas visible sur mobille reecris son css pour use de carte
+
+
+
+
+
+
+GARDE LES VERSION LA NAVIGATION DES HEADER EST TOUJOUR PROBLEMATIQUE ENSUITE 'ScrambleText' is declared but its value is never read. ENFIN IMAGE 1 (JE LE VEUX POUR LES PARTI PROJET JE VEUX QUE TOUS MES PROJET SOIT EN MINUATURE EN BAS TU VOIIS ENSUITE YA UN GRAND TRUC LA POUR VOIR IMAGE DE PROJET ET LES DETAIL A COTE SICON CLIQUE UN PROJET) TOUS CA AU STEP 3  PUIS  POUR IMAGE 3  APPLIQUE SON EXPERIENCE UX A TARIF Tarifs
+Mes offres. ET IMAGE 2 JE VEUX UNE EXPERIENCE COMME CA POUR AFFICHE MES RESEAU SOCIEAUX ET MES LIENS DANS SECTION CONTACT    Voilà les 2 fichiers patch. Voici le guide d'intégration rapide :
+
+PATCH_App_changes.jsx — 6 blocs numérotés à intégrer dans App.jsx :
+#OùQuoi[1]Tout en hautimport ScrambleText from './components/ScrambleText'[2]useEffect dans Navbar (~ligne 925)Remplace s.offsetTop par getBoundingClientRect().top + scrollY → fix navbar[3]Dans Hero (~ligne 1485)Remplace le <span>disponible… par <ScrambleText text="disponible · Abidjan, CI" …/>[4]Coller comme nouveau composant + remplacer <FanDeck> par <SpotlightProjects> dans ProjectsNouveau layout projets : preview grande + détails + strip thumbnails[5]Remplacer PricingCard dans PricingTabs + le ptabs2-gridNouveau style pricing : numéroté, badge −25%, prix barré[6]Dans Contact, remplacer le <div className="contact-socials">Grille sociale style image 2
+PATCH_style_additions.css — coller entièrement à la fin de style.css.
+
+
+
+applique meme experience type pc windows 7 xp pour mon app genre refonte mon style css
