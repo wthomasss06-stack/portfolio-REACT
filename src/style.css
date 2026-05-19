@@ -210,13 +210,20 @@ body.light-mode .nb-avail { color: var(--nb-txt-l); }
   animation: blink 2s ease-in-out infinite;
 }
 .nb-theme-btn {
-  width: 32px; height: 32px; border-radius: 12px; border: none;
-  background: rgba(255,255,255,.06); cursor: pointer;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 2px solid var(--text);
+  background: var(--bg);
+  box-shadow: 3px 3px 0 var(--text);
+  cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background .2s;
+  transition: transform .12s ease, box-shadow .12s ease;
 }
-body.light-mode .nb-theme-btn { background: rgba(0,0,0,.06); }
-.nb-theme-btn:hover { background: rgba(255,85,0,.12); }
+.nb-theme-btn:hover  { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--text); }
+.nb-theme-btn:active { transform: translate(2px,  2px);  box-shadow: 1px 1px 0 var(--text); }
+body.light-mode .nb-theme-btn { background: #F2EDE8; border-color: #0A0A0A; box-shadow: 3px 3px 0 #0A0A0A; }
+body.light-mode .nb-theme-btn:hover  { box-shadow: 5px 5px 0 #0A0A0A; }
+body.light-mode .nb-theme-btn:active { box-shadow: 1px 1px 0 #0A0A0A; }
 .icon-sun, .icon-moon { width: 16px; height: 16px; }
 body:not(.light-mode) .icon-sun { display: none; }
 body.light-mode .icon-moon { display: none; }
