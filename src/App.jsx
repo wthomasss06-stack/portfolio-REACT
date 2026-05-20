@@ -695,6 +695,23 @@ function StickyStack() {
   )
 }
 
+function Marquee() {
+  const words = ["React", "Django", "Flask", "Python", "TypeScript", "Tailwind", "MySQL", "Vercel", "Node.js", "Git", "REST API", "Bootstrap", "JavaScript"];
+  const d = [...words, ...words];
+  return (
+    <div className="marquee">
+      <div className="marquee-track">
+        {d.map((w, i) => (
+          <span key={i} className="mw">
+            {w}
+            <span className="mdot">◆</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ════════════════════════════════════════════
    ABOUT
    ════════════════════════════════════════════ */
@@ -2243,6 +2260,7 @@ export default function App() {
       <main>
         <Hero />
         <StickyStack />
+        <Marquee />
         <About />
         <Timeline />
         <SkewSection />

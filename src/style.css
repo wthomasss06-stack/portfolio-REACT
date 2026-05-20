@@ -2019,3 +2019,46 @@ body.light-mode .nb-nav-link { color: var(--nb-txt-l); }
 .coj-beam-grid { padding: 40px 80px; }
 .coj-node-circle svg { width: 28px; height: 28px; }
 .coj-node-circle.coj-node-main svg { width: 0; height: 0; }
+
+/* ══════════ MARQUEE ══════════ */
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  border-top: 2.5px solid var(--text);
+  border-bottom: 2.5px solid var(--text);
+  background: var(--accent);
+  padding: 16px 0;
+  position: relative;
+  z-index: 5;
+}
+body.light-mode .marquee {
+  border-top: 2.5px solid #000000;
+  border-bottom: 2.5px solid #000000;
+}
+.marquee-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marq 25s linear infinite;
+}
+@keyframes marq {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.mw {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  font-family: var(--fd);
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #0A0A0A;
+}
+.mdot {
+  opacity: .4;
+  font-size: 8px;
+  color: #0A0A0A;
+}
+

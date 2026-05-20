@@ -331,6 +331,6 @@ body.light-mode {
 
 <div align="center">
 
-Made with ❤️ in Abidjan · © 2026 Elvis M'BOLLO — [AKATech](https://akatech.vercel.app/) · Tous droits réservés
+© 2026 Elvis M'BOLLO — Tous droits réservés
 
 </div>

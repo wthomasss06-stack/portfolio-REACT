@@ -116,7 +116,15 @@ const LI_CSS = `
 .li-pdf-page{animation:li-pdf-flip 2.5s ease-in-out infinite;transform-origin:left center;transform-box:fill-box;}
 @keyframes li-db{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08);opacity:.7}}
 .li-db{animation:li-db 1.8s ease-in-out infinite;transform-origin:center top;transform-box:fill-box;}
-`;
+@keyframes li-tools-spin{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.li-tools{animation:li-tools-spin 2s ease-in-out infinite;transform-origin:12px 12px;transform-box:fill-box;}
+@keyframes li-brush-float{0%,100%{transform:translate(0,0) rotate(-5deg)}50%{transform:translate(-3px,-3px) rotate(-5deg)}}
+.li-brush{animation:li-brush-float 2s ease-in-out infinite;}
+@keyframes li-cart-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.li-cart{animation:li-cart-bob 1.6s ease-in-out infinite;}
+@keyframes li-music-float{0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(-3px) rotate(-4deg)}}
+.li-music{animation:li-music-float 1.8s ease-in-out infinite;}
+`
 
 function useLICSS(){
   useEffect(()=>{
@@ -207,24 +215,24 @@ const LI_ICONS = {
   database:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3" fill={C} fillOpacity=".18" className="li-w1"/><path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" className="li-w2"/><path d="M3 15v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4" className="li-w3"/></svg>),
   /* ── SHIELD-ALT — bouclier arrondi + coche ── */
   'shield-alt':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V6L12 2z" fill={C} fillOpacity=".1" className="li-info-circle"/><polyline points="9 12 11 14 15 10" className="li-chk-mark"/></svg>),
-  /* ── TOOLS — clé + tournevis croisés ── */
-  tools:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z" fill={C} fillOpacity=".12"/></g></svg>),
+  /* ── TOOLS — clé + tournevis croixés —— animation propre li-tools ── */
+  tools:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-tools"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z" fill={C} fillOpacity=".12"/></g></svg>),
   /* ── USERS ── */
   users:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill={C} fillOpacity=".08"/><circle cx="9" cy="7" r="4" fill={C} fillOpacity=".15" className="li-w2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75" className="li-w1"/></svg>),
-  /* ── SHOPPING-CART ── */
-  'shopping-cart':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── SHOPPING-CART — animation propre li-cart ── */
+  'shopping-cart':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-cart"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
   /* ── SEARCH ── */
   search:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-info-circle"><circle cx="11" cy="11" r="8" fill={C} fillOpacity=".08"/></g><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>),
   /* ── HOME ── */
   home:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><path d="M3 10.5L12 3l9 7.5V21a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 21V10.5z" fill={C} fillOpacity=".1" className="li-w2"/><path d="M9 22.5V15h6v7.5"/></svg>),
   /* ── USER ── */
   user:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="7" r="4.5" fill={C} fillOpacity=".15" className="li-play"/><path d="M4 21v-1a8 8 0 0 1 16 0v1" fill={C} fillOpacity=".08"/></svg>),
-  /* ── PAINT-BRUSH ── */
-  'paint-brush':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-phone"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".1"/><line x1="15.5" y1="8" x2="8.5" y2="15"/></g></svg>),
+  /* ── PAINT-BRUSH — animation propre li-brush ── */
+  'paint-brush':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-brush"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z" fill={C} fillOpacity=".1"/><line x1="15.5" y1="8" x2="8.5" y2="15"/></g></svg>),
   /* ── HEADPHONES ── */
   headphones:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-mob"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z" fill={C} fillOpacity=".2"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" fill={C} fillOpacity=".2"/></g></svg>),
-  /* ── MUSIC ── */
-  music:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-arr-r"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill={C} fillOpacity=".25"/><circle cx="18" cy="16" r="3" fill={C} fillOpacity=".25"/></g></svg>),
+  /* ── MUSIC — animation propre li-music ── */
+  music:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><g className="li-music"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3" fill={C} fillOpacity=".25"/><circle cx="18" cy="16" r="3" fill={C} fillOpacity=".25"/></g></svg>),
   /* ── CHART-LINE — waveform (sound new style) ── */
   'chart-line':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><line x1="2" y1="20" x2="22" y2="20" opacity=".3"/><polyline points="5 15 9 9 13 13 17 7 21 11"/></g></svg>),
   /* ── FILTER — sliders équaliseur (new style) ── */
@@ -239,8 +247,8 @@ const LI_ICONS = {
   adjust:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><circle cx="12" cy="12" r="9.5" fill={C} fillOpacity=".06"/><path d="M12 2.5a9.5 9.5 0 0 1 0 19z" fill={C} fillOpacity=".3" className="li-w2" stroke="none"/></svg>),
   /* ── PALETTE ── */
   palette:(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2v-.5c0-.55-.22-1-.72-1.28a1 1 0 0 1 .22-1.72C15.5 15.5 18 13.9 18 12c0-4.42-2.69-8-9-8z" fill={C} fillOpacity=".1" className="li-info-circle"/><circle cx="6.5" cy="11.5" r="1.5" fill={C} className="li-w1" stroke="none"/><circle cx="9.5" cy="7.5" r="1.5" fill={C} className="li-w2" stroke="none"/><circle cx="14.5" cy="7.5" r="1.5" fill={C} className="li-w3" stroke="none"/><circle cx="17.5" cy="11.5" r="1.5" fill={C} className="li-w4" stroke="none"/></svg>),
-  /* ── SHOPPING-BAG ── */
-  'shopping-bag':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-arr-r"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
+  /* ── SHOPPING-BAG — animation propre li-cart ── */
+  'shopping-bag':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-cart"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill={C} fillOpacity=".1"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></g></svg>),
   /* ── FILE-EXPORT — signet avec flèche ── */
   'file-export':(C,sw)=>(<svg viewBox="0 0 24 24" fill="none" stroke={C} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"><g className="li-ext-arrow"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill={C} fillOpacity=".1"/><polyline points="14 2 14 8 20 8"/></g><line x1="8" y1="14" x2="16" y2="14"/><polyline points="12 10 16 14 12 18"/></svg>),
   /* ── CALENDAR-CHECK ── */
@@ -1030,6 +1038,7 @@ const Loader = ({ onDone }) => {
         padding:'20px 28px',
         display:'flex', flexDirection:'column', gap:14,
         width:'min(320px, 80vw)',
+        borderRadius: 16,
       }}>
         {/* "Loading...." label */}
         <div style={{
@@ -1051,6 +1060,7 @@ const Loader = ({ onDone }) => {
           border:`3px solid ${ink}`,
           height:22, background: isLight ? '#e8e0d0' : '#1a0f00',
           overflow:'hidden', position:'relative',
+          borderRadius: 8,
         }}>
           <div style={{
             position:'absolute', inset:0, right:`${100-pct}%`,
@@ -3669,71 +3679,9 @@ const Contact = ({dark}) => {
           {/* ── Nœuds connectés ── */}
           <AnimatedBeamMobile dark={dark}/>
 
-          {/* ── 3 infos de contact en cards spotlight ── */}
-          <div className="coj-infos-v2">
-            {[
-              {ico:'phone',          href:'tel:+2250142507750',          label:'Téléphone',  val:'+225 01 42 50 77 50'},
-              {ico:'envelope',       href:'mailto:wthomasss06@gmail.com',label:'Email',       val:'wthomasss06@gmail.com'},
-              {ico:'map-marker-alt', href:null,                          label:'Localisation',val:"Abidjan, Côte d'Ivoire"},
-            ].map((item,i)=>(
-              <TiltCard key={i} intensity={6} perspective={900} className="coj-v2-card">
-                <SpotlightCard style={{height:'100%'}}>
-                  <div className="coj-v2-card-inner">
-                    <div className="coj-v2-icon"><LI name={item.ico} size={20} color="#ff5500"/></div>
-                    <div className="coj-v2-text">
-                      <span className="coj-v2-label">{item.label}</span>
-                      {item.href
-                        ? <a href={item.href} className="coj-v2-val">{item.val}</a>
-                        : <span className="coj-v2-val">{item.val}</span>}
-                    </div>
-                  </div>
-                </SpotlightCard>
-              </TiltCard>
-            ))}
-          </div>
 
-          {/* ═══════════════════════════════════════════
-              GRILLE SOCIALE — style cohérent site
-              ═══════════════════════════════════════════ */}
-          <div className="csg-root-v2">
-            <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginBottom:'36px'}}>
-              <span className="s-lbl">// un clic, chaque canal</span>
-              <h2 className="s-ttl">
-                UN RÉSEAU.<br/>
-                <ScrambleText text="CHAQUE LIEN." tag="span" className="csg-accent" speed={28} step={0.45} threshold={0.3} once={true}/>
-              </h2>
-              <p className={`csg-sub-v2 ${dark?'csg-sub-v2--dark':''}`}>Retrouvez-moi sur toutes les plateformes.</p>
-            </div>
 
-            <div className="csg-grid-v2">
-              {[
-                {ico:'github',    label:'GitHub',   url:'https://github.com/wthomasss06-stack',                          desc:'Code source'},
-                {ico:'linkedin',  label:'LinkedIn',  url:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',           desc:'Profil pro'},
-                {ico:'facebook',  label:'Facebook',  url:FACEBOOK_URL,                                                   desc:'Page officielle'},
-                {ico:'whatsapp',  label:'WhatsApp',  url:'https://wa.me/2250142507750',                                  desc:'Message direct'},
-                {ico:'globe',     label:'AKATech',   url:'https://akatech.vercel.app/',                                  desc:'Mon agence'},
-                {ico:'envelope',  label:'Gmail',     url:'mailto:wthomasss06@gmail.com',                                 desc:'Email direct'},
-                {ico:'university',label:'UVCI',      url:'mailto:aka.mbollo@uvci.edu.ci',                                desc:'Inst. académique'},
-                {ico:'file-pdf',  label:'Mon CV',    url:'/assets/CV_MBOLLO_AKA_ELVIS.pdf', download:true,              desc:'Télécharger'},
-              ].map((s,i)=>(
-                <TiltCard key={i} intensity={8} perspective={800} className="csg-v2-item">
-                  <a href={s.url}
-                    target={s.url.startsWith('http')?'_blank':'_self'}
-                    rel="noreferrer"
-                    download={s.download||undefined}
-                    className={`csg-v2-link ${dark?'csg-v2-link--dark':''}`}
-                    title={s.label}>
-                    <div className="csg-v2-icon-wrap">
-                      <LI name={s.ico} size={26} color="#ff5500"/>
-                    </div>
-                    <span className="csg-v2-name">{s.label}</span>
-                    <span className="csg-v2-desc">{s.desc}</span>
-                    <LI name="external-link-alt" size={12} color="rgba(255,85,0,0.4)" className="csg-v2-ext"/>
-                  </a>
-                </TiltCard>
-              ))}
-            </div>
-          </div>
+
 
           {/* ── QR + CV — intégré visuellement ── */}
           <div className={`contact-cv-v2 ${dark?'contact-cv-v2--dark':''}`}>
