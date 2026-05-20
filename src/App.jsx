@@ -4,8 +4,8 @@ import RotatingText from './components/RotatingText.jsx'
 import ScrollReveal from './components/ScrollReveal.jsx'
 import TargetCursor from './components/TargetCursor.jsx'
 import TextPressure from './components/TextPressure.jsx'
-import ScrollDepthScene from './components/ScrollDepthScene.jsx'
 import Iridescence from './components/Iridescence.jsx'
+import { GridScan } from './components/GridScan.jsx'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import * as THREE from 'three'
@@ -523,7 +523,8 @@ function Hero() {
       <div className="hv4-grain" aria-hidden="true" />
       <div className="hv4-god-rays" id="hv4-rays" aria-hidden="true" />
       <div className="hv4-bg-layer" id="hv4-bg-layer" aria-hidden="true">
-        <Iridescence color={[1.0, 0.333, 0.0]} speed={1.2} amplitude={0.2} mouseReact={true} />
+        <Iridescence color={[1.0, 0.333, 0.0]} speed={1.0} amplitude={0.12} />
+        <GridScan linesColor="#ff5500" scanColor="#ffaa00" scanOpacity={0.25} gridScale={0.08} bloomIntensity={0.5} />
       </div>
       <div className="hv4-scan" aria-hidden="true" />
       <div className="hero-vignette" />
@@ -2219,19 +2220,17 @@ export default function App() {
       <main>
         <Hero />
         <StickyStack />
-        <ScrollDepthScene dark={theme === 'dark'}>
-          <Marquee />
-          <About />
-          <Timeline />
-          <SkewSection />
-          <SkillsSection />
-          <ShowcaseSection />
-          <PricingSection />
-          <GallerySection />
-          <TestimonialsSection />
-          <ContactSection onToast={showToast} />
-          <Footer />
-        </ScrollDepthScene>
+        <Marquee />
+        <About />
+        <Timeline />
+        <SkewSection />
+        <SkillsSection />
+        <ShowcaseSection />
+        <PricingSection />
+        <GallerySection />
+        <TestimonialsSection />
+        <ContactSection onToast={showToast} />
+        <Footer />
       </main>
       <ScrollTopBtn />
     </>
