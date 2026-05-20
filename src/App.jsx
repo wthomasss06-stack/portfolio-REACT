@@ -551,7 +551,7 @@ function Hero() {
 
             {/* Rotating Text */}
             <p className="hv4-typed hv4-rv" style={{ '--d': '.42s' }}>
-              Développeur&nbsp;<RotatingText texts={['Full-Stack', 'React & Python', 'Django & Flask', 'orienté produit', 'Data & Carto']} rotationInterval={2500} className="hero-word" style={{ color: 'var(--accent)' }} />
+              Développeur&nbsp;<RotatingText texts={['Full-Stack', 'React & Python', 'Django & Flask', 'orienté produit', 'Data & Carto']} rotationInterval={2500} className="hero-word" style={{ color: '#ffffff' }} />
             </p>
 
             <p className="hv4-desc hv4-rv" style={{ '--d': '.56s' }}>
