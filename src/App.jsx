@@ -4,6 +4,7 @@ import RotatingText from './components/RotatingText.jsx'
 import ScrollReveal from './components/ScrollReveal.jsx'
 import TargetCursor from './components/TargetCursor.jsx'
 import TextPressure from './components/TextPressure.jsx'
+import ScrollDepthScene from './components/ScrollDepthScene.jsx'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import * as THREE from 'three'
@@ -2260,17 +2261,19 @@ export default function App() {
       <main>
         <Hero />
         <StickyStack />
-        <Marquee />
-        <About />
-        <Timeline />
-        <SkewSection />
-        <SkillsSection />
-        <ShowcaseSection />
-        <PricingSection />
-        <GallerySection />
-        <TestimonialsSection />
-        <ContactSection onToast={showToast} />
-        <Footer />
+        <ScrollDepthScene dark={theme === 'dark'}>
+          <Marquee />
+          <About />
+          <Timeline />
+          <SkewSection />
+          <SkillsSection />
+          <ShowcaseSection />
+          <PricingSection />
+          <GallerySection />
+          <TestimonialsSection />
+          <ContactSection onToast={showToast} />
+          <Footer />
+        </ScrollDepthScene>
       </main>
       <ScrollTopBtn />
     </>

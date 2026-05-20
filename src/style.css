@@ -2062,3 +2062,18 @@ body.light-mode .marquee {
   color: #0A0A0A;
 }
 
+/* ══════════ SCROLL DEPTH SCENE OVERRIDES ══════════ */
+.sdz-section section,
+.sdz-section #about-section,
+.sdz-section #timeline-section,
+.sdz-section #skills-section,
+.sdz-section #showcase-section,
+.sdz-section #pricing-section,
+.sdz-section #gallery-section,
+.sdz-section #testimonials-section,
+.sdz-section #contact,
+.sdz-section #main-footer {
+  background: transparent !important;
+}
+
+
