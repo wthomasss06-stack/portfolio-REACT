@@ -442,6 +442,12 @@ const PROJECTS = [
     tech:["HTML","CSS","Bulma","Bootstrap","Vercel"],
     stats:[{icon:"university",label:"Site institutionnel"},{icon:"mobile-alt",label:"Responsive"},{icon:"globe",label:"En production"}],
     url:"https://universitelesanges.vercel.app/", year:"2025", isPremium:true },
+  { id:15, title:"NEXURA", subtitle:"Marketplace Nouvelle Génération", cat:"en-ligne", progress:85,
+    description:"Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.",
+    image:"/assets/images/projects/nexura-preview.jpg",
+    tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"],
+    stats:[{icon:"home",label:"Multi-catégories"},{icon:"shield-alt",label:"Auth & KYC"},{icon:"bolt",label:"Temps réel"}],
+    url:"https://nexura-one.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [

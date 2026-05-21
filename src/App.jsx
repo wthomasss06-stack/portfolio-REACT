@@ -168,6 +168,7 @@ const PROJECTS = [
   { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
   { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
   { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
+  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
 ]
 
 const SERVICES = [
@@ -544,19 +545,33 @@ function Navbar({ theme, onToggleTheme }) {
 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
-  const SunIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="2" strokeLinecap="round" width="16" height="16">
-      <circle cx="12" cy="12" r="4" />
-      <line x1="12" y1="3" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="21" />
-      <line x1="3" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="21" y2="12" />
-      <line x1="5.64" y1="5.64" x2="7.05" y2="7.05" /><line x1="16.95" y1="16.95" x2="18.36" y2="18.36" />
-      <line x1="5.64" y1="18.36" x2="7.05" y2="16.95" /><line x1="16.95" y1="7.05" x2="18.36" y2="5.64" />
-    </svg>
-  )
-  const MoonIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="#F2EDE8" strokeWidth="2" strokeLinecap="round" width="16" height="16">
-      <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" fill="rgba(255,255,255,0.1)" />
-    </svg>
+  /* ── Animated theme toggler (mirrors animate-ui ThemeTogglerButton) ── */
+  const AnimatedThemeToggler = ({ theme: t, onClick }) => (
+    <button
+      className="nb-theme-btn att-btn"
+      onClick={onClick}
+      title="Basculer thème"
+      aria-label={t === 'light' ? 'Passer en mode sombre' : 'Passer en mode clair'}
+    >
+      <span className="att-track" data-theme={t}>
+        {/* Sun */}
+        <span className="att-icon att-sun">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+          </svg>
+        </span>
+        {/* Moon */}
+        <span className="att-icon att-moon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
+            <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>
+          </svg>
+        </span>
+      </span>
+    </button>
   )
 
   return (
@@ -575,9 +590,7 @@ function Navbar({ theme, onToggleTheme }) {
         </div>
         <div className="nb-topbar-right">
           <span className="nb-avail"><span className="nb-avail-dot" />disponible · Abidjan, CI</span>
-          <button className="nb-theme-btn" onClick={onToggleTheme} title="Basculer thème" aria-label="Thème">
-            {theme === 'light' ? <SunIcon /> : <MoonIcon />}
-          </button>
+          <AnimatedThemeToggler theme={theme} onClick={onToggleTheme} />
           <button className={`nb-hamburger${drawerOpen ? ' open' : ''}`} aria-label="Menu" aria-expanded={drawerOpen}
             onClick={() => setDrawerOpen(v => !v)}>
             <span /><span /><span />
@@ -625,7 +638,7 @@ function Navbar({ theme, onToggleTheme }) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" /></svg>
             Thème
           </span>
-          <button className="nb-theme-btn" onClick={onToggleTheme}>{theme === 'light' ? <SunIcon /> : <MoonIcon />}</button>
+          <AnimatedThemeToggler theme={theme} onClick={onToggleTheme} />
         </div>
         <div className="nb-drawer-footer">
           {[
@@ -852,7 +865,7 @@ function About() {
             <div style={{ width: '100%', height: '100%' }}>
               <InfiniteMenu items={ABOUT_ITEMS} scale={1} showOverlay={false} />
             </div>
-              <div className="about-photo-tag">Decouvre moi</div>
+              <div className="about-photo-tag">TOUCHE TON CURSEUR ICI ,Decouvre moi</div>
               <div className="about-avail"><span className="about-avail-dot" />FULL-STACK DEV</div>
             </div>
         </div>
@@ -971,7 +984,7 @@ function Timeline() {
 }
 
 /* ════════════════════════════════════════════
-   SKEW SECTION
+   SKEW SECTION — Flowing Menu (chic_aussi)
    ════════════════════════════════════════════ */
 function SkewSection() {
   const items = [
@@ -980,8 +993,152 @@ function SkewSection() {
     { img: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', title: '03 — Livraison dans les délais', body: "Communication transparente à chaque étape. Vous suivez l'avancement en temps réel, aucune surprise à la livraison." },
     { img: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', title: '04 — Data & Carto intégrés', body: 'Dashboards interactifs, visualisations Chart.js, cartes Leaflet/OpenStreetMap. Je transforme vos données en décisions.' },
   ]
+
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    /* Inject CSS once */
+    const styleId = 'flowing-menu-style'
+    if (!document.getElementById(styleId)) {
+      const s = document.createElement('style')
+      s.id = styleId
+      s.textContent = `
+        .fm-wrap { width: 100%; }
+        .fm-item {
+          position: relative;
+          border-top: 1px solid rgba(255,85,0,.15);
+          overflow: hidden;
+        }
+        .fm-item:last-child { border-bottom: 1px solid rgba(255,85,0,.15); }
+        .fm-link {
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          padding: clamp(1.2rem,3vw,2rem) clamp(1rem,4vw,3rem);
+          font-family: var(--fd,'Outfit',sans-serif);
+          font-size: clamp(1.4rem,3.5vw,3rem);
+          font-weight: 800;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: var(--text,#F2EDE8);
+          position: relative;
+          z-index: 2;
+          gap: .5rem;
+        }
+        .fm-link-title { display: block; letter-spacing: -.02em; line-height: 1; }
+        .fm-link-body {
+          display: block;
+          font-size: clamp(.7rem,1.2vw,.9rem);
+          font-weight: 400;
+          text-transform: none;
+          letter-spacing: 0;
+          color: var(--muted,rgba(242,237,232,.45));
+          max-width: 540px;
+          line-height: 1.55;
+          font-family: 'Plus Jakarta Sans',sans-serif;
+        }
+        .fm-marquee {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 101%;
+          background-color: #FF5500;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          transform: translateY(101%);
+          pointer-events: none;
+          will-change: transform;
+        }
+        .fm-marquee__inner-wrap {
+          height: 100%; width: 100%;
+          display: flex; align-items: center;
+          overflow: hidden;
+        }
+        .fm-marquee__inner {
+          display: flex;
+          width: max-content;
+          height: 100%;
+          align-items: center;
+          will-change: transform;
+          transform: translateY(-101%);
+        }
+        .fm-marquee__part {
+          display: flex;
+          align-items: center;
+          padding: 0 2vw;
+          color: #fff;
+          font-size: clamp(1.4rem,3.5vw,3rem);
+          font-weight: 800;
+          text-transform: uppercase;
+          font-family: var(--fd,'Outfit',sans-serif);
+          letter-spacing: -.02em;
+          white-space: nowrap;
+        }
+        .fm-marquee__img {
+          width: clamp(80px,10vw,130px);
+          height: clamp(55px,7vw,88px);
+          margin: 0 2vw;
+          background-size: cover;
+          background-position: center;
+          border-radius: 10px;
+          flex-shrink: 0;
+        }
+        .fm-link:hover .fm-link-title { opacity: .0; }
+      `
+      document.head.appendChild(s)
+    }
+
+    const items = menuRef.current?.querySelectorAll('.fm-item')
+    if (!items) return
+    const cleanups = []
+
+    items.forEach(item => {
+      const link = item.querySelector('.fm-link')
+      const marquee = item.querySelector('.fm-marquee')
+      const inner = item.querySelector('.fm-marquee__inner')
+      const titleText = link.querySelector('.fm-link-title').textContent
+      const imgUrl = link.dataset.img
+
+      /* Build repeating marquee content */
+      const part = `
+        <div class="fm-marquee__part">
+          <span>${titleText}</span>
+          <div class="fm-marquee__img" style="background-image:url(${imgUrl})"></div>
+        </div>`
+      inner.innerHTML = part.repeat(8)
+
+      /* Horizontal scroll animation */
+      const partEl = inner.querySelector('.fm-marquee__part')
+      const partW = partEl.offsetWidth + (parseFloat(getComputedStyle(partEl).marginLeft) || 0) * 2
+      const tw = gsap.to(inner, { x: -partW, duration: 12, ease: 'none', repeat: -1 })
+
+      /* Edge detection */
+      const edge = (ev, rect) => ev.clientY - rect.top < rect.height / 2 ? 'top' : 'bottom'
+
+      const onEnter = ev => {
+        const e = edge(ev, item.getBoundingClientRect())
+        gsap.set(marquee, { y: e === 'top' ? '-101%' : '101%' })
+        gsap.set(inner,   { y: e === 'top' ? '101%'  : '-101%' })
+        gsap.to([marquee, inner], { y: '0%', duration: 0.6, ease: 'expo.out' })
+        tw.play()
+      }
+      const onLeave = ev => {
+        const e = edge(ev, item.getBoundingClientRect())
+        gsap.to(marquee, { y: e === 'top' ? '-101%' : '101%', duration: 0.6, ease: 'expo.out' })
+        gsap.to(inner,   { y: e === 'top' ? '101%'  : '-101%', duration: 0.6, ease: 'expo.out' })
+      }
+
+      link.addEventListener('mouseenter', onEnter)
+      link.addEventListener('mouseleave', onLeave)
+      cleanups.push(() => { link.removeEventListener('mouseenter', onEnter); link.removeEventListener('mouseleave', onLeave); tw.kill() })
+    })
+
+    return () => cleanups.forEach(fn => fn())
+  }, [])
+
   return (
     <section id="skew-section">
+      {/* En-tête sticky à gauche */}
       <div className="skew-grid">
         <div className="skew-sticky">
           <div>
@@ -991,15 +1148,25 @@ function SkewSection() {
             </h2>
           </div>
         </div>
-        <div className="skew-imgs">
-          {items.map((item, i) => (
-            <div key={i} className="skew-fig-noimg" style={{ padding: '2rem', background: 'rgba(255, 85, 0, 0.05)', borderLeft: '4px solid #FF5500', marginBottom: '1.5rem', borderRadius: '8px' }}>
-              <div className="skew-fig-body" style={{ background: 'transparent', padding: 0 }}>
-                <strong style={{ fontSize: '1.5rem', color: '#FF5500', marginBottom: '0.8rem', display: 'block' }}>{item.title}</strong>
-                <p style={{ fontSize: '1rem', color: 'var(--muted)', lineHeight: '1.6' }}>{item.body}</p>
+
+        {/* Flowing menu */}
+        <div className="skew-imgs" style={{ padding: '7rem 0', gap: 0 }}>
+          <nav className="fm-wrap" ref={menuRef}>
+            {items.map((item, i) => (
+              <div key={i} className="fm-item">
+                <a href="#contact" className="fm-link" data-img={item.img}
+                  onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}>
+                  <span className="fm-link-title">{item.title}</span>
+                  <span className="fm-link-body">{item.body}</span>
+                </a>
+                <div className="fm-marquee">
+                  <div className="fm-marquee__inner-wrap">
+                    <div className="fm-marquee__inner" />
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </nav>
         </div>
       </div>
     </section>

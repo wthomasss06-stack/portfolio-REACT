@@ -247,12 +247,29 @@ body.light-mode .nb-nav-link { color: var(--nb-txt-l); }
 /* Ensure testimonial quotes are readable in light mode */
 body.light-mode .testi-quote { color: rgba(10,10,10,0.88); }
 
-/* First sticky stack slide: invert bg depending on theme
-  - in light mode show black background
-  - in dark mode show white background */
-.ss-01 { background: #000; color: #fff; }
-body:not(.light-mode) .ss-01 { background: #FFFFFF; color: #0A0A0A; }
-body.light-mode .ss-01 { background: #000000; color: #F2EDE8; }
+/* ── Slide 01 ─────────────────────────────────────────────────────────── */
+/* light mode → fond clair blanc, texte noir */
+body.light-mode .ss-01 { background: #FFFFFF; color: #0A0A0A; }
+body.light-mode .ss-01 .ss-title { color: #0A0A0A; }
+body.light-mode .ss-01 .ss-body  { color: rgba(10,10,10,.60); }
+body.light-mode .ss-01 .ss-num   { color: #FF5500; }
+/* dark mode → fond noir, texte blanc */
+body:not(.light-mode) .ss-01 { background: #0A0A0A; color: #F2EDE8; }
+body:not(.light-mode) .ss-01 .ss-title { color: #F2EDE8; }
+body:not(.light-mode) .ss-01 .ss-body  { color: rgba(242,237,232,.60); }
+body:not(.light-mode) .ss-01 .ss-num   { color: #FF5500; }
+
+/* ── Slide 02 ─────────────────────────────────────────────────────────── */
+/* light mode → fond orange hero, texte clair */
+body.light-mode .ss-02 { background: linear-gradient(135deg,#FF5500 0%,#FF6B1A 60%,#FF8A00 100%); color: #F2EDE8; box-shadow: 0 -40px 100px rgba(255,85,0,.25); }
+body.light-mode .ss-02 .ss-title { color: #F2EDE8; }
+body.light-mode .ss-02 .ss-body  { color: rgba(242,237,232,.72); }
+body.light-mode .ss-02 .ss-num   { color: rgba(242,237,232,.55); }
+/* dark mode → fond blanc, texte noir */
+body:not(.light-mode) .ss-02 { background: #FFFFFF; color: #0A0A0A; box-shadow: 0 -40px 100px rgba(0,0,0,.18); }
+body:not(.light-mode) .ss-02 .ss-title { color: #0A0A0A; }
+body:not(.light-mode) .ss-02 .ss-body  { color: rgba(10,10,10,.60); }
+body:not(.light-mode) .ss-02 .ss-num   { color: #FF5500; }
 
 /* Gallery title color in light mode */
 body.light-mode .gl-title { color: #0A0A0A; }
@@ -2701,4 +2718,57 @@ body.light-mode .ld-vignette{
     radial-gradient(circle at center,
     transparent 20%,
     rgba(0,0,0,.04) 100%);
+}
+/* ════════════════════════════════════════════
+   ANIMATED THEME TOGGLER (ThemeTogglerButton)
+   ════════════════════════════════════════════ */
+.att-btn{
+  position:relative;
+  width:36px;height:36px;
+  border-radius:50%;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s ease,box-shadow .2s ease;
+}
+.att-btn:hover{
+  background:rgba(255,255,255,.1);
+  box-shadow:0 0 0 1px rgba(255,255,255,.15);
+}
+body.light-mode .att-btn:hover{
+  background:rgba(0,0,0,.08);
+  box-shadow:0 0 0 1px rgba(0,0,0,.1);
+}
+.att-track{
+  position:relative;
+  width:16px;height:16px;
+  display:block;
+}
+/* Sun visible in dark mode, hidden in light */
+.att-icon{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .3s ease,transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.att-sun{
+  color:#F2EDE8;
+  opacity:0;
+  transform:rotate(45deg) scale(.7);
+}
+.att-moon{
+  color:#F2EDE8;
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+/* In light mode: show sun, hide moon */
+body.light-mode .att-sun{
+  color:#0A0A0A;
+  opacity:1;
+  transform:rotate(0deg) scale(1);
+}
+body.light-mode .att-moon{
+  opacity:0;
+  transform:rotate(-45deg) scale(.7);
 }

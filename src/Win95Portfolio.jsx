@@ -88,6 +88,10 @@ const PROJECTS = [
     desc:"Site institutionnel moderne pour l'Université les Anges : formations, actualités, contacts. Interface responsive.",
     tech:["HTML","CSS","Bulma","Bootstrap","Vercel"], url:"https://universitelesanges.vercel.app/",
     image:"/assets/images/projects/universitelesanges-preview.jpg", color:"#3B006B" },
+  { id:15, title:"NEXURA", subtitle:"Marketplace Nouvelle Gén.",              cat:"en-ligne",  progress:85,  year:"2025", isPremium:true,
+    desc:"Marketplace nouvelle génération — évolution de TerraSafe. Résidences meublées, motos & véhicules, bureaux, terrains. Auth sécurisée, KYC, WebSockets.",
+    tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"], url:"https://nexura-one.vercel.app/",
+    image:"/assets/images/projects/nexura-preview.jpg", color:"#003344" },
 ];
 
 const SKILLS = {

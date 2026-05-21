@@ -10,3 +10,11 @@
 .action-button{background:var(--accent);color:#cf5757;padding:.85rem 1.2rem;border:none;border-radius:14px;cursor:pointer;transition:transform .18s ease,opacity .2s ease;pointer-events:auto}
 .action-button:hover{transform:translateY(-1px)}
 .action-button.inactive{opacity:.42;pointer-events:none}
+
+/* ── Auto-cycle dot indicators ───────────────────────────────────────── */
+.im-dots{position:absolute;bottom:.9rem;left:50%;transform:translateX(-50%);display:flex;gap:.55rem;align-items:center;z-index:3;pointer-events:auto}
+.im-dot{position:relative;width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:rgba(255,255,255,.28);transition:background .25s ease,transform .25s ease;flex-shrink:0}
+.im-dot:hover{background:rgba(255,255,255,.55);transform:scale(1.25)}
+.im-dot--active{background:rgba(255,255,255,.9);transform:scale(1.15)}
+.im-dot-ring{position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.85);border-top-color:transparent;animation:im-ring-spin linear forwards;transform-origin:center}
+@keyframes im-ring-spin{0%{transform:rotate(0deg);opacity:1}99%{transform:rotate(360deg);opacity:1}100%{transform:rotate(360deg);opacity:0}}

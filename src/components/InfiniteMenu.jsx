@@ -92,7 +92,7 @@ void main() {
 
 class Face { constructor(a, b, c) { this.a = a; this.b = b; this.c = c } }
 class Vertex { constructor(x, y, z) { this.position = vec3.fromValues(x, y, z); this.normal = vec3.create(); this.uv = vec2.create() } }
-class Geometry { /* trimmed for brevity in-file; full implementation kept */
+class Geometry {
   constructor() { this.vertices = []; this.faces = [] }
   addVertex(...args) { for (let i = 0; i < args.length; i += 3) { this.vertices.push(new Vertex(args[i], args[i+1], args[i+2])) } return this }
   addFace(...args) { for (let i = 0; i < args.length; i += 3) { this.faces.push(new Face(args[i], args[i+1], args[i+2])) } return this }
@@ -116,7 +116,7 @@ function resizeCanvasToDisplaySize(canvas) { const dpr = Math.min(2, window.devi
 function makeBuffer(gl, sizeOrData, usage) { const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, sizeOrData, usage); gl.bindBuffer(gl.ARRAY_BUFFER, null); return buf }
 function createAndSetupTexture(gl, minFilter, magFilter, wrapS, wrapT) { const texture = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, texture); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter); return texture }
 
-class ArcballControl { /* full class copied from user code */
+class ArcballControl {
   isPointerDown = false; orientation = quat.create(); pointerRotation = quat.create(); rotationVelocity = 0; rotationAxis = vec3.fromValues(1,0,0); snapDirection = vec3.fromValues(0,0,-1); snapTargetDirection; EPSILON = 0.1; IDENTITY_QUAT = quat.create();
   constructor(canvas, updateCallback) { this.canvas = canvas; this.updateCallback = updateCallback || (()=>null); this.pointerPos = vec2.create(); this.previousPointerPos = vec2.create(); this._rotationVelocity = 0; this._combinedQuat = quat.create(); canvas.addEventListener('pointerdown', e => { vec2.set(this.pointerPos, e.clientX, e.clientY); vec2.copy(this.previousPointerPos, this.pointerPos); this.isPointerDown = true }); canvas.addEventListener('pointerup', () => { this.isPointerDown = false }); canvas.addEventListener('pointerleave', () => { this.isPointerDown = false }); canvas.addEventListener('pointermove', e => { if (this.isPointerDown) { vec2.set(this.pointerPos, e.clientX, e.clientY) } }); canvas.style.touchAction = 'none' }
   update(deltaTime, targetFrameDuration = 16) { const timeScale = deltaTime / targetFrameDuration + 0.00001; let angleFactor = timeScale; let snapRotation = quat.create(); if (this.isPointerDown) { const INTENSITY = 0.3 * timeScale; const ANGLE_AMPLIFICATION = 5 / timeScale; const midPointerPos = vec2.sub(vec2.create(), this.pointerPos, this.previousPointerPos); vec2.scale(midPointerPos, midPointerPos, INTENSITY); if (vec2.sqrLen(midPointerPos) > this.EPSILON) { vec2.add(midPointerPos, this.previousPointerPos, midPointerPos); const p = this.#project(midPointerPos); const q = this.#project(this.previousPointerPos); const a = vec3.normalize(vec3.create(), p); const b = vec3.normalize(vec3.create(), q); vec2.copy(this.previousPointerPos, midPointerPos); angleFactor *= ANGLE_AMPLIFICATION; this.quatFromVectors(a, b, this.pointerRotation, angleFactor); } else { quat.slerp(this.pointerRotation, this.pointerRotation, this.IDENTITY_QUAT, INTENSITY) } } else { const INTENSITY = 0.1 * timeScale; quat.slerp(this.pointerRotation, this.pointerRotation, this.IDENTITY_QUAT, INTENSITY); if (this.snapTargetDirection) { const SNAPPING_INTENSITY = 0.2; const a = this.snapTargetDirection; const b = this.snapDirection; const sqrDist = vec3.squaredDistance(a, b); const distanceFactor = Math.max(0.1, 1 - sqrDist * 10); angleFactor *= SNAPPING_INTENSITY * distanceFactor; this.quatFromVectors(a, b, snapRotation, angleFactor); } } const combinedQuat = quat.multiply(quat.create(), snapRotation, this.pointerRotation); this.orientation = quat.multiply(quat.create(), combinedQuat, this.orientation); quat.normalize(this.orientation, this.orientation); const RA_INTENSITY = 0.8 * timeScale; quat.slerp(this._combinedQuat, this._combinedQuat, combinedQuat, RA_INTENSITY); quat.normalize(this._combinedQuat, this._combinedQuat); const rad = Math.acos(this._combinedQuat[3]) * 2.0; const s = Math.sin(rad / 2.0); let rv = 0; if (s > 0.000001) { rv = rad / (2 * Math.PI); this.rotationAxis[0] = this._combinedQuat[0] / s; this.rotationAxis[1] = this._combinedQuat[1] / s; this.rotationAxis[2] = this._combinedQuat[2] / s } const RV_INTENSITY = 0.5 * timeScale; this._rotationVelocity += (rv - this._rotationVelocity) * RV_INTENSITY; this.rotationVelocity = this._rotationVelocity / timeScale; this.updateCallback(deltaTime) }
@@ -124,8 +124,7 @@ class ArcballControl { /* full class copied from user code */
   #project(pos) { const r = 2; const w = this.canvas.clientWidth; const h = this.canvas.clientHeight; const s = Math.max(w, h) - 1; const x = (2 * pos[0] - w - 1) / s; const y = (2 * pos[1] - h - 1) / s; let z = 0; const xySq = x * x + y * y; const rSq = r * r; if (xySq <= rSq / 2.0) { z = Math.sqrt(rSq - xySq) } else { z = rSq / Math.sqrt(xySq) } return vec3.fromValues(-x, y, z) }
 }
 
-/* InfiniteGridMenu class copied from user source; kept intact */
-class InfiniteGridMenu { /* full class content omitted here for brevity in file; original functionality preserved */
+class InfiniteGridMenu {
   TARGET_FRAME_DURATION = 1000 / 60;
   SPHERE_RADIUS = 2;
   #time = 0; #deltaTime = 0; #deltaFrames = 0; #frames = 0;
@@ -150,16 +149,44 @@ class InfiniteGridMenu { /* full class content omitted here for brevity in file;
   #onControlUpdate(deltaTime) { const timeScale = deltaTime / this.TARGET_FRAME_DURATION + 0.0001; let damping = 5 / timeScale; let cameraTargetZ = 3 * this.scaleFactor; const isMoving = this.control.isPointerDown || Math.abs(this.smoothRotationVelocity) > 0.01; if (isMoving !== this.movementActive) { this.movementActive = isMoving; this.onMovementChange(isMoving) } if (!this.control.isPointerDown) { const nearestVertexIndex = this.#findNearestVertexIndex(); const itemIndex = nearestVertexIndex % Math.max(1, this.items.length); this.onActiveItemChange(itemIndex); const snapDirection = vec3.normalize(vec3.create(), this.#getVertexWorldPosition(nearestVertexIndex)); this.control.snapTargetDirection = snapDirection } else { cameraTargetZ += this.control.rotationVelocity * 80 + 2.5; damping = 7 / timeScale } this.camera.position[2] += (cameraTargetZ - this.camera.position[2]) / damping; this.#updateCameraMatrix() }
   #findNearestVertexIndex() { const n = this.control.snapDirection; const inversOrientation = quat.conjugate(quat.create(), this.control.orientation); const nt = vec3.transformQuat(vec3.create(), n, inversOrientation); let maxD = -1; let nearestVertexIndex; for (let i = 0; i < this.instancePositions.length; ++i) { const d = vec3.dot(nt, this.instancePositions[i]); if (d > maxD) { maxD = d; nearestVertexIndex = i } } return nearestVertexIndex }
   #getVertexWorldPosition(index) { const nearestVertexPos = this.instancePositions[index]; return vec3.transformQuat(vec3.create(), nearestVertexPos, this.control.orientation) }
+
+  // ── Rotation programmatique vers un index d'item donné ──────────────────────
+  goToIndex(i) {
+    const count = this.instancePositions.length
+    const idx = ((i % count) + count) % count
+    const target = this.instancePositions[idx]
+    const targetNorm = vec3.normalize(vec3.create(), target)
+    // On calcule le quaternion pour que `target` pointe vers l'avant (+Z)
+    quat.rotationTo(this.control.orientation, targetNorm, [0, 0, 1])
+  }
+  // ────────────────────────────────────────────────────────────────────────────
 }
 
-const defaultItems = [ { image: 'https://picsum.photos/900/900?grayscale', link: 'https://google.com/', title: '', description: '' } ]
+const defaultItems = [{ image: 'https://picsum.photos/900/900?grayscale', link: 'https://google.com/', title: '', description: '' }]
 
-export default function InfiniteMenu({ items = [], scale = 1.0, showOverlay = true }) {
+/**
+ * InfiniteMenu
+ * @param {Array}    items          - Liste d'items { image, link, title, description }
+ * @param {number}   scale          - Facteur de zoom du globe (défaut 1.0)
+ * @param {boolean}  showOverlay    - Affiche l'overlay titre/description/bouton
+ * @param {number}   autoInterval   - Délai en ms entre chaque changement auto (défaut 5000). 0 = désactivé.
+ * @param {Function} onSlideChange  - Callback(index) appelé à chaque changement de photo actif
+ */
+export default function InfiniteMenu({
+  items = [],
+  scale = 1.0,
+  showOverlay = true,
+  autoInterval = 5000,
+  onSlideChange = null,
+}) {
   const canvasRef = useRef(null)
   const bgRef = useRef(null)
   const [activeItem, setActiveItem] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(0)
   const [isMoving, setIsMoving] = useState(false)
   const activeSrcRef = useRef(null)
+  const sketchRef = useRef(null)       // référence vers l'instance WebGL
+  const autoIndexRef = useRef(0)       // index courant pour l'auto-cycle
 
   const paintBg = (src) => {
     const bg = bgRef.current
@@ -185,11 +212,17 @@ export default function InfiniteMenu({ items = [], scale = 1.0, showOverlay = tr
   useEffect(() => {
     const canvas = canvasRef.current
     let sketch
+    const resolvedItems = items.length ? items : defaultItems
+    const totalItems = resolvedItems.length
 
-    const handleActiveItem = index => {
-      const itemIndex = index % items.length
-      const item = items[itemIndex]
+    const handleActiveItem = (index) => {
+      const itemIndex = index % totalItems
+      const item = resolvedItems[itemIndex]
       setActiveItem(item)
+      setActiveIndex(itemIndex)
+      // Sync l'index auto-cycle sur la sélection manuelle de l'utilisateur
+      autoIndexRef.current = itemIndex
+      if (onSlideChange) onSlideChange(itemIndex)
       if (item?.image && item.image !== activeSrcRef.current) {
         activeSrcRef.current = item.image
         paintBg(item.image)
@@ -197,24 +230,71 @@ export default function InfiniteMenu({ items = [], scale = 1.0, showOverlay = tr
     }
 
     if (canvas) {
-      sketch = new InfiniteGridMenu(canvas, items.length ? items : defaultItems, handleActiveItem, setIsMoving, sk => sk.run(), scale)
+      sketch = new InfiniteGridMenu(
+        canvas,
+        resolvedItems,
+        handleActiveItem,
+        setIsMoving,
+        sk => sk.run(),
+        scale
+      )
+      sketchRef.current = sketch
     }
 
     const handleResize = () => { if (sketch) sketch.resize() }
-
     window.addEventListener('resize', handleResize)
     handleResize()
 
+    // ── Auto-cycle ────────────────────────────────────────────────────────────
+    let autoTimer = null
+    if (autoInterval > 0 && totalItems > 1) {
+      // Build a lookup: for each itemIndex 0..totalItems-1, find the first
+      // vertex whose (vertexIndex % totalItems) === itemIndex.
+      // This guarantees goToIndex rotates to a disc that actually shows the right image.
+      const buildVertexMap = (sk) => {
+        const count = sk.instancePositions.length
+        const map = new Array(totalItems).fill(-1)
+        for (let v = 0; v < count; v++) {
+          const itemIdx = v % totalItems
+          if (map[itemIdx] === -1) map[itemIdx] = v
+          if (map.every(x => x !== -1)) break
+        }
+        return map
+      }
+
+      let vertexMap = null
+
+      autoTimer = setInterval(() => {
+        const sk = sketchRef.current
+        if (!sk || sk.control?.isPointerDown) return   // pause si l'user drag
+
+        // Build map lazily once the sketch is ready
+        if (!vertexMap && sk.instancePositions?.length) {
+          vertexMap = buildVertexMap(sk)
+        }
+
+        autoIndexRef.current = (autoIndexRef.current + 1) % totalItems
+        const targetVertex = vertexMap
+          ? vertexMap[autoIndexRef.current]
+          : autoIndexRef.current
+        if (targetVertex !== -1) sk.goToIndex(targetVertex)
+      }, autoInterval)
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     return () => {
       window.removeEventListener('resize', handleResize)
+      if (autoTimer) clearInterval(autoTimer)
     }
-  }, [items, scale])
+  }, [items, scale, autoInterval, onSlideChange])
 
   const handleButtonClick = () => {
     if (!activeItem?.link) return
     if (activeItem.link.startsWith('http')) window.open(activeItem.link, '_blank')
     else console.log('Internal route:', activeItem.link)
   }
+
+  const totalResolved = (items.length ? items : defaultItems).length
 
   return (
     <div className="infinite-menu-root">
@@ -227,10 +307,38 @@ export default function InfiniteMenu({ items = [], scale = 1.0, showOverlay = tr
             <div className="infinite-menu-overlay-meta">
               <div className="infinite-menu-title">{activeItem.title || 'Preview'}</div>
               <p>{activeItem.description || ''}</p>
-              <button onClick={handleButtonClick} className={`action-button ${isMoving ? 'inactive' : 'active'}`}>
+              <button
+                onClick={handleButtonClick}
+                className={`action-button ${isMoving ? 'inactive' : 'active'}`}
+              >
                 Voir le lien ↗
               </button>
             </div>
+          </div>
+        )}
+
+        {/* Dot indicators — visible when autoInterval > 0 and more than 1 slide */}
+        {autoInterval > 0 && totalResolved > 1 && (
+          <div className="im-dots">
+            {Array.from({ length: totalResolved }).map((_, i) => (
+              <button
+                key={i}
+                className={`im-dot${i === activeIndex ? ' im-dot--active' : ''}`}
+                onClick={() => {
+                  const sk = sketchRef.current
+                  if (sk) { autoIndexRef.current = i; sk.goToIndex(i) }
+                }}
+                aria-label={`Slide ${i + 1}`}
+              >
+                {i === activeIndex && (
+                  <span
+                    key={activeIndex}
+                    className="im-dot-ring"
+                    style={{ animationDuration: `${autoInterval}ms` }}
+                  />
+                )}
+              </button>
+            ))}
           </div>
         )}
       </div>
