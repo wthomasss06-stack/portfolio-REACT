@@ -5,6 +5,8 @@ import ScrollReveal from './components/ScrollReveal.jsx'
 import TargetCursor from './components/TargetCursor.jsx'
 import TextPressure from './components/TextPressure.jsx'
 import Iridescence from './components/Iridescence.jsx'
+import InfiniteMenu from './components/InfiniteMenu.jsx'
+import './components/InfiniteMenu.css'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -333,12 +335,41 @@ const SKILLS = {
 }
 
 const TIMELINE = [
-  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de 14+ applications web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
+  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
   { date: 'Mai–Nov. 2025', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
   { date: '2023–2024', title: 'Projet Académique – ARTICI', company: 'UVCI', items: ["Plateforme web de promotion de l'artisanat local", "Travail collaboratif en équipe pluridisciplinaire", "Intégration de bonnes pratiques de sécurité"], tags: ['Frontend', 'Backend', 'Sécurité'] },
   { date: '2023–2024', title: 'Licence Réseau et Sécurité Informatique', company: 'UVCI', items: ['Formation complète en développement web, bases de données et sécurité', 'Certification E-Banking — Réf: CC/24-002485'], tags: ['Diplôme', 'Certification'] },
   { date: '2020–2021', title: 'Baccalauréat Série D', company: "Lycée Moderne d'Arrah", items: ['Mention : Assez Bien'], tags: ['Diplôme'] },
 ]
+
+const ABOUT_IMAGES = [
+  '/assets/images/IMG_20250124_124101KK.jpg',
+  '/assets/images/moi/93027469_127097918918167_9124333187680436224_n.jpg',
+  '/assets/images/moi/CamScanner 24-02-2026 14.43.jpg',
+  '/assets/images/moi/CamScanner 24-02-2026 17.16 (1) (1).jpg',
+  '/assets/images/moi/ChatGPT Image 26 avr. 2026, 00_44_06.jpg',
+  '/assets/images/moi/ChatGPT Image 26 avr. 2026, 00_47_11.png',
+  '/assets/images/moi/ChatGPT Image 26 avr. 2026, 00_49_13.png',
+  '/assets/images/moi/ChatGPT Image 26 avr. 2026, 00_52_59.png',
+  '/assets/images/moi/FB_IMG_17092288705757644.jpg',
+  '/assets/images/moi/IMG-20260203-WA0012.jpg',
+  '/assets/images/moi/IMG-20260203-WA0014.jpg',
+  '/assets/images/moi/IMG-20260222-WA0020.jpg',
+  '/assets/images/moi/IMG-20260222-WA0091.jpg',
+  '/assets/images/moi/IMG-20260222-WA0096.jpg',
+  '/assets/images/moi/IMG-20260222-WA0109.jpg',
+  '/assets/images/moi/IMG_20200414_130507_968.jpg',
+  '/assets/images/moi/IMG_20200426_182719033.png',
+  '/assets/images/moi/IMG_20211205_173445935 (2).jpg',
+  '/assets/images/moi/IMG_20240331_135514.jpg',
+  '/assets/images/moi/IMG_20240404_145052.jpg',
+  '/assets/images/moi/IMG_20250604_220919.png',
+  '/assets/images/moi/IMG_20250608_174833.jpg',
+  '/assets/images/moi/Snapchat-1841890434.jpg',
+  '/assets/images/moi/Snapchat-304169344-COLLAGE.jpg',
+]
+
+const ABOUT_ITEMS = ABOUT_IMAGES.map(img => ({ image: img, link: '#', title: '', description: '' }))
 
 const TESTIMONIALS = [
   { name: 'Koné Ibrahima', role: 'Fondateur · TechFlow', avatar: 'K', proj: 'Site Vitrine', text: "Elvis a livré notre site vitrine en un temps record. Design moderne, responsive, exactement ce qu'on voulait. Très professionnel." },
@@ -348,24 +379,123 @@ const TESTIMONIALS = [
   { name: 'Manobeat 777', role: 'Beatmaker · ManoBeat', avatar: 'B', proj: 'Beat Store', text: "La boutique de beats marche très bien. Les clients achètent facilement via WhatsApp. Interface propre et professionnelle." },
 ]
 
-/* ════════════════════════════════════════════
-   LOADER
-   ════════════════════════════════════════════ */
 function Loader({ onDone }) {
+  const [progress, setProgress] = useState(0)
+
   useEffect(() => {
-    const t = setTimeout(() => onDone(), 2600)
-    return () => clearTimeout(t)
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const next = prev + Math.random() * 12
+
+        if (next >= 100) {
+          clearInterval(interval)
+
+          setTimeout(() => {
+            onDone()
+          }, 700)
+
+          return 100
+        }
+
+        return next
+      })
+    }, 120)
+
+    return () => clearInterval(interval)
   }, [onDone])
+
+  /* =========================
+     DECRYPT EFFECT
+  ========================= */
+
+  useEffect(() => {
+
+    const letters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+    let iteration = 0
+
+    const el = document.querySelector(".decrypt-text")
+
+    if (!el) return
+
+    const original = "MBOLLO AKA ELVIS"
+
+    const interval = setInterval(() => {
+
+      el.innerText = original
+        .split("")
+        .map((letter, index) => {
+
+          if (index < iteration) {
+            return original[index]
+          }
+
+          return letters[
+            Math.floor(Math.random() * letters.length)
+          ]
+        })
+        .join("")
+
+      if (iteration >= original.length) {
+        clearInterval(interval)
+      }
+
+      iteration += 1 / 2
+
+    }, 40)
+
+    return () => clearInterval(interval)
+
+  }, [])
+
   return (
     <div id="loader">
-      <div className="ld-word">
-        <img src="/assets/images/logo-akatech.png" alt="AKATech" className="ld-logo"
-          onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
-        />
-        <span style={{ display: 'none' }}>AKATech</span>
+
+      {/* BACKGROUND FX */}
+      <div className="ld-noise" />
+      <div className="ld-grid" />
+      <div className="ld-vignette" />
+      <div className="ld-scanline" />
+
+      {/* CENTER */}
+      <div className="ld-center">
+
+        {/* COUNTER */}
+        <div className="ld-percent">
+          {Math.floor(progress)}
+          <span>%</span>
+        </div>
+
+        {/* NAME */}
+        <div className="ld-name">
+          <div className="decrypt-text">
+            MBOLLO AKA ELVIS
+          </div>
+        </div>
+
+        {/* ROLE */}
+        <div className="ld-role">
+          FULL-STACK DEVELOPER · UI/UX · PRODUCT BUILDER
+        </div>
+
+        {/* PROGRESS BAR */}
+        <div className="ld-progress-wrap">
+          <div
+            className="ld-progress"
+            style={{
+              width: `${progress}%`
+            }}
+          />
+        </div>
+
       </div>
-      <div className="ld-sub">Full-Stack Dev · Django &amp; React</div>
-      <div className="ld-bar-wrap"><div className="ld-bar" /></div>
+
+      {/* CORNER */}
+      <div className="ld-corner">
+        AKATech Experience System v2.6
+      </div>
+
     </div>
   )
 }
@@ -618,34 +748,65 @@ function Hero() {
    ════════════════════════════════════════════ */
 function StickyStack() {
   const slides = [
-    { num: '01 — Full-Stack Developer', title: 'REACT &\nPYTHON', body: "À l'aise avec React, Next.js, TypeScript côté front et Django, Flask, Python côté back. Je construis des applications complètes, de la base de données à l'interface utilisateur.", cls: 'ss-01 ss-dark' },
-    { num: '02 — Sécurité & Réseau', title: "SÉCURITÉ\nD'ABORD", body: "Sécurité & bonnes pratiques intégrées dès la conception : authentication, permissions, validation, HTTPS.", cls: 'ss-light' },
-    { num: '03 — Data & Cartographie', title: 'DATA &\nCARTO', body: 'Dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap). Je transforme les données brutes en interfaces lisibles et actionnables.', cls: 'ss-dark2' },
-    { num: '04 — AKATech Agency', title: 'PRODUIT\n& USAGES', body: "Via mon agence AKATech, j'ai livré 14+ applications — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels. Basé à Abidjan.", cls: 'ss-dark3' },
+    {
+      num: '01 — UI / UX',
+      title: 'INTERFACES\n& ÉMOTIONS',
+      body:
+        "J’aime créer des interfaces qui bougent, respirent et donnent une vraie sensation d’expérience. Beaucoup de mes inspirations viennent du motion design, des sites immersifs et des expériences web modernes.",
+      cls: 'ss-light',
+    },
+
+    {
+      num: '02 — Produit & Solutions',
+      title: 'PRODUITS\nUTILes',
+      body:
+        "Je développe des solutions web pensées pour résoudre de vrais problèmes : plateformes, dashboards, outils métier, systèmes de gestion ou expériences SaaS orientées usages réels.",
+      cls: 'ss-light',
+    },
+
+    {
+      num: '03 — Sécurité d’abord',
+      title: 'SÉCURITÉ\nD’ABORD',
+      body:
+        "Ancien étudiant en réseau et sécurité informatique, j’ai gardé une vraie logique de protection et de structure dans ma manière de développer : authentification, permissions, validation et architecture propre.",
+      cls: 'ss-dark2',
+    },
+
+    {
+      num: '04 — Autodidacte',
+      title: 'CURIEUX\n& AUTODIDACTE ',
+      body:
+        "Je suis en grande partie autodidacte. J’apprends vite, j’expérimente beaucoup et je progresse projet après projet. AKATech est devenu mon terrain d’expression pour transformer mes idées en expériences web concrètes.",
+      cls: 'ss-dark3',
+    },
   ]
+
   return (
     <div className="stack-wrap">
       {slides.map((s, i) => (
         <section key={i} className={`stack-sec ${s.cls}`}>
           <div className={s.cls.includes('ss-light') ? 'bg-dots-acc' : 'bg-dots'} />
+
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div className="ss-num">{s.num}</div>
-            <h2 className="ss-title" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
+
+            <h2 className="ss-title">
               {s.title.split('\n').map((line, j) => (
-                <div key={j} style={{ position: 'relative', width: '100%' }}>
+                <div key={j}>
                   <TextPressure
                     text={line}
-                    flex={true}
+                    flex
                     alpha={false}
                     stroke={false}
-                    width={true}
-                    weight={true}
-                    italic={true}
+                    width
+                    weight
+                    italic
                     textColor="currentColor"
                   />
                 </div>
               ))}
             </h2>
+
             <p className="ss-body">{s.body}</p>
           </div>
         </section>
@@ -655,7 +816,7 @@ function StickyStack() {
 }
 
 function Marquee() {
-  const words = ["React", "Django", "Flask", "Python", "TypeScript", "Tailwind", "MySQL", "Vercel", "Node.js", "Git", "REST API", "Bootstrap", "JavaScript"];
+  const words = ["React", "Django", "Flask", "Python", "Tailwind", "MySQL", "Vercel", "Node.js", "Git", "REST API", "Bootstrap", "JavaScript"];
   const d = [...words, ...words];
   return (
     <div className="marquee">
@@ -686,13 +847,14 @@ function About() {
     <section id="about-section" className="sec" style={{ padding: 0, borderTop: '1px solid rgba(255,85,0,.08)' }}>
       <div className="about-grid">
         <div className="about-left">
-          <div className="about-photo-wrap">
-            <div className="about-photo-deco" />
-            <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis"
-              onError={e => { e.target.style.opacity = 0.3; e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
-            <div className="about-photo-tag">FULL-STACK DEV</div>
-            <div className="about-avail"><span className="about-avail-dot" />Disponible · Abidjan</div>
-          </div>
+            <div className="about-photo-wrap">
+              <div className="about-photo-deco" />
+            <div style={{ width: '100%', height: '100%' }}>
+              <InfiniteMenu items={ABOUT_ITEMS} scale={1} showOverlay={false} />
+            </div>
+              <div className="about-photo-tag">Decouvre moi</div>
+              <div className="about-avail"><span className="about-avail-dot" />FULL-STACK DEV</div>
+            </div>
         </div>
         <div className="about-right">
           <div className="about-block">
@@ -700,9 +862,42 @@ function About() {
             <h2 style={{ fontFamily: "'Clash Display','Syne',sans-serif", fontSize: 'clamp(2.2rem,5vw,4.2rem)', fontWeight: 800, lineHeight: .9, letterSpacing: '-.025em', marginBottom: '1.5rem' }}>
               <ScrollReveal>Alors, c'est moi.</ScrollReveal>
             </h2>
-            <h3 className="about-role" style={{ marginTop: '1.5rem' }}>Développeur Full-Stack · <em>Django &amp; React</em><br />Vite &amp; Next.js · Data &amp; Carto</h3>
-            <p className="about-text">À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées Data &amp; Cartographie : dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).</p>
-            <p className="about-text" style={{ marginTop: '1rem' }}>Via mon agence <strong style={{ color: 'var(--accent)' }}>AKATech</strong>, j'ai livré plus de <strong>14 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit et sécurité.</p>
+            <p className="about-text">
+  À la base, je venais du monde du <strong>réseau</strong> et de la 
+  <strong> sécurité informatique</strong>. 
+  Mais au fil du temps, j’ai commencé à aimer autre chose : créer, imaginer, 
+  construire des interfaces et voir des idées prendre vie à l’écran.
+</p>
+
+<p className="about-text" style={{ marginTop: '1rem' }}>
+  Petit à petit, je me suis donc orienté vers le développement web, 
+  où j’ai trouvé un équilibre entre <strong>logique</strong>, 
+  <strong> créativité</strong> et <strong>expérience utilisateur</strong>. 
+  Aujourd’hui, j’aime autant développer une architecture solide 
+  que concevoir une interface qui procure une vraie sensation.
+</p>
+
+<p className="about-text" style={{ marginTop: '1rem' }}>
+  Je développe principalement avec <strong>React</strong>, 
+  <strong> Django</strong> et <strong>Next.js</strong>, 
+  tout en explorant les animations web, la data visualisation, 
+  la cartographie interactive et les expériences immersives inspirées 
+  du motion design moderne.
+</p>
+
+<p className="about-text" style={{ marginTop: '1rem' }}>
+  Je suis aussi en grande partie <strong>autodidacte</strong>. 
+  J’apprends vite, j’expérimente beaucoup et chaque projet est pour moi 
+  une nouvelle manière de progresser, tester des idées et repousser mon niveau.
+</p>
+
+<p className="about-text" style={{ marginTop: '1rem' }}>
+  Et pour transformer cette évolution en quelque chose de concret, 
+  j’ai créé 
+  <strong style={{ color: 'var(--accent)' }}> <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">AKATech</a> </strong> :
+  un espace où je conçois des produits web modernes, des portfolios immersifs 
+  et des solutions digitales pensées pour de vrais usages.
+</p>
           </div>
           <div className="about-block">
             <div className="sec-eyebrow">// Stack principale</div>
@@ -1859,11 +2054,7 @@ function Footer() {
         {/* ── Section principale : QR + CV centré ── */}
         <div className="ft-main-block">
 
-          {/* Tagline simple */}
-          <div className="ft-tagline-only">
-            Développeur Full-Stack · Django &amp; React
-            <span>Abidjan, Côte d'Ivoire · AKATech</span>
-          </div>
+          
 
           {/* Carte QR + CV — centrée */}
           <div className="ft-cv-card-centered">
