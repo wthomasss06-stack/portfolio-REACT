@@ -766,7 +766,7 @@ function StickyStack() {
       title: 'INTERFACES\n& ÉMOTIONS',
       body:
         "J’aime créer des interfaces qui bougent, respirent et donnent une vraie sensation d’expérience. Beaucoup de mes inspirations viennent du motion design, des sites immersifs et des expériences web modernes.",
-      cls: 'ss-light',
+      cls: 'ss-light ss-01',
     },
 
     {
@@ -774,7 +774,7 @@ function StickyStack() {
       title: 'PRODUITS\nUTILes',
       body:
         "Je développe des solutions web pensées pour résoudre de vrais problèmes : plateformes, dashboards, outils métier, systèmes de gestion ou expériences SaaS orientées usages réels.",
-      cls: 'ss-light',
+      cls: 'ss-light ss-02',
     },
 
     {
