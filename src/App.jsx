@@ -862,7 +862,7 @@ function About() {
         <div className="about-left">
             <div className="about-photo-wrap">
               <div className="about-photo-deco" />
-            <div style={{ width: '100%', height: '100%' }}>
+            <div style={{ width: '100%', height: '100%', minHeight: '520px', position: 'relative' }}>
               <InfiniteMenu items={ABOUT_ITEMS} scale={1} showOverlay={false} />
             </div>
               <div className="about-photo-tag">TOUCHE TON CURSEUR ICI ,Decouvre moi</div>
@@ -2183,7 +2183,10 @@ function Footer() {
   /* SVG lettres animées en bas */
   useEffect(() => {
     const svg = document.getElementById('footer-svg')
-    if (!svg || svg.dataset.built) return
+    if (!svg) return
+    // Reset pour StrictMode React (double-invoke en dev)
+    svg.dataset.built = ''
+    svg.innerHTML = ''
     svg.dataset.built = '1'
     const letters = [
       'M42 10 L10 120 L28 120 L42 76 L56 120 L74 120 L42 10Z M29 65 L55 65 L42 25Z',
@@ -2209,7 +2212,7 @@ function Footer() {
       entries.forEach(e =>
         svg.querySelectorAll('.path-letter').forEach(l => l.classList.toggle('visible', e.isIntersecting))
       )
-    }, { threshold: .3 })
+    }, { threshold: 0.05, rootMargin: '0px 0px 100px 0px' })
     obs.observe(svg)
     return () => obs.disconnect()
   }, [])

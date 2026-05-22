@@ -1,4 +1,4 @@
-.infinite-menu-root{width:150%;height:120%;min-height:520px;display:flex;flex-direction:column}
+.infinite-menu-root{width:100%;height:100%;min-height:520px;display:flex;flex-direction:column}
 .infinite-menu-screen{position:relative;width:100%;flex:1;min-height:420px;overflow:hidden;border-radius:24px;background:transparent}
 .infinite-menu-bg{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:0}
 #infinite-grid-menu-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}

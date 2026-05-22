@@ -243,6 +243,12 @@ export default function InfiniteMenu({
 
     const handleResize = () => { if (sketch) sketch.resize() }
     window.addEventListener('resize', handleResize)
+    // ResizeObserver: crucial en prod pour détecter quand le canvas a ses vraies dims
+    let ro = null
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => { if (sketch) { setTimeout(() => sketch.resize(), 0) } })
+      ro.observe(canvas)
+    }
     handleResize()
 
     // ── Auto-cycle ────────────────────────────────────────────────────────────
@@ -284,6 +290,7 @@ export default function InfiniteMenu({
 
     return () => {
       window.removeEventListener('resize', handleResize)
+      if (ro) ro.disconnect()
       if (autoTimer) clearInterval(autoTimer)
     }
   }, [items, scale, autoInterval, onSlideChange])
