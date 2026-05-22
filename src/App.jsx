@@ -1456,7 +1456,7 @@ function GallerySection() {
   useEffect(() => {
     const container = containerRef.current; if (!container) return
     let cleanup = false
-    import('https://unpkg.com/ogl').then(({ Camera, Mesh, Plane, Program, Renderer, Texture, Transform }) => {
+    import('ogl').then(({ Camera, Mesh, Plane, Program, Renderer, Texture, Transform }) => {
       if (cleanup) return
       const lerp = (a, b, t) => a + (b - a) * t
       const items = [...PROJECTS, ...PROJECTS].map(p => ({ image: p.img, title: p.title, sub: p.sub, desc: p.desc, tech: p.tech, url: p.url }))
