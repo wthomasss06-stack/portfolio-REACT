@@ -860,15 +860,43 @@ function About() {
     <section id="about-section" className="sec" style={{ padding: 0, borderTop: '1px solid rgba(255,85,0,.08)' }}>
       <div className="about-grid">
         <div className="about-left">
-            <div className="about-photo-wrap">
-              <div className="about-photo-deco" />
-            <div style={{ width: '100%', height: '100%', minHeight: '520px', position: 'relative' }}>
-              <InfiniteMenu items={ABOUT_ITEMS} scale={1} showOverlay={false} />
-            </div>
-              <div className="about-photo-tag">TOUCHE TON CURSEUR ICI ,Decouvre moi</div>
-              <div className="about-avail"><span className="about-avail-dot" />FULL-STACK DEV</div>
-            </div>
-        </div>
+  <div
+    className="about-photo-wrap"
+    style={{
+      width: '620px',
+      height: '760px',
+      maxWidth: '100%',
+      position: 'relative',
+      overflow: 'hidden',
+      borderRadius: '32px'
+    }}
+  >
+    <div className="about-photo-deco" />
+
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative'
+      }}
+    >
+      <InfiniteMenu
+        items={ABOUT_ITEMS}
+        scale={1}
+        showOverlay={false}
+      />
+    </div>
+
+    <div className="about-photo-tag">
+      TOUCHE TON CURSEUR ICI ,Decouvre moi
+    </div>
+
+    <div className="about-avail">
+      <span className="about-avail-dot" />
+      FULL-STACK DEV
+    </div>
+  </div>
+</div>
         <div className="about-right">
           <div className="about-block">
             <div className="sec-eyebrow">// Qui suis-je ?</div>
@@ -2175,12 +2203,13 @@ function ContactSection({ onToast }) {
 }
 
 /* ════════════════════════════════════════════
-   FOOTER — simplifié v7 : QR centré uniquement
-   pas de newsletter, pas de liens colonnes
+   FOOTER — simplifié v7 : QR centré + AKATECH MASSIF
    ════════════════════════════════════════════ */
+
+
 function Footer() {
 
-  /* SVG lettres animées en bas */
+  /* SVG lettres animées en bas (AKATECH) */
   useEffect(() => {
     const svg = document.getElementById('footer-svg')
     if (!svg) return
@@ -2188,26 +2217,33 @@ function Footer() {
     svg.dataset.built = ''
     svg.innerHTML = ''
     svg.dataset.built = '1'
+    
     const letters = [
-      'M42 10 L10 120 L28 120 L42 76 L56 120 L74 120 L42 10Z M29 65 L55 65 L42 25Z',
-      'M88 10 L88 120 L106 120 L106 72 L138 120 L160 120 L122 65 L156 10 L135 10 L106 58 L106 10Z',
-      'M196 10 L164 120 L182 120 L196 76 L210 120 L228 120 L196 10Z M183 65 L209 65 L196 25Z',
-      'M244 10 L244 28 L280 28 L280 120 L298 120 L298 28 L334 28 L334 10Z',
-      'M354 10 L354 120 L440 120 L440 103 L372 103 L372 73 L430 73 L430 56 L372 56 L372 27 L438 27 L438 10Z',
-      'M510 18 C490 5 464 8 448 28 C432 48 432 82 448 102 C464 122 492 125 512 112 L502 97 C488 106 470 104 460 92 C450 80 450 50 460 38 C470 26 490 24 502 34Z',
-      'M530 10 L530 120 L548 120 L548 72 L600 72 L600 120 L618 120 L618 10 L600 10 L600 55 L548 55 L548 10Z',
+      'M42 10 L10 120 L28 120 L42 76 L56 120 L74 120 L42 10Z M29 65 L55 65 L42 25Z', // A
+      'M88 10 L88 120 L106 120 L106 72 L138 120 L160 120 L122 65 L156 10 L135 10 L106 58 L106 10Z', // K
+      'M196 10 L164 120 L182 120 L196 76 L210 120 L228 120 L196 10Z M183 65 L209 65 L196 25Z', // A
+      'M244 10 L244 28 L280 28 L280 120 L298 120 L298 28 L334 28 L334 10Z', // T
+      'M354 10 L354 120 L440 120 L440 103 L372 103 L372 73 L430 73 L430 56 L372 56 L372 27 L438 27 L438 10Z', // E
+      'M510 18 C490 5 464 8 448 28 C432 48 432 82 448 102 C464 122 492 125 512 112 L502 97 C488 106 470 104 460 92 C450 80 450 50 460 38 C470 26 490 24 502 34Z', // C
+      'M530 10 L530 120 L548 120 L548 72 L600 72 L600 120 L618 120 L618 10 L600 10 L600 55 L548 55 L548 10Z', // H
     ]
+    
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-    g.setAttribute('transform', 'translate(141,0)')
+    
+    // 💡 UPDATE : On supprime le translate(141) pour centrer parfaitement les lettres dans le nouveau viewBox serré.
+    // g.setAttribute('transform', 'translate(141,0)')
+    
     letters.forEach((d, i) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
       path.setAttribute('d', d)
-      path.setAttribute('fill', 'rgba(255,85,0,0.3)')
+      // J'ai mis var(--accent) pour que ça colle à 100% à ton thème (tu peux remettre ton rgba si tu préfères)
+      path.setAttribute('fill', 'var(--accent, rgba(255,85,0,0.3))') 
       path.classList.add('path-letter')
       path.style.transitionDelay = `${i * .07}s`
       g.appendChild(path)
     })
     svg.appendChild(g)
+    
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e =>
         svg.querySelectorAll('.path-letter').forEach(l => l.classList.toggle('visible', e.isIntersecting))
@@ -2223,8 +2259,6 @@ function Footer() {
 
         {/* ── Section principale : QR + CV centré ── */}
         <div className="ft-main-block">
-
-          
 
           {/* Carte QR + CV — centrée */}
           <div className="ft-cv-card-centered">
@@ -2266,9 +2300,16 @@ function Footer() {
         <div style={{ height: '1px', background: 'rgba(255,85,0,.1)', margin: '3rem 0 0' }} />
       </div>
 
-      {/* Big SVG lettres animées */}
-      <div className="ft-svg-wrap">
-        <svg id="footer-svg" viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg" fill="none" />
+      {/* 💡 UPDATE : Big SVG lettres animées en mode "FULL BLEED MASSIF" */}
+      <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden flex items-center justify-center mt-16 mb-6">
+        <svg 
+          id="footer-svg" 
+          viewBox="0 0 630 130" 
+          preserveAspectRatio="xMidYMid meet"
+          className="w-full h-auto px-4 md:px-8" 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+        />
       </div>
 
       {/* Barre de bas */}
@@ -2280,6 +2321,8 @@ function Footer() {
     </footer>
   )
 }
+
+
 
 /* ════════════════════════════════════════════
    SCROLL TOP ROCKET — Web Audio Engine complet
