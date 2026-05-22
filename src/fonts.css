@@ -1,0 +1,32 @@
+@import '@fontsource/outfit/400.css';
+@import '@fontsource/outfit/500.css';
+@import '@fontsource/outfit/700.css';
+@import '@fontsource/outfit/800.css';
+@import '@fontsource/outfit/900.css';
+@import '@fontsource/syne/400.css';
+@import '@fontsource/syne/600.css';
+@import '@fontsource/syne/700.css';
+@import '@fontsource/syne/800.css';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/lora/400.css';
+@import '@fontsource/lora/400-italic.css';
+
+/* Alias : Cabinet Grotesk → Syne, Clash Display → Syne */
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: local('Syne');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Clash Display';
+  src: local('Syne');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

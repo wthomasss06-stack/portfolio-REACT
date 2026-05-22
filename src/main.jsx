@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 
+// ── Polices bundlées (zéro CDN externe) ──
+// Doit être importé ici, PAS dans style.css?inline
+import './fonts.css'
+
 // ── Les trois portfolios ──
 import ModernApp from './App.jsx'
 import AppMobile from './Appmobile.jsx'
@@ -59,16 +63,13 @@ function Root() {
     catch { return 'win95' }
   })
 
-  // Ajouter/retirer la classe 'mobile-root' sur body
   useEffect(() => {
     document.body.classList.toggle('mobile-root', isMobile)
   }, [isMobile])
 
-  // Charger le CSS de manière dynamique selon le mode et le device
   useEffect(() => {
     const activeCss = mode === 'modern' ? (isMobile ? styleMobile : styleDesktop) : null
     let styleEl = document.getElementById('dynamic-portfolio-styles')
-    
     if (activeCss) {
       if (!styleEl) {
         styleEl = document.createElement('style')
@@ -79,9 +80,7 @@ function Root() {
         styleEl.textContent = activeCss
       }
     } else {
-      if (styleEl) {
-        styleEl.remove()
-      }
+      if (styleEl) styleEl.remove()
     }
   }, [mode, isMobile])
 
@@ -106,21 +105,15 @@ function Root() {
 
   return (
     <>
-      {/* Win95 */}
       <div style={{ display: mode === 'win95' ? 'block' : 'none', height: '100%' }}>
         <Win95App />
       </div>
-
-      {/* Mobile — classe mobile-root déjà sur body via useEffect */}
       <div style={{ display: mode === 'modern' && isMobile ? 'block' : 'none' }}>
         <AppMobile />
       </div>
-
-      {/* Desktop */}
       <div style={{ display: mode === 'modern' && !isMobile ? 'block' : 'none' }}>
         <ModernApp />
       </div>
-
       {!isMobile && <SwitcherBtn mode={mode} onToggle={toggle} />}
     </>
   )
