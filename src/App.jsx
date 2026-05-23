@@ -757,7 +757,7 @@ function Hero() {
             {/* Stats — GSAP animated counters */}
             <div className="hv4-stats hv4-rv" style={{ '--d': '.85s' }}>
               <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target="14" data-suffix="">0</span>
+                <span className="hv4-stat-n gs-counter" data-target={PROJECTS.length} data-suffix="">0</span>
                 <span className="hv4-stat-l">Projets</span>
               </div>
               <div className="hv4-stat">
@@ -765,7 +765,7 @@ function Hero() {
                 <span className="hv4-stat-l">Années</span>
               </div>
               <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target="9" data-suffix="">0</span>
+                <span className="hv4-stat-n gs-counter" data-target={PROJECTS.filter(p => p.cat === 'en-ligne').length} data-suffix="">0</span>
                 <span className="hv4-stat-l">En prod.</span>
               </div>
               <div className="hv4-stat">
@@ -990,12 +990,30 @@ function About() {
             <div className="sec-eyebrow">// Réalisations de cœur</div>
             <div className="skew-gallery" style={{ marginTop: '1.5rem' }}>
               {[
-                { src: '/assets/images/projects/newhorizon-preview.jpg', fb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500', label: 'New Horizon Service' },
-                { src: '/assets/images/projects/monmarket-preview.jpg', fb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500', label: 'ShopCI Marketplace' },
-                { src: '/assets/images/projects/akatech-preview.jpg', fb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500', label: 'AKATech Agency' },
+                { src: '/assets/images/projects/newhorizon-preview.jpg', fb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500', label: 'New Horizon Service', url: 'https://new-horizonservice.vercel.app/' },
+                { src: '/assets/images/projects/monmarket-preview.jpg', fb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500', label: 'ShopCI Marketplace', url: 'https://shop-ci.vercel.app/' },
+                { src: '/assets/images/projects/nexura-preview.jpg', fb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500', label: 'NEXURA Marketplace', url: 'https://nexura-one.vercel.app/' },
               ].map(item => (
-                <div key={item.label} className="skew-item">
-                  <img src={item.src} alt={item.label} onError={e => { e.target.src = item.fb }} />
+                <div key={item.label} className="skew-item skew-item--linked">
+                  <div className="skew-item-inner">
+                    <img src={item.src} alt={item.label} onError={e => { e.target.src = item.fb }} />
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="skew-item-overlay"
+                      aria-label={`Voir ${item.label}`}
+                    >
+                      <span className="skew-item-link-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                          <polyline points="15 3 21 3 21 9"/>
+                          <line x1="10" y1="14" x2="21" y2="3"/>
+                        </svg>
+                        Voir le projet
+                      </span>
+                    </a>
+                  </div>
                   <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '.65rem', color: 'var(--accent)', marginTop: '.5rem', display: 'block' }}>{item.label}</span>
                 </div>
               ))}

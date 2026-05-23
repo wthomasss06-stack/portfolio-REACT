@@ -993,100 +993,83 @@ const Noise = () => (
 // LOADER v4 — page.js style, orange, responsive, dark/light
 // ═══════════════════════════════════════════════════════════════
 const Loader = ({ onDone }) => {
-  const [pct, setPct] = useState(0);
-  const isLight = (() => { try { return localStorage.getItem('aka-theme') === 'light'; } catch { return false; } })();
-  const bg   = isLight ? '#f5f0e8' : '#0f0800';
-  const ink  = isLight ? '#0f0800' : '#f5f0e8';
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setPct(p => {
-      const n = p + Math.random() * 7 + 2;
-      if (n >= 100) { clearInterval(t); setTimeout(onDone, 400); return 100; }
-      return n;
-    }), 55);
-    return () => clearInterval(t);
-  }, [onDone]);
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const next = prev + Math.random() * 12
+        if (next >= 100) {
+          clearInterval(interval)
+          // Ajouter la classe hide pour la transition avant de démonter
+          setTimeout(() => {
+            const el = document.getElementById('mob-loader')
+            if (el) el.classList.add('hide')
+            setTimeout(() => onDone(), 900)
+          }, 400)
+          return 100
+        }
+        return next
+      })
+    }, 120)
+    return () => clearInterval(interval)
+  }, [onDone])
 
-  const p = Math.min(100, Math.round(pct));
+  /* Decrypt effect */
+  useEffect(() => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    let iteration = 0
+    const el = document.querySelector(".mob-decrypt-text")
+    if (!el) return
+    const original = "MBOLLO AKA ELVIS"
+    const iv = setInterval(() => {
+      el.innerText = original.split("").map((letter, index) => {
+        if (index < iteration) return original[index]
+        return letters[Math.floor(Math.random() * letters.length)]
+      }).join("")
+      if (iteration >= original.length) clearInterval(iv)
+      iteration += 1 / 2
+    }, 40)
+    return () => clearInterval(iv)
+  }, [])
 
   return (
-    <div style={{
-      position:'fixed', inset:0, zIndex:9999,
-      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28,
-      background: bg,
-      fontFamily:"'Arial Black', 'Arial', sans-serif",
-    }}>
-      <style>{`
-        @keyframes nbLogoBob { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-8px) rotate(1deg)} }
-        @keyframes nbBarShine {
-          0%   { background-position: -200% center; }
-          100% { background-position:  300% center; }
-        }
-        @keyframes nbDotBlink { 0%,100%{opacity:1} 50%{opacity:0} }
-      `}</style>
+    <div id="mob-loader">
+      {/* Backgrounds */}
+      <div className="mob-ld-noise" />
+      <div className="mob-ld-grid" />
+      <div className="mob-ld-vignette" />
+      <div className="mob-ld-scanline" />
 
-      {/* Logo */}
-      <img
-        src="/assets/images/logo-akatech.png"
-        alt="AKATech"
-        style={{
-          width:110, height:110, objectFit:'contain',
-          animation:'nbLogoBob 1.8s ease-in-out infinite',
-          filter:`drop-shadow(4px 4px 0px ${ink})`,
-        }}
-      />
+      {/* Center content */}
+      <div className="mob-ld-center">
+        {/* Percent */}
+        <div className="mob-ld-percent">
+          {Math.floor(progress)}
+          <span>%</span>
+        </div>
 
-      {/* Neo-brut card */}
-      <div style={{
-        border:`3px solid ${ink}`,
-        boxShadow:`6px 6px 0 ${ink}`,
-        background: bg,
-        padding:'20px 28px',
-        display:'flex', flexDirection:'column', gap:14,
-        width:'min(320px, 80vw)',
-        borderRadius: 16,
-      }}>
-        {/* "Loading...." label */}
-        <div style={{
-          fontSize:18, fontWeight:900, letterSpacing:'.06em',
-          color: ink, textTransform:'uppercase',
-          display:'flex', alignItems:'baseline', gap:2,
-        }}>
-          Loading
-          {[0,1,2,3].map(i=>(
-            <span key={i} style={{
-              animation:`nbDotBlink .8s ease-in-out ${i*0.18}s infinite`,
-              display:'inline-block',
-            }}>.</span>
-          ))}
+        {/* Name decrypt */}
+        <div className="mob-ld-name">
+          <div className="mob-decrypt-text">MBOLLO AKA ELVIS</div>
+        </div>
+
+        {/* Role */}
+        <div className="mob-ld-role">
+          FULL-STACK · UI/UX · PRODUCT BUILDER
         </div>
 
         {/* Progress bar */}
-        <div style={{
-          border:`3px solid ${ink}`,
-          height:22, background: isLight ? '#e8e0d0' : '#1a0f00',
-          overflow:'hidden', position:'relative',
-          borderRadius: 8,
-        }}>
-          <div style={{
-            position:'absolute', inset:0, right:`${100-pct}%`,
-            background:`linear-gradient(90deg, #ff5500 0%, #ff8800 45%, #ffbb00 55%, #ff5500 100%)`,
-            backgroundSize:'200% 100%',
-            animation: p < 100 ? 'nbBarShine 1.2s linear infinite' : 'none',
-            transition:'right .06s linear',
-          }}/>
+        <div className="mob-ld-progress-wrap">
+          <div className="mob-ld-progress" style={{ width: `${progress}%` }} />
         </div>
-
-        {/* Percentage */}
-        <div style={{
-          fontSize:13, fontWeight:900, letterSpacing:'.1em',
-          color:'#ff5500', textAlign:'right',
-          fontFamily:"'Courier New', monospace",
-        }}>{p}%</div>
       </div>
+
+      {/* Corner tag */}
+      <div className="mob-ld-corner">AKATech Experience System v2.6</div>
     </div>
-  );
-};
+  )
+}
 
 
 const ThemeToggle = ({dark, onToggle}) => (
@@ -1758,7 +1741,12 @@ const Hero = ({ dark }) => {
             </div>
 
             <div className="hv4-stats hv4-rv" style={{'--d':'0.85s'}}>
-              {[['14','Projets'],['3+','Années exp.'],['9','En prod.'],['33','Outils']].map(([n,l])=>(
+              {[
+                  [String(PROJECTS.length), 'Projets'],
+                  ['3+','Années exp.'],
+                  [String(PROJECTS.filter(p=>p.cat==='en-ligne').length),'En prod.'],
+                  ['33','Outils']
+                ].map(([n,l])=>(
                 <div key={l} className="hv4-stat">
                   <span className="hv4-stat-n">{n}</span>
                   <span className="hv4-stat-l">{l}</span>

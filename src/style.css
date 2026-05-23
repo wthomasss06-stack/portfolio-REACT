@@ -673,10 +673,57 @@ body.light-mode .bg-dots-acc {
 .stack-pill.acc { border-color: rgba(255,85,0,.4); color: var(--accent); }
 .skew-gallery { display: flex; flex-direction: column; gap: 2rem; }
 .skew-item { transition: transform .4s; }
-.skew-item:nth-child(odd) { align-self: flex-start; transform: skewX(-5deg) rotate(-1.2deg); border-radius: 16px; overflow: hidden; }
-.skew-item:nth-child(even) { align-self: flex-end; transform: skewX(5deg) rotate(1.2deg); border-radius: 16px; overflow: hidden; }
+.skew-item:nth-child(odd) { align-self: flex-start; transform: skewX(-5deg) rotate(-1.2deg); border-radius: 16px; overflow: visible; }
+.skew-item:nth-child(even) { align-self: flex-end; transform: skewX(5deg) rotate(1.2deg); border-radius: 16px; overflow: visible; }
 .skew-item:hover { transform: skewX(0) rotate(0) scale(1.04) !important; }
 .skew-item img { width: 340px; aspect-ratio: 4/3; object-fit: cover; border-radius: 14px; border: var(--border); box-shadow: var(--shadow); display: block; }
+
+/* ── Linked skew item — overlay hover ── */
+.skew-item--linked { position: relative; }
+.skew-item-inner { position: relative; border-radius: 14px; overflow: hidden; display: inline-block; }
+.skew-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity .28s ease, background .28s ease;
+  text-decoration: none;
+  z-index: 2;
+}
+.skew-item-inner:hover .skew-item-overlay,
+.skew-item--linked:hover .skew-item-overlay {
+  opacity: 1;
+  background: rgba(0,0,0,.52);
+}
+.skew-item-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #FF5500;
+  color: #fff;
+  font-family: 'Clash Display','Syne', sans-serif;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border-radius: 999px;
+  box-shadow: 0 4px 20px rgba(255,85,0,.45), 0 0 0 0 rgba(255,85,0,.3);
+  transform: translateY(8px) scale(.92);
+  transition: transform .3s cubic-bezier(.175,.885,.32,1.275), box-shadow .3s;
+  white-space: nowrap;
+}
+.skew-item-inner:hover .skew-item-link-btn,
+.skew-item--linked:hover .skew-item-link-btn {
+  transform: translateY(0) scale(1);
+  box-shadow: 0 6px 28px rgba(255,85,0,.55), 0 0 0 3px rgba(255,85,0,.18);
+}
+.skew-item-link-btn svg { flex-shrink: 0; transition: transform .2s; }
+.skew-item-inner:hover .skew-item-link-btn svg { transform: translate(1px,-1px); }
 @media(max-width:900px){ .about-grid { grid-template-columns: 1fr; } .about-left { position: static; height: auto; padding: 3rem 2rem; } .about-right { padding: 4rem 2rem; gap: 4rem; } }
 
 /* ══════════ SKEW SECTION ══════════ */
