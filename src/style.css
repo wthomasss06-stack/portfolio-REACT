@@ -2772,3 +2772,66 @@ body.light-mode .att-moon{
   opacity:0;
   transform:rotate(-45deg) scale(.7);
 }
+/* ══════════ GITHUB CARD — nouveaux états v2 ══════════ */
+
+/* Skeleton stat (pendant le chargement) */
+.gh-stat-skeleton {
+  display: inline-block;
+  width: 48px;
+  height: 1.4em;
+  border-radius: 6px;
+  background: linear-gradient(90deg,
+    rgba(255,85,0,.08) 25%,
+    rgba(255,85,0,.18) 50%,
+    rgba(255,85,0,.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: ghSkelShimmer 1.4s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes ghSkelShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton grille (avant que les contributions arrivent) */
+.github-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(53, 1fr);
+  gap: 3px;
+}
+.github-square-skeleton {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: rgba(255,85,0,.06);
+  animation: ghSkelShimmer 1.4s ease-in-out infinite;
+}
+.github-square-skeleton:nth-child(3n) { animation-delay: .2s; }
+.github-square-skeleton:nth-child(5n) { animation-delay: .4s; }
+
+/* Badge "loading" sur le pulse */
+.github-pulse.loading {
+  background: rgba(255,85,0,.4);
+  box-shadow: none;
+  animation: ghPulseLoad 1s ease-in-out infinite;
+}
+@keyframes ghPulseLoad {
+  0%,100% { opacity: .4; transform: scale(.8); }
+  50%      { opacity: 1;  transform: scale(1.15); }
+}
+
+/* Notice API indisponible */
+.gh-api-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: .6rem;
+  color: rgba(255,85,0,.55);
+  background: rgba(255,85,0,.05);
+  border: 1px solid rgba(255,85,0,.12);
+  border-radius: 8px;
+  padding: 7px 12px;
+  margin: 8px 0 0;
+}

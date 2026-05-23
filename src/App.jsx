@@ -1711,22 +1711,22 @@ function GitHubInteractiveCard() {
     { id: 4, time: 'Il y a 3 jours',   repo: 'chap-chapMAP', msg: 'refactor: optimisation des couches Leaflet',     commits: 1 },
   ])
 
-  /* ── Real-time GitHub data ── */
-  const [ghLoading,       setGhLoading]       = useState(true)
-  const [ghUser,          setGhUser]          = useState(null)
-  const [ghRepos,         setGhRepos]         = useState([])
-  const [contributions,   setContributions]   = useState([])
+  const [ghLoading,     setGhLoading]     = useState(true)
+  const [ghError,       setGhError]       = useState(false)
+  const [ghUser,        setGhUser]        = useState(null)
+  const [ghRepos,       setGhRepos]       = useState([])
+  const [contributions, setContributions] = useState([])
   const [ghStats, setGhStats] = useState({
-    totalContribs: '…', longestStreak: '…', thisMonth: '…', topLang: 'React / Python',
+    totalContribs: null, longestStreak: null, thisMonth: null, topLang: 'React / Python',
   })
 
-  /* ── Fallback random grid (utilisé si l'API échoue) ── */
+  /* ── Fallback grid réaliste ── */
   const buildFallbackGrid = useCallback(() => {
     const data = []
     const today = new Date()
     const startDate = new Date(); startDate.setDate(today.getDate() - 364)
-    const startDayOfWeek = startDate.getDay()
-    startDate.setDate(startDate.getDate() - startDayOfWeek)
+    const dow = startDate.getDay()
+    startDate.setDate(startDate.getDate() - dow)
     for (let i = 0; i < 371; i++) {
       const currentDate = new Date(startDate); currentDate.setDate(startDate.getDate() + i)
       const isWeekend = [0,6].includes(currentDate.getDay())
@@ -1746,21 +1746,18 @@ function GitHubInteractiveCard() {
     return data
   }, [])
 
-  /* ── Fetch GitHub API ── */
+  /* ── Fetch indépendant par requête (plus de Promise.all tout-ou-rien) ── */
   useEffect(() => {
     const headers = { Accept: 'application/vnd.github.v3+json' }
+    let cancelled = false
 
     const buildGrid = (apiContribs) => {
-      /* Aligner les contributions sur une grille de 53×7 commençant un Dimanche */
       const today = new Date()
       const startDate = new Date(); startDate.setDate(today.getDate() - 364)
       const dow = startDate.getDay()
       const alignedStart = new Date(startDate); alignedStart.setDate(startDate.getDate() - dow)
-
-      /* Map date→{count,level} */
       const cMap = {}
       apiContribs.forEach(d => { cMap[d.date] = d })
-
       const grid = []
       for (let i = 0; i < 371; i++) {
         const d = new Date(alignedStart); d.setDate(alignedStart.getDate() + i)
@@ -1772,51 +1769,73 @@ function GitHubInteractiveCard() {
       return grid
     }
 
-    Promise.all([
-      fetch(`https://api.github.com/users/${GH_USER}`, { headers }).then(r => r.json()),
-      fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=stars`, { headers }).then(r => r.json()),
-      fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`).then(r => r.json()),
-    ])
-    .then(([user, repos, contribData]) => {
-      /* Utilisateur */
-      if (user && !user.message) setGhUser(user)
+    /* Timeout helper : rejette après N ms */
+    const fetchWithTimeout = (url, opts = {}, ms = 8000) => {
+      const ctrl = new AbortController()
+      const tid = setTimeout(() => ctrl.abort(), ms)
+      return fetch(url, { ...opts, signal: ctrl.signal })
+        .finally(() => clearTimeout(tid))
+    }
 
-      /* Dépôts — tri par étoiles, garder top 4 */
-      if (Array.isArray(repos)) {
-        const sorted = repos
-          .filter(r => !r.fork)
-          .sort((a,b) => (b.stargazers_count||0) - (a.stargazers_count||0))
-          .slice(0, 4)
-        setGhRepos(sorted)
-      }
+    /* Lancer les 3 requêtes en parallèle mais INDÉPENDAMMENT */
+    const run = async () => {
+      /* 1. User info */
+      fetchWithTimeout(`https://api.github.com/users/${GH_USER}`, { headers })
+        .then(r => r.ok ? r.json() : null)
+        .then(user => { if (!cancelled && user && !user.message) setGhUser(user) })
+        .catch(() => {})
 
-      /* Grille de contributions */
-      if (contribData?.contributions?.length) {
-        setContributions(buildGrid(contribData.contributions))
+      /* 2. Repos */
+      fetchWithTimeout(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=stars`, { headers })
+        .then(r => r.ok ? r.json() : [])
+        .then(repos => {
+          if (cancelled || !Array.isArray(repos)) return
+          const sorted = repos.filter(r => !r.fork)
+            .sort((a,b) => (b.stargazers_count||0) - (a.stargazers_count||0))
+            .slice(0, 4)
+          setGhRepos(sorted)
+        })
+        .catch(() => {})
 
-        /* Statistiques dérivées */
-        const all  = contribData.contributions
-        const total = all.reduce((s,d) => s+d.count, 0)
-        let maxStreak=0, streak=0
-        all.forEach(d => { if(d.count>0){streak++;maxStreak=Math.max(maxStreak,streak)}else streak=0 })
-        const now = new Date()
-        const thisMonth = all.filter(d => {
-          const dt=new Date(d.date); return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear()
-        }).reduce((s,d)=>s+d.count,0)
+      /* 3. Contributions — tenter l'API tierce avec retry sur l'API officielle */
+      let contribOk = false
+      try {
+        const r = await fetchWithTimeout(
+          `https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`, {}, 10000
+        )
+        if (r.ok) {
+          const data = await r.json()
+          if (!cancelled && data?.contributions?.length) {
+            const grid = buildGrid(data.contributions)
+            setContributions(grid)
+            const all   = data.contributions
+            const total = all.reduce((s,d) => s+d.count, 0)
+            let maxStreak=0, streak=0
+            all.forEach(d => { if(d.count>0){streak++;maxStreak=Math.max(maxStreak,streak)}else streak=0 })
+            const now = new Date()
+            const thisMonth = all
+              .filter(d => { const dt=new Date(d.date); return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear() })
+              .reduce((s,d)=>s+d.count,0)
+            setGhStats({ totalContribs: total, longestStreak: maxStreak, thisMonth, topLang: 'React / Python' })
+            contribOk = true
+          }
+        }
+      } catch (_) {}
 
-        setGhStats({ totalContribs: total, longestStreak: maxStreak, thisMonth, topLang: 'React / Python' })
-      } else {
+      /* Fallback si la contrib API a échoué */
+      if (!contribOk && !cancelled) {
         setContributions(buildFallbackGrid())
+        /* Les stats numériques restent null → affichage "—" élégant */
       }
-      setGhLoading(false)
-    })
-    .catch(() => {
-      setContributions(buildFallbackGrid())
-      setGhLoading(false)
-    })
+
+      if (!cancelled) setGhLoading(false)
+    }
+
+    run()
+    return () => { cancelled = true }
   }, [buildFallbackGrid])
 
-  /* ── Tooltip au survol de la grille ── */
+  /* ── Tooltip ── */
   const handleSquareHover = (e, day) => {
     const rect = e.currentTarget.getBoundingClientRect()
     const parentRect = e.currentTarget.offsetParent?.getBoundingClientRect() || rect
@@ -1858,9 +1877,16 @@ function GitHubInteractiveCard() {
 
   const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
 
-  /* ── RENDER ── */
+  /* helper stat display */
+  const statVal = (v, suffix = '') => {
+    if (ghLoading) return <span className="gh-stat-skeleton" />
+    if (v === null || v === undefined) return <span style={{color:'var(--muted)',fontSize:'.85em'}}>—</span>
+    return typeof v === 'number' ? v.toLocaleString('fr') + suffix : v
+  }
+
   return (
     <div className="github-card-large">
+      {/* ── HEADER ── */}
       <div className="github-card-large-header">
         <div className="github-card-large-logo">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block' }}>
@@ -1873,7 +1899,10 @@ function GitHubInteractiveCard() {
               {ghUser && <span style={{ color:'var(--muted)', marginLeft:'8px', fontSize:'.62rem' }}>· {ghUser.public_repos} repos · {ghUser.followers} followers</span>}
             </p>
           </div>
-          <span className="github-live-badge"><span className="github-pulse" />{ghLoading ? 'Chargement…' : 'Live'}</span>
+          <span className="github-live-badge">
+            <span className={`github-pulse${ghLoading ? ' loading' : ''}`} />
+            {ghLoading ? 'Chargement…' : ghStats.totalContribs !== null ? 'Live' : 'Fallback'}
+          </span>
         </div>
 
         <div className="github-card-large-tabs">
@@ -1890,19 +1919,19 @@ function GitHubInteractiveCard() {
           <div className="github-tab-content-grid">
             <div className="github-stats-row">
               <div className="github-stat-item">
-                <span className="github-stat-num">{ghLoading ? '…' : ghStats.totalContribs.toLocaleString('fr')}</span>
+                <span className="github-stat-num">{statVal(ghStats.totalContribs)}</span>
                 <span className="github-stat-lbl">Contributions 365j</span>
               </div>
               <div className="github-stat-item">
-                <span className="github-stat-num">{ghLoading ? '…' : `${ghStats.longestStreak} j.`}</span>
+                <span className="github-stat-num">{statVal(ghStats.longestStreak, ' j.')}</span>
                 <span className="github-stat-lbl">Série max</span>
               </div>
               <div className="github-stat-item">
-                <span className="github-stat-num">{ghStats.topLang}</span>
+                <span className="github-stat-num" style={{color:'var(--accent)'}}>{ghStats.topLang}</span>
                 <span className="github-stat-lbl">Technologies favorites</span>
               </div>
               <div className="github-stat-item">
-                <span className="github-stat-num">{ghLoading ? '…' : `${ghStats.thisMonth} commits`}</span>
+                <span className="github-stat-num">{statVal(ghStats.thisMonth, ' commits')}</span>
                 <span className="github-stat-lbl">Mois en cours</span>
               </div>
             </div>
@@ -1917,18 +1946,33 @@ function GitHubInteractiveCard() {
                 <div className="github-grid-days">
                   <span>Dim</span><span></span><span>Mar</span><span></span><span>Jeu</span><span></span><span>Sam</span>
                 </div>
-                <div className="github-grid">
-                  {contributions.map((day,idx)=>(
-                    <div
-                      key={idx}
-                      className={`github-square level-${day.level}`}
-                      onMouseEnter={(e)=>handleSquareHover(e,day)}
-                      onMouseLeave={handleSquareLeave}
-                    />
-                  ))}
-                </div>
+                {contributions.length > 0 ? (
+                  <div className="github-grid">
+                    {contributions.map((day,idx)=>(
+                      <div
+                        key={idx}
+                        className={`github-square level-${day.level}`}
+                        onMouseEnter={(e)=>handleSquareHover(e,day)}
+                        onMouseLeave={handleSquareLeave}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="github-grid-skeleton">
+                    {Array.from({length: 371}).map((_,i) => (
+                      <div key={i} className="github-square-skeleton" />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
+
+            {ghStats.totalContribs === null && !ghLoading && (
+              <div className="gh-api-notice">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                API GitHub temporairement indisponible · grille générée localement
+              </div>
+            )}
 
             <div className="github-grid-footer">
               <span>Survolez les carrés pour voir le détail · données GitHub en temps réel</span>
@@ -2033,6 +2077,7 @@ function GitHubInteractiveCard() {
     </div>
   )
 }
+
 /* ════════════════════════════════════════════
    CONTACT
    ════════════════════════════════════════════ */
