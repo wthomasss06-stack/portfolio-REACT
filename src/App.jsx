@@ -40,21 +40,30 @@ const AnimIcon = ({ type, size = 15, color = '#FF5500', className = '' }) => {
    ════════════════════════════════════════════ */
 function useMagneticButtons() {
   useEffect(() => {
-    const els = document.querySelectorAll('.btn-fill, .btn-ghost, .mag-btn')
-    const cleanups = []
-    els.forEach(el => {
-      const onMove = e => {
-        const rect = el.getBoundingClientRect()
-        const x = e.clientX - rect.left - rect.width / 2
-        const y = e.clientY - rect.top - rect.height / 2
-        gsap.to(el, { x: x * 0.28, y: y * 0.28, duration: 0.35, ease: 'power3.out' })
-      }
-      const onLeave = () => gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' })
-      el.addEventListener('mousemove', onMove)
-      el.addEventListener('mouseleave', onLeave)
-      cleanups.push(() => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave) })
-    })
-    return () => cleanups.forEach(fn => fn())
+    // Délai court pour laisser tous les enfants React se monter en prod
+    const timer = setTimeout(() => {
+      const els = document.querySelectorAll('.btn-fill, .btn-ghost, .mag-btn')
+      const cleanups = []
+      els.forEach(el => {
+        const onMove = e => {
+          const rect = el.getBoundingClientRect()
+          const x = e.clientX - rect.left - rect.width / 2
+          const y = e.clientY - rect.top - rect.height / 2
+          gsap.to(el, { x: x * 0.28, y: y * 0.28, duration: 0.35, ease: 'power3.out' })
+        }
+        const onLeave = () => gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' })
+        el.addEventListener('mousemove', onMove)
+        el.addEventListener('mouseleave', onLeave)
+        cleanups.push(() => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave) })
+      })
+      // Stocker les cleanups dans le ref pour le retour
+      timerRef._cleanups = cleanups
+    }, 300)
+    const timerRef = { _cleanups: [] }
+    return () => {
+      clearTimeout(timer)
+      timerRef._cleanups.forEach(fn => fn())
+    }
   }, [])
 }
 
@@ -63,8 +72,24 @@ function useMagneticButtons() {
    ════════════════════════════════════════════ */
 function useScrollAnimations() {
   useEffect(() => {
-    /* Fade + slide up for generic reveal elements */
-    gsap.utils.toArray('.gs-reveal').forEach(el => {
+    // ─── FIX PROD ────────────────────────────────────────────────────────────
+    // En prod (bundle Vite), React monte App et déclenche useEffect AVANT que
+    // Hero/About/Timeline etc. aient peuplé le DOM → gsap.utils.toArray retourne [].
+    // Fix : double rAF + délai 100ms + retry automatique si aucun élément trouvé.
+    // ─────────────────────────────────────────────────────────────────────────
+    let killed = false
+
+    const initAnimations = () => {
+      if (killed) return
+      const hasElements = document.querySelector(
+        '.gs-reveal, .gs-stagger, .gs-skill, .gs-title, .gs-card, .gs-timeline-item, .gs-counter, .gs-line'
+      )
+      if (!hasElements) {
+        setTimeout(() => { if (!killed) initAnimations() }, 500)
+        return
+      }
+      /* Fade + slide up for generic reveal elements */
+      gsap.utils.toArray('.gs-reveal').forEach(el => {
       gsap.fromTo(el,
         { opacity: 0, y: 48, filter: 'blur(6px)' },
         {
@@ -146,7 +171,21 @@ function useScrollAnimations() {
         }
       )
     })
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+      ScrollTrigger.refresh()
+    }
+
+    let rafId
+    rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame(() => {
+        setTimeout(initAnimations, 100)
+      })
+    })
+
+    return () => {
+      killed = true
+      cancelAnimationFrame(rafId)
+      ScrollTrigger.getAll().forEach(t => t.kill())
+    }
   }, [])
 }
 
