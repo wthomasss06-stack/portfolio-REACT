@@ -36,6 +36,262 @@ const AnimIcon = ({ type, size = 15, color = '#FF5500', className = '' }) => {
 }
 
 /* ════════════════════════════════════════════
+   HORIZONTAL PARALLAX SCROLL — prochain.html style
+   Scroll vertical → translation horizontale des slides
+   + titres qui glissent en contre-sens (parallax heading)
+   ════════════════════════════════════════════ */
+const HPSLIDES = [
+  { word: 'REACT',      color: '#61DAFB', icon: '/assets/icons/devicon/react/react-original.svg',           label: 'Frontend Library' },
+  { word: 'JAVASCRIPT', color: '#F7DF1E', icon: '/assets/icons/devicon/javascript/javascript-original.svg', label: 'Langage Universel' },
+  { word: 'NEXT.JS',    color: '#F2EDE8', lightColor: '#1A1A1A', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg', label: 'React Framework' },
+  { word: 'PYTHON',     color: '#4B8BBE', icon: '/assets/icons/devicon/python/python-original.svg',         label: 'Backend & Data' },
+  { word: 'DJANGO',     color: '#44B78B', icon: '/assets/icons/devicon/django/django-plain.svg',            label: 'Web Framework' },
+  { word: 'MYSQL',      color: '#F29111', icon: '/assets/icons/devicon/mysql/mysql-original.svg',           label: 'Base de Données' },
+]
+
+function HorizontalParallax() {
+  const sectionRef = useRef(null)
+  const trackRef   = useRef(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    const track   = trackRef.current
+    if (!section || !track) return
+
+    const headings  = track.querySelectorAll('.hpx-word')
+    const totalSlides = headings.length
+
+    const update = () => {
+      const rect        = section.getBoundingClientRect()
+      const sectionH    = section.offsetHeight
+      const viewH       = window.innerHeight
+      let   progress    = -rect.top / (sectionH - viewH)
+      progress          = Math.max(0, Math.min(1, progress))
+
+      /* ── 1. Translation horizontale du carrousel ── */
+      const maxVW = (totalSlides - 1) * 100
+      track.style.transform = `translateX(-${progress * maxVW}vw)`
+
+      /* ── 2. Parallax heading — chaque titre glisse en contre-sens ── */
+      const seg = 1 / totalSlides
+      headings.forEach((h, i) => {
+        const start = i * seg
+        const end   = (i + 1) * seg
+        let xOffset
+        if (progress >= start && progress <= end) {
+          const local = (progress - start) / seg   // 0 → 1 dans la slide
+          xOffset = 600 - local * 1200             // +600px → -600px
+        } else if (progress < start) {
+          xOffset = 600
+        } else {
+          xOffset = -600
+        }
+        h.style.transform = `translateX(${xOffset}px)`
+      })
+    }
+
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    update()
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+
+  return (
+    <section ref={sectionRef} id="hpx-section" className="hpx-section">
+      {/* Étiquette section */}
+      <div className="hpx-label">
+        <span className="hpx-label-inner">// Meilleures armes</span>
+      </div>
+
+      {/* Zone sticky : l'écran reste figé, le carrousel glisse */}
+      <div className="hpx-sticky">
+        <ul ref={trackRef} id="hpx-track" className="hpx-track">
+          {HPSLIDES.map((s, i) => (
+            <li key={i} className="hpx-slide" style={{ '--hpx-color': s.color, '--hpx-color-light': s.lightColor || s.color }}>
+              {/* Grille de fond */}
+              <div className="hpx-slide-grid" />
+
+              {/* Titre géant — parallax heading contre-sens */}
+              <h2 className="hpx-word" style={{ color: s.color }}>{s.word}</h2>
+
+              {/* Logo tech centré — remplace les images Unsplash */}
+              <div className="hpx-logo-wrap" style={{ '--glow': s.color }}>
+                <img
+                  src={s.icon}
+                  alt={s.word}
+                  className="hpx-logo-img"
+                  onError={e => { e.target.style.opacity = '0' }}
+                />
+              </div>
+
+              {/* Label sous-titre */}
+              <span className="hpx-sublabel" style={{ color: s.color }}>{s.label}</span>
+
+              {/* Numéro de slide */}
+              <span className="hpx-num">0{i + 1}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+/* ════════════════════════════════════════════
+   SPLITTEXT REVEAL — h1 · h2 · hv4 · p
+   Découpe les textes en chars/mots et les anime
+   depuis le bas (style prochain.html)
+   ════════════════════════════════════════════ */
+function useSplitTextReveal() {
+  useEffect(() => {
+    let killed = false
+
+    /* ── Utilitaires ── */
+    const splitToChars = el => {
+      const raw = el.textContent
+      // Grouper par mot pour que les retours à la ligne n'interviennent
+      // qu'entre les mots, jamais au milieu d'un mot (bug "p rojets")
+      el.innerHTML = raw.split(/(\s+)/).map(part => {
+        if (!part.trim()) {
+          // espace : élément invisible de la bonne largeur
+          return `<span style="display:inline-block;width:.28em;"> </span>`
+        }
+        // mot : wrapper nowrap + chars animables
+        const chars = part.split('').map(c =>
+          `<span class="st-ch" style="display:inline-block;will-change:transform,opacity;transform:translateY(115%) rotateX(-18deg);opacity:0">${c}</span>`
+        ).join('')
+        return `<span style="display:inline-block;white-space:nowrap;">${chars}</span>`
+      }).join('')
+      return el.querySelectorAll('.st-ch')
+    }
+
+    const splitToWords = el => {
+      const raw = el.innerHTML
+      const words = raw.split(/(\s+)/)
+      el.innerHTML = words.map(w =>
+        w.trim() === ''
+          ? w
+          : `<span class="st-wr" style="overflow:hidden;display:inline-block;vertical-align:bottom"><span class="st-wi" style="display:inline-block;will-change:transform,opacity;transform:translateY(110%);opacity:0">${w}</span></span>`
+      ).join('')
+      return el.querySelectorAll('.st-wi')
+    }
+
+    const reveal = (chars, delay = 0, staggerMs = 22) => {
+      chars.forEach((ch, i) => {
+        setTimeout(() => {
+          if (killed) return
+          ch.style.transition = `transform .85s cubic-bezier(.22,1,.36,1) ${i * staggerMs}ms,
+                                  opacity   .7s  ease          ${i * staggerMs}ms`
+          ch.style.transform  = 'translateY(0) rotateX(0)'
+          ch.style.opacity    = '1'
+        }, delay)
+      })
+    }
+
+    const revealWords = (words, delay = 0, staggerMs = 45) => {
+      words.forEach((w, i) => {
+        setTimeout(() => {
+          if (killed) return
+          w.style.transition = `transform .9s cubic-bezier(.22,1,.36,1) ${i * staggerMs}ms,
+                                 opacity   .75s ease          ${i * staggerMs}ms`
+          w.style.transform  = 'translateY(0)'
+          w.style.opacity    = '1'
+        }, delay)
+      })
+    }
+
+    const onEnter = (el, cb) => {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { cb(); io.disconnect() }
+      }, { threshold: 0.15 })
+      io.observe(el)
+    }
+
+    const init = () => {
+      if (killed) return
+
+      /* ══ H1 .hv4-name-line — chaque lettre du nom surgit ══ */
+      document.querySelectorAll('.hv4-name-line').forEach((el, li) => {
+        if (el._stDone) return
+        el._stDone = true
+        const chars = splitToChars(el)
+        setTimeout(() => { if (!killed) reveal(chars, li * 130, 20) }, 2800)
+      })
+
+      /* ══ H2 globaux — titres de section ══ */
+      document.querySelectorAll(
+        '.sec-title, .gl-title, .skew-heading, .contact-title, ' +
+        '.tl-title-big, .gallery-title, .test-title, .footer-tagline'
+      ).forEach(el => {
+        if (el._stDone) return
+        el._stDone = true
+        const chars = splitToChars(el)
+        onEnter(el, () => reveal(chars, 60, 18))
+      })
+
+      /* ══ H2 About ══ */
+      document.querySelectorAll('.about-block h2').forEach(el => {
+        if (el._stDone) return
+        el._stDone = true
+        const chars = splitToChars(el)
+        onEnter(el, () => reveal(chars, 80, 22))
+      })
+
+      /* ══ .about-role ══ */
+      document.querySelectorAll('.about-role').forEach(el => {
+        if (el._stDone) return
+        el._stDone = true
+        const words = splitToWords(el)
+        onEnter(el, () => revealWords(words, 50, 40))
+      })
+
+      /* ══ P — textes corps ══ */
+      document.querySelectorAll(
+        '.ss-body, .sc-panel p, .about-text, .hv4-desc'
+      ).forEach(el => {
+        if (el._stDone) return
+        // Skip paragraphs that contain any element children (a, strong, span with style…)
+        // splitToWords splits on innerHTML spaces which breaks HTML attribute values like
+        // href="..." or style="color: var(--accent);" → visible raw text bug
+        if (el.children.length > 0) return
+        el._stDone = true
+        const words = splitToWords(el)
+        onEnter(el, () => revealWords(words, 120, 30))
+      })
+
+      /* ══ .hv4-typed ══ */
+      document.querySelectorAll('.hv4-typed').forEach(el => {
+        if (el._stDone) return
+        el._stDone = true
+        setTimeout(() => {
+          if (!killed) {
+            el.style.opacity   = '1'
+            el.style.transform = 'translateY(0)'
+            el.style.transition = 'opacity .8s ease, transform .9s cubic-bezier(.22,1,.36,1)'
+          }
+        }, 3100)
+      })
+    }
+
+    /* Double rAF + délai — même pattern que useScrollAnimations */
+    let rafId
+    rafId = requestAnimationFrame(() => {
+      rafId = requestAnimationFrame(() => {
+        setTimeout(init, 150)
+      })
+    })
+
+    return () => {
+      killed = true
+      cancelAnimationFrame(rafId)
+    }
+  }, [])
+}
+
+/* ════════════════════════════════════════════
    GSAP MAGNETIC BUTTON HOOK
    ════════════════════════════════════════════ */
 function useMagneticButtons() {
@@ -582,6 +838,18 @@ function Navbar({ theme, onToggleTheme }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  /* Navbar transparent → solid au scroll */
+  useEffect(() => {
+    const topbar = document.querySelector('.nb-topbar')
+    const onScroll = () => {
+      if (!topbar) return
+      topbar.classList.toggle('scrolled', window.scrollY > 60)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll() // état initial
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   /* ── Animated theme toggler (mirrors animate-ui ThemeTogglerButton) ── */
@@ -736,7 +1004,7 @@ function Hero() {
             </p>
 
             <p className="hv4-desc hv4-rv" style={{ '--d': '.56s' }}>
-              Développeur web orienté produit — Django &amp; React. Je construis des applications pensées pour des usages réels. Basé à <strong style={{ color: '#FF5500' }}>Abidjan</strong>.
+              Développeur web orienté produit — Django &amp; React. Je construis des applications pensées pour des usages réels. Basé à <strong style={{ color: 'var(--accent)' }}>Abidjan</strong>.
             </p>
 
             {/* CTAs */}
@@ -972,10 +1240,11 @@ function About() {
 </p>
 
 <p className="about-text" style={{ marginTop: '1rem' }}>
-  Et pour transformer cette évolution en quelque chose de concret, 
-  j’ai créé 
-  <strong style={{ color: 'var(--accent)' }}> <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">AKATech</a> </strong> :
-  un espace où je conçois des produits web modernes, des portfolios immersifs 
+  Et pour transformer cette évolution en quelque chose de concret, j'ai créé{' '}
+  <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
+     style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--accent)' }}>
+    AKATech
+  </a>{' '}: un espace où je conçois des produits web modernes, des portfolios immersifs
   et des solutions digitales pensées pour de vrais usages.
 </p>
           </div>
@@ -1228,8 +1497,10 @@ function SkewSection() {
         <div className="skew-sticky">
           <div>
             <div style={{ fontSize: '.6rem', letterSpacing: '.45em', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '1.5rem', fontFamily: "'Space Mono',monospace" }}>// Mon Approche</div>
-            <h2 className="sec-title skew-heading" style={{ fontSize: 'clamp(2.8rem,7vw,6rem)', fontWeight: 700, lineHeight: .9, letterSpacing: '-.025em' }}>
-              <ScrollReveal>Pourquoi les projets réussissent avec mon approche.</ScrollReveal>
+            <h2 className="sec-title skew-heading" style={{ fontWeight: 700, lineHeight: 1.05, letterSpacing: '-.025em', hyphens: 'none', wordBreak: 'normal', overflowWrap: 'normal' }}>
+              <span style={{ display: 'block' }}>Pourquoi les</span>
+              <span style={{ display: 'block' }}>projets réussissent</span>
+              <span style={{ display: 'block' }}>avec mon approche.</span>
             </h2>
           </div>
         </div>
@@ -2311,47 +2582,14 @@ function ContactSection({ onToast }) {
 
 function Footer() {
 
-  /* SVG lettres animées en bas (AKATECH) */
+  /* AKATECH massif — observer pour fade-in du wrapper iridescent */
   useEffect(() => {
-    const svg = document.getElementById('footer-svg')
-    if (!svg) return
-    // Reset pour StrictMode React (double-invoke en dev)
-    svg.dataset.built = ''
-    svg.innerHTML = ''
-    svg.dataset.built = '1'
-    
-    const letters = [
-      'M42 10 L10 120 L28 120 L42 76 L56 120 L74 120 L42 10Z M29 65 L55 65 L42 25Z', // A
-      'M88 10 L88 120 L106 120 L106 72 L138 120 L160 120 L122 65 L156 10 L135 10 L106 58 L106 10Z', // K
-      'M196 10 L164 120 L182 120 L196 76 L210 120 L228 120 L196 10Z M183 65 L209 65 L196 25Z', // A
-      'M244 10 L244 28 L280 28 L280 120 L298 120 L298 28 L334 28 L334 10Z', // T
-      'M354 10 L354 120 L440 120 L440 103 L372 103 L372 73 L430 73 L430 56 L372 56 L372 27 L438 27 L438 10Z', // E
-      'M510 18 C490 5 464 8 448 28 C432 48 432 82 448 102 C464 122 492 125 512 112 L502 97 C488 106 470 104 460 92 C450 80 450 50 460 38 C470 26 490 24 502 34Z', // C
-      'M530 10 L530 120 L548 120 L548 72 L600 72 L600 120 L618 120 L618 10 L600 10 L600 55 L548 55 L548 10Z', // H
-    ]
-    
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-    
-    // 💡 UPDATE : On supprime le translate(141) pour centrer parfaitement les lettres dans le nouveau viewBox serré.
-    // g.setAttribute('transform', 'translate(141,0)')
-    
-    letters.forEach((d, i) => {
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-      path.setAttribute('d', d)
-      // J'ai mis var(--accent) pour que ça colle à 100% à ton thème (tu peux remettre ton rgba si tu préfères)
-      path.setAttribute('fill', 'var(--accent, rgba(255,85,0,0.3))') 
-      path.classList.add('path-letter')
-      path.style.transitionDelay = `${i * .07}s`
-      g.appendChild(path)
-    })
-    svg.appendChild(g)
-    
+    const wrap = document.querySelector('.ft-aka-wrap')
+    if (!wrap) return
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e =>
-        svg.querySelectorAll('.path-letter').forEach(l => l.classList.toggle('visible', e.isIntersecting))
-      )
-    }, { threshold: 0.05, rootMargin: '0px 0px 100px 0px' })
-    obs.observe(svg)
+      entries.forEach(e => wrap.classList.toggle('visible', e.isIntersecting))
+    }, { threshold: 0.05, rootMargin: '0px 0px 80px 0px' })
+    obs.observe(wrap)
     return () => obs.disconnect()
   }, [])
 
@@ -2402,16 +2640,13 @@ function Footer() {
         <div style={{ height: '1px', background: 'rgba(255,85,0,.1)', margin: '3rem 0 0' }} />
       </div>
 
-      {/* 💡 UPDATE : Big SVG lettres animées en mode "FULL BLEED MASSIF" */}
-      <div className="w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-hidden flex items-center justify-center mt-16 mb-6">
-        <svg 
-          id="footer-svg" 
-          viewBox="0 0 630 130" 
-          preserveAspectRatio="xMidYMid meet"
-          className="w-full h-auto px-4 md:px-8" 
-          xmlns="http://www.w3.org/2000/svg" 
-          fill="none" 
-        />
+      {/* AKATECH massif — Iridescence clippée dans les lettres via CSS mask */}
+      <div className="ft-aka-wrap">
+        {/* Canvas iridescent en fond — même config que le hero */}
+        <div className="ft-aka-canvas">
+          <Iridescence color={[1.0, 0.333, 0.0]} speed={0.8} amplitude={0.10} mouseReact={true} />
+        </div>
+        {/* Le masque est appliqué via CSS mask-image inline dans .ft-aka-wrap */}
       </div>
 
       {/* Barre de bas */}
@@ -2713,6 +2948,7 @@ export default function App() {
   /* GSAP global hooks */
   useScrollAnimations()
   useMagneticButtons()
+  useSplitTextReveal()
 
   return (
     <>
@@ -2725,6 +2961,7 @@ export default function App() {
       <main>
         <Hero />
         <StickyStack />
+        <HorizontalParallax />
         <Marquee />
         <About />
         <Timeline />
