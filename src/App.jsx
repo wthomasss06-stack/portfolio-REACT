@@ -159,11 +159,12 @@ function useSplitTextReveal() {
           // espace : élément invisible de la bonne largeur
           return `<span style="display:inline-block;width:.28em;"> </span>`
         }
-        // mot : wrapper nowrap + chars animables
+        // mot : wrapper + chars animables (pas de white-space:nowrap → évite
+        // le débordement hors écran sur les grands titres centrés)
         const chars = part.split('').map(c =>
           `<span class="st-ch" style="display:inline-block;will-change:transform,opacity;transform:translateY(115%) rotateX(-18deg);opacity:0">${c}</span>`
         ).join('')
-        return `<span style="display:inline-block;white-space:nowrap;">${chars}</span>`
+        return `<span class="st-word-wrap" style="display:inline-block;">${chars}</span>`
       }).join('')
       return el.querySelectorAll('.st-ch')
     }
@@ -606,27 +607,27 @@ const PRICING_TABS = [
 
 const SKILLS = {
   frontend: [
-    { name: 'React', icon: '/assets/icons/devicon/react/react-original.svg' },
-    { name: 'JavaScript', icon: '/assets/icons/devicon/javascript/javascript-original.svg' },
-    { name: 'Next.js', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg' },
-    { name: 'Tailwind', icon: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg' },
-    { name: 'HTML5', icon: '/assets/icons/devicon/html5/html5-original.svg' },
-    { name: 'CSS3', icon: '/assets/icons/devicon/css3/css3-original.svg' },
-    { name: 'Bootstrap', icon: '/assets/icons/devicon/bootstrap/bootstrap-original.svg' },
+    { name: 'React',      icon: '/assets/icons/devicon/react/react-original.svg',           color: '#61DAFB' },
+    { name: 'JavaScript', icon: '/assets/icons/devicon/javascript/javascript-original.svg', color: '#F7DF1E' },
+    { name: 'Next.js',    icon: '/assets/icons/devicon/nextjs/nextjs-original.svg',         color: '#ffffff' },
+    { name: 'Tailwind',   icon: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
+    { name: 'HTML5',      icon: '/assets/icons/devicon/html5/html5-original.svg',           color: '#E34F26' },
+    { name: 'CSS3',       icon: '/assets/icons/devicon/css3/css3-original.svg',             color: '#1572B6' },
+    { name: 'Bootstrap',  icon: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',   color: '#7952B3' },
   ],
   backend: [
-    { name: 'Python', icon: '/assets/icons/devicon/python/python-original.svg' },
-    { name: 'Flask', icon: '/assets/icons/devicon/flask/flask-original.svg' },
-    { name: 'Django', icon: '/assets/icons/devicon/django/django-plain.svg' },
-    { name: 'Node.js', icon: '/assets/icons/devicon/nodejs/nodejs-original.svg' },
-    { name: 'MySQL', icon: '/assets/icons/devicon/mysql/mysql-original.svg' },
+    { name: 'Python',  icon: '/assets/icons/devicon/python/python-original.svg', color: '#4B8BBE' },
+    { name: 'Flask',   icon: '/assets/icons/devicon/flask/flask-original.svg',   color: '#AAAAAA' },
+    { name: 'Django',  icon: '/assets/icons/devicon/django/django-plain.svg',    color: '#44B78B' },
+    { name: 'Node.js', icon: '/assets/icons/devicon/nodejs/nodejs-original.svg', color: '#539E43' },
+    { name: 'MySQL',   icon: '/assets/icons/devicon/mysql/mysql-original.svg',   color: '#F29111' },
   ],
   tools: [
-    { name: 'Git', icon: '/assets/icons/devicon/git/git-original.svg' },
-    { name: 'VS Code', icon: '/assets/icons/devicon/vscode/vscode-original.svg' },
-    { name: 'GitHub', icon: '/assets/icons/devicon/github/github-original.svg' },
-    { name: 'Vercel', icon: '/assets/icons/devicon/vercel/vercel-original.svg' },
-    { name: 'Prisma', icon: '/assets/icons/devicon/prisma/prisma-original.svg' },
+    { name: 'Git',    icon: '/assets/icons/devicon/git/git-original.svg',    color: '#F05032' },
+    { name: 'VS Code',icon: '/assets/icons/devicon/vscode/vscode-original.svg', color: '#007ACC' },
+    { name: 'GitHub', icon: '/assets/icons/devicon/github/github-original.svg', color: '#ffffff' },
+    { name: 'Vercel', icon: '/assets/icons/devicon/vercel/vercel-original.svg',  color: '#ffffff' },
+    { name: 'Prisma', icon: '/assets/icons/devicon/prisma/prisma-original.svg',  color: '#2D3748' },
   ],
 }
 
@@ -1207,7 +1208,7 @@ function About() {
         <div className="about-right">
           <div className="about-block">
             <div className="sec-eyebrow">// Qui suis-je ?</div>
-            <h2 style={{ fontFamily: "'Clash Display','Syne',sans-serif", fontSize: 'clamp(2.2rem,5vw,4.2rem)', fontWeight: 800, lineHeight: .9, letterSpacing: '-.025em', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontFamily: "'Clash Display','Syne',sans-serif", fontSize: 'clamp(3.5rem,7.5vw,7rem)', fontWeight: 800, lineHeight: .88, letterSpacing: '-.032em', marginBottom: '1.5rem' }}>
               <ScrollReveal>Alors, c'est moi.</ScrollReveal>
             </h2>
             <p className="about-text">
@@ -1532,6 +1533,49 @@ function SkewSection() {
 /* ════════════════════════════════════════════
    SKILLS
    ════════════════════════════════════════════ */
+function SkillCard({ sk }) {
+  const [hovered, setHovered] = useState(false)
+  const col = sk.color || '#888888'
+  return (
+    <div
+      key={sk.name}
+      className="skill-card gs-skill"
+      style={hovered ? { borderColor: col + '80', background: col + '12', boxShadow: `0 0 18px ${col}22` } : {}}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <img
+        src={sk.icon}
+        alt={sk.name}
+        style={{ filter: hovered ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.55)', transition: 'filter .25s' }}
+        onError={e => { e.target.style.opacity = '.4' }}
+      />
+      <span>{sk.name}</span>
+    </div>
+  )
+}
+
+function SkillBandItem({ sk }) {
+  const [hovered, setHovered] = useState(false)
+  const col = sk.color || '#888888'
+  return (
+    <div
+      className="skill-item"
+      style={hovered ? { borderColor: col, color: 'var(--text)' } : {}}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <img
+        src={sk.icon}
+        alt={sk.name}
+        style={{ filter: hovered ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.55)', transition: 'filter .25s' }}
+        onError={e => { e.target.style.opacity = '.4' }}
+      />
+      <span>{sk.name}</span>
+    </div>
+  )
+}
+
 function SkillsSection() {
   const masterSkills = [
     SKILLS.frontend[0], // React
@@ -1552,16 +1596,14 @@ function SkillsSection() {
       <div className="sec-eyebrow">// Compétences</div>
       <h2 className="sec-title">
         <ScrollReveal>Mes outils</ScrollReveal>
+        {' '}
         <br />
         <ScrollReveal>de travail.</ScrollReveal>
       </h2>
       <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.55)', letterSpacing: '.2em', margin: '2.5rem 0 1rem' }}>// maîtrise principale</p>
       <div className="skills-mastery gs-stagger">
         {masterSkills.map(sk => (
-          <div key={sk.name} className="skill-card gs-skill">
-            <img src={sk.icon} alt={sk.name} onError={e => { e.target.style.opacity = '.4' }} />
-            <span>{sk.name}</span>
-          </div>
+          <SkillCard key={sk.name} sk={sk} />
         ))}
       </div>
       <div className="skills-bands">
@@ -1573,10 +1615,7 @@ function SkillsSection() {
               <div className="skill-band-wrap">
                 <div className={`skill-band${row.dir === 'r' ? ' skill-band--r' : ''}`}>
                   {tripled.map((sk, i) => (
-                    <div key={i} className="skill-item">
-                      <img src={sk.icon} alt={sk.name} onError={e => { e.target.style.opacity = '.4' }} />
-                      <span>{sk.name}</span>
-                    </div>
+                    <SkillBandItem key={i} sk={sk} />
                   ))}
                 </div>
               </div>
@@ -1803,7 +1842,7 @@ function GallerySection() {
       const vpH = 2 * Math.tan(fov2 / 2) * camera.position.z
       let vp = { width: vpH * camera.aspect, height: vpH }
       const sc = screen.height / 1500
-      const plH = vp.height * (550 * sc) / screen.height, plW = vp.width * (800 * sc) / screen.width
+      const plH = vp.height * (720 * sc) / screen.height, plW = vp.width * (1040 * sc) / screen.width
       const mkFB = (glCtx, title) => {
         const c = document.createElement('canvas'); c.width = 800; c.height = 550
         const ctx = c.getContext('2d'); const g = ctx.createLinearGradient(0, 0, 0, 550)
@@ -1828,7 +1867,126 @@ function GallerySection() {
       const panel = document.getElementById('gl-detail-panel')
       const pTitle = document.getElementById('gl-p-title'), pSub = document.getElementById('gl-p-sub'), pDesc = document.getElementById('gl-p-desc'), pTechs = document.getElementById('gl-p-techs'), pLink = document.getElementById('gl-p-link')
       let currentProj = null
-      const showPanel = item => { if (currentProj === item.title) return; currentProj = item.title; if (pTitle) pTitle.textContent = item.title; if (pSub) pSub.textContent = item.sub; if (pDesc) pDesc.textContent = item.desc; if (pTechs) pTechs.innerHTML = item.tech.slice(0, 4).map(t => `<span style="padding:3px 8px;border-radius:999px;border:1px solid rgba(255,85,0,.22);font-size:.6rem;color:#ff8844;font-family:'Space Mono',monospace">${t}</span>`).join(''); if (pLink) { pLink.href = item.url; pLink.target = item.url.startsWith('http') ? '_blank' : '_self' }; if (panel) { panel.style.opacity = '1'; panel.style.transform = 'translateX(-50%) translateY(0)' } }
+
+      /* ── Icônes tech depuis /assets/icons/devicon/ ── */
+      const TECH_ICONS = {
+        'React':                   { src: '/assets/icons/devicon/react/react-original.svg',                     color: '#61DAFB' },
+        'JavaScript':              { src: '/assets/icons/devicon/javascript/javascript-original.svg',           color: '#F7DF1E' },
+        'HTML + JS vanilla':       { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
+        'HTML / Tailwind CSS':     { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
+        'Next.js':                 { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
+        'Next.js 14':              { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
+        'Next.js 15':              { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
+        'Python':                  { src: '/assets/icons/devicon/python/python-original.svg',                   color: '#4B8BBE' },
+        'Python/Flask':            { src: '/assets/icons/devicon/flask/flask-original.svg',                     color: '#AAAAAA' },
+        'Django':                  { src: '/assets/icons/devicon/django/django-plain.svg',                      color: '#44B78B' },
+        'Django REST':             { src: '/assets/icons/devicon/django/django-plain.svg',                      color: '#44B78B' },
+        'Flask':                   { src: '/assets/icons/devicon/flask/flask-original.svg',                     color: '#AAAAAA' },
+        'MySQL':                   { src: '/assets/icons/devicon/mysql/mysql-original.svg',                     color: '#F29111' },
+        'Node.js':                 { src: '/assets/icons/devicon/nodejs/nodejs-original.svg',                   color: '#539E43' },
+        'Tailwind CSS':            { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg',         color: '#38BDF8' },
+        'Bootstrap':               { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',             color: '#7952B3' },
+        'Bootstrap 5':             { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',             color: '#7952B3' },
+        'HTML':                    { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
+        'CSS':                     { src: '/assets/icons/devicon/css3/css3-original.svg',                       color: '#1572B6' },
+        'Git':                     { src: '/assets/icons/devicon/git/git-original.svg',                         color: '#F05032' },
+        'GitHub':                  { src: '/assets/icons/devicon/github/github-original.svg',                   color: '#ffffff' },
+        'Vercel':                  { src: '/assets/icons/devicon/vercel/vercel-original.svg',                   color: '#ffffff' },
+        'Vercel + PythonAnywhere': { src: '/assets/icons/devicon/vercel/vercel-original.svg',                   color: '#ffffff' },
+        'Prisma':                  { src: '/assets/icons/devicon/prisma/prisma-original.svg',                   color: '#2D3748' },
+        'PostgreSQL':              { src: '/assets/icons/devicon/postgresql/postgresql-original.svg',           color: '#336791' },
+        'Redis & Celery':          { src: '/assets/icons/devicon/rediscelery/rediscelery-original.svg',         color: '#DC382D' },
+        'Redis':                   { src: '/assets/icons/devicon/redis/redis-original.svg',                     color: '#DC382D' },
+        'Framer Motion':           { src: '/assets/icons/devicon/framermotion/framermotion-original.svg',       color: '#BB4BFF' },
+        'Bulma':                   { src: '/assets/icons/devicon/bulma/bulma-plain.svg',                        color: '#00D1B2' },
+        'Canvas API':              { src: '/assets/icons/devicon/canvasapi/canvasapi-original.svg',             color: '#FF8C00' },
+        'Howler.js':               { src: '/assets/icons/devicon/howlerjs/howlerjs-original.svg',               color: '#FF6B35' },
+        'WebSockets':              { src: '/assets/icons/devicon/websockets/websockets-original.svg',           color: '#FF9500' },
+        'WebGL Aurora':            { src: '/assets/icons/devicon/webgl/webgl-original.svg',                     color: '#7B2FF7' },
+        'PythonAnywhere':          { src: '/assets/icons/devicon/pythonanywhere/pythonanywhere-original.svg',   color: '#4B8BBE' },
+        'Chart.js':                { src: '/assets/icons/devicon/chartjs/chartjs-original.svg',                 color: '#FF6384' },
+        'Leaflet.js':              { src: '/assets/icons/devicon/leafletjs/leafletjs-original.svg',             color: '#1A9641' },
+        'Camera API':              { src: '/assets/icons/devicon/cameraapi/cameraapi-original.svg',             color: '#888888' },
+        'Geolocation API':         { src: '/assets/icons/devicon/geolocationapi/geolocationapi-original.svg',   color: '#4285F4' },
+        'LocalStorage':            { src: '/assets/icons/devicon/localstorage/localstorage-original.svg',       color: '#F7DF1E' },
+        'OSRM API':                { src: '/assets/icons/devicon/osrmapi/osrmapi-original.svg',                 color: '#E84C3D' },
+      }
+
+      const makeTechIcon = techName => {
+        const info = TECH_ICONS[techName] || null
+        const wrap = document.createElement('div')
+        wrap.title = techName
+        /* PAS de filter sur le wrap — overflow:hidden + filter parent bloque
+           les couleurs natives des SVG/PNG devicon. Filter sur <img> uniquement. */
+        wrap.style.cssText = `
+          display:inline-flex;align-items:center;justify-content:center;
+          width:38px;height:38px;border-radius:10px;
+          background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);
+          cursor:default;transition:border-color .25s,background .25s,box-shadow .25s;
+          overflow:hidden;
+        `
+        const col = info ? info.color : '#888888'
+
+        if (info && info.src) {
+          /* Icône devicon — grayscale/brightness sur l'img directement */
+          const img = document.createElement('img')
+          img.src = info.src
+          img.alt = techName
+          img.style.cssText = `width:22px;height:22px;object-fit:contain;display:block;
+            filter:grayscale(1) brightness(0.5);transition:filter .3s ease;`
+          wrap.appendChild(img)
+        } else {
+          /* Fallback initiales */
+          const lbl = (info && info.label) ? info.label : techName.slice(0,2).toUpperCase()
+          wrap.style.fontSize = '.5rem'
+          wrap.style.fontFamily = "'Space Mono',monospace"
+          wrap.style.fontWeight = '700'
+          wrap.style.color = col
+          wrap.style.letterSpacing = '.04em'
+          wrap.style.opacity = '0.4'
+          wrap.style.transition = 'opacity .3s ease, border-color .25s, background .25s, box-shadow .25s'
+          wrap.textContent = lbl
+        }
+
+        wrap.addEventListener('mouseenter', () => {
+          wrap.style.borderColor = col + '90'
+          wrap.style.background = col + '22'
+          wrap.style.boxShadow = `0 0 14px ${col}55`
+          const childImg = wrap.querySelector('img')
+          if (childImg) {
+            /* Retire le grayscale → couleur native du SVG apparaît */
+            childImg.style.filter = 'grayscale(0) brightness(1)'
+          } else {
+            wrap.style.opacity = '1'
+          }
+        })
+        wrap.addEventListener('mouseleave', () => {
+          wrap.style.borderColor = 'rgba(255,255,255,0.1)'
+          wrap.style.background = 'rgba(255,255,255,0.04)'
+          wrap.style.boxShadow = 'none'
+          const childImg = wrap.querySelector('img')
+          if (childImg) {
+            childImg.style.filter = 'grayscale(1) brightness(0.5)'
+          } else {
+            wrap.style.opacity = '0.4'
+          }
+        })
+        return wrap
+      }
+
+      const showPanel = item => {
+        if (currentProj === item.title) return
+        currentProj = item.title
+        if (pTitle) pTitle.textContent = item.title
+        if (pSub) pSub.textContent = item.sub
+        if (pDesc) pDesc.textContent = item.desc
+        if (pTechs) {
+          pTechs.innerHTML = ''
+          item.tech.slice(0, 6).forEach(t => pTechs.appendChild(makeTechIcon(t)))
+        }
+        if (pLink) { pLink.href = item.url; pLink.target = item.url.startsWith('http') ? '_blank' : '_self' }
+        if (panel) { panel.style.opacity = '1'; panel.style.transform = 'translateX(-50%) translateY(0)' }
+      }
       const hidePanel = () => { currentProj = null; if (panel) { panel.style.opacity = '0'; panel.style.transform = 'translateX(-50%) translateY(16px)' } }
       const galSec = document.getElementById('gallery-section')
       if (galSec) {
@@ -1887,7 +2045,7 @@ function GallerySection() {
             <div id="gl-p-desc" style={{ fontSize: '.8rem', color: 'var(--muted)', lineHeight: 1.65, maxWidth: '320px' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end', flexShrink: 0 }}>
-            <div id="gl-p-techs" style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem', justifyContent: 'flex-end', maxWidth: '180px' }} />
+            <div id="gl-p-techs" style={{ display: 'flex', flexWrap: 'wrap', gap: '.4rem', justifyContent: 'flex-end', maxWidth: '210px' }} />
             <a id="gl-p-link" href="#" target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', background: 'linear-gradient(135deg,#FF5500,#CC3300)', color: '#fff', padding: '8px 16px', borderRadius: '999px', fontFamily: "'Clash Display','Syne',sans-serif", fontWeight: 700, fontSize: '.68rem', letterSpacing: '.06em', textTransform: 'uppercase', textDecoration: 'none', pointerEvents: 'auto' }}>
               Voir →
             </a>
@@ -2444,9 +2602,8 @@ function ContactSection({ onToast }) {
     <section id="contact">
       <div className="sec-eyebrow" style={{ textAlign: 'center' }}>// Collaborons</div>
       <h2 className="sec-title" style={{ textAlign: 'center', marginBottom: 0 }}>
-        <ScrollReveal>Transformons</ScrollReveal>
-        <br />
-        <ScrollReveal>votre idée.</ScrollReveal>
+        <ScrollReveal>Transformons</ScrollReveal>{' '}
+        <ScrollReveal>votre&nbsp;idée.</ScrollReveal>
       </h2>
 
       {/* GitHub Large Interactive Card */}
@@ -2532,8 +2689,7 @@ function ContactSection({ onToast }) {
       <div className="coj-wrap">
         <div className="sec-eyebrow" style={{ textAlign: 'center', marginBottom: '1rem' }}>// Où me joindre</div>
         <h2 className="sec-title" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <ScrollReveal>Restons</ScrollReveal>
-          <br />
+          <ScrollReveal>Restons</ScrollReveal>{' '}
           <ScrollReveal>connectés.</ScrollReveal>
         </h2>
         <div className="coj-beam-outer" style={{ maxWidth: '1100px' }}>
