@@ -1914,63 +1914,21 @@ function GallerySection() {
 
       const makeTechIcon = techName => {
         const info = TECH_ICONS[techName] || null
-        const wrap = document.createElement('div')
-        wrap.title = techName
-        /* PAS de filter sur le wrap — overflow:hidden + filter parent bloque
-           les couleurs natives des SVG/PNG devicon. Filter sur <img> uniquement. */
-        wrap.style.cssText = `
-          display:inline-flex;align-items:center;justify-content:center;
-          width:38px;height:38px;border-radius:10px;
-          background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);
-          cursor:default;transition:border-color .25s,background .25s,box-shadow .25s;
-          overflow:hidden;
-        `
         const col = info ? info.color : '#888888'
+        const wrap = document.createElement('div')
+        wrap.className = 'gl-tech-icon'
+        wrap.title = techName
+        wrap.style.setProperty('--tech-color', col)
 
         if (info && info.src) {
-          /* Icône devicon — grayscale/brightness sur l'img directement */
           const img = document.createElement('img')
           img.src = info.src
           img.alt = techName
-          img.style.cssText = `width:22px;height:22px;object-fit:contain;display:block;
-            filter:grayscale(1) brightness(0.5);transition:filter .3s ease;`
           wrap.appendChild(img)
         } else {
-          /* Fallback initiales */
-          const lbl = (info && info.label) ? info.label : techName.slice(0,2).toUpperCase()
-          wrap.style.fontSize = '.5rem'
-          wrap.style.fontFamily = "'Space Mono',monospace"
-          wrap.style.fontWeight = '700'
-          wrap.style.color = col
-          wrap.style.letterSpacing = '.04em'
-          wrap.style.opacity = '0.4'
-          wrap.style.transition = 'opacity .3s ease, border-color .25s, background .25s, box-shadow .25s'
-          wrap.textContent = lbl
+          wrap.classList.add('gl-tech-icon--fallback')
+          wrap.textContent = techName.slice(0, 2).toUpperCase()
         }
-
-        wrap.addEventListener('mouseenter', () => {
-          wrap.style.borderColor = col + '90'
-          wrap.style.background = col + '22'
-          wrap.style.boxShadow = `0 0 14px ${col}55`
-          const childImg = wrap.querySelector('img')
-          if (childImg) {
-            /* Retire le grayscale → couleur native du SVG apparaît */
-            childImg.style.filter = 'grayscale(0) brightness(1)'
-          } else {
-            wrap.style.opacity = '1'
-          }
-        })
-        wrap.addEventListener('mouseleave', () => {
-          wrap.style.borderColor = 'rgba(255,255,255,0.1)'
-          wrap.style.background = 'rgba(255,255,255,0.04)'
-          wrap.style.boxShadow = 'none'
-          const childImg = wrap.querySelector('img')
-          if (childImg) {
-            childImg.style.filter = 'grayscale(1) brightness(0.5)'
-          } else {
-            wrap.style.opacity = '0.4'
-          }
-        })
         return wrap
       }
 
@@ -2045,7 +2003,7 @@ function GallerySection() {
             <div id="gl-p-desc" style={{ fontSize: '.8rem', color: 'var(--muted)', lineHeight: 1.65, maxWidth: '320px' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', alignItems: 'flex-end', flexShrink: 0 }}>
-            <div id="gl-p-techs" style={{ display: 'flex', flexWrap: 'wrap', gap: '.4rem', justifyContent: 'flex-end', maxWidth: '210px' }} />
+            <div id="gl-p-techs" style={{ display: 'flex', flexWrap: 'wrap', gap: '.4rem', justifyContent: 'flex-end', maxWidth: '210px', pointerEvents: 'auto' }} />
             <a id="gl-p-link" href="#" target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', background: 'linear-gradient(135deg,#FF5500,#CC3300)', color: '#fff', padding: '8px 16px', borderRadius: '999px', fontFamily: "'Clash Display','Syne',sans-serif", fontWeight: 700, fontSize: '.68rem', letterSpacing: '.06em', textTransform: 'uppercase', textDecoration: 'none', pointerEvents: 'auto' }}>
               Voir →
             </a>
