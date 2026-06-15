@@ -92,6 +92,18 @@ const PROJECTS = [
     desc:"Marketplace nouvelle génération — évolution de TerraSafe. Résidences meublées, motos & véhicules, bureaux, terrains. Auth sécurisée, KYC, WebSockets.",
     tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"], url:"https://nexura-one.vercel.app/",
     image:"/assets/images/projects/nexura-preview.jpg", color:"#003344" },
+  { id:16, title:"KokoEat",         subtitle:"Livraison Alimentaire",          cat:"en-cours",  progress:40,  year:"2025",
+    desc:"Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
+    tech:["React","Django REST","PostgreSQL","Vercel"], url:"#",
+    image:"/assets/images/projects/kokoeat-preview.jpg", color:"#cc4400" },
+  { id:17, title:"Jean Edy · Portfolio", subtitle:"Portfolio React UI Avancé",  cat:"en-ligne",  progress:100, year:"2026", isPremium:true,
+    desc:"Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
+    tech:["React 18","Vite","GSAP","Framer Motion","TailwindCSS"], url:"https://jean-edy-dev.vercel.app/",
+    image:"/assets/images/projects/jean-edy-preview.jpg", color:"#1a1a66" },
+  { id:18, title:"MD Laverie Pressing", subtitle:"Site Vitrine Pressing",       cat:"en-ligne",  progress:100, year:"2025", isPremium:true,
+    desc:"Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
+    tech:["React 18","Vite","GSAP","React Router v6","EmailJS"], url:"https://laverie-plus.vercel.app/",
+    image:"/assets/images/projects/laverie-preview.jpg", color:"#004466" },
 ];
 
 const SKILLS = {

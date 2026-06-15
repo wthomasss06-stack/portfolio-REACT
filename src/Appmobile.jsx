@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ScrollDepthScene from './components/ScrollDepthScene';
 import ScrambleText from './components/ScrambleText';
+import { useSoundSystem } from './components/useClickSound.js';
+import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx';
+import SoundToggle from './components/SoundToggle.jsx';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
@@ -448,6 +451,24 @@ const PROJECTS = [
     tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"],
     stats:[{icon:"home",label:"Multi-catégories"},{icon:"shield-alt",label:"Auth & KYC"},{icon:"bolt",label:"Temps réel"}],
     url:"https://nexura-one.vercel.app/", year:"2025", isPremium:true },
+  { id:16, title:"KokoEat", subtitle:"Livraison Alimentaire", cat:"en-cours", progress:40,
+    description:"Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
+    image:"/assets/images/projects/kokoeat-preview.jpg",
+    tech:["React","Django REST","PostgreSQL","Vercel"],
+    stats:[{icon:"utensils",label:"Food Delivery"},{icon:"mobile-alt",label:"Mobile Money"},{icon:"clock",label:"Temps réel"}],
+    url:"#", year:"2025" },
+  { id:17, title:"Jean Edy · Portfolio", subtitle:"Portfolio React UI Avancé", cat:"en-ligne", progress:100,
+    description:"Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
+    image:"/assets/images/projects/jean-edy-preview.jpg",
+    tech:["React 18","Vite","GSAP","Framer Motion","TailwindCSS"],
+    stats:[{icon:"magic",label:"UI Avancé"},{icon:"volume-up",label:"Web Audio API"},{icon:"layer-group",label:"Skeuomorphisme"}],
+    url:"https://jean-edy-dev.vercel.app/", year:"2026", isPremium:true },
+  { id:18, title:"MD Laverie Pressing", subtitle:"Site Vitrine Pressing", cat:"en-ligne", progress:100,
+    description:"Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
+    image:"/assets/images/projects/laverie-preview.jpg",
+    tech:["React 18","Vite","GSAP","React Router v6","EmailJS"],
+    stats:[{icon:"tshirt",label:"Pressing Abidjan"},{icon:"star",label:"GSAP Slider"},{icon:"envelope",label:"EmailJS Contact"}],
+    url:"https://laverie-plus.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [
@@ -1001,12 +1022,14 @@ const Loader = ({ onDone }) => {
         const next = prev + Math.random() * 12
         if (next >= 100) {
           clearInterval(interval)
-          // Ajouter la classe hide pour la transition avant de démonter
+          /* Transition grille dynamique puis révèle l'app */
           setTimeout(() => {
-            const el = document.getElementById('mob-loader')
-            if (el) el.classList.add('hide')
-            setTimeout(() => onDone(), 900)
-          }, 400)
+            runGridTransition(() => {
+              const el = document.getElementById('mob-loader')
+              if (el) { el.style.transition = 'none'; el.classList.add('hide'); setTimeout(() => el.remove(), 1800) }
+              onDone()
+            })
+          }, 300)
           return 100
         }
         return next
@@ -1114,7 +1137,8 @@ const Navbar = ({dark, onToggle}) => {
     fn();
     window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
   },[]);
-  const go=id=>{ setOpen(false); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); };
+  const goGooey = useGooeyTransition();
+  const go=id=>{ setOpen(false); setTimeout(()=>goGooey(id), 120); };
 
   return (
     <>
@@ -1784,9 +1808,19 @@ const Marquee = ({dark}) => {
   return (<div className={`marquee ${dark?'marquee--dark':''}`}><div className="marquee-track">{d.map((w,i)=><span key={i} className="mw">{w}<span className="mdot">◆</span></span>)}</div></div>);
 };
 
+const NEXURA_MOBILE_SLIDES = [
+  '/assets/images/projects/nexura-responsive.jpg',
+  '/assets/images/projects/nexura-responsive2.jpg',
+];
+
 const FeaturedCreation = ({dark}) => {
   const [ref,vis]=useInView(0.08);
-  const proj=PROJECTS.find(p=>p.id===1);
+  const proj=PROJECTS.find(p=>p.id===15);
+  const [slide,setSlide]=useState(0);
+  useEffect(()=>{
+    const t=setInterval(()=>setSlide(s=>(s+1)%NEXURA_MOBILE_SLIDES.length),4000);
+    return ()=>clearInterval(t);
+  },[]);
   return (
     <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
       <WindowChrome title="Vitrine" dark={dark}/>
@@ -1797,20 +1831,23 @@ const FeaturedCreation = ({dark}) => {
             <div className="cr-desktop-shell">
               <div className="cr-desktop-bar">
                 <span className="cr-dot cr-dot--r"/><span className="cr-dot cr-dot--y"/><span className="cr-dot cr-dot--g"/>
-                <span className="cr-bar-url">shop-ci.vercel.app</span>
+                <span className="cr-bar-url">nexura-one.vercel.app</span>
               </div>
               <div className="cr-desktop-screen">
-                <img src={proj.image} alt="ShopCI desktop" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
+                <img src={proj.image} alt="Nexura desktop" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
                 <div className="cr-screen-ph" style={{display:'none'}}><LI name="desktop" color={dark?"#555":"#aaa"}/></div>
               </div>
-            </div>
-          </div>
+            </div>{/* /cr-desktop-shell */}
+          </div>{/* /cr-desktop-wrap */}
           <div className="cr-mobile-wrap">
             <div className="cr-mobile-shell">
               <div className="cr-mobile-notch"/>
               <div className="cr-mobile-screen">
-                <img src="/assets/images/projects/shopci-responsive.jpg" alt="ShopCI mobile" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
-                <div className="cr-screen-ph cr-screen-ph--sm" style={{display:'none'}}><LI name="mobile-alt" color={dark?"#555":"#aaa"}/></div>
+                <div className="cr-slide-track" style={{transform:`translateY(-${slide*50}%)`,transition:'transform .6s cubic-bezier(.4,0,.2,1)'}}>
+                  {NEXURA_MOBILE_SLIDES.map((src,i)=>(
+                    <img key={i} src={src} alt={`Nexura mobile ${i+1}`} className="cr-screen-img cr-slide-img"/>
+                  ))}
+                </div>
               </div>
               <div className="cr-mobile-home"/>
             </div>
@@ -1819,7 +1856,7 @@ const FeaturedCreation = ({dark}) => {
           <div className="cr-glow"/>
         </div>
         <div className="cr-info">
-          <div><h3 className="cr-title">ShopCI</h3><p className="cr-sub">Marketplace E-commerce</p></div>
+          <div><h3 className="cr-title">NEXURA</h3><p className="cr-sub">Marketplace Nouvelle Génération</p></div>
           <div className="cr-meta-block">
             <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
             <div className="cr-meta-row"><span className="cr-ml">Mon rôle</span><span className="cr-mv">Conception et développement</span></div>
@@ -3742,11 +3779,13 @@ export default function App() {
     return next;
   });
   const dark=!light;
+  const { muted, toggleMute } = useSoundSystem();
   return !loaded ? (
     <Loader onDone={()=>setLoaded(true)}/>
   ) : (
     <div className={`app ${light?'app--light':''}`}>
       <CustomCursor/>
+      <SoundToggle muted={muted} onToggle={toggleMute}/>
       <Navbar dark={dark} onToggle={toggleDark}/>
       <ScrollTop dark={dark}/>
       <main>

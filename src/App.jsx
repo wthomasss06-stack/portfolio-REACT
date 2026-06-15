@@ -7,6 +7,9 @@ import TextPressure from './components/TextPressure.jsx'
 import Iridescence from './components/Iridescence.jsx'
 import InfiniteMenu from './components/InfiniteMenu.jsx'
 import './components/InfiniteMenu.css'
+import { useSoundSystem } from './components/useClickSound.js'
+import SoundToggle from './components/SoundToggle.jsx'
+import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -465,6 +468,9 @@ const PROJECTS = [
   { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
   { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
   { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
+  { id: 16, title: 'KokoEat', sub: 'Livraison Alimentaire', cat: 'en-cours', img: '/assets/images/projects/kokoeat-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', tech: ['React', 'Django REST', 'PostgreSQL', 'Vercel'], url: '#', desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.", year: '2025' },
+  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.", year: '2026' },
+  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
 ]
 
 const SERVICES = [
@@ -687,9 +693,12 @@ function Loader({ onDone }) {
         if (next >= 100) {
           clearInterval(interval)
 
+          /* Lance la transition grille dynamique puis révèle le site */
           setTimeout(() => {
-            onDone()
-          }, 700)
+            runGridTransition(() => {
+              onDone()
+            })
+          }, 300)
 
           return 100
         }
@@ -851,7 +860,10 @@ function Navbar({ theme, onToggleTheme }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  /* scrollTo simple pour usage interne (logo click, etc.) */
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  /* goTo : même scroll mais avec transition gooey barba-style */
+  const goTo = useGooeyTransition()
 
   /* ── Animated theme toggler (mirrors animate-ui ThemeTogglerButton) ── */
   const AnimatedThemeToggler = ({ theme: t, onClick }) => (
@@ -912,7 +924,7 @@ function Navbar({ theme, onToggleTheme }) {
           {navLinks.map(l => (
             <button key={l.id} type="button"
               className={`nb-nav-link${activeSection === l.id ? ' active' : ''}`}
-              onClick={() => scrollTo(l.id)}>{l.label}
+              onClick={() => goTo(l.id)}>{l.label}
             </button>
           ))}
         </div>
@@ -936,7 +948,7 @@ function Navbar({ theme, onToggleTheme }) {
           {navLinks.map((l, i) => (
             <button key={l.id} className={`nb-drawer-link${drawerOpen ? ' in' : ''}`}
               style={{ animationDelay: `${i * 0.05}s` }}
-              onClick={() => { setDrawerOpen(false); setTimeout(() => scrollTo(l.id), 280) }}>
+              onClick={() => { setDrawerOpen(false); setTimeout(() => goTo(l.id), 180) }}>
               <span className="nb-drawer-num">0{i + 1}</span><span>{l.label}</span>
             </button>
           ))}
@@ -1151,6 +1163,110 @@ function Marquee() {
       </div>
     </div>
   );
+}
+
+/* ════════════════════════════════════════════
+   FEATURED CREATION — desktop
+   ════════════════════════════════════════════ */
+const FC_MOBILE_SLIDES = [
+  '/assets/images/projects/nexura-responsive.jpg',
+  '/assets/images/projects/nexura-responsive2.jpg',
+]
+
+function FeaturedCreationDesktop() {
+  const proj = PROJECTS.find(p => p.id === 15)
+  const sectionRef = useRef(null)
+  const [slide, setSlide] = useState(0)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const entries = el.querySelectorAll('.fc-entry')
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        entries.forEach(en => en.classList.add('vis'))
+        obs.disconnect()
+      }
+    }, { threshold: 0.1 })
+    obs.observe(el)
+  }, [])
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide(s => (s + 1) % FC_MOBILE_SLIDES.length), 4000)
+    return () => clearInterval(t)
+  }, [])
+
+  if (!proj) return null
+
+  return (
+    <section className="featured-creation" ref={sectionRef}>
+      <p className="fc-eyebrow">En production.</p>
+      <h2 className="fc-title">Dernière création</h2>
+      <div className="fc-grid">
+        {/* ── Mockups ── */}
+        <div className="fc-mockups fc-entry">
+          <div className="fc-desktop-wrap">
+            <div className="fc-desktop-shell">
+              <div className="fc-desktop-bar">
+                <span className="fc-dot fc-dot--r"/>
+                <span className="fc-dot fc-dot--y"/>
+                <span className="fc-dot fc-dot--g"/>
+                <span className="fc-bar-url">nexura-one.vercel.app</span>
+              </div>
+              <div className="fc-desktop-screen">
+                <img
+                  src={proj.img}
+                  alt="Nexura desktop"
+                  className="fc-screen-img"
+                  onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+                />
+                <div className="fc-screen-ph" style={{ display: 'none' }}>
+                  <AnimIcon type="monitor" size={40} color="rgba(255,255,255,.2)" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="fc-mobile-wrap">
+            <div className="fc-mobile-shell">
+              <div className="fc-mobile-notch"/>
+              <div className="fc-mobile-screen">
+                <div className="fc-slide-track" style={{ transform: `translateY(-${slide * 50}%)`, transition: 'transform .6s cubic-bezier(.4,0,.2,1)', willChange: 'transform' }}>
+                  {FC_MOBILE_SLIDES.map((src, i) => (
+                    <img key={i} src={src} alt={`Nexura mobile ${i + 1}`} className="fc-screen-img fc-slide-img" />
+                  ))}
+                </div>
+              </div>
+              <div className="fc-mobile-home"/>
+            </div>
+            <div className="fc-resp-badge">
+              <AnimIcon type="check" size={12} color="#FF5500"/> 100% Responsive
+            </div>
+          </div>
+          <div className="fc-glow"/>
+        </div>
+        {/* ── Info panel ── */}
+        <div className="fc-info fc-entry">
+          <div>
+            <h3 className="fc-name">{proj.title}</h3>
+            <p className="fc-sub">{proj.sub}</p>
+          </div>
+          <div className="fc-meta">
+            <div className="fc-meta-row"><span className="fc-ml">Type</span><span className="fc-mv">Application Web Full-Stack</span></div>
+            <div className="fc-meta-row"><span className="fc-ml">Marché</span><span className="fc-mv">Côte d'Ivoire</span></div>
+            <div className="fc-meta-row"><span className="fc-ml">Mon rôle</span><span className="fc-mv">Conception & Développement</span></div>
+            <div className="fc-meta-row"><span className="fc-ml">Année</span><span className="fc-mv">{proj.year}</span></div>
+          </div>
+          <div className="fc-tags">
+            {proj.tech.map(t => <span key={t} className="fc-tag">{t}</span>)}
+          </div>
+          <p className="fc-desc">{proj.desc}</p>
+          <a href={proj.url} target="_blank" rel="noreferrer" className="fc-cta">
+            <AnimIcon type="globe" size={15} color="currentColor"/> Voir le projet
+          </a>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 /* ════════════════════════════════════════════
@@ -1370,7 +1486,7 @@ function SkewSection() {
           align-items: flex-start;
           flex-direction: column;
           padding: clamp(1.2rem,3vw,2rem) clamp(1rem,4vw,3rem);
-          font-family: var(--fd,'Outfit',sans-serif);
+          font-family: var(--fd);
           font-size: clamp(1.4rem,3.5vw,3rem);
           font-weight: 800;
           text-transform: uppercase;
@@ -1383,14 +1499,14 @@ function SkewSection() {
         .fm-link-title { display: block; letter-spacing: -.02em; line-height: 1; }
         .fm-link-body {
           display: block;
-          font-size: clamp(.7rem,1.2vw,.9rem);
+          font-size: clamp(.85rem,1.4vw,1.05rem);
           font-weight: 400;
           text-transform: none;
           letter-spacing: 0;
           color: var(--muted,rgba(242,237,232,.45));
           max-width: 540px;
-          line-height: 1.55;
-          font-family: 'Plus Jakarta Sans',sans-serif;
+          line-height: 1.6;
+          font-family: var(--fd);
         }
         .fm-marquee {
           position: absolute;
@@ -1425,7 +1541,7 @@ function SkewSection() {
           font-size: clamp(1.4rem,3.5vw,3rem);
           font-weight: 800;
           text-transform: uppercase;
-          font-family: var(--fd,'Outfit',sans-serif);
+          font-family: var(--fd);
           letter-spacing: -.02em;
           white-space: nowrap;
         }
@@ -3048,8 +3164,15 @@ export default function App() {
   }, [theme])
 
   const handleLoaderDone = useCallback(() => {
+    /* Appelé au midpoint de runGridTransition — la grille couvre déjà l'écran */
     document.body.classList.remove('nav-loading')
-    document.getElementById('loader')?.classList.add('hide')
+    const loaderEl = document.getElementById('loader')
+    if (loaderEl) {
+      loaderEl.style.transition = 'none'
+      loaderEl.classList.add('hide')
+      /* Retire le DOM après la fin de la grille */
+      setTimeout(() => loaderEl.remove(), 1800)
+    }
   }, [])
 
   const toggleTheme = () => {
@@ -3064,6 +3187,9 @@ export default function App() {
   useMagneticButtons()
   useSplitTextReveal()
 
+  /* Son de touche — système oscar */
+  const { muted, toggleMute } = useSoundSystem()
+
   return (
     <>
       <Loader onDone={handleLoaderDone} />
@@ -3071,12 +3197,14 @@ export default function App() {
       <div id="scroll-bar"><div id="scroll-fill" /></div>
       <CursorAndScrollBar />
       <Toast show={toastVisible} />
+      <SoundToggle muted={muted} onToggle={toggleMute} />
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <main>
         <Hero />
         <StickyStack />
         <HorizontalParallax />
         <Marquee />
+        <FeaturedCreationDesktop />
         <About />
         <Timeline />
         <SkewSection />
