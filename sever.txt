@@ -8,7 +8,7 @@ npm run preview
 
 Comportement : au scroll horizontal, la carte actuelle s'envole vers les larrierre une nouvelle carte arrive jusaque ce que la fin des carte  Les 2 cartes fantômes attend leur tour jusqua la fin , pour Parcours ce nest tourjour pas visible sur mobille reecris son css pour use de carte
 git add .
-git commit -m "DERNIERE POUR LA ROUTE7"
+git commit -m "FIN"
 git push
 
 

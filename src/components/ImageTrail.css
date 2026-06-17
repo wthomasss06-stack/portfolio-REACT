@@ -1,31 +1,131 @@
-.content {
+/* ════════════════════════════════════════════
+   MARQUEE — Technologies & Langages
+   Deux rangées défilant en sens opposé,
+   fondu sur les bords, pause + glow au survol.
+   ════════════════════════════════════════════ */
+
+.mq-wrap {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
-  z-index: 100;
-  border-radius: 8px;
-  background: transparent;
-  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.1rem;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.content__img {
-  width: 190px;
-  aspect-ratio: 1.1;
-  border-radius: 15px;
+.mq-row {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.mq-track {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: max-content;
+  will-change: transform;
+  animation-name: mqScroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes mqScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.mq-chip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 85, 0, 0.16);
+  background: var(--glass);
+  cursor: default;
+  user-select: none;
+  transition: transform 0.25s cubic-bezier(.175,.885,.32,1.275),
+              border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.mq-chip-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.mq-chip-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  transition: filter 0.25s;
+}
+
+.mq-chip-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.45;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.mq-chip-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+
+/* Fondu sur les bords gauche/droite pour une finition pro */
+.mq-fade {
   position: absolute;
   top: 0;
-  left: 0;
-  opacity: 0;
-  overflow: hidden;
-  will-change: transform, filter;
+  bottom: 0;
+  width: 12%;
+  min-width: 60px;
+  max-width: 140px;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.content__img-inner {
-  background-position: 50% 50%;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  background-size: cover;
-  position: absolute;
-  top: calc(-1 * 20px / 2);
-  left: calc(-1 * 20px / 2);
+.mq-fade--l {
+  left: 0;
+  background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+}
+
+.mq-fade--r {
+  right: 0;
+  background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+}
+
+body.light-mode .mq-chip {
+  border-color: rgba(255, 85, 0, 0.14);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .mq-chip { padding: 0.5rem 0.85rem; gap: 0.45rem; }
+  .mq-chip-icon { width: 20px; height: 20px; }
+  .mq-chip-label { font-size: 0.62rem; }
+  .mq-track { gap: 0.6rem; }
+  .mq-wrap { gap: 0.8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mq-track { animation: none; }
 }

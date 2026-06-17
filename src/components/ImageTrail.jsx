@@ -1,212 +1,132 @@
-import { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
+import { useRef, useState, useCallback } from 'react';
 import './ImageTrail.css';
 
-function lerp(a, b, n) {
-  return (1 - n) * a + n * b;
+/**
+ * Normalise un item de la liste `items` vers la forme { name, icon, color }.
+ * Accepte soit une URL brute (string) pour compat rétro, soit un objet
+ * { name, icon, color } enrichi venant de la table SKILLS.
+ */
+function normalizeItem(item, i) {
+  if (typeof item === 'string') {
+    return { key: `${item}-${i}`, name: '', icon: item, color: '#FF5500' };
+  }
+  return {
+    key: `${item.name || item.icon}-${i}`,
+    name: item.name || '',
+    icon: item.icon,
+    color: item.color || '#FF5500',
+  };
 }
 
-function getLocalPointerPos(e, rect) {
-  let clientX = 0, clientY = 0;
-  if (e.touches && e.touches.length > 0) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-  return { x: clientX - rect.left, y: clientY - rect.top };
-}
+/**
+ * Une rangée de marquee défilant en continu (CSS-driven, GPU-friendly).
+ * Le contenu est dupliqué une fois en interne pour créer la boucle infinie
+ * (translateX 0 -> -50%), donc on lui passe la liste déjà "simple".
+ */
+function MarqueeRow({ items, direction = 'left', speed = 38, rowIndex = 0 }) {
+  const trackRef = useRef(null);
+  const [paused, setPaused] = useState(false);
 
-function getMouseDistance(p1, p2) {
-  const dx = p1.x - p2.x;
-  const dy = p1.y - p2.y;
-  return Math.hypot(dx, dy);
-}
+  const handleEnter = useCallback(() => setPaused(true), []);
+  const handleLeave = useCallback(() => setPaused(false), []);
 
-class ImageItem {
-  DOM = { el: null, inner: null };
-  defaultStyle = { scale: 1, x: 0, y: 0, opacity: 0 };
-  rect = null;
-
-  constructor(DOM_el) {
-    this.DOM.el = DOM_el;
-    this.DOM.inner = this.DOM.el.querySelector('.content__img-inner');
-    this.getRect();
-    this.initEvents();
-  }
-  initEvents() {
-    this.resize = () => {
-      gsap.set(this.DOM.el, this.defaultStyle);
-      this.getRect();
-    };
-    window.addEventListener('resize', this.resize);
-  }
-  getRect() {
-    this.rect = this.DOM.el.getBoundingClientRect();
-  }
-}
-
-class ImageTrailVariant1 {
-  constructor(container) {
-    this.container = container;
-    this.DOM = { el: container };
-    this.images = [...this.DOM.el.querySelectorAll('.content__img')].map(img => new ImageItem(img));
-    this.imagesTotal = this.images.length;
-    this.imgPosition = 0;
-    this.zIndexVal = 1;
-    this.activeImagesCount = 0;
-    this.isIdle = true;
-    this.threshold = 80;
-    this.mousePos = { x: 0, y: 0 };
-    this.lastMousePos = { x: 0, y: 0 };
-    this.cacheMousePos = { x: 0, y: 0 };
-
-    const handlePointerMove = ev => {
-      const rect = this.container.getBoundingClientRect();
-      this.mousePos = getLocalPointerPos(ev, rect);
-    };
-    container.addEventListener('mousemove', handlePointerMove);
-    container.addEventListener('touchmove', handlePointerMove);
-
-    const initRender = ev => {
-      const rect = this.container.getBoundingClientRect();
-      this.mousePos = getLocalPointerPos(ev, rect);
-      this.cacheMousePos = { ...this.mousePos };
-      requestAnimationFrame(() => this.render());
-      container.removeEventListener('mousemove', initRender);
-      container.removeEventListener('touchmove', initRender);
-    };
-    container.addEventListener('mousemove', initRender);
-    container.addEventListener('touchmove', initRender);
-  }
-
-  render() {
-    let distance = getMouseDistance(this.mousePos, this.lastMousePos);
-    this.cacheMousePos.x = lerp(this.cacheMousePos.x, this.mousePos.x, 0.1);
-    this.cacheMousePos.y = lerp(this.cacheMousePos.y, this.mousePos.y, 0.1);
-    if (distance > this.threshold) {
-      this.showNextImage();
-      this.lastMousePos = { ...this.mousePos };
-    }
-    if (this.isIdle && this.zIndexVal !== 1) this.zIndexVal = 1;
-    requestAnimationFrame(() => this.render());
-  }
-
-  showNextImage() {
-    ++this.zIndexVal;
-    this.imgPosition = this.imgPosition < this.imagesTotal - 1 ? this.imgPosition + 1 : 0;
-    const img = this.images[this.imgPosition];
-    gsap.killTweensOf(img.DOM.el);
-    gsap.timeline({
-      onStart: () => this.onImageActivated(),
-      onComplete: () => this.onImageDeactivated()
-    })
-    .fromTo(img.DOM.el,
-      { opacity: 1, scale: 1, zIndex: this.zIndexVal, x: this.cacheMousePos.x - img.rect.width / 2, y: this.cacheMousePos.y - img.rect.height / 2 },
-      { duration: 0.4, ease: 'power1', x: this.mousePos.x - img.rect.width / 2, y: this.mousePos.y - img.rect.height / 2 }, 0)
-    .to(img.DOM.el, { duration: 0.4, ease: 'power3', opacity: 0, scale: 0.2 }, 0.4);
-  }
-
-  onImageActivated() { this.activeImagesCount++; this.isIdle = false; }
-  onImageDeactivated() {
-    this.activeImagesCount--;
-    if (this.activeImagesCount === 0) this.isIdle = true;
-  }
-}
-
-class ImageTrailVariant2 {
-  constructor(container) {
-    this.container = container;
-    this.DOM = { el: container };
-    this.images = [...container.querySelectorAll('.content__img')].map(img => new ImageItem(img));
-    this.imagesTotal = this.images.length;
-    this.imgPosition = 0;
-    this.zIndexVal = 1;
-    this.activeImagesCount = 0;
-    this.isIdle = true;
-    this.threshold = 80;
-    this.mousePos = { x: 0, y: 0 };
-    this.lastMousePos = { x: 0, y: 0 };
-    this.cacheMousePos = { x: 0, y: 0 };
-
-    const handlePointerMove = ev => {
-      const rect = container.getBoundingClientRect();
-      this.mousePos = getLocalPointerPos(ev, rect);
-    };
-    container.addEventListener('mousemove', handlePointerMove);
-    container.addEventListener('touchmove', handlePointerMove);
-
-    const initRender = ev => {
-      const rect = container.getBoundingClientRect();
-      this.mousePos = getLocalPointerPos(ev, rect);
-      this.cacheMousePos = { ...this.mousePos };
-      requestAnimationFrame(() => this.render());
-      container.removeEventListener('mousemove', initRender);
-      container.removeEventListener('touchmove', initRender);
-    };
-    container.addEventListener('mousemove', initRender);
-    container.addEventListener('touchmove', initRender);
-  }
-
-  render() {
-    let distance = getMouseDistance(this.mousePos, this.lastMousePos);
-    this.cacheMousePos.x = lerp(this.cacheMousePos.x, this.mousePos.x, 0.1);
-    this.cacheMousePos.y = lerp(this.cacheMousePos.y, this.mousePos.y, 0.1);
-    if (distance > this.threshold) {
-      this.showNextImage();
-      this.lastMousePos = { ...this.mousePos };
-    }
-    if (this.isIdle && this.zIndexVal !== 1) this.zIndexVal = 1;
-    requestAnimationFrame(() => this.render());
-  }
-
-  showNextImage() {
-    ++this.zIndexVal;
-    this.imgPosition = this.imgPosition < this.imagesTotal - 1 ? this.imgPosition + 1 : 0;
-    const img = this.images[this.imgPosition];
-    gsap.killTweensOf(img.DOM.el);
-    gsap.timeline({
-      onStart: () => this.onImageActivated(),
-      onComplete: () => this.onImageDeactivated()
-    })
-    .fromTo(img.DOM.el,
-      { opacity: 1, scale: 0, zIndex: this.zIndexVal, x: this.cacheMousePos.x - img.rect.width / 2, y: this.cacheMousePos.y - img.rect.height / 2 },
-      { duration: 0.4, ease: 'power1', scale: 1, x: this.mousePos.x - img.rect.width / 2, y: this.mousePos.y - img.rect.height / 2 }, 0)
-    .fromTo(img.DOM.inner,
-      { scale: 2.8, filter: 'brightness(250%)' },
-      { duration: 0.4, ease: 'power1', scale: 1, filter: 'brightness(100%)' }, 0)
-    .to(img.DOM.el, { duration: 0.4, ease: 'power2', opacity: 0, scale: 0.2 }, 0.45);
-  }
-
-  onImageActivated() { this.activeImagesCount++; this.isIdle = false; }
-  onImageDeactivated() {
-    this.activeImagesCount--;
-    if (this.activeImagesCount === 0) this.isIdle = true;
-  }
-}
-
-const variantMap = {
-  1: ImageTrailVariant1,
-  2: ImageTrailVariant2,
-};
-
-export default function ImageTrail({ items = [], variant = 2 }) {
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const Cls = variantMap[variant] || variantMap[2];
-    new Cls(containerRef.current);
-  }, [variant, items]);
+  const doubled = [...items, ...items];
 
   return (
-    <div className="content" ref={containerRef}>
-      {items.map((url, i) => (
-        <div className="content__img" key={i}>
-          <div className="content__img-inner" style={{ backgroundImage: `url(${url})` }} />
-        </div>
-      ))}
+    <div
+      className={`mq-row mq-row--${direction}`}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      <div
+        ref={trackRef}
+        className="mq-track"
+        style={{
+          animationDuration: `${speed}s`,
+          animationDirection: direction === 'right' ? 'reverse' : 'normal',
+          animationPlayState: paused ? 'paused' : 'running',
+        }}
+      >
+        {doubled.map((it, i) => (
+          <MarqueeChip key={`${it.key}-${rowIndex}-${i}`} item={it} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MarqueeChip({ item }) {
+  const [hovered, setHovered] = useState(false);
+  const col = item.color || '#FF5500';
+
+  return (
+    <div
+      className="mq-chip"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={
+        hovered
+          ? {
+              borderColor: col,
+              boxShadow: `6px 6px 0 ${col}`,
+              transform: 'translate(-3px,-3px) scale(1.04)',
+              background: `${col}14`,
+            }
+          : undefined
+      }
+    >
+      <span className="mq-chip-icon" aria-hidden="true">
+        <img
+          src={item.icon}
+          alt=""
+          draggable={false}
+          style={{
+            filter: hovered ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.6)',
+          }}
+          onError={e => {
+            e.currentTarget.style.opacity = '0';
+          }}
+        />
+        {hovered && (
+          <span className="mq-chip-glow" style={{ background: col }} aria-hidden="true" />
+        )}
+      </span>
+      {item.name && (
+        <span className="mq-chip-label" style={hovered ? { color: 'var(--text)' } : undefined}>
+          {item.name}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/**
+ * ImageTrail — désormais un marquee à deux rangées défilant en sens opposé.
+ * Conserve le même nom/export et la même API ({ items, variant }) pour ne
+ * pas casser les appels existants ; `variant` est gardé pour compat mais
+ * n'a plus d'effet (un seul rendu, premium par défaut).
+ *
+ * `items` peut être :
+ *  - un tableau de strings (URLs d'icônes) — comportement historique
+ *  - un tableau d'objets { name, icon, color } — rendu enrichi avec label + glow
+ */
+export default function ImageTrail({ items = [] }) {
+  const normalized = items.map(normalizeItem);
+
+  if (normalized.length === 0) return null;
+
+  // Découpe la liste en deux moitiés pour deux rangées visuellement distinctes
+  // (si la liste est petite ou impaire, les deux rangées partagent le set complet)
+  const mid = Math.ceil(normalized.length / 2);
+  const rowA = normalized.length >= 6 ? normalized.slice(0, mid) : normalized;
+  const rowB = normalized.length >= 6 ? normalized.slice(mid) : normalized;
+
+  return (
+    <div className="mq-wrap">
+      <MarqueeRow items={rowA} direction="left" speed={34} rowIndex={0} />
+      <MarqueeRow items={rowB.length ? rowB : rowA} direction="right" speed={40} rowIndex={1} />
+      <div className="mq-fade mq-fade--l" aria-hidden="true" />
+      <div className="mq-fade mq-fade--r" aria-hidden="true" />
     </div>
   );
 }

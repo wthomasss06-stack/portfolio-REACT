@@ -1775,14 +1775,11 @@ function SkillBandItem({ sk }) {
 }
 
 function SkillsSection() {
-  const allSkillIcons = [
+  const allSkills = [
     ...SKILLS.frontend,
     ...SKILLS.backend,
     ...SKILLS.tools,
-  ].map(sk => sk.icon)
-
-  // Duplicate for a richer trail
-  const trailItems = [...allSkillIcons, ...allSkillIcons]
+  ]
 
   return (
     <section id="skills-section" className="sec">
@@ -1794,18 +1791,10 @@ function SkillsSection() {
         <ScrollReveal>de travail.</ScrollReveal>
       </h2>
       <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.55)', letterSpacing: '.2em', margin: '2.5rem 0 1rem' }}>
-        // déplace ta souris pour explorer
+        // technologies & langages
       </p>
-      <div style={{ position: 'relative', width: '100%', height: '520px', borderRadius: '16px', border: '1px solid rgba(255,85,0,.1)', overflow: 'hidden', background: 'rgba(255,85,0,.02)' }}>
-        {/* Skill names listed as hint */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1.2rem', padding: '2rem', pointerEvents: 'none', zIndex: 0 }}>
-          {[...SKILLS.frontend, ...SKILLS.backend, ...SKILLS.tools].map(sk => (
-            <span key={sk.name} style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.18)', letterSpacing: '.15em', textTransform: 'uppercase' }}>
-              {sk.name}
-            </span>
-          ))}
-        </div>
-        <ImageTrail items={trailItems} variant={2} />
+      <div style={{ position: 'relative', width: '100%', height: '220px', borderRadius: '16px', border: '1px solid rgba(255,85,0,.1)', overflow: 'hidden', background: 'rgba(255,85,0,.02)' }}>
+        <ImageTrail items={allSkills} />
       </div>
       <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.6rem', color: 'var(--muted)', letterSpacing: '.15em', textAlign: 'center', marginTop: '1rem' }}>
         React · JavaScript · Next.js · Python · Django · Flask · MySQL · Git · VS Code · GitHub · Vercel · Tailwind
@@ -2777,12 +2766,17 @@ function ContactSection({ onToast }) {
           email: e.target.email.value,
           projectType: e.target.projectType.value,
           message: e.target.message.value,
+          company: e.target.company.value, // honeypot anti-spam — doit rester vide
         }),
       })
-      if (!res.ok) throw new Error('Erreur serveur')
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        const firstFieldError = data?.fieldErrors && Object.values(data.fieldErrors)[0]
+        throw new Error(firstFieldError || data?.error || 'Erreur serveur')
+      }
       setSent(true); onToast()
-    } catch {
-      setBtnTxt('Erreur — WhatsApp : +225 01 42 50 77 50')
+    } catch (err) {
+      setBtnTxt(err?.message ? `${err.message}` : 'Erreur — WhatsApp : +225 01 42 50 77 50')
       setTimeout(() => { setBtnTxt('Envoyer le message'); setSending(false) }, 4000)
     }
   }
@@ -2893,6 +2887,15 @@ function ContactSection({ onToast }) {
             </div>
           ) : (
             <form id="contact-form" onSubmit={handleSubmit}>
+              {/* Honeypot anti-spam : invisible pour un humain, souvent rempli par les bots */}
+              <input
+                type="text"
+                name="company"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: 'absolute', width: '1px', height: '1px', opacity: 0, pointerEvents: 'none', left: '-9999px' }}
+              />
               <div className="form-row">
                 <div className="form-field"><label>Nom complet *</label><input type="text" name="name" placeholder="Jean Kouassi" required /></div>
                 <div className="form-field"><label>Email *</label><input type="email" name="email" placeholder="jean@exemple.com" required /></div>
