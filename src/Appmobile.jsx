@@ -3,6 +3,7 @@ import ScrollDepthScene from './components/ScrollDepthScene';
 import ScrambleText from './components/ScrambleText';
 import { useSoundSystem } from './components/useClickSound.js';
 import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx';
+import { gsap } from 'gsap';
 import SoundToggle from './components/SoundToggle.jsx';
 
 
@@ -364,18 +365,21 @@ const PROJECTS = [
   { id:1, title:"ShopCI", subtitle:"Marketplace E-commerce", cat:"en-ligne", progress:65,
     description:"Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
     image:"/assets/images/projects/monmarket-preview.jpg",
+    images:["/assets/images/projects/monmarket-preview.jpg","/assets/images/projects/monmarket-preview2.jpg","/assets/images/projects/monmarket-preview3.jpg"],
     tech:["React","Django","Bootstrap 5","Vercel + PythonAnywhere"],
     stats:[{icon:"users",label:"Multi-vendeurs"},{icon:"shopping-cart",label:"Panier temps réel"},{icon:"shield-alt",label:"Paiement sécurisé"}],
     url:"https://shop-ci.vercel.app/", year:"2024", isPremium:true },
   { id:2, title:"TechFlow", subtitle:"Site Vitrine Professionnel", cat:"en-ligne", progress:97,
     description:"Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
     image:"/assets/images/projects/techflow-preview.jpg",
+    images:["/assets/images/projects/techflow-preview.jpg","/assets/images/projects/techflow-preview2.jpg","/assets/images/projects/techflow-preview3.jpg"],
     tech:["HTML / Tailwind CSS","JavaScript","Vercel"],
     stats:[{icon:"users",label:"Tailwind CSS"},{icon:"shopping-cart",label:"UI propre & responsive"},{icon:"shield-alt",label:"Déployé en production"}],
     url:"https://techflow-ten.vercel.app/", year:"2024", isPremium:true },
   { id:3, title:"TerraSafe", subtitle:"Marketplace Foncière", cat:"en-ligne", progress:85,
     description:"Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
     image:"/assets/images/projects/terrasafe-preview.jpg",
+    images:["/assets/images/projects/terrasafe-preview.jpg","/assets/images/projects/terrasafe-preview2.jpg","/assets/images/projects/terrasafe-preview3.jpg"],
     tech:["Python/Flask","MySQL","JavaScript","Bootstrap 5"],
     stats:[{icon:"database",label:"MySQL + Flask"},{icon:"lock",label:"Auth sécurisée"},{icon:"search",label:"Recherche avancée"}],
     url:"https://wthomassss06.pythonanywhere.com", year:"2024", isPremium:true },
@@ -412,42 +416,49 @@ const PROJECTS = [
   { id:9, title:"Tati", subtitle:"Portfolio & Vitrine Moderne", cat:"en-ligne", progress:100,
     description:"Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair, design 100% responsive.",
     image:"/assets/images/projects/tati-preview.jpg",
+    images:["/assets/images/projects/tati-preview.jpg","/assets/images/projects/tati-preview2.jpg","/assets/images/projects/tati-preview3.jpg"],
     tech:["React","Tailwind CSS","Framer Motion","Vercel"],
     stats:[{icon:"user",label:"Portfolio & Vitrine"},{icon:"adjust",label:"Thème sombre/clair"},{icon:"mobile-alt",label:"100% Responsive"}],
     url:"https://tatii.vercel.app/", year:"2024", isPremium:true },
   { id:10, title:"MK", subtitle:"Portfolio Graphiste Client", cat:"en-ligne", progress:100,
     description:"Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
     image:"/assets/images/projects/mk-preview.jpg",
+    images:["/assets/images/projects/mk-preview.jpg","/assets/images/projects/mk-preview2.jpg","/assets/images/projects/mk-preview3.jpg"],
     tech:["React","Tailwind CSS","Framer Motion","Vercel"],
     stats:[{icon:"paint-brush",label:"Galerie créative"},{icon:"star",label:"Design sur-mesure"},{icon:"globe",label:"En production"}],
     url:"https://mory01ff.vercel.app/", year:"2024", isPremium:true },
   { id:11, title:"ManoBeat 777", subtitle:"Portfolio Beatmaker", cat:"en-ligne", progress:100,
     description:"Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp en quelques clics.",
     image:"/assets/images/projects/beatstore-preview.jpg",
+    images:["/assets/images/projects/beatstore-preview.jpg","/assets/images/projects/beatstore-preview2.jpg","/assets/images/projects/beatstore-preview3.jpg"],
     tech:["React","Tailwind CSS","Howler.js","Vercel"],
     stats:[{icon:"headphones",label:"Écoute en ligne"},{icon:"whatsapp",label:"Achat via WhatsApp"},{icon:"music",label:"Catalogue beats"}],
     url:"https://xxx-x.vercel.app/", year:"2025", isPremium:true },
   { id:12, title:"New Horizon Service", subtitle:"Location de Résidences", cat:"en-ligne", progress:100,
     description:"Plateforme de location de résidences meublées haut de gamme. Interface moderne côté client, backend Flask sécurisé avec API REST, recherche avancée et gestion des disponibilités.",
     image:"/assets/images/projects/newhorizon-preview.jpg",
+    images:["/assets/images/projects/newhorizon-preview.jpg","/assets/images/projects/newhorizon-preview2.jpg","/assets/images/projects/newhorizon-preview3.jpg"],
     tech:["Next.js","Flask","Python","MySQL","Vercel"],
     stats:[{icon:"home",label:"Résidences meublées"},{icon:"search",label:"Recherche avancée"},{icon:"calendar-check",label:"Réservation en ligne"}],
     url:"https://new-horizonservice.vercel.app/", year:"2025", isPremium:true },
   { id:13, title:"AKATech", subtitle:"Agence Digitale Abidjan", cat:"en-ligne", progress:100,
     description:"Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions web modernes : sites vitrines, e-commerce, SaaS. Aurora WebGL, animations Framer Motion, design vert/noir premium.",
     image:"/assets/images/projects/akatech-preview.jpg",
+    images:["/assets/images/projects/akatech-preview.jpg","/assets/images/projects/akatech-preview2.jpg","/assets/images/projects/akatech-preview3.jpg"],
     tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
     stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
     url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
   { id:14, title:"Université les Anges", subtitle:"Site Institutionnel", cat:"en-ligne", progress:100,
     description:"Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
     image:"/assets/images/projects/universitelesanges-preview.jpg",
+    images:["/assets/images/projects/universitelesanges-preview.jpg","/assets/images/projects/universitelesanges-preview2.jpg","/assets/images/projects/universitelesanges-preview3.jpg"],
     tech:["HTML","CSS","Bulma","Bootstrap","Vercel"],
     stats:[{icon:"university",label:"Site institutionnel"},{icon:"mobile-alt",label:"Responsive"},{icon:"globe",label:"En production"}],
     url:"https://universitelesanges.vercel.app/", year:"2025", isPremium:true },
   { id:15, title:"NEXURA", subtitle:"Marketplace Nouvelle Génération", cat:"en-ligne", progress:85,
     description:"Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.",
     image:"/assets/images/projects/nexura-preview.jpg",
+    images:["/assets/images/projects/nexura-preview.jpg","/assets/images/projects/nexura-responsive.jpg","/assets/images/projects/nexura-responsive2.jpg"],
     tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"],
     stats:[{icon:"home",label:"Multi-catégories"},{icon:"shield-alt",label:"Auth & KYC"},{icon:"bolt",label:"Temps réel"}],
     url:"https://nexura-one.vercel.app/", year:"2025", isPremium:true },
@@ -460,12 +471,14 @@ const PROJECTS = [
   { id:17, title:"Jean Edy · Portfolio", subtitle:"Portfolio React UI Avancé", cat:"en-ligne", progress:100,
     description:"Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
     image:"/assets/images/projects/jean-edy-preview.jpg",
+    images:["/assets/images/projects/jean-edy-preview.jpg","/assets/images/projects/jean-edy-preview2.jpg","/assets/images/projects/jean-edy-preview3.jpg"],
     tech:["React 18","Vite","GSAP","Framer Motion","TailwindCSS"],
     stats:[{icon:"magic",label:"UI Avancé"},{icon:"volume-up",label:"Web Audio API"},{icon:"layer-group",label:"Skeuomorphisme"}],
     url:"https://jean-edy-dev.vercel.app/", year:"2026", isPremium:true },
   { id:18, title:"MD Laverie Pressing", subtitle:"Site Vitrine Pressing", cat:"en-ligne", progress:100,
     description:"Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
     image:"/assets/images/projects/laverie-preview.jpg",
+    images:["/assets/images/projects/laverie-preview.jpg","/assets/images/projects/laverie-preview2.jpg","/assets/images/projects/laverie-preview3.jpg"],
     tech:["React 18","Vite","GSAP","React Router v6","EmailJS"],
     stats:[{icon:"tshirt",label:"Pressing Abidjan"},{icon:"star",label:"GSAP Slider"},{icon:"envelope",label:"EmailJS Contact"}],
     url:"https://laverie-plus.vercel.app/", year:"2025", isPremium:true },
@@ -1015,6 +1028,7 @@ const Noise = () => (
 // ═══════════════════════════════════════════════════════════════
 const Loader = ({ onDone }) => {
   const [progress, setProgress] = useState(0)
+  const loaderRef = useRef(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1022,13 +1036,39 @@ const Loader = ({ onDone }) => {
         const next = prev + Math.random() * 12
         if (next >= 100) {
           clearInterval(interval)
-          /* Transition grille dynamique puis révèle l'app */
+          /* Transition scale-slide barba-01
+             — on anime le ref React, jamais .remove()
+             — onDone() démonte via setState, React gère le DOM */
           setTimeout(() => {
-            runGridTransition(() => {
-              const el = document.getElementById('mob-loader')
-              if (el) { el.style.transition = 'none'; el.classList.add('hide'); setTimeout(() => el.remove(), 1800) }
+            const loaderEl = loaderRef.current
+            const appRoot = document.querySelector('.app')
+            if (loaderEl) {
+              const tl = gsap.timeline({
+                onComplete: () => {
+                  /* Cacher visuellement sans toucher au DOM — React démonte ensuite */
+                  if (loaderEl) {
+                    loaderEl.style.visibility = 'hidden'
+                    loaderEl.style.pointerEvents = 'none'
+                  }
+                  onDone()
+                }
+              })
+              /* leave : loader monte + rétrécit */
+              tl.to(loaderEl, {
+                y: '-100%', scale: 0.7, duration: 1.3,
+                ease: 'power3.inOut', transformOrigin: 'center center'
+              }, 0)
+              /* enter : app arrive par le bas */
+              if (appRoot) {
+                gsap.set(appRoot, { y: '8vh', scale: 0.96, transformOrigin: 'center top' })
+                tl.to(appRoot, {
+                  y: '0%', scale: 1, duration: 1.0,
+                  ease: 'power3.inOut', clearProps: 'transform'
+                }, 0.6)
+              }
+            } else {
               onDone()
-            })
+            }
           }, 300)
           return 100
         }
@@ -1057,7 +1097,7 @@ const Loader = ({ onDone }) => {
   }, [])
 
   return (
-    <div id="mob-loader">
+    <div id="mob-loader" ref={loaderRef}>
       {/* Backgrounds */}
       <div className="mob-ld-noise" />
       <div className="mob-ld-grid" />
@@ -1137,7 +1177,7 @@ const Navbar = ({dark, onToggle}) => {
     fn();
     window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
   },[]);
-  const goGooey = useGooeyTransition();
+  const goGooey = useGooeyTransition('mobile');
   const go=id=>{ setOpen(false); setTimeout(()=>goGooey(id), 120); };
 
   return (
@@ -1808,44 +1848,55 @@ const Marquee = ({dark}) => {
   return (<div className={`marquee ${dark?'marquee--dark':''}`}><div className="marquee-track">{d.map((w,i)=><span key={i} className="mw">{w}<span className="mdot">◆</span></span>)}</div></div>);
 };
 
-const NEXURA_MOBILE_SLIDES = [
-  '/assets/images/projects/nexura-responsive.jpg',
-  '/assets/images/projects/nexura-responsive2.jpg',
+/* 3 projets en-ligne pour la section Dernière création mobile */
+const CR_SLIDES = [
+  { desktop: '/assets/images/projects/nexura-preview.jpg',    mobile: '/assets/images/projects/nexura-responsive.jpg',  id: 15 },
+  { desktop: '/assets/images/projects/newhorizon-preview.jpg',mobile: '/assets/images/projects/nexura-responsive2.jpg', id: 12 },
+  { desktop: '/assets/images/projects/akatech-preview.jpg',   mobile: '/assets/images/projects/nexura-responsive.jpg',  id: 13 },
 ];
 
 const FeaturedCreation = ({dark}) => {
   const [ref,vis]=useInView(0.08);
-  const proj=PROJECTS.find(p=>p.id===15);
   const [slide,setSlide]=useState(0);
   useEffect(()=>{
-    const t=setInterval(()=>setSlide(s=>(s+1)%NEXURA_MOBILE_SLIDES.length),4000);
+    const t=setInterval(()=>setSlide(s=>(s+1)%CR_SLIDES.length),4000);
     return ()=>clearInterval(t);
   },[]);
+  const cur=CR_SLIDES[slide];
+  const proj=PROJECTS.find(p=>p.id===cur.id);
+  if(!proj) return null;
   return (
     <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
       <WindowChrome title="Vitrine" dark={dark}/>
-      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Dernière<br/>création.</h2></div>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Projets<br/>en ligne.</h2></div>
       <div className="cr-showcase">
         <div className="cr-mockups">
+
+          {/* Desktop browser — horizontal slide track */}
           <div className="cr-desktop-wrap">
             <div className="cr-desktop-shell">
               <div className="cr-desktop-bar">
                 <span className="cr-dot cr-dot--r"/><span className="cr-dot cr-dot--y"/><span className="cr-dot cr-dot--g"/>
-                <span className="cr-bar-url">nexura-one.vercel.app</span>
+                <span className="cr-bar-url">{proj.url.replace('https://','').replace(/\/$/,'')}</span>
               </div>
-              <div className="cr-desktop-screen">
-                <img src={proj.image} alt="Nexura desktop" className="cr-screen-img" onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='flex';}}/>
-                <div className="cr-screen-ph" style={{display:'none'}}><LI name="desktop" color={dark?"#555":"#aaa"}/></div>
+              <div className="cr-desktop-screen" style={{position:'relative',overflow:'hidden'}}>
+                <div style={{display:'flex',width:`${CR_SLIDES.length*100}%`,height:'100%',transform:`translateX(-${slide*(100/CR_SLIDES.length)}%)`,transition:'transform .65s cubic-bezier(.4,0,.2,1)',willChange:'transform'}}>
+                  {CR_SLIDES.map((s,i)=>(
+                    <img key={i} src={s.desktop} alt={PROJECTS.find(p=>p.id===s.id)?.title||''} style={{width:`${100/CR_SLIDES.length}%`,flexShrink:0,height:'100%',objectFit:'cover',objectPosition:'top center'}}/>
+                  ))}
+                </div>
               </div>
-            </div>{/* /cr-desktop-shell */}
-          </div>{/* /cr-desktop-wrap */}
+            </div>
+          </div>
+
+          {/* Phone mockup — vertical slide track */}
           <div className="cr-mobile-wrap">
             <div className="cr-mobile-shell">
               <div className="cr-mobile-notch"/>
               <div className="cr-mobile-screen">
-                <div className="cr-slide-track" style={{transform:`translateY(-${slide*50}%)`,transition:'transform .6s cubic-bezier(.4,0,.2,1)'}}>
-                  {NEXURA_MOBILE_SLIDES.map((src,i)=>(
-                    <img key={i} src={src} alt={`Nexura mobile ${i+1}`} className="cr-screen-img cr-slide-img"/>
+                <div className="cr-slide-track" style={{transform:`translateY(-${slide*(100/CR_SLIDES.length)}%)`,transition:'transform .65s cubic-bezier(.4,0,.2,1)',willChange:'transform'}}>
+                  {CR_SLIDES.map((s,i)=>(
+                    <img key={i} src={s.mobile} alt={`slide ${i+1}`} className="cr-screen-img cr-slide-img"/>
                   ))}
                 </div>
               </div>
@@ -1853,17 +1904,35 @@ const FeaturedCreation = ({dark}) => {
             </div>
             <div className="cr-resp-badge"><LI name="check-circle" color="#ff5500"/> 100% Responsive</div>
           </div>
+
+          {/* Dots */}
+          <div className="cr-dots">
+            {CR_SLIDES.map((_,i)=>(
+              <button key={i} className={`cr-dot-btn${slide===i?' cr-dot-btn--active':''}`} onClick={()=>setSlide(i)}/>
+            ))}
+          </div>
+
           <div className="cr-glow"/>
         </div>
-        <div className="cr-info">
-          <div><h3 className="cr-title">NEXURA</h3><p className="cr-sub">Marketplace Nouvelle Génération</p></div>
-          <div className="cr-meta-block">
-            <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
-            <div className="cr-meta-row"><span className="cr-ml">Mon rôle</span><span className="cr-mv">Conception et développement</span></div>
-          </div>
-          <div className="cr-tags">{proj.tech.map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
-          <p className="cr-desc">{proj.description}</p>
-          <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
+
+        {/* Info panel — transition sur le projet actif */}
+        <div className="cr-info" style={{position:'relative',minHeight:'260px'}}>
+          {CR_SLIDES.map((s,i)=>{
+            const p=PROJECTS.find(pr=>pr.id===s.id);
+            if(!p) return null;
+            return (
+              <div key={i} style={{opacity:slide===i?1:0,transform:slide===i?'translateY(0)':'translateY(14px)',transition:'opacity .4s ease,transform .4s ease',position:slide===i?'relative':'absolute',top:0,left:0,width:'100%',pointerEvents:slide===i?'auto':'none'}}>
+                <div><h3 className="cr-title">{p.title}</h3><p className="cr-sub">{p.sub}</p></div>
+                <div className="cr-meta-block">
+                  <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
+                  <div className="cr-meta-row"><span className="cr-ml">Année</span><span className="cr-mv">{p.year}</span></div>
+                </div>
+                <div className="cr-tags">{p.tech.slice(0,3).map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
+                <p className="cr-desc">{p.description}</p>
+                <a href={p.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -3036,6 +3105,7 @@ const FanDeck = ({ items, dark }) => {
 const SpotlightProjects = ({ items, dark }) => {
   const [selected, setSelected] = useState(0);
   const [imgErr, setImgErr] = useState({});
+  const [imgSlide, setImgSlide] = useState(0);
   const thumbsRef = useRef(null);
 
   const goPrev = () => setSelected(s => Math.max(0, s - 1));
@@ -3048,23 +3118,69 @@ const SpotlightProjects = ({ items, dark }) => {
     const targetLeft = thumb.offsetLeft - (rail.clientWidth - thumb.clientWidth) / 2;
     rail.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
   }, [selected]);
+
+  /* Reset slide index quand on change de projet */
   useEffect(() => { setSelected(0); setImgErr({}); }, [items]);
+  useEffect(() => { setImgSlide(0); }, [selected]);
+
+  /* Auto-slide 4s — uniquement pour projets en-ligne avec images[] */
+  useEffect(() => {
+    const proj = items[selected] ?? items[0];
+    if (!proj || proj.cat !== 'en-ligne' || !proj.images || proj.images.length < 2) return;
+    const t = setInterval(() => setImgSlide(s => (s + 1) % proj.images.length), 4000);
+    return () => clearInterval(t);
+  }, [selected, items]);
 
   const proj = items[selected] ?? items[0];
   if (!proj) return null;
   const isExternal = proj.url?.startsWith('http');
   const isDemo = proj.cat === 'demo';
 
+  /* Images à afficher : images[] pour en-ligne, sinon image seul */
+  const slideImgs = (proj.cat === 'en-ligne' && proj.images?.length) ? proj.images : [proj.image];
+  const nbSlides = slideImgs.length;
+
   return (
     <div className={`sp-root ${dark?'sp-root--dark':''}`}>
       <div className="sp-viewer">
-        {/* Preview */}
-        <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length]}}>
-          {!imgErr[proj.id]
-            ? <img src={proj.image} alt={proj.title} className="sp-preview-img" onError={()=>setImgErr(e=>({...e,[proj.id]:true}))}/>
-            : <div className="sp-preview-placeholder"><LI name="code" color={dark?"#555":"#aaa"}/></div>}
+        {/* Preview — slide horizontal entre les images du projet */}
+        <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length], overflow:'hidden', position:'relative'}}>
+          {!imgErr[proj.id] ? (
+            <div
+              className="sp-img-track"
+              style={{
+                display:'flex',
+                width:`${nbSlides*100}%`,
+                height:'100%',
+                transform:`translateX(-${imgSlide*(100/nbSlides)}%)`,
+                transition:'transform .65s cubic-bezier(.4,0,.2,1)',
+                willChange:'transform',
+              }}
+            >
+              {slideImgs.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={`${proj.title} ${i+1}`}
+                  className="sp-preview-img"
+                  style={{width:`${100/nbSlides}%`, flexShrink:0, height:'100%', objectFit:'cover', objectPosition:'top center'}}
+                  onError={()=>{ if(i===0) setImgErr(e=>({...e,[proj.id]:true})) }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="sp-preview-placeholder"><LI name="code" color={dark?"#555":"#aaa"}/></div>
+          )}
           {proj.cat==='en-ligne' && <div className="sp-live-badge"><span className="hero-dot"/><span>EN LIGNE</span></div>}
           {proj.isPremium && <div className="sp-prem-badge"><LI name="star" color="#ff5500"/> Premium</div>}
+          {/* Dots indicateurs de slide image */}
+          {nbSlides > 1 && (
+            <div className="sp-img-dots">
+              {slideImgs.map((_,i) => (
+                <button key={i} className={`sp-img-dot${imgSlide===i?' sp-img-dot--active':''}`} onClick={()=>setImgSlide(i)} aria-label={`Image ${i+1}`}/>
+              ))}
+            </div>
+          )}
         </div>
         {/* Détails */}
         <div className={`sp-details ${dark?'sp-details--dark':''}`}>
@@ -3625,7 +3741,8 @@ const Contact = ({dark}) => {
   const onSubmit=async e=>{
     e.preventDefault(); setSending(true);
     try{
-      await fetch('https://formsubmit.co/ajax/wthomasss06@gmail.com',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:form.name,email:form.email,'Type de projet':form.projectType,message:form.message,_subject:`🚀 Nouveau contact : ${form.name}`,_template:'table',_captcha:'false'})});
+      const res = await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:form.name,email:form.email,projectType:form.projectType,message:form.message})});
+      if(!res.ok) throw new Error('Erreur serveur');
       setSent(true); setForm({name:'',email:'',projectType:'',message:''});
     }catch{ alert('❌ Erreur. Contactez-moi sur WhatsApp : +225 01 42 50 77 50'); }
     finally{ setSending(false); }

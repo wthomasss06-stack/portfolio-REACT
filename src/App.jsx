@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import ScrambleText from './components/ScrambleText.jsx'
+import Shuffle from './components/Shuffle.jsx'
+import AnimatedCounter from './components/AnimatedCounter.jsx'
 import RotatingText from './components/RotatingText.jsx'
 import ScrollReveal from './components/ScrollReveal.jsx'
 import TargetCursor from './components/TargetCursor.jsx'
@@ -10,6 +12,9 @@ import './components/InfiniteMenu.css'
 import { useSoundSystem } from './components/useClickSound.js'
 import SoundToggle from './components/SoundToggle.jsx'
 import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx'
+import Stack from './components/Stack.jsx'
+import ImageTrail from './components/ImageTrail.jsx'
+import Lanyard from './components/Lanyard.jsx'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -453,24 +458,24 @@ function useScrollAnimations() {
    DONNÉES
    ════════════════════════════════════════════ */
 const PROJECTS = [
-  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024' },
-  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024' },
-  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024' },
+  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.jpg', images: ['/assets/images/projects/monmarket-preview.jpg','/assets/images/projects/monmarket-preview2.jpg','/assets/images/projects/monmarket-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024' },
+  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.jpg', images: ['/assets/images/projects/techflow-preview.jpg','/assets/images/projects/techflow-preview2.jpg','/assets/images/projects/techflow-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024' },
+  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.jpg', images: ['/assets/images/projects/terrasafe-preview.jpg','/assets/images/projects/terrasafe-preview2.jpg','/assets/images/projects/terrasafe-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024' },
   { id: 4, title: 'Chap-chapMAP', sub: 'Navigation Intelligente', cat: 'demo', img: '/assets/images/projects/chapchapmap-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['JavaScript', 'Leaflet.js', 'OSRM API', 'Geolocation API'], url: '/demos/chap-chapMAP.html', desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.", year: '2023' },
   { id: 5, title: 'ElvisMarket', sub: 'Interface E-commerce', cat: 'demo', img: '/assets/images/projects/elvismarket-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'LocalStorage'], url: '/demos/projet2.html', desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.", year: '2023' },
   { id: 6, title: 'MonCashJour', sub: 'Gestion de Ventes', cat: 'demo', img: '/assets/images/projects/moncashjour-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'Chart.js'], url: '/demos/projet1.html', desc: 'Application de gestion de ventes quotidiennes destinée aux petits commerçants.', year: '2023' },
   { id: 7, title: 'LivreurTrack Pro', sub: 'Suivi Logistique', cat: 'demo', img: '/assets/images/projects/livreurtrack-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600', tech: ['JavaScript', 'Bootstrap 5', 'LocalStorage', 'Camera API'], url: '/demos/projet3.html', desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.", year: '2023' },
   { id: 8, title: 'LinkedIn Banner Pro', sub: 'Générateur SaaS', cat: 'en-cours', img: '/assets/images/projects/linkedin-banner-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', tech: ['JavaScript', 'Canvas API', 'Tailwind CSS'], url: '/demos/projet7.html', desc: 'Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles.', year: '2025' },
-  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024' },
-  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024' },
-  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025' },
-  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
-  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
-  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
-  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
+  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.jpg', images: ['/assets/images/projects/tati-preview.jpg','/assets/images/projects/tati-preview2.jpg','/assets/images/projects/tati-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024' },
+  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.jpg', images: ['/assets/images/projects/mk-preview.jpg','/assets/images/projects/mk-preview2.jpg','/assets/images/projects/mk-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024' },
+  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.jpg', images: ['/assets/images/projects/beatstore-preview.jpg','/assets/images/projects/beatstore-preview2.jpg','/assets/images/projects/beatstore-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025' },
+  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.jpg', images: ['/assets/images/projects/newhorizon-preview.jpg','/assets/images/projects/newhorizon-preview2.jpg','/assets/images/projects/newhorizon-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
+  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.jpg', images: ['/assets/images/projects/akatech-preview.jpg','/assets/images/projects/akatech-preview2.jpg','/assets/images/projects/akatech-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
+  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.jpg', images: ['/assets/images/projects/universitelesanges-preview.jpg','/assets/images/projects/universitelesanges-preview2.jpg','/assets/images/projects/universitelesanges-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
+  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.jpg', images: ['/assets/images/projects/nexura-preview.jpg','/assets/images/projects/nexura-responsive.jpg','/assets/images/projects/nexura-responsive2.jpg'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
   { id: 16, title: 'KokoEat', sub: 'Livraison Alimentaire', cat: 'en-cours', img: '/assets/images/projects/kokoeat-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', tech: ['React', 'Django REST', 'PostgreSQL', 'Vercel'], url: '#', desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.", year: '2025' },
-  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan et skeuomorphisme complet.", year: '2026' },
-  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.jpg', imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
+  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.jpg', images: ['/assets/images/projects/jean-edy-preview.jpg','/assets/images/projects/jean-edy-preview2.jpg','/assets/images/projects/jean-edy-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. et skeuomorphisme complet.", year: '2026' },
+  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.jpg', images: ['/assets/images/projects/laverie-preview.jpg','/assets/images/projects/laverie-preview2.jpg','/assets/images/projects/laverie-preview3.jpg'], imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
 ]
 
 const SERVICES = [
@@ -684,6 +689,28 @@ const TESTIMONIALS = [
 
 function Loader({ onDone }) {
   const [progress, setProgress] = useState(0)
+  const loaderRef = useRef(null)
+
+  /* ── Loader entrance animations ── */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      /* percent counter drops in */
+      gsap.fromTo('.ld-percent', { y: -32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.1 })
+      /* name + role stagger up */
+      gsap.fromTo(
+        ['.ld-name', '.ld-role'],
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', stagger: 0.12, delay: 0.28 }
+      )
+      /* progress bar container */
+      gsap.fromTo('.ld-progress-wrap', { scaleX: 0, opacity: 0, transformOrigin: 'left center' }, { scaleX: 1, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 })
+      /* corner tag drifts up from bottom */
+      gsap.fromTo('.ld-corner', { y: 14, opacity: 0 }, { y: 0, opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 })
+      /* scanline flicker */
+      gsap.fromTo('.ld-scanline', { opacity: 0 }, { opacity: 0.08, duration: 1.2, ease: 'steps(4)', delay: 0.2 })
+    }, loaderRef)
+    return () => ctx.revert()
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -693,11 +720,28 @@ function Loader({ onDone }) {
         if (next >= 100) {
           clearInterval(interval)
 
-          /* Lance la transition grille dynamique puis révèle le site */
+          /* Transition staircase (GooeyTransition) : couvre l'écran,
+             au midpoint on masque le loader, puis les colonnes remontent */
           setTimeout(() => {
-            runGridTransition(() => {
+            const loaderEl = loaderRef.current
+            if (loaderEl) {
+              const main = document.querySelector('main')
+
+              runGridTransition(() => {
+                /* midpoint — loader et main swappent sous les colonnes */
+                if (loaderEl) {
+                  loaderEl.style.visibility  = 'hidden'
+                  loaderEl.style.pointerEvents = 'none'
+                }
+                if (main) {
+                  gsap.set(main, { y: '6vh', opacity: 0 })
+                  gsap.to(main, { y: '0%', opacity: 1, duration: 0.7, ease: 'power3.out' })
+                }
+                onDone()
+              })
+            } else {
               onDone()
-            })
+            }
           }, 300)
 
           return 100
@@ -756,7 +800,7 @@ function Loader({ onDone }) {
   }, [])
 
   return (
-    <div id="loader">
+    <div id="loader" ref={loaderRef}>
 
       {/* BACKGROUND FX */}
       <div className="ld-noise" />
@@ -821,7 +865,7 @@ function Navbar({ theme, onToggleTheme }) {
     { id: 'skills-section', label: 'Skills' },
     { id: 'showcase-section', label: 'Services' },
     { id: 'gallery-section', label: 'Projets' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'ou-me-joindre', label: 'Contact' },
   ]
 
   /* Horloge */
@@ -996,10 +1040,28 @@ function Hero() {
 
           {/* LEFT */}
           <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
-            {/* Nom scramblé */}
+            {/* Nom ScrambleText */}
             <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
-              <ScrambleText text="M'BOLLO" tag="span" className="hv4-name-line" style={{ '--d': '.1s' }} duration={600} />
-              <ScrambleText text="AKA ELVIS" tag="span" className="hv4-name-line hv4-name-line--u" style={{ '--d': '.2s' }} duration={650} delay={120} />
+              <ScrambleText
+                text="M'BOLLO"
+                tag="span"
+                className="hv4-name-line"
+                style={{ '--d': '.1s' }}
+                speed={28}
+                step={0.35}
+                threshold={0.2}
+                once={false}
+              />
+              <ScrambleText
+                text="AKA ELVIS"
+                tag="span"
+                className="hv4-name-line hv4-name-line--u"
+                style={{ '--d': '.2s' }}
+                speed={28}
+                step={0.35}
+                threshold={0.2}
+                once={false}
+              />
             </h1>
 
             {/* Photo mobile */}
@@ -1035,38 +1097,18 @@ function Hero() {
               </a>
             </div>
 
-            {/* Stats — GSAP animated counters */}
-            <div className="hv4-stats hv4-rv" style={{ '--d': '.85s' }}>
-              <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target={PROJECTS.length} data-suffix="">0</span>
-                <span className="hv4-stat-l">Projets</span>
-              </div>
-              <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target="3" data-suffix="+">0</span>
-                <span className="hv4-stat-l">Années</span>
-              </div>
-              <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target={PROJECTS.filter(p => p.cat === 'en-ligne').length} data-suffix="">0</span>
-                <span className="hv4-stat-l">En prod.</span>
-              </div>
-              <div className="hv4-stat">
-                <span className="hv4-stat-n gs-counter" data-target="33" data-suffix="">0</span>
-                <span className="hv4-stat-l">Outils</span>
-              </div>
-            </div>
           </div>
 
-          {/* RIGHT — photo desktop */}
+          {/* RIGHT — Lanyard 3D desktop */}
           <div className="hv4-right hv4-rv" style={{ '--d': '.32s' }} id="hv4-right">
-            <div className="hv4-photo-wrap hv4-photo-wrap--full">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className="hv4-photo hv4-photo--portrait"
-                onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
-              <div className="hv4-photo-status"><span className="hero-dot" />Open to work · Freelance &amp; CDI</div>
-              <div className="hv4-photo-overlay">
-                <span><AnimIcon type="globe" size={11} /> Abidjan, CI</span>
-                <span style={{ color: '#ff5500' }}><AnimIcon type="zap" size={11} color="#ff5500" /> Full-Stack Dev</span>
-              </div>
-            </div>
+            <Lanyard
+              position={[0, 0, 30]}
+              gravity={[0, -40, 0]}
+              fov={7}
+              transparent={true}
+              lanyardWidth={1}
+              frontImage="/assets/images/IMG_20250124_124101KK.jpg"
+            />
           </div>
 
         </div>
@@ -1080,7 +1122,22 @@ function Hero() {
    STICKY STACK
    ════════════════════════════════════════════ */
 function StickyStack() {
+  const STATS = [
+    { target: 18,  suffix: '',  label: 'Projets',    delay: 0   },
+    { target: 3,   suffix: '+', label: 'Années',     delay: 120 },
+    { target: 12,  suffix: '',  label: 'En prod.',   delay: 240 },
+    { target: 33,  suffix: '',  label: 'Outils',     delay: 360 },
+  ]
+
   const slides = [
+    {
+      num: '00 — Chiffres',
+      title: 'STATS',
+      body: null, // rendu spécial — stats avec compteurs
+      cls: 'ss-dark ss-00',
+      isStats: true,
+    },
+
     {
       num: '01 — UI / UX',
       title: 'INTERFACES\n& ÉMOTIONS',
@@ -1140,7 +1197,32 @@ function StickyStack() {
               ))}
             </h2>
 
-            <p className="ss-body">{s.body}</p>
+            {s.isStats ? (
+              /* ── Slide 00 : stats avec compteurs animés ── */
+              <div className="ss-stats-grid">
+                {STATS.map((st, k) => (
+                  <div className="ss-stat-card" key={k}>
+                    <div className="ss-stat-n">
+                      <AnimatedCounter
+                        target={st.target}
+                        suffix={st.suffix}
+                        duration={2200}
+                        delay={st.delay}
+                      />
+                    </div>
+                    <div className="ss-stat-l">{st.label}</div>
+                    <div className="ss-stat-bar">
+                      <div
+                        className="ss-stat-bar-fill"
+                        style={{ '--pct': `${Math.min(st.target * 3, 100)}%`, '--delay': `${st.delay}ms` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="ss-body">{s.body}</p>
+            )}
           </div>
         </section>
       ))}
@@ -1459,10 +1541,10 @@ function Timeline() {
    ════════════════════════════════════════════ */
 function SkewSection() {
   const items = [
-    { img: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', title: '01 — Code propre & sécurisé', body: "Chaque ligne de code applique les bonnes pratiques : auth, permissions, validation côté serveur. La sécurité n'est pas une option, c'est une fondation." },
-    { img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', title: '02 — Interface pensée usages réels', body: "Des interfaces React/Next.js pensées pour l'utilisateur final. Responsive, rapides, accessibles — pas juste belles." },
-    { img: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', title: '03 — Livraison dans les délais', body: "Communication transparente à chaque étape. Vous suivez l'avancement en temps réel, aucune surprise à la livraison." },
-    { img: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', title: '04 — Data & Carto intégrés', body: 'Dashboards interactifs, visualisations Chart.js, cartes Leaflet/OpenStreetMap. Je transforme vos données en décisions.' },
+    { img: '/assets/images/projects/CB.png', title: '01 — Code propre & sécurisé', body: "Chaque ligne de code applique les bonnes pratiques : auth, permissions, validation côté serveur. La sécurité n'est pas une option, c'est une fondation." },
+    { img: '/assets/images/projects/jean-edy-preview.jpg', title: '02 — Interface pensée usages réels', body: "Des interfaces React/Next.js pensées pour l'utilisateur final. Responsive, rapides, accessibles — pas juste belles." },
+    { img: '/assets/images/projects/C.png', title: '03 — Livraison dans les délais', body: "Communication transparente à chaque étape. Vous suivez l'avancement en temps réel, aucune surprise à la livraison." },
+    { img: '/assets/images/projects/A.png', title: '04 — Data & Carto intégrés', body: 'Dashboards interactifs, visualisations Chart.js, cartes Leaflet/OpenStreetMap ou MAPBOX Je transforme vos données en décisions.' },
   ]
 
   const menuRef = useRef(null)
@@ -1693,20 +1775,15 @@ function SkillBandItem({ sk }) {
 }
 
 function SkillsSection() {
-  const masterSkills = [
-    SKILLS.frontend[0], // React
-    SKILLS.frontend[1], // JavaScript
-    SKILLS.frontend[2], // Next.js
-    SKILLS.backend[0],  // Python
-    SKILLS.backend[1],  // Flask
-    SKILLS.backend[2],  // Django
-    SKILLS.backend[4],  // MySQL
-  ]
-  const bands = [
-    { lbl: 'Frontend', items: SKILLS.frontend, dir: 'l' },
-    { lbl: 'Backend', items: SKILLS.backend, dir: 'r' },
-    { lbl: 'Outils', items: SKILLS.tools, dir: 'l' },
-  ]
+  const allSkillIcons = [
+    ...SKILLS.frontend,
+    ...SKILLS.backend,
+    ...SKILLS.tools,
+  ].map(sk => sk.icon)
+
+  // Duplicate for a richer trail
+  const trailItems = [...allSkillIcons, ...allSkillIcons]
+
   return (
     <section id="skills-section" className="sec">
       <div className="sec-eyebrow">// Compétences</div>
@@ -1716,29 +1793,23 @@ function SkillsSection() {
         <br />
         <ScrollReveal>de travail.</ScrollReveal>
       </h2>
-      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.55)', letterSpacing: '.2em', margin: '2.5rem 0 1rem' }}>// maîtrise principale</p>
-      <div className="skills-mastery gs-stagger">
-        {masterSkills.map(sk => (
-          <SkillCard key={sk.name} sk={sk} />
-        ))}
+      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.55)', letterSpacing: '.2em', margin: '2.5rem 0 1rem' }}>
+        // déplace ta souris pour explorer
+      </p>
+      <div style={{ position: 'relative', width: '100%', height: '520px', borderRadius: '16px', border: '1px solid rgba(255,85,0,.1)', overflow: 'hidden', background: 'rgba(255,85,0,.02)' }}>
+        {/* Skill names listed as hint */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1.2rem', padding: '2rem', pointerEvents: 'none', zIndex: 0 }}>
+          {[...SKILLS.frontend, ...SKILLS.backend, ...SKILLS.tools].map(sk => (
+            <span key={sk.name} style={{ fontFamily: "'Space Mono',monospace", fontSize: '.62rem', color: 'rgba(255,85,0,.18)', letterSpacing: '.15em', textTransform: 'uppercase' }}>
+              {sk.name}
+            </span>
+          ))}
+        </div>
+        <ImageTrail items={trailItems} variant={2} />
       </div>
-      <div className="skills-bands">
-        {bands.map(row => {
-          const tripled = [...row.items, ...row.items, ...row.items]
-          return (
-            <div key={row.lbl} className="skill-row">
-              <div className="skill-row-lbl">{row.lbl}</div>
-              <div className="skill-band-wrap">
-                <div className={`skill-band${row.dir === 'r' ? ' skill-band--r' : ''}`}>
-                  {tripled.map((sk, i) => (
-                    <SkillBandItem key={i} sk={sk} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      <p style={{ fontFamily: "'Space Mono',monospace", fontSize: '.6rem', color: 'var(--muted)', letterSpacing: '.15em', textAlign: 'center', marginTop: '1rem' }}>
+        React · JavaScript · Next.js · Python · Django · Flask · MySQL · Git · VS Code · GitHub · Vercel · Tailwind
+      </p>
     </section>
   )
 }
@@ -2026,6 +2097,13 @@ function GallerySection() {
         'Geolocation API':         { src: '/assets/icons/devicon/geolocationapi/geolocationapi-original.svg',   color: '#4285F4' },
         'LocalStorage':            { src: '/assets/icons/devicon/localstorage/localstorage-original.svg',       color: '#F7DF1E' },
         'OSRM API':                { src: '/assets/icons/devicon/osrmapi/osrmapi-original.svg',                 color: '#E84C3D' },
+        'Vite':                    { src: '/assets/icons/devicon/vitejs/vitejs-original.svg',                   color: '#BD34FE' },
+        'GSAP':                    { src: '/assets/icons/devicon/gsap/gsap-original.svg',                       color: '#88CE02' },
+        'React Router v6':         { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg',         color: '#F44250' },
+        'React Router':            { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg',         color: '#F44250' },
+        'EmailJS':                 { src: '/assets/icons/devicon/emailjs/emailjs-original.svg',                 color: '#F4921B' },
+        'React 18':                { src: '/assets/icons/devicon/react/react-original.svg',                     color: '#61DAFB' },
+        'TailwindCSS':             { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg',         color: '#38BDF8' },
       }
 
       const makeTechIcon = techName => {
@@ -2198,17 +2276,98 @@ function TestiCard({ t }) {
 }
 
 function TestimonialsSection() {
-  const tripled = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS]
+  const testimonialCards = TESTIMONIALS.map(t => (
+    <div key={t.name} className="testi-card" style={{
+      width: '100%', height: '100%', borderRadius: '16px',
+      background: 'var(--bg)', border: 'var(--border)',
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      padding: '1.8rem', boxSizing: 'border-box', backdropFilter: 'blur(16px)',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
+    }}>
+      {/* Tag */}
+      <div style={{
+        alignSelf: 'flex-start', fontFamily: "var(--fd)", fontSize: '.58rem',
+        letterSpacing: '.2em', textTransform: 'uppercase',
+        background: 'var(--accent)', border: '2px solid var(--text)',
+        padding: '4px 12px', borderRadius: '999px', color: 'var(--bg)', fontWeight: 800,
+        marginBottom: '1.2rem'
+      }}>{t.proj}</div>
+
+      {/* Stars */}
+      <div style={{ display: 'flex', gap: '3px', marginBottom: '.8rem' }}>
+        {Array(5).fill(null).map((_, j) => (
+          <svg key={j} viewBox="0 0 24 24" width="14" height="14">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="#FF5500" />
+          </svg>
+        ))}
+      </div>
+
+      {/* Quote */}
+      <p style={{
+        fontFamily: "'Lora',serif", fontStyle: 'italic',
+        fontSize: 'clamp(.9rem,1.3vw,1.05rem)', lineHeight: 1.72,
+        color: 'rgba(242,237,232,.85)', flex: 1
+      }}>
+        <span style={{ fontSize: '2.2rem', lineHeight: .5, color: 'rgba(255,85,0,.3)', fontWeight: 800, display: 'block', marginBottom: '.4rem' }}>"</span>
+        {t.text}
+      </p>
+
+      {/* Footer */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,85,0,.15)', marginTop: '1rem' }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: '50%',
+          background: 'linear-gradient(135deg,#FF5500,#CC3300)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "var(--fd)", fontWeight: 800, fontSize: '.9rem', color: '#0A0A0A', flexShrink: 0
+        }}>{t.avatar}</div>
+        <div>
+          <div style={{ fontFamily: "var(--fd)", fontWeight: 700, fontSize: '.85rem', color: 'var(--text)' }}>{t.name}</div>
+          <div style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '2px' }}>{t.role}</div>
+        </div>
+      </div>
+    </div>
+  ))
+
   return (
-    <section id="hscroll-section" style={{ height: 'auto', padding: '10vh 0', overflow: 'hidden' }}>
+    <section id="hscroll-section" style={{ padding: '10vh 0', overflow: 'hidden' }}>
       <div className="hs-label" style={{ position: 'static', margin: '0 0 3rem 6vw' }}>// Ce que disent mes clients</div>
-      <div className="testi-band-wrap">
-        <div className="testi-band">
-          {tripled.map((t, i) => (
-            <div key={i} className="hs-item" style={{ perspective: '1000px' }}>
-              <TestiCard t={t} />
-            </div>
-          ))}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        gap: '4rem', flexWrap: 'wrap', padding: '0 4vw'
+      }}>
+        {/* Stack animée */}
+        <div style={{ position: 'relative', width: 340, height: 420, flexShrink: 0 }}>
+          <Stack
+            cards={testimonialCards}
+            randomRotation={true}
+            sensitivity={180}
+            sendToBackOnClick={true}
+            autoplay={true}
+            autoplayDelay={3500}
+            pauseOnHover={true}
+            mobileClickOnly={true}
+            animationConfig={{ stiffness: 240, damping: 22 }}
+          />
+        </div>
+
+        {/* Hint */}
+        <div style={{ maxWidth: 340, flexShrink: 0 }}>
+          <div style={{ fontFamily: "'Space Mono',monospace", fontSize: '.6rem', color: 'var(--accent)', letterSpacing: '.3em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>// {TESTIMONIALS.length} avis clients</div>
+          <h3 style={{ fontFamily: "var(--fd)", fontWeight: 800, fontSize: 'clamp(1.6rem,3vw,2.2rem)', lineHeight: 1.1, marginBottom: '1rem' }}>
+            Ils m'ont fait confiance.
+          </h3>
+          <p style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.7 }}>
+            Glisse ou clique la carte du dessus pour en voir une nouvelle. Chaque projet, une vraie histoire.
+          </p>
+          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+            {TESTIMONIALS.map(t => (
+              <span key={t.name} style={{
+                fontFamily: "'Space Mono',monospace", fontSize: '.58rem',
+                color: 'var(--muted)', border: '1px solid rgba(255,85,0,.18)',
+                borderRadius: '999px', padding: '3px 10px'
+              }}>{t.name}</span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -2610,7 +2769,17 @@ function ContactSection({ onToast }) {
   const handleSubmit = async e => {
     e.preventDefault(); setSending(true); setBtnTxt('Envoi en cours…')
     try {
-      await fetch('https://formsubmit.co/ajax/wthomasss06@gmail.com', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ name: e.target.name.value, email: e.target.email.value, 'Type de projet': e.target.projectType.value, message: e.target.message.value, _subject: '🚀 Nouveau contact — Portfolio', _captcha: 'false' }) })
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: e.target.name.value,
+          email: e.target.email.value,
+          projectType: e.target.projectType.value,
+          message: e.target.message.value,
+        }),
+      })
+      if (!res.ok) throw new Error('Erreur serveur')
       setSent(true); onToast()
     } catch {
       setBtnTxt('Erreur — WhatsApp : +225 01 42 50 77 50')
@@ -2760,7 +2929,7 @@ function ContactSection({ onToast }) {
       </div>
 
       {/* Animated Beam */}
-      <div className="coj-wrap">
+      <div id="ou-me-joindre" className="coj-wrap">
         <div className="sec-eyebrow" style={{ textAlign: 'center', marginBottom: '1rem' }}>// Où me joindre</div>
         <h2 className="sec-title" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <ScrollReveal>Restons</ScrollReveal>{' '}
@@ -3164,14 +3333,40 @@ export default function App() {
   }, [theme])
 
   const handleLoaderDone = useCallback(() => {
-    /* Appelé au midpoint de runGridTransition — la grille couvre déjà l'écran */
+    /* Appelé par GSAP onComplete après l'animation scale-slide.
+       On ajoute juste la classe CSS — React ne démonte pas le Loader,
+       le CSS le cache (opacity:0, visibility:hidden). Pas de removeChild. */
     document.body.classList.remove('nav-loading')
     const loaderEl = document.getElementById('loader')
     if (loaderEl) {
-      loaderEl.style.transition = 'none'
-      loaderEl.classList.add('hide')
-      /* Retire le DOM après la fin de la grille */
-      setTimeout(() => loaderEl.remove(), 1800)
+      loaderEl.classList.add('loaded')
+    }
+
+    /* ── Nav pills entrance ── */
+    const pills = document.querySelectorAll('.nb-nav-link')
+    if (pills.length) {
+      gsap.fromTo(
+        pills,
+        { y: 28, opacity: 0, scale: 0.82 },
+        {
+          y: 0, opacity: 1, scale: 1,
+          duration: 0.55,
+          ease: 'back.out(1.8)',
+          stagger: 0.07,
+          delay: 0.18,
+          clearProps: 'transform',
+        }
+      )
+    }
+
+    /* ── Bottombar container slide-up ── */
+    const bar = document.querySelector('.nb-bottombar')
+    if (bar) {
+      gsap.fromTo(
+        bar,
+        { y: 56, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.08 }
+      )
     }
   }, [])
 

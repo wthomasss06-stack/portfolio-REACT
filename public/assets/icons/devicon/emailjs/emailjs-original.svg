@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Envelope body -->
+  <rect x="8" y="28" width="112" height="72" rx="6" ry="6" fill="#F4921B"/>
+  <!-- Envelope flap (triangle) -->
+  <polygon points="8,28 64,72 120,28" fill="#d97a10"/>
+  <!-- Envelope V fold lines -->
+  <polyline points="8,100 44,66" stroke="#e8840f" stroke-width="2" fill="none"/>
+  <polyline points="120,100 84,66" stroke="#e8840f" stroke-width="2" fill="none"/>
+  <!-- EJS text inside -->
+  <text x="64" y="62" font-family="Arial, sans-serif" font-size="22" font-weight="bold" 
+        text-anchor="middle" fill="#fff" letter-spacing="2">EJS</text>
+</svg>

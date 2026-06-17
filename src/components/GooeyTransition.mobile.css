@@ -1,0 +1,22 @@
+/* ════════════════════════════════════════════════
+   GooeyTransition.mobile.css — variante MOBILE
+   Transition "Staircase" (8 colonnes) — version Appmobile.jsx
+   Couleur des colonnes : orange AKAFOLIO (#FF5500)
+   ════════════════════════════════════════════════ */
+
+.gooey-layer--mobile {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  overflow: hidden;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.gooey-stair--mobile {
+  flex: 1;
+  height: 110vh;
+  background: #FF5500;
+  will-change: transform;
+}

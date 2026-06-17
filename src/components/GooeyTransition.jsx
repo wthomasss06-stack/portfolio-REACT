@@ -1,139 +1,94 @@
 /**
  * GooeyTransition.jsx
  * ─────────────────────────────────────────────────────────
- * Transition grille dynamique inspirée de barba-js-dynamic-grid-transition-08.
- * 4 rangées × 15 cellules, clipPath alterné gauche/droite, couleur #FF5500.
+ * Transition "Staircase" inspirée de barba-js-staircase-transition-03.
+ *
+ * leave  → 8 colonnes descendent de y:-100% → y:0%  (stagger .7s)
+ * enter  → 8 colonnes remontent  de y:0%   → y:100% (stagger .7s)
+ *          puis reset y:-100% pour la prochaine fois
+ *
+ * Adapté pour SPA React scroll-based (pas de barba) :
+ *   - layer fixe plein-écran créé dynamiquement avec 8 .stair
+ *   - onMidpoint déclenché au pic (entre leave et enter)
+ *   - layer retiré du DOM à la fin
  *
  * EXPORTS :
- *   runGridTransition(onMidpoint)   — appel impératif (loader, etc.)
+ *   runGridTransition(onMidpoint)   — impératif (loader, etc.)
  *   useGooeyTransition()            — hook React → goTo(sectionId)
  */
 
 import { useCallback, useRef } from 'react'
 import { gsap } from 'gsap'
+import './GooeyTransition.css'
+import './GooeyTransition.mobile.css'
 
-/* ── Config ─────────────────────────────────── */
-const ROWS        = 4
-const COLS        = 15
-const COLOR_1     = 'var(--accent, #FF5500)'
-const COLOR_2     = '#FF6B1A'           /* légère variation pour la grille */
-const ENTRY_DUR   = 0.9
-const ENTRY_AMT   = 0.5
-const HOLD_DUR    = 0.10
-const EXIT_DUR    = 0.8
-const EXIT_AMT    = 0.5
+/* ── Timings (calqués sur l'original staircase-03) ── */
+const STAIR_COUNT  = 8
+const LEAVE_DUR    = 1.0
+const LEAVE_STAG   = 0.7
+const ENTER_DUR    = 0.8
+const ENTER_STAG   = 0.7
+const STAIR_COLOR  = '#FF5500'   /* couleur des colonnes — orange AKAFOLIO (référence, la couleur réelle vient de GooeyTransition.css / .mobile.css) */
+const EASE_LEAVE   = 'power3.inOut'
+const EASE_ENTER   = 'power3.inOut'
 
-/* ── Directions par rangée (alternance gauche/droite comme l'original) ── */
-const ROW_DIRS = [
-  { entry: 'inset(0% 0% 0% 101%)', exit: 'inset(0% 0% 0% 101%)', from: 'end'   },  // row-0 : droite→gauche
-  { entry: 'inset(0% 101% 0% 0%)', exit: 'inset(0% 101% 0% 0%)', from: 'start' },  // row-1 : gauche→droite
-  { entry: 'inset(0% 0% 0% 101%)', exit: 'inset(0% 0% 0% 101%)', from: 'end'   },  // row-2 : droite→gauche
-  { entry: 'inset(0% 101% 0% 0%)', exit: 'inset(0% 101% 0% 0%)', from: 'start' },  // row-3 : gauche→droite
-]
+/* ── Build the transition layer ──
+   variant: 'desktop' | 'mobile' → choisit la feuille de style appliquée
+   (gooey-stair--desktop vient de GooeyTransition.css,
+    gooey-stair--mobile  vient de GooeyTransition.mobile.css) */
+function buildLayer(variant = 'desktop') {
+  const layer = document.createElement('div')
+  layer.className = `gooey-layer gooey-layer--${variant}`
 
-/* ── Build overlay DOM ───────────────────────────────────── */
-function buildOverlay() {
-  const wrapper = document.createElement('div')
-  wrapper.style.cssText = [
-    'position:fixed',
-    'inset:0',
-    'z-index:999999',
-    'display:flex',
-    'flex-direction:column',
-    'align-items:center',
-    'justify-content:space-between',
-    'pointer-events:none',
-    'overflow:hidden',
-  ].join(';')
-
-  const rowEls  = []
-  const cellsByRow = []
-
-  for (let r = 0; r < ROWS; r++) {
-    const row = document.createElement('div')
-    row.style.cssText = [
-      'width:100%',
-      `height:${100 / ROWS}vh`,
-      'display:flex',
-      'align-items:stretch',
-      'justify-content:space-between',
-    ].join(';')
-
-    const cells = []
-    for (let c = 0; c < COLS; c++) {
-      const cell = document.createElement('div')
-      /* légère variation de teinte selon la rangée */
-      const bg = r % 2 === 0 ? COLOR_1 : COLOR_2
-      cell.style.cssText = [
-        `flex:1`,
-        `background:${bg}`,
-        'height:105%',
-        'margin-left:-1px',
-        'will-change:clip-path',
-      ].join(';')
-      row.appendChild(cell)
-      cells.push(cell)
-    }
-
-    wrapper.appendChild(row)
-    rowEls.push(row)
-    cellsByRow.push(cells)
+  const stairs = []
+  for (let i = 0; i < STAIR_COUNT; i++) {
+    const stair = document.createElement('div')
+    stair.className = `gooey-stair gooey-stair--${variant}`
+    layer.appendChild(stair)
+    stairs.push(stair)
   }
 
-  return { wrapper, rowEls, cellsByRow }
+  return { layer, stairs }
 }
 
-/* ── Core imperative runner ──────────────────────────────── */
-export function runGridTransition(onMidpoint) {
-  const { wrapper, cellsByRow } = buildOverlay()
-  document.body.appendChild(wrapper)
+/* ── Core runner ── */
+export function runGridTransition(onMidpoint, variant = 'desktop') {
+  const { layer, stairs } = buildLayer(variant)
+  document.body.appendChild(layer)
 
-  const tl = gsap.timeline()
+  /* reset initial : toutes les colonnes au-dessus de l'écran */
+  gsap.set(stairs, { y: '-100%' })
 
-  /* Entry : chaque rangée entre depuis sa direction */
-  cellsByRow.forEach((cells, r) => {
-    const dir = ROW_DIRS[r]
-    gsap.set(cells, { clipPath: dir.entry })
-    tl.to(
-      cells,
-      {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: ENTRY_DUR,
-        ease: 'power3.inOut',
-        stagger: { amount: ENTRY_AMT, from: dir.from },
-      },
-      0
-    )
-  })
+  const tl = gsap.timeline({ onComplete: () => layer.remove() })
 
-  /* Midpoint — scroll / callback */
-  tl.add(() => { try { onMidpoint?.() } catch {} }, '>')
+  /* ── LEAVE : colonnes descendent en stagger ── */
+  tl.to(stairs, {
+    y: '0%',
+    stagger: { amount: LEAVE_STAG, from: 'start' },
+    duration: LEAVE_DUR,
+    ease: EASE_LEAVE,
+  }, 0)
 
-  /* Hold */
-  tl.to({}, { duration: HOLD_DUR })
+  /* ── Midpoint : scroll pendant que l'écran est couvert ── */
+  const midAt = LEAVE_DUR * 0.55 + LEAVE_STAG * 0.5
+  tl.add(() => { try { onMidpoint?.() } catch {} }, midAt)
 
-  /* Exit : chaque rangée repart dans sa direction d'origine */
-  cellsByRow.forEach((cells, r) => {
-    const dir = ROW_DIRS[r]
-    tl.to(
-      cells,
-      {
-        clipPath: dir.exit,
-        duration: EXIT_DUR,
-        ease: 'power4.inOut',
-        stagger: { amount: EXIT_AMT, from: dir.from },
-      },
-      /* décalage léger pour que les rangées se libèrent en cascade */
-      `>-${EXIT_DUR * 0.85}`
-    )
-  })
-
-  /* Cleanup */
-  tl.add(() => { wrapper.remove() })
+  /* ── ENTER : colonnes remontent en stagger, puis reset ── */
+  const enterStart = LEAVE_DUR + LEAVE_STAG * 0.6
+  tl.to(stairs, {
+    y: '100%',
+    stagger: { amount: ENTER_STAG, from: 'start' },
+    duration: ENTER_DUR,
+    ease: EASE_ENTER,
+    onComplete: () => gsap.set(stairs, { y: '-100%' }),
+  }, enterStart)
 }
 
-/* ── Hook React ─────────────────────────────────────────── */
-export function useGooeyTransition() {
+/* ── React hook ──
+   variant: 'desktop' | 'mobile' → passe automatiquement la bonne classe CSS
+   (App.jsx → useGooeyTransition() reste 'desktop' par défaut,
+    Appmobile.jsx → useGooeyTransition('mobile')) */
+export function useGooeyTransition(variant = 'desktop') {
   const runningRef = useRef(false)
 
   const goTo = useCallback((sectionId) => {
@@ -145,11 +100,11 @@ export function useGooeyTransition() {
 
     runGridTransition(() => {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'instant' })
-    })
+    }, variant)
 
-    const total = (ENTRY_DUR + HOLD_DUR + EXIT_DUR + EXIT_AMT) * 1000 + 200
+    const total = (LEAVE_DUR + LEAVE_STAG + ENTER_DUR + ENTER_STAG) * 1000 + 300
     setTimeout(() => { runningRef.current = false }, total)
-  }, [])
+  }, [variant])
 
   return goTo
 }
