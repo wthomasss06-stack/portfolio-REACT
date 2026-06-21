@@ -104,17 +104,17 @@ function Root() {
 
   const toggle = () => setMode(m => m === 'win95' ? 'modern' : 'win95')
 
+  // Un seul portfolio monté à la fois (plus de display:none qui laissait
+  // les 3 arbres DOM coexister → c'était ça qui cassait les ancres #contact etc.)
   return (
     <>
-      <div style={{ display: mode === 'win95' ? 'block' : 'none', height: '100%' }}>
-        <Win95App />
-      </div>
-      <div style={{ display: mode === 'modern' && isMobile ? 'block' : 'none' }}>
-        <AppMobile />
-      </div>
-      <div style={{ display: mode === 'modern' && !isMobile ? 'block' : 'none' }}>
-        <ModernApp />
-      </div>
+      {mode === 'win95' && (
+        <div style={{ height: '100%' }}>
+          <Win95App />
+        </div>
+      )}
+      {mode === 'modern' && isMobile && <AppMobile />}
+      {mode === 'modern' && !isMobile && <ModernApp />}
       {!isMobile && <SwitcherBtn mode={mode} onToggle={toggle} />}
     </>
   )
