@@ -140,12 +140,16 @@ function Band({
     return composite;
   }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map]);
 
-  const [curve] = useState(() =>
-    new THREE.CatmullRomCurve3([
-      new THREE.Vector3(), new THREE.Vector3(),
-      new THREE.Vector3(), new THREE.Vector3()
-    ])
-  );
+  const [curve] = useState(() => {
+    const c = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0,   0, 0),
+      new THREE.Vector3(0.5, 0, 0),
+      new THREE.Vector3(1,   0, 0),
+      new THREE.Vector3(1.5, 0, 0),
+    ]);
+    c.curveType = 'chordal';
+    return c;
+  });
   const [dragged, drag]  = useState(false);
   const [hovered, hover] = useState(false);
 
@@ -153,6 +157,39 @@ function Band({
   useRopeJoint(j1,   j2, [[0,0,0],[0,0,0],1]);
   useRopeJoint(j2,   j3, [[0,0,0],[0,0,0],1]);
   useSphericalJoint(j3, card, [[0,0,0],[0,1.5,0]]);
+
+  // Pré-initialise MeshLine avec des points valides dès le mount.
+  // Sans ça, le premier render appelle setPoints sur une géométrie vide :
+  // MeshLineGeometry.process() calcule j/(l-1) avec l=1 → NaN partout.
+  // On silence aussi computeBoundingSphere pendant la phase d'init Rapier.
+  useEffect(() => {
+    const geo = band.current?.geometry;
+    if (!geo) return;
+    // Patch silencieux : évite le spam console pendant les premiers frames
+    const origCBS = geo.computeBoundingSphere.bind(geo);
+    const origCBB = geo.computeBoundingBox.bind(geo);
+    geo.computeBoundingSphere = () => {
+      try { origCBS(); } catch (_) {}
+      if (geo.boundingSphere && !isFinite(geo.boundingSphere.radius)) {
+        geo.boundingSphere.set(new THREE.Vector3(), 0);
+      }
+    };
+    geo.computeBoundingBox = () => {
+      try { origCBB(); } catch (_) {}
+    };
+    // Pré-charge avec des points distincts valides
+    const fallback = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.5, 0, 0),
+      new THREE.Vector3(1, 0, 0), new THREE.Vector3(1.5, 0, 0),
+    ]);
+    geo.setPoints(fallback.getPoints(isMobile ? 16 : 32));
+    return () => {
+      // Restore au démontage
+      if (geo.computeBoundingSphere !== origCBS) geo.computeBoundingSphere = origCBS;
+      if (geo.computeBoundingBox   !== origCBB) geo.computeBoundingBox    = origCBB;
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (hovered) {
@@ -183,18 +220,29 @@ function Band({
           delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed))
         );
       });
-      curve.points[0].copy(j3.current.translation());
-      curve.points[1].copy(j2.current.lerped);
-      curve.points[2].copy(j1.current.lerped);
-      curve.points[3].copy(fixed.current.translation());
-      band.current.geometry.setPoints(curve.getPoints(isMobile ? 16 : 32));
+      // Rapier initialise sa physique de façon asynchrone.
+      // lerped n'existe qu'après le premier tick du lerp ci-dessus.
+      if (!j1.current.lerped || !j2.current.lerped) return;
+      const p0 = j3.current.translation();
+      const p1 = j2.current.lerped;
+      const p2 = j1.current.lerped;
+      const p3 = fixed.current.translation();
+      const ok = v => v && isFinite(v.x) && isFinite(v.y) && isFinite(v.z);
+      if (!ok(p0) || !ok(p1) || !ok(p2) || !ok(p3)) return;
+      curve.points[0].copy(p0);
+      curve.points[1].copy(p1);
+      curve.points[2].copy(p2);
+      curve.points[3].copy(p3);
+      const pts = curve.getPoints(isMobile ? 16 : 32);
+      if (pts.length >= 2 && pts.every(v => isFinite(v.x) && isFinite(v.y) && isFinite(v.z))) {
+        band.current.geometry.setPoints(pts);
+      }
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
     }
   });
 
-  curve.curveType = 'chordal';
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
   return (

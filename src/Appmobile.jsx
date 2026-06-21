@@ -307,6 +307,12 @@ const SvgGlobe = ({ size = 14 }) => (
     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
   </svg>
 );
+const SvgPlus = ({ size = 14, strokeWidth = 2.5 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+);
 const SvgShoppingCart = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -330,7 +336,7 @@ const SvgCpu = ({ size = 14 }) => (
 const AkafolioLogo = ({ size = 58, dark = true, onClick, animate = true }) => {
   return (
     <img
-      src="/assets/images/logo-akatech.png"
+      src="/assets/images/logo-akatech.webp"
       alt="AKATech Logo"
       onClick={onClick}
       style={{
@@ -364,133 +370,161 @@ const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61577494705852";
 const PROJECTS = [
   { id:1, title:"ShopCI", subtitle:"Marketplace E-commerce", cat:"en-ligne", progress:65,
     description:"Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
-    image:"/assets/images/projects/monmarket-preview.jpg",
-    images:["/assets/images/projects/monmarket-preview.jpg","/assets/images/projects/monmarket-preview2.jpg","/assets/images/projects/monmarket-preview3.jpg"],
+    image:"/assets/images/projects/monmarket-preview.webp",
+    images:["/assets/images/projects/monmarket-preview.webp","/assets/images/projects/monmarket-preview2.webp","/assets/images/projects/monmarket-preview3.webp"],
     tech:["React","Django","Bootstrap 5","Vercel + PythonAnywhere"],
     stats:[{icon:"users",label:"Multi-vendeurs"},{icon:"shopping-cart",label:"Panier temps réel"},{icon:"shield-alt",label:"Paiement sécurisé"}],
     url:"https://shop-ci.vercel.app/", year:"2024", isPremium:true },
   { id:2, title:"TechFlow", subtitle:"Site Vitrine Professionnel", cat:"en-ligne", progress:97,
     description:"Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
-    image:"/assets/images/projects/techflow-preview.jpg",
-    images:["/assets/images/projects/techflow-preview.jpg","/assets/images/projects/techflow-preview2.jpg","/assets/images/projects/techflow-preview3.jpg"],
+    image:"/assets/images/projects/techflow-preview.webp",
+    images:["/assets/images/projects/techflow-preview.webp","/assets/images/projects/techflow-preview2.webp","/assets/images/projects/techflow-preview3.webp"],
     tech:["HTML / Tailwind CSS","JavaScript","Vercel"],
     stats:[{icon:"users",label:"Tailwind CSS"},{icon:"shopping-cart",label:"UI propre & responsive"},{icon:"shield-alt",label:"Déployé en production"}],
     url:"https://techflow-ten.vercel.app/", year:"2024", isPremium:true },
   { id:3, title:"TerraSafe", subtitle:"Marketplace Foncière", cat:"en-ligne", progress:85,
     description:"Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
-    image:"/assets/images/projects/terrasafe-preview.jpg",
-    images:["/assets/images/projects/terrasafe-preview.jpg","/assets/images/projects/terrasafe-preview2.jpg","/assets/images/projects/terrasafe-preview3.jpg"],
+    image:"/assets/images/projects/terrasafe-preview.webp",
+    images:["/assets/images/projects/terrasafe-preview.webp","/assets/images/projects/terrasafe-preview2.webp","/assets/images/projects/terrasafe-preview3.webp"],
     tech:["Python/Flask","MySQL","JavaScript","Bootstrap 5"],
     stats:[{icon:"database",label:"MySQL + Flask"},{icon:"lock",label:"Auth sécurisée"},{icon:"search",label:"Recherche avancée"}],
     url:"https://wthomassss06.pythonanywhere.com", year:"2024", isPremium:true },
   { id:4, title:"Chap-chapMAP", subtitle:"Navigation Intelligente", cat:"demo", progress:100,
     description:"Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
-    image:"/assets/images/projects/chapchapmap-preview.jpg",
+    image:"/assets/images/projects/chapchapmap-preview.webp",
     tech:["JavaScript","Leaflet.js","OSRM API","Geolocation API"],
     stats:[{icon:"map-marked-alt",label:"API Leaflet"},{icon:"route",label:"Calcul itinéraires"},{icon:"location-arrow",label:"GPS temps réel"}],
     url:"/demos/chap-chapMAP.html", year:"2023" },
   { id:5, title:"ElvisMarket", subtitle:"Interface E-commerce", cat:"demo", progress:100,
     description:"Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
-    image:"/assets/images/projects/elvismarket-preview.jpg",
+    image:"/assets/images/projects/elvismarket-preview.webp",
     tech:["HTML + JS vanilla","Tailwind CSS","LocalStorage"],
     stats:[{icon:"shopping-bag",label:"Panier dynamique"},{icon:"filter",label:"Filtres avancés"},{icon:"mobile-alt",label:"Responsive"}],
     url:"/demos/projet2.html", year:"2023" },
   { id:6, title:"MonCashJour", subtitle:"Gestion de Ventes", cat:"demo", progress:100,
     description:"Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
-    image:"/assets/images/projects/moncashjour-preview.jpg",
+    image:"/assets/images/projects/moncashjour-preview.webp",
     tech:["HTML + JS vanilla","Tailwind CSS","Chart.js"],
     stats:[{icon:"chart-line",label:"Analytiques"},{icon:"file-export",label:"Export CSV"},{icon:"history",label:"Historique"}],
     url:"/demos/projet1.html", year:"2023" },
   { id:7, title:"LivreurTrack Pro", subtitle:"Suivi Logistique", cat:"demo", progress:100,
     description:"Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
-    image:"/assets/images/projects/livreurtrack-preview.jpg",
+    image:"/assets/images/projects/livreurtrack-preview.webp",
     tech:["JavaScript","Bootstrap 5","LocalStorage","Camera API"],
     stats:[{icon:"tasks",label:"Workflow 5 étapes"},{icon:"camera",label:"Validation photo"},{icon:"history",label:"Historique complet"}],
     url:"/demos/projet3.html", year:"2023" },
   { id:8, title:"LinkedIn Banner Pro", subtitle:"Générateur SaaS", cat:"en-cours", progress:30,
     description:"Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
-    image:"/assets/images/projects/linkedin-banner-preview.jpg",
+    image:"/assets/images/projects/linkedin-banner-preview.webp",
     tech:["JavaScript","Canvas API","Tailwind CSS"],
     stats:[{icon:"paint-brush",label:"Éditeur visuel"},{icon:"eye",label:"Preview temps réel"},{icon:"download",label:"Export PNG"}],
     url:"/demos/projet7.html", year:"2025" },
   { id:9, title:"Tati", subtitle:"Portfolio & Vitrine Moderne", cat:"en-ligne", progress:100,
     description:"Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair, design 100% responsive.",
-    image:"/assets/images/projects/tati-preview.jpg",
-    images:["/assets/images/projects/tati-preview.jpg","/assets/images/projects/tati-preview2.jpg","/assets/images/projects/tati-preview3.jpg"],
+    image:"/assets/images/projects/tati-preview.webp",
+    images:["/assets/images/projects/tati-preview.webp","/assets/images/projects/tati-preview2.webp","/assets/images/projects/tati-preview3.webp"],
     tech:["React","Tailwind CSS","Framer Motion","Vercel"],
     stats:[{icon:"user",label:"Portfolio & Vitrine"},{icon:"adjust",label:"Thème sombre/clair"},{icon:"mobile-alt",label:"100% Responsive"}],
     url:"https://tatii.vercel.app/", year:"2024", isPremium:true },
   { id:10, title:"MK", subtitle:"Portfolio Graphiste Client", cat:"en-ligne", progress:100,
     description:"Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
-    image:"/assets/images/projects/mk-preview.jpg",
-    images:["/assets/images/projects/mk-preview.jpg","/assets/images/projects/mk-preview2.jpg","/assets/images/projects/mk-preview3.jpg"],
+    image:"/assets/images/projects/mk-preview.webp",
+    images:["/assets/images/projects/mk-preview.webp","/assets/images/projects/mk-preview2.webp","/assets/images/projects/mk-preview3.webp"],
     tech:["React","Tailwind CSS","Framer Motion","Vercel"],
     stats:[{icon:"paint-brush",label:"Galerie créative"},{icon:"star",label:"Design sur-mesure"},{icon:"globe",label:"En production"}],
     url:"https://mory01ff.vercel.app/", year:"2024", isPremium:true },
   { id:11, title:"ManoBeat 777", subtitle:"Portfolio Beatmaker", cat:"en-ligne", progress:100,
     description:"Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp en quelques clics.",
-    image:"/assets/images/projects/beatstore-preview.jpg",
-    images:["/assets/images/projects/beatstore-preview.jpg","/assets/images/projects/beatstore-preview2.jpg","/assets/images/projects/beatstore-preview3.jpg"],
+    image:"/assets/images/projects/beatstore-preview.webp",
+    images:["/assets/images/projects/beatstore-preview.webp","/assets/images/projects/beatstore-preview2.webp","/assets/images/projects/beatstore-preview3.webp"],
     tech:["React","Tailwind CSS","Howler.js","Vercel"],
     stats:[{icon:"headphones",label:"Écoute en ligne"},{icon:"whatsapp",label:"Achat via WhatsApp"},{icon:"music",label:"Catalogue beats"}],
     url:"https://xxx-x.vercel.app/", year:"2025", isPremium:true },
   { id:12, title:"New Horizon Service", subtitle:"Location de Résidences", cat:"en-ligne", progress:100,
     description:"Plateforme de location de résidences meublées haut de gamme. Interface moderne côté client, backend Flask sécurisé avec API REST, recherche avancée et gestion des disponibilités.",
-    image:"/assets/images/projects/newhorizon-preview.jpg",
-    images:["/assets/images/projects/newhorizon-preview.jpg","/assets/images/projects/newhorizon-preview2.jpg","/assets/images/projects/newhorizon-preview3.jpg"],
+    image:"/assets/images/projects/newhorizon-preview.webp",
+    images:["/assets/images/projects/newhorizon-preview.webp","/assets/images/projects/newhorizon-preview2.webp","/assets/images/projects/newhorizon-preview3.webp"],
     tech:["Next.js","Flask","Python","MySQL","Vercel"],
     stats:[{icon:"home",label:"Résidences meublées"},{icon:"search",label:"Recherche avancée"},{icon:"calendar-check",label:"Réservation en ligne"}],
     url:"https://new-horizonservice.vercel.app/", year:"2025", isPremium:true },
   { id:13, title:"AKATech", subtitle:"Agence Digitale Abidjan", cat:"en-ligne", progress:100,
     description:"Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions web modernes : sites vitrines, e-commerce, SaaS. Aurora WebGL, animations Framer Motion, design vert/noir premium.",
-    image:"/assets/images/projects/akatech-preview.jpg",
-    images:["/assets/images/projects/akatech-preview.jpg","/assets/images/projects/akatech-preview2.jpg","/assets/images/projects/akatech-preview3.jpg"],
+    image:"/assets/images/projects/akatech-preview.webp",
+    images:["/assets/images/projects/akatech-preview.webp","/assets/images/projects/akatech-preview2.webp","/assets/images/projects/akatech-preview3.webp"],
     tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
     stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
     url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
   { id:14, title:"Université les Anges", subtitle:"Site Institutionnel", cat:"en-ligne", progress:100,
     description:"Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
-    image:"/assets/images/projects/universitelesanges-preview.jpg",
-    images:["/assets/images/projects/universitelesanges-preview.jpg","/assets/images/projects/universitelesanges-preview2.jpg","/assets/images/projects/universitelesanges-preview3.jpg"],
+    image:"/assets/images/projects/universitelesanges-preview.webp",
+    images:["/assets/images/projects/universitelesanges-preview.webp","/assets/images/projects/universitelesanges-preview2.webp","/assets/images/projects/universitelesanges-preview3.webp"],
     tech:["HTML","CSS","Bulma","Bootstrap","Vercel"],
     stats:[{icon:"university",label:"Site institutionnel"},{icon:"mobile-alt",label:"Responsive"},{icon:"globe",label:"En production"}],
     url:"https://universitelesanges.vercel.app/", year:"2025", isPremium:true },
   { id:15, title:"NEXURA", subtitle:"Marketplace Nouvelle Génération", cat:"en-ligne", progress:85,
     description:"Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.",
-    image:"/assets/images/projects/nexura-preview.jpg",
-    images:["/assets/images/projects/nexura-preview.jpg","/assets/images/projects/nexura-responsive.jpg","/assets/images/projects/nexura-responsive2.jpg"],
+    image:"/assets/images/projects/nexura-preview.webp",
+    images:["/assets/images/projects/nexura-preview.webp","/assets/images/projects/nexura-responsive.webp","/assets/images/projects/nexura-responsive2.webp"],
     tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"],
     stats:[{icon:"home",label:"Multi-catégories"},{icon:"shield-alt",label:"Auth & KYC"},{icon:"bolt",label:"Temps réel"}],
     url:"https://nexura-one.vercel.app/", year:"2025", isPremium:true },
   { id:16, title:"KokoEat", subtitle:"Livraison Alimentaire", cat:"en-cours", progress:40,
     description:"Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
-    image:"/assets/images/projects/kokoeat-preview.jpg",
+    image:"/assets/images/projects/kokoeat-preview.webp",
     tech:["React","Django REST","PostgreSQL","Vercel"],
     stats:[{icon:"utensils",label:"Food Delivery"},{icon:"mobile-alt",label:"Mobile Money"},{icon:"clock",label:"Temps réel"}],
     url:"#", year:"2025" },
   { id:17, title:"Jean Edy · Portfolio", subtitle:"Portfolio React UI Avancé", cat:"en-ligne", progress:100,
     description:"Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
-    image:"/assets/images/projects/jean-edy-preview.jpg",
-    images:["/assets/images/projects/jean-edy-preview.jpg","/assets/images/projects/jean-edy-preview2.jpg","/assets/images/projects/jean-edy-preview3.jpg"],
+    image:"/assets/images/projects/jean-edy-preview.webp",
+    images:["/assets/images/projects/jean-edy-preview.webp","/assets/images/projects/jean-edy-preview2.webp","/assets/images/projects/jean-edy-preview3.webp"],
     tech:["React 18","Vite","GSAP","Framer Motion","TailwindCSS"],
     stats:[{icon:"magic",label:"UI Avancé"},{icon:"volume-up",label:"Web Audio API"},{icon:"layer-group",label:"Skeuomorphisme"}],
     url:"https://jean-edy-dev.vercel.app/", year:"2026", isPremium:true },
   { id:18, title:"MD Laverie Pressing", subtitle:"Site Vitrine Pressing", cat:"en-ligne", progress:100,
     description:"Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
-    image:"/assets/images/projects/laverie-preview.jpg",
-    images:["/assets/images/projects/laverie-preview.jpg","/assets/images/projects/laverie-preview2.jpg","/assets/images/projects/laverie-preview3.jpg"],
+    image:"/assets/images/projects/laverie-preview.webp",
+    images:["/assets/images/projects/laverie-preview.webp","/assets/images/projects/laverie-preview2.webp","/assets/images/projects/laverie-preview3.webp"],
     tech:["React 18","Vite","GSAP","React Router v6","EmailJS"],
     stats:[{icon:"tshirt",label:"Pressing Abidjan"},{icon:"star",label:"GSAP Slider"},{icon:"envelope",label:"EmailJS Contact"}],
     url:"https://laverie-plus.vercel.app/", year:"2025", isPremium:true },
 ];
 
 const SERVICES = [
-  { n:"01", icon:"code",       title:"Applications Web",       desc:"Apps CRUD complètes, dashboards de gestion, solutions sur-mesure.", features:["Applications CRUD complètes","Dashboards de gestion","Solutions sur-mesure"] },
-  { n:"02", icon:"server",     title:"API RESTful",             desc:"APIs Python/Flask documentées, sécurisées, prêtes pour la production.", features:["API RESTful avec Python","Documentation complète","Sécurité intégrée"] },
-  { n:"03", icon:"mobile-alt", title:"Interfaces Responsives",  desc:"Design et intégration d'interfaces modernes et adaptatives.", features:["Design responsive","UX optimale","Performance maximale"] },
-  { n:"04", icon:"database",   title:"Bases de Données",        desc:"Conception et optimisation de bases de données MySQL.", features:["Modélisation de données","Requêtes SQL optimisées","Intégrité des données"] },
-  { n:"05", icon:"shield-alt", title:"Sécurité Applicative",    desc:"Bonnes pratiques de sécurité intégrées dès la conception.", features:["Protection des données","Gestion des accès","Sécurisation Python"] },
-  { n:"06", icon:"tools",      title:"Support Technique",       desc:"Maintenance informatique et assistance technique utilisateur.", features:["Maintenance matérielle","Support utilisateur","Résolution de problèmes"] },
+  { n:"01", icon:"globe",      title:"Conception de Site Web",         sub:"Votre présence en ligne professionnelle", desc:"Création de sites web modernes, responsive et optimisés pour convertir vos visiteurs en clients.", img:"/assets/images/service/creation de site web.webp", features:["Sites responsive & modernes","Optimisés pour la conversion","Du portfolio à l'e-commerce"] },
+  { n:"02", icon:"chart-bar",  title:"Cartes Interactives & Dashboards", sub:"Cartes Mapbox et visualisation de données", desc:"Intégration de cartes interactives Mapbox / Leaflet et de dashboards de visualisation de données.", img:"/assets/images/service/dasbord.webp", features:["Cartes Mapbox / Leaflet","Dashboards de données","Interfaces lisibles & actionnables"] },
+  { n:"03", icon:"server",     title:"API & Backend Robustes",          sub:"Connectez et automatisez vos systèmes", desc:"Conception d'API RESTful sécurisées avec Django ou Flask, auth JWT et déploiement.", img:"/assets/images/service/api.webp", features:["API RESTful Django / Flask","Auth JWT & gestion des rôles","Intégration Mobile Money"] },
+  { n:"04", icon:"tools",      title:"Maintenance & Support",           sub:"Votre projet performant, sécurisé et à jour", desc:"Suivi technique, corrections de bugs, mises à jour de sécurité et améliorations continues.", img:"/assets/images/service/maintenence.webp", features:["Suivi technique continu","Mises à jour de sécurité","Améliorations sur la durée"] },
+];
+
+/* ─── Processus A à Z — de l'acompte à la livraison ─── */
+const PROCESS_STEPS = [
+  { n:"01", title:"Prise de contact & Brief",  tag:"1 à 2 jours",      desc:"On discute de votre projet : besoins, objectifs, exemples qui vous plaisent. Je vous propose ensuite le pack le plus adapté.", img:"/assets/images/process/prise de contact.webp", imgAlt:"Prise de contact et brief" },
+  { n:"02", title:"Devis & Conditions",         tag:"1 jour",           desc:"Je vous envoie un devis clair : prix total, acompte de 50%, délai de livraison et liste des prestations incluses.", img:"/assets/images/process/devis et condition.webp", imgAlt:"Devis et conditions" },
+  { n:"03", title:"Acompte reçu",               tag:"Feu vert",         desc:"Une fois l'acompte versé, je récupère vos contenus — logo, textes, photos — et je lance le développement.", img:"/assets/images/process/acompte.webp", imgAlt:"Acompte reçu" },
+  { n:"04", title:"Création du site",           tag:"Délai annoncé",    desc:"Je construis votre site de A à Z : pages, design responsive, animations, formulaire de contact, SEO de base. J'active aussi l'hébergement et le nom de domaine.", img:"/assets/images/process/creation du site.webp", imgAlt:"Création du site" },
+  { n:"05", title:"Livraison & Validation",     tag:"1 à 2 jours",      desc:"Vous testez le site sur un lien de prévisualisation et me partagez vos retours avant la mise en ligne.", img:"/assets/images/process/livraison.webp", imgAlt:"Livraison et validation" },
+  { n:"06", title:"Solde payé",                 tag:"Fichiers transmis",desc:"Une fois le solde réglé, je vous transmets les fichiers sources, les accès à l'hébergement et au nom de domaine, plus le mot de passe d'administration.", img:"/assets/images/process/solde.webp", imgAlt:"Solde payé" },
+  { n:"07", title:"Mise en ligne & Support",    tag:"Projet livré",     desc:"Votre site est en ligne. Un mois de support est inclus selon le pack, et je reste disponible pour le renouvellement après la première année.", img:"/assets/images/process/mise en ligne.webp", imgAlt:"Mise en ligne et support" },
+];
+
+/* ─── Questions fréquentes ─── */
+const FAQ_ITEMS = [
+  { q:"Comment se déroule le paiement de mon site ?", a:"Le paiement se fait en deux fois : 50% à la commande pour démarrer le projet, et les 50% restants à la livraison, juste avant de recevoir les fichiers finaux et les accès." },
+  { q:"Pourquoi un acompte est-il demandé avant de commencer ?", a:"L'acompte confirme votre commande et me permet de démarrer le développement immédiatement, de récupérer vos contenus (logo, textes, photos) et de vous garantir le délai annoncé. Sans acompte, le projet n'est pas priorisé dans mon planning." },
+  { q:"Quels moyens de paiement acceptez-vous ?", a:"Orange Money, MTN Mobile Money, Wave ou virement bancaire. Vous précisez votre moyen préféré au moment de la commande et je vous envoie les coordonnées correspondantes." },
+  { q:"Quel est le délai pour recevoir mon site ?", a:"Cela dépend du pack choisi : 3 à 5 jours pour un portfolio simple, davantage pour une vitrine, une boutique e-commerce ou une application plus complexe. Le délai exact est précisé dans le devis et démarre dès réception de l'acompte et de vos contenus." },
+  { q:"Quand mon site est-il mis en ligne ?", a:"Une fois le solde réglé. Avant cela, je vous partage un lien de prévisualisation pour valider le design et le contenu." },
+  { q:"Puis-je voir mon site avant qu'il soit en ligne ?", a:"Oui, toujours. Vous recevez un lien de prévisualisation pour tester le site, faire vos retours et demander des ajustements avant la mise en ligne officielle." },
+  { q:"Combien de modifications sont incluses ?", a:"Les petites corrections — textes, couleurs, ajustements visuels — sont incluses pendant la phase de validation. Les modifications majeures, comme un changement de structure ou l'ajout de pages, font l'objet d'un devis complémentaire." },
+  { q:"Quel pack choisir pour mon projet ?", a:"Tout dépend de vos besoins : portfolio, vitrine, boutique e-commerce ou application plus complexe type SaaS. Je vous conseille gratuitement lors du brief initial pour identifier le pack le plus adapté." },
+  { q:"Le nom de domaine et l'hébergement sont-ils vraiment gratuits ?", a:"Oui, la première année est offerte sur tous les packs. Après cette période, vous payez simplement le renouvellement — environ 15 000 à 30 000 FCFA par an selon le domaine — et je vous envoie un rappel avant l'expiration." },
+  { q:"Quels contenus dois-je fournir ?", a:"Votre logo, vos photos, vos textes de présentation et vos informations de contact. Plus ces éléments arrivent vite, plus le développement avance rapidement." },
+  { q:"Je n'ai pas de logo ni de textes, pouvez-vous m'aider ?", a:"Oui. Je peux proposer un logo simple, utiliser des visuels libres de droits adaptés à votre activité, ou rédiger une trame de textes professionnels que vous ajustez ensuite. Ces services s'ajoutent au devis initial." },
+  { q:"Qui gère mon site après la livraison ?", a:"Vous. Je vous transmets tous les accès — administration, hébergement, nom de domaine — ainsi qu'un tutoriel simple pour modifier vos textes et images sans dépendre de moi." },
+  { q:"Que se passe-t-il si le délai annoncé n'est pas respecté ?", a:"C'est rare, mais si cela arrive de mon fait, une pénalité s'applique sur le montant total et vous pouvez demander l'annulation du projet avec un remboursement partiel. Ces conditions figurent dans le devis signé." },
+  { q:"Mon site a un bug après la livraison, que faites-vous ?", a:"Je corrige gratuitement tout bug lié à mon développement pendant le mois suivant la livraison — inclus dans le pack Premium, possible en option sur les autres packs." },
+  { q:"Comment commander mon site ?", a:"Trois étapes : on échange sur votre projet et le pack adapté, je vous envoie un devis avec l'acompte de 50%, puis dès réception du paiement je démarre le développement." },
 ];
 
 const PRICING_TABS = [
@@ -538,14 +572,6 @@ const PRICING_TABS = [
         features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe"] },
     ]
   },
-];
-
-const FAQ = [
-  { q:"Combien coûte un site web ?", a:"Les projets commencent à partir de 60 000 FCFA pour un site vitrine simple. Le prix final dépend des fonctionnalités demandées." },
-  { q:"Combien de temps prend la création d'un site ?", a:"Un site vitrine est livré en 5 à 10 jours. Un projet plus complexe (e-commerce, SaaS) peut prendre plusieurs semaines selon la complexité." },
-  { q:"Puis-je modifier mon site moi-même ?", a:"Oui. Une formation rapide est incluse dans la plupart des offres pour que vous puissiez gérer votre site facilement." },
-  { q:"Proposez-vous un support après la livraison ?", a:"Oui. Un support technique est disponible après la livraison pour vous accompagner si nécessaire." },
-  { q:"Les prix sont-ils fixes ?", a:"Chaque projet étant unique, les tarifs peuvent varier selon les fonctionnalités demandées. Un devis gratuit est établi après discussion." },
 ];
 
 const SKILLS = {
@@ -640,6 +666,65 @@ function useInView(thr=0.1){
     return ()=>o.disconnect();
   },[thr]);
   return [r,v];
+}
+
+/* ── Détecte un viewport "desktop" (≥900px) pour activer le scroll-pin GSAP
+     identique à App.jsx ; sous ce seuil, on garde les présentations mobile. ── */
+function useIsDesktopViewport(bp=768){
+  const [isDesktop,setIsDesktop]=useState(()=>typeof window!=='undefined' && window.innerWidth>=bp);
+  useEffect(()=>{
+    const mq=window.matchMedia(`(min-width: ${bp}px)`);
+    const onChange=e=>setIsDesktop(e.matches);
+    mq.addEventListener('change',onChange);
+    return ()=>mq.removeEventListener('change',onChange);
+  },[bp]);
+  return isDesktop;
+}
+
+/* ── Pin manuel "plein écran tant que toutes les cartes ne sont pas vues" ──
+   Indépendant de GSAP ScrollTrigger (cassé par les transforms appliqués par
+   ScrollDepthScene sur chaque section). Repose uniquement sur le scroll natif
+   et getBoundingClientRect — jamais affecté par un transform parent.
+   Le conteneur fait total*100vh de haut ; tant que son sommet est au-dessus
+   du viewport et son bas en dessous, le contenu reste fixe à l'écran et
+   l'index actif avance avec la progression du scroll dans cette plage. ── */
+function useScrollPin(total, active){
+  const wrapRef=useRef(null);
+  const [activeIdx,setActiveIdx]=useState(0);
+  const [pinned,setPinned]=useState(false);
+
+  useEffect(()=>{
+    if(!active){ setPinned(false); return; }
+    const onScroll=()=>{
+      const el=wrapRef.current;
+      if(!el) return;
+      const rect=el.getBoundingClientRect();
+      const vh=window.innerHeight;
+      // À l'intérieur de la plage [top<=0, bottom>=vh] → on est "dans" la section
+      const inRange = rect.top<=0 && rect.bottom>=vh;
+      setPinned(inRange);
+      if(inRange){
+        const progressed = -rect.top; // distance scrollée depuis le sommet du conteneur
+        const totalScrollable = rect.height - vh; // hauteur totale parcourable
+        const progress = totalScrollable>0 ? Math.min(1, Math.max(0, progressed/totalScrollable)) : 0;
+        const idx = Math.min(total-1, Math.floor(progress*total));
+        setActiveIdx(idx);
+      } else if(rect.top>0){
+        setActiveIdx(0);
+      } else if(rect.bottom<vh){
+        setActiveIdx(total-1);
+      }
+    };
+    onScroll();
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    return ()=>{
+      window.removeEventListener('scroll',onScroll);
+      window.removeEventListener('resize',onScroll);
+    };
+  },[active,total]);
+
+  return { wrapRef, activeIdx, pinned, setActiveIdx };
 }
 
 function useRipple() {
@@ -1143,8 +1228,10 @@ const ThemeToggle = ({dark, onToggle}) => (
 
 const NAV_LINKS = [
   {id:"home",label:"Accueil"},{id:"creations",label:"Vitrine"},{id:"services",label:"Services"},
+  {id:"process",label:"Process"},
   {id:"about",label:"À propos"},{id:"experience",label:"Parcours"},
-  {id:"projects",label:"Projets"},{id:"skills",label:"Skills"},{id:"contact",label:"Contact"}
+  {id:"projects",label:"Projets"},{id:"skills",label:"Skills"},
+  {id:"faq",label:"FAQ"},{id:"contact",label:"Contact"}
 ];
 
 /* ── LiveClock : date + heure temps réel ── */
@@ -1779,7 +1866,7 @@ const Hero = ({ dark }) => {
 
             <div className="hv4-photo-mob hv4-rv" style={{'--d':'0.3s'}}>
               <div className="hv4-photo-mob-inner">
-                <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
+                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className={`hv4-photo photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
                 <div className="hv4-photo-mob-badge"><span className="hero-dot"/><span>disponible</span></div>
               </div>
             </div>
@@ -1822,7 +1909,7 @@ const Hero = ({ dark }) => {
           {/* ════ RIGHT ════ */}
           <div className="hv4-right hv4-rv" style={{'--d':'0.32s'}} ref={rightRef}>
             <div className="hv4-photo-wrap hv4-photo-wrap--full">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
+              <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor?'photo-bw--on':''}`}/>
               <div className="hv4-photo-overlay">
                 <span><LI name="map-marker-alt" color={dark?"#aaa":"#666"} size={12}/> Abidjan, CI</span>
                 <span><LI name="code" color="#ff5500" size={12}/> Full-Stack Dev</span>
@@ -1848,55 +1935,70 @@ const Marquee = ({dark}) => {
   return (<div className={`marquee ${dark?'marquee--dark':''}`}><div className="marquee-track">{d.map((w,i)=><span key={i} className="mw">{w}<span className="mdot">◆</span></span>)}</div></div>);
 };
 
-/* 3 projets en-ligne pour la section Dernière création mobile */
-const CR_SLIDES = [
-  { desktop: '/assets/images/projects/nexura-preview.jpg',    mobile: '/assets/images/projects/nexura-responsive.jpg',  id: 15 },
-  { desktop: '/assets/images/projects/newhorizon-preview.jpg',mobile: '/assets/images/projects/nexura-responsive2.jpg', id: 12 },
-  { desktop: '/assets/images/projects/akatech-preview.jpg',   mobile: '/assets/images/projects/nexura-responsive.jpg',  id: 13 },
-];
+/* Projets fixes pour la section vitrine mobile — même logique que le desktop */
+const FC_PROJECT_IDS = [16, 15];
 
 const FeaturedCreation = ({dark}) => {
   const [ref,vis]=useInView(0.08);
-  const [slide,setSlide]=useState(0);
+  const [projIdx,setProjIdx]=useState(0);
+  const [mobileSlide,setMobileSlide]=useState(0);
+  const [fading,setFading]=useState(false);
+
+  // Auto-slide mobile : alterne responsive ↔ preview toutes les 3.5s
   useEffect(()=>{
-    const t=setInterval(()=>setSlide(s=>(s+1)%CR_SLIDES.length),4000);
+    setMobileSlide(0);
+    const t=setInterval(()=>setMobileSlide(s=>(s+1)%2),3500);
+    return ()=>clearInterval(t);
+  },[projIdx]);
+
+  // Auto-switch projet toutes les 7s
+  useEffect(()=>{
+    const t=setInterval(()=>{
+      setFading(true);
+      setTimeout(()=>{
+        setProjIdx(i=>(i+1)%FC_PROJECT_IDS.length);
+        setMobileSlide(0);
+        setFading(false);
+      },380);
+    },7000);
     return ()=>clearInterval(t);
   },[]);
-  const cur=CR_SLIDES[slide];
-  const proj=PROJECTS.find(p=>p.id===cur.id);
+
+  const proj=PROJECTS.find(p=>p.id===FC_PROJECT_IDS[projIdx]);
   if(!proj) return null;
+
+  // Les deux images mobiles : version responsive (slide 0) puis preview (slide 1)
+  const mobileImgs=[proj.images?.[1]||proj.image, proj.image];
+  const barUrl=(proj.url&&proj.url!=='#') ? proj.url.replace('https://','').replace(/\/$/,'') : proj.title.toLowerCase().replace(/\s+/g,'')+'.vercel.app';
+
   return (
     <section id="creations" ref={ref} className={`creations-section ${vis?'creations-section--vis':''} ${dark?'section--dark':''}`}>
       <WindowChrome title="Vitrine" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Projets<br/>en ligne.</h2></div>
-      <div className="cr-showcase">
+      <div className={`cr-showcase ${fading?'cr-showcase--fade':''}`}>
         <div className="cr-mockups">
 
-          {/* Desktop browser — horizontal slide track */}
+          {/* Desktop browser */}
           <div className="cr-desktop-wrap">
             <div className="cr-desktop-shell">
               <div className="cr-desktop-bar">
                 <span className="cr-dot cr-dot--r"/><span className="cr-dot cr-dot--y"/><span className="cr-dot cr-dot--g"/>
-                <span className="cr-bar-url">{proj.url.replace('https://','').replace(/\/$/,'')}</span>
+                <span className="cr-bar-url">{barUrl}</span>
               </div>
               <div className="cr-desktop-screen" style={{position:'relative',overflow:'hidden'}}>
-                <div style={{display:'flex',width:`${CR_SLIDES.length*100}%`,height:'100%',transform:`translateX(-${slide*(100/CR_SLIDES.length)}%)`,transition:'transform .65s cubic-bezier(.4,0,.2,1)',willChange:'transform'}}>
-                  {CR_SLIDES.map((s,i)=>(
-                    <img key={i} src={s.desktop} alt={PROJECTS.find(p=>p.id===s.id)?.title||''} style={{width:`${100/CR_SLIDES.length}%`,flexShrink:0,height:'100%',objectFit:'cover',objectPosition:'top center'}}/>
-                  ))}
-                </div>
+                <img key={proj.image} src={proj.image} alt={`${proj.title} desktop`} className="cr-screen-img"/>
               </div>
             </div>
           </div>
 
-          {/* Phone mockup — vertical slide track */}
+          {/* Phone mockup — vertical slide track entre 2 images */}
           <div className="cr-mobile-wrap">
             <div className="cr-mobile-shell">
               <div className="cr-mobile-notch"/>
               <div className="cr-mobile-screen">
-                <div className="cr-slide-track" style={{transform:`translateY(-${slide*(100/CR_SLIDES.length)}%)`,transition:'transform .65s cubic-bezier(.4,0,.2,1)',willChange:'transform'}}>
-                  {CR_SLIDES.map((s,i)=>(
-                    <img key={i} src={s.mobile} alt={`slide ${i+1}`} className="cr-screen-img cr-slide-img"/>
+                <div className="cr-slide-track" style={{transform:`translateY(-${mobileSlide*50}%)`,transition:'transform .6s cubic-bezier(.4,0,.2,1)',willChange:'transform'}}>
+                  {mobileImgs.map((src,i)=>(
+                    <img key={src+i} src={src} alt={`${proj.title} mobile ${i+1}`} className="cr-screen-img cr-slide-img"/>
                   ))}
                 </div>
               </div>
@@ -1905,34 +2007,30 @@ const FeaturedCreation = ({dark}) => {
             <div className="cr-resp-badge"><LI name="check-circle" color="#ff5500"/> 100% Responsive</div>
           </div>
 
-          {/* Dots */}
+          {/* Dots — un par projet */}
           <div className="cr-dots">
-            {CR_SLIDES.map((_,i)=>(
-              <button key={i} className={`cr-dot-btn${slide===i?' cr-dot-btn--active':''}`} onClick={()=>setSlide(i)}/>
+            {FC_PROJECT_IDS.map((_,i)=>(
+              <button key={i} className={`cr-dot-btn${projIdx===i?' cr-dot-btn--active':''}`} onClick={()=>{setProjIdx(i);setMobileSlide(0);}}/>
             ))}
           </div>
 
           <div className="cr-glow"/>
         </div>
 
-        {/* Info panel — transition sur le projet actif */}
-        <div className="cr-info" style={{position:'relative',minHeight:'260px'}}>
-          {CR_SLIDES.map((s,i)=>{
-            const p=PROJECTS.find(pr=>pr.id===s.id);
-            if(!p) return null;
-            return (
-              <div key={i} style={{opacity:slide===i?1:0,transform:slide===i?'translateY(0)':'translateY(14px)',transition:'opacity .4s ease,transform .4s ease',position:slide===i?'relative':'absolute',top:0,left:0,width:'100%',pointerEvents:slide===i?'auto':'none'}}>
-                <div><h3 className="cr-title">{p.title}</h3><p className="cr-sub">{p.sub}</p></div>
-                <div className="cr-meta-block">
-                  <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web</span></div>
-                  <div className="cr-meta-row"><span className="cr-ml">Année</span><span className="cr-mv">{p.year}</span></div>
-                </div>
-                <div className="cr-tags">{p.tech.slice(0,3).map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
-                <p className="cr-desc">{p.description}</p>
-                <a href={p.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
-              </div>
-            );
-          })}
+        {/* Info panel */}
+        <div className="cr-info" style={{position:'relative',minHeight:'260px',opacity:fading?0:1,transition:'opacity .35s ease'}}>
+          <div><h3 className="cr-title">{proj.title}</h3><p className="cr-sub">{proj.subtitle}</p></div>
+          <div className="cr-meta-block">
+            <div className="cr-meta-row"><span className="cr-ml">Type</span><span className="cr-mv">Application Web Full-Stack</span></div>
+            <div className="cr-meta-row"><span className="cr-ml">Année</span><span className="cr-mv">{proj.year}</span></div>
+          </div>
+          <div className="cr-tags">{proj.tech.slice(0,3).map(t=><span key={t} className="cr-tag">{t}</span>)}</div>
+          <p className="cr-desc">{proj.description}</p>
+          {proj.url && proj.url!=='#' ? (
+            <a href={proj.url} target="_blank" rel="noreferrer" className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta mi-glint`}><LI name="external-link-alt" color={dark?"#fff":"#1a1a1a"}/> Voir le site</a>
+          ) : (
+            <span className={`btn ${dark?'btn--neon':'btn--primary'} cr-cta`} style={{opacity:.6,cursor:'default'}}><LI name="clock" color={dark?"#fff":"#1a1a1a"}/> En cours de développement</span>
+          )}
         </div>
       </div>
     </section>
@@ -2346,38 +2444,241 @@ const PricingTabs = ({dark}) => {
 
 const Services = ({dark}) => {
   const [ref,vis]=useInView();
+  const isDesktop=useIsDesktopViewport();
+  const [activeIdx,setActiveIdx]=useState(0);
+  const sectionRef=useRef(null);
+  const scrollAccum=useRef(0);
+  const lastTouchY=useRef(null);
+  const activeIdxRef=useRef(0);
+  const total=SERVICES.length;
+  useEffect(()=>{ activeIdxRef.current=activeIdx; },[activeIdx]);
+
+  const STEP_THRESH=60;
+
+  const isSectionVisible=()=>{
+    const el=sectionRef.current;
+    if(!el) return false;
+    const rect=el.getBoundingClientRect();
+    return rect.top<=window.innerHeight*0.5 && rect.bottom>=window.innerHeight*0.5;
+  };
+
+  // Scroll-wheel/touch capturé localement — switch de panneau, sans dépendre
+  // de ScrollTrigger global (cassé par les transforms de ScrollDepthScene)
+  useEffect(()=>{
+    if(!isDesktop) return;
+    const onWheel=e=>{
+      if(!isSectionVisible()) return;
+      const cur=activeIdxRef.current;
+      const goingDown=e.deltaY>0, goingUp=e.deltaY<0;
+      if((cur===0&&goingUp)||(cur===total-1&&goingDown)){ scrollAccum.current=0; return; }
+      e.preventDefault();
+      scrollAccum.current+=e.deltaY;
+      if(scrollAccum.current>=STEP_THRESH){ setActiveIdx(i=>Math.min(total-1,i+1)); scrollAccum.current=0; }
+      else if(scrollAccum.current<=-STEP_THRESH){ setActiveIdx(i=>Math.max(0,i-1)); scrollAccum.current=0; }
+    };
+    const onTouchStart=e=>{ if(!isSectionVisible()) return; lastTouchY.current=e.touches[0].clientY; };
+    const onTouchMove=e=>{
+      if(!isSectionVisible()||lastTouchY.current===null) return;
+      const cur=activeIdxRef.current;
+      const dy=lastTouchY.current-e.touches[0].clientY;
+      if((cur===0&&dy<0)||(cur===total-1&&dy>0)) return;
+      e.preventDefault();
+    };
+    const onTouchEnd=e=>{
+      if(!isSectionVisible()||lastTouchY.current===null) return;
+      const cur=activeIdxRef.current;
+      const dy=lastTouchY.current-(e.changedTouches[0]?.clientY??lastTouchY.current);
+      if(!((cur===0&&dy<0)||(cur===total-1&&dy>0))){
+        if(dy>40) setActiveIdx(i=>Math.min(total-1,i+1));
+        else if(dy<-40) setActiveIdx(i=>Math.max(0,i-1));
+      }
+      lastTouchY.current=null;
+    };
+    window.addEventListener('wheel',onWheel,{passive:false});
+    window.addEventListener('touchstart',onTouchStart,{passive:true});
+    window.addEventListener('touchmove',onTouchMove,{passive:false});
+    window.addEventListener('touchend',onTouchEnd,{passive:true});
+    return ()=>{
+      window.removeEventListener('wheel',onWheel);
+      window.removeEventListener('touchstart',onTouchStart);
+      window.removeEventListener('touchmove',onTouchMove);
+      window.removeEventListener('touchend',onTouchEnd);
+    };
+  },[isDesktop,total]);
+
   return (
     <section id="services" ref={ref} className={dark?'section--dark':''}>
       <WindowChrome title="Services & Tarifs" dark={dark}/>
       <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Ce que je<br/>fais bien.</h2></div>
-      <div className={`svc-grid ${vis?'anim':''} svc-desk mi-stagger ${vis?'mi-stagger--vis':''}`}>
-        {SERVICES.map((s,i)=>(
-          <TiltCard key={i} className="svc-card" style={{animationDelay:`${i*0.08}s`}}>
-            <SpotlightCard className="svc-spotlight-inner" style={{height:'100%',width:'100%'}}>
-              <div className="svc-top"><span className="svc-n">{s.n}</span><div className="svc-ico mi-pulse"><LI name={s.icon} color="#ffffff" size={22}/></div></div>
-              <h3 className="svc-title">{s.title}</h3><p className="svc-desc">{s.desc}</p>
-              <ul className="svc-feat">{SERVICES[i].features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
-            </SpotlightCard>
-          </TiltCard>
-        ))}
-      </div>
-      <div className="svc-mob">
-        <StackedCard
-          items={SERVICES}
-          renderCard={(s, idx) => (
-            <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
-              <div className="pricing-card">
-                <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><LI name={s.icon} color="#ffffff" size={20}/></div></div>
-                <h3 className="svc-title">{s.title}</h3>
-                <p className="svc-desc">{s.desc}</p>
-                <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
-              </div>
-            </TiltCard>
-          )}
-        />
-      </div>
+
+      {isDesktop ? (
+        <div ref={sectionRef} className="svc-pin-mob">
+          <div className="svc-sticky-mob">
+            <div className="svc-text-col-mob">
+              {SERVICES.map((s,i)=>(
+                <div key={i} className="svc-panel-mob"
+                  style={{opacity:i===activeIdx?1:0, transform:i===activeIdx?'translateY(0)':'translateY(28px)', pointerEvents:i===activeIdx?'all':'none'}}>
+                  <span className="svc-eyebrow-mob">{s.n} — Services</span>
+                  <h2 className="svc-title-mob">{s.title}</h2>
+                  {s.sub && <p className="svc-sub-mob">{s.sub}</p>}
+                  <p className="svc-desc-mob">{s.desc}</p>
+                  <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
+                </div>
+              ))}
+            </div>
+            <div className="svc-pin-dots">
+              {SERVICES.map((_,i)=>(
+                <button key={i} className={`svc-pin-dot${activeIdx===i?' svc-pin-dot--active':''}`} onClick={()=>setActiveIdx(i)} aria-label={`Service ${i+1}`}/>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="svc-mob">
+          <StackedCard
+            items={SERVICES}
+            renderCard={(s, idx) => (
+              <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
+                <div className="pricing-card">
+                  <div className="svc-top" style={{marginBottom:'8px'}}><span className="svc-n">{s.n}</span><div className="svc-ico"><LI name={s.icon} color="#ffffff" size={20}/></div></div>
+                  <h3 className="svc-title">{s.title}</h3>
+                  {s.sub && <p className="svc-sub">{s.sub}</p>}
+                  <p className="svc-desc">{s.desc}</p>
+                  <ul className="svc-feat">{s.features.map((f,fi)=><li key={fi}><span>→</span>{f}</li>)}</ul>
+                </div>
+              </TiltCard>
+            )}
+          />
+        </div>
+      )}
+
       <div className={`s-hd ${dark?'s-hd--dark':''}`} style={{marginTop:'60px'}}><span className="s-lbl">Tarifs</span><h2 className="s-ttl" style={{fontSize:'clamp(24px,3.5vw,44px)'}}>Mes offres.</h2></div>
       <PricingTabs dark={dark}/>
+    </section>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+    PROCESS — De l'acompte à la livraison
+   ═══════════════════════════════════════════════════════ */
+const Process = ({dark}) => {
+  const [ref,vis]=useInView();
+  const isDesktop=useIsDesktopViewport();
+  const [activeIdx,setActiveIdx]=useState(0);
+  const sectionRef=useRef(null);
+  const scrollAccum=useRef(0);
+  const lastTouchY=useRef(null);
+  const activeIdxRef=useRef(0);
+  const total=PROCESS_STEPS.length;
+  useEffect(()=>{ activeIdxRef.current=activeIdx; },[activeIdx]);
+
+  const STEP_THRESH=60;
+
+  const isSectionVisible=()=>{
+    const el=sectionRef.current;
+    if(!el) return false;
+    const rect=el.getBoundingClientRect();
+    return rect.top<=window.innerHeight*0.5 && rect.bottom>=window.innerHeight*0.5;
+  };
+
+  // Scroll-wheel/touch capturé localement — switch images + textes,
+  // sans dépendre de ScrollTrigger global (cassé par ScrollDepthScene)
+  useEffect(()=>{
+    if(!isDesktop) return;
+    const onWheel=e=>{
+      if(!isSectionVisible()) return;
+      const cur=activeIdxRef.current;
+      const goingDown=e.deltaY>0, goingUp=e.deltaY<0;
+      if((cur===0&&goingUp)||(cur===total-1&&goingDown)){ scrollAccum.current=0; return; }
+      e.preventDefault();
+      scrollAccum.current+=e.deltaY;
+      if(scrollAccum.current>=STEP_THRESH){ setActiveIdx(i=>Math.min(total-1,i+1)); scrollAccum.current=0; }
+      else if(scrollAccum.current<=-STEP_THRESH){ setActiveIdx(i=>Math.max(0,i-1)); scrollAccum.current=0; }
+    };
+    const onTouchStart=e=>{ if(!isSectionVisible()) return; lastTouchY.current=e.touches[0].clientY; };
+    const onTouchMove=e=>{
+      if(!isSectionVisible()||lastTouchY.current===null) return;
+      const cur=activeIdxRef.current;
+      const dy=lastTouchY.current-e.touches[0].clientY;
+      if((cur===0&&dy<0)||(cur===total-1&&dy>0)) return;
+      e.preventDefault();
+    };
+    const onTouchEnd=e=>{
+      if(!isSectionVisible()||lastTouchY.current===null) return;
+      const cur=activeIdxRef.current;
+      const dy=lastTouchY.current-(e.changedTouches[0]?.clientY??lastTouchY.current);
+      if(!((cur===0&&dy<0)||(cur===total-1&&dy>0))){
+        if(dy>40) setActiveIdx(i=>Math.min(total-1,i+1));
+        else if(dy<-40) setActiveIdx(i=>Math.max(0,i-1));
+      }
+      lastTouchY.current=null;
+    };
+    window.addEventListener('wheel',onWheel,{passive:false});
+    window.addEventListener('touchstart',onTouchStart,{passive:true});
+    window.addEventListener('touchmove',onTouchMove,{passive:false});
+    window.addEventListener('touchend',onTouchEnd,{passive:true});
+    return ()=>{
+      window.removeEventListener('wheel',onWheel);
+      window.removeEventListener('touchstart',onTouchStart);
+      window.removeEventListener('touchmove',onTouchMove);
+      window.removeEventListener('touchend',onTouchEnd);
+    };
+  },[isDesktop,total]);
+
+  return (
+    <section id="process" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="Process" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">De l'acompte<br/>à la livraison.</h2></div>
+      <p className="proc-intro">Un processus clair et transparent, du premier brief à la mise en ligne — vous savez toujours où en est votre projet.</p>
+
+      {isDesktop ? (
+        <div ref={sectionRef} className="proc-pin-mob">
+          <div className="proc-sticky-mob">
+            <div className="proc-grid-mob">
+              <div className="proc-img-col-mob">
+                <div className="proc-stack-mob">
+                  {PROCESS_STEPS.map((s,i)=>{
+                    let cls='proc-img-mob';
+                    if(i===activeIdx) cls+=' proc-img-mob--active';
+                    else if(i===activeIdx-1) cls+=' proc-img-mob--prev';
+                    return <img key={i} src={s.img} alt={s.imgAlt} className={cls}/>;
+                  })}
+                </div>
+              </div>
+              <div className="proc-text-col-mob">
+                {PROCESS_STEPS.map((s,i)=>(
+                  <div key={i} className="proc-panel-mob"
+                    style={{opacity:i===activeIdx?1:0, transform:i===activeIdx?'translateY(0)':'translateY(28px)', pointerEvents:i===activeIdx?'all':'none'}}>
+                    <span className="proc-eyebrow-mob">{s.n} — Process</span>
+                    <h2 className="proc-title-mob">{s.title}</h2>
+                    <span className="proc-tag-mob">{s.tag}</span>
+                    <p className="proc-desc-mob">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="svc-pin-dots">
+              {PROCESS_STEPS.map((_,i)=>(
+                <button key={i} className={`svc-pin-dot${activeIdx===i?' svc-pin-dot--active':''}`} onClick={()=>setActiveIdx(i)} aria-label={`Étape ${i+1}`}/>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="proc-mob-swipe">
+          <StackedCard
+            items={PROCESS_STEPS}
+            renderCard={(s, idx) => (
+              <TiltCard intensity={6} perspective={900} className="proc-mob-tilt">
+                <div className="proc-mob-img-card">
+                  <img src={s.img} alt={s.imgAlt} className="proc-mob-img-only" loading="lazy"/>
+                  <span className="proc-row-n">{s.n}</span>
+                </div>
+              </TiltCard>
+            )}
+          />
+        </div>
+      )}
     </section>
   );
 };
@@ -2477,15 +2778,17 @@ const About = ({dark}) => {
               <div style={{position:'relative',zIndex:1}}><p>"Ce n'est pas important de réussir du premier coup. L'essentiel est de réussir au final."</p><span>— Kevin Ressegaire</span></div>
             </div>
             <div className="about-img-wrap">
-              <img src="/assets/images/IMG_20250124_124101KK.jpg" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
+              <img src="/assets/images/IMG_20250124_124101KK.webp" alt="Elvis M'Bollo" className={`about-img photo-bw ${aboutPhotoColor?'photo-bw--on':''}`}/>
               <div className="about-badges"><span><LI name="code" color="#ff5500" size={13}/> Pro</span><span><LI name="lightbulb" color="#ff5500" size={13}/> Créatif</span><span><LI name="eye" color={dark?"#fff":"#1a1a1a"}/> Curieux</span></div>
             </div>
           </div>
           <div className="about-right">
             <ScrambleText text="Développeur Full-Stack · Django & React / Vite & Next.js · Data & Carto" tag="h3" speed={22} step={0.4} threshold={0.25} once={true}/>
-            <p>Formé en <strong>Réseau et Sécurité Informatique</strong>, je conçois et mets en œuvre des applications web complètes — de l'interface React jusqu'au back-end Python — en appliquant les bonnes pratiques de développement et de sécurité dès la conception.</p>
-            <p>À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées <strong>Data &amp; Cartographie</strong> : dashboards de gestion, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).</p>
-            <p>Via mon agence <strong>AKATech</strong>, j'ai livré plus de <strong>10 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels.</p>
+            <p>Je suis développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de créer des produits utiles, beaux et agréables à utiliser.</p>
+            <p>Mon parcours a commencé dans le <strong>réseau</strong> et la <strong>sécurité informatique</strong>, et cette base m'a appris à construire avec méthode, à penser la fiabilité et à garder une vision propre de l'architecture.</p>
+            <p>Avec le temps, j'ai trouvé ma place dans le développement web. Aujourd'hui, j'aime concevoir des interfaces qui respirent, qui bougent, et qui donnent une vraie sensation de produit fini.</p>
+            <p>Je travaille surtout avec <strong>React</strong> et <strong>Django</strong>, tout en explorant <strong>Next.js</strong>, <strong>GSAP</strong>, <strong>Framer Motion</strong> et parfois <strong>Three.js</strong> pour donner plus de vie et de profondeur aux expériences.</p>
+            <p>En grande partie <strong>autodidacte</strong>, j'apprends en construisant, en testant et en améliorant chaque projet. C'est aussi dans cet esprit que j'ai créé <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" style={{color:'var(--acc)',fontWeight:700,textDecoration:'none',borderBottom:'1.5px solid var(--acc)'}}>AKATech</a>, un espace où je donne forme à des idées web modernes et concrètes.</p>
             <div className={`about-tags ${dark?'about-tags--dark':''}`}>{["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}</div>
             <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
           </div>
@@ -3105,7 +3408,6 @@ const FanDeck = ({ items, dark }) => {
 const SpotlightProjects = ({ items, dark }) => {
   const [selected, setSelected] = useState(0);
   const [imgErr, setImgErr] = useState({});
-  const [imgSlide, setImgSlide] = useState(0);
   const thumbsRef = useRef(null);
 
   const goPrev = () => setSelected(s => Math.max(0, s - 1));
@@ -3119,68 +3421,32 @@ const SpotlightProjects = ({ items, dark }) => {
     rail.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
   }, [selected]);
 
-  /* Reset slide index quand on change de projet */
+  /* Reset au changement de filtre/projet */
   useEffect(() => { setSelected(0); setImgErr({}); }, [items]);
-  useEffect(() => { setImgSlide(0); }, [selected]);
-
-  /* Auto-slide 4s — uniquement pour projets en-ligne avec images[] */
-  useEffect(() => {
-    const proj = items[selected] ?? items[0];
-    if (!proj || proj.cat !== 'en-ligne' || !proj.images || proj.images.length < 2) return;
-    const t = setInterval(() => setImgSlide(s => (s + 1) % proj.images.length), 4000);
-    return () => clearInterval(t);
-  }, [selected, items]);
 
   const proj = items[selected] ?? items[0];
   if (!proj) return null;
   const isExternal = proj.url?.startsWith('http');
   const isDemo = proj.cat === 'demo';
 
-  /* Images à afficher : images[] pour en-ligne, sinon image seul */
-  const slideImgs = (proj.cat === 'en-ligne' && proj.images?.length) ? proj.images : [proj.image];
-  const nbSlides = slideImgs.length;
-
   return (
     <div className={`sp-root ${dark?'sp-root--dark':''}`}>
       <div className="sp-viewer">
-        {/* Preview — slide horizontal entre les images du projet */}
+        {/* Preview — une seule image fixe par projet */}
         <div className="sp-preview" style={{background:GRAD[(proj.id-1)%GRAD.length], overflow:'hidden', position:'relative'}}>
           {!imgErr[proj.id] ? (
-            <div
-              className="sp-img-track"
-              style={{
-                display:'flex',
-                width:`${nbSlides*100}%`,
-                height:'100%',
-                transform:`translateX(-${imgSlide*(100/nbSlides)}%)`,
-                transition:'transform .65s cubic-bezier(.4,0,.2,1)',
-                willChange:'transform',
-              }}
-            >
-              {slideImgs.map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt={`${proj.title} ${i+1}`}
-                  className="sp-preview-img"
-                  style={{width:`${100/nbSlides}%`, flexShrink:0, height:'100%', objectFit:'cover', objectPosition:'top center'}}
-                  onError={()=>{ if(i===0) setImgErr(e=>({...e,[proj.id]:true})) }}
-                />
-              ))}
-            </div>
+            <img
+              src={proj.image}
+              alt={proj.title}
+              className="sp-preview-img"
+              style={{width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center'}}
+              onError={()=>setImgErr(e=>({...e,[proj.id]:true}))}
+            />
           ) : (
             <div className="sp-preview-placeholder"><LI name="code" color={dark?"#555":"#aaa"}/></div>
           )}
           {proj.cat==='en-ligne' && <div className="sp-live-badge"><span className="hero-dot"/><span>EN LIGNE</span></div>}
           {proj.isPremium && <div className="sp-prem-badge"><LI name="star" color="#ff5500"/> Premium</div>}
-          {/* Dots indicateurs de slide image */}
-          {nbSlides > 1 && (
-            <div className="sp-img-dots">
-              {slideImgs.map((_,i) => (
-                <button key={i} className={`sp-img-dot${imgSlide===i?' sp-img-dot--active':''}`} onClick={()=>setImgSlide(i)} aria-label={`Image ${i+1}`}/>
-              ))}
-            </div>
-          )}
         </div>
         {/* Détails */}
         <div className={`sp-details ${dark?'sp-details--dark':''}`}>
@@ -3500,7 +3766,7 @@ function AnimatedBeamMobile({ dark }) {
             <div id={centerId} className="mob-node-link" style={{pointerEvents:'none'}}>
               <div className="mob-node-circle mob-node-main">
                 <img
-                  src="/assets/images/logo-akatech.png"
+                  src="/assets/images/logo-akatech.webp"
                   alt="AKATech"
                   style={{width:'58px',height:'58px',objectFit:'contain',borderRadius:'50%'}}
                   onError={e=>{e.target.style.display='none'}}
@@ -3733,6 +3999,40 @@ function GitHubInteractiveCard({ dark }) {
   )
 }
 
+/* ═══════════════════════════════════════════════════════
+    FAQ — Questions fréquentes (accordéon)
+   ═══════════════════════════════════════════════════════ */
+const FAQItem = ({item,index,isOpen,onToggle}) => (
+  <div className={`faq-item${isOpen?' open':''}`}>
+    <button className="faq-q" onClick={onToggle} aria-expanded={isOpen}>
+      <span className="faq-q-text">
+        <span className="faq-q-num">{String(index+1).padStart(2,'0')}</span>
+        {item.q}
+      </span>
+      <span className="faq-icon"><SvgPlus size={13}/></span>
+    </button>
+    <div className="faq-a-wrap">
+      <div className="faq-a-inner"><p className="faq-a">{item.a}</p></div>
+    </div>
+  </div>
+);
+
+const FAQSection = ({dark}) => {
+  const [ref,vis]=useInView();
+  const [openIndex,setOpenIndex]=useState(null);
+  return (
+    <section id="faq" ref={ref} className={dark?'section--dark':''}>
+      <WindowChrome title="FAQ" dark={dark}/>
+      <div className={`s-hd ${dark?'s-hd--dark':''}`}><h2 className="s-ttl">Questions<br/>fréquentes.</h2></div>
+      <div className={`faq-list ${vis?'anim':''}`}>
+        {FAQ_ITEMS.map((item,i)=>(
+          <FAQItem key={i} item={item} index={i} isOpen={openIndex===i} onToggle={()=>setOpenIndex(openIndex===i?null:i)}/>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 const Contact = ({dark}) => {
   const [ref,vis]=useInView();
   const [form,setForm]=useState({name:'',email:'',projectType:'',message:''});
@@ -3837,7 +4137,7 @@ const Contact = ({dark}) => {
               <SpotlightCard style={{height:'100%'}}>
                 <div className="cv-v2-inner">
                   <div className="cv-v2-qr-wrap">
-                    <img src="/assets/images/qrcodeCV.png" alt="QR Code CV" className="cv-v2-qr"/>
+                    <img src="/assets/images/qrcodeCV.webp" alt="QR Code CV" className="cv-v2-qr"/>
                     <div className="cv-v2-qr-badge"><LI name="mobile-alt" size={12} color="#ff5500"/> Scanner</div>
                   </div>
                   <div className="cv-v2-text">
@@ -3907,14 +4207,16 @@ export default function App() {
       <ScrollTop dark={dark}/>
       <main>
   <ScrollDepthScene dark={dark}>
-    <Hero dark={dark}/>
     <Marquee dark={dark}/>
+    <Hero dark={dark}/>
     <FeaturedCreation dark={dark}/>
-    <Services dark={dark}/>
+    <Services dark={dark} sdzSkip/>
+    <Process dark={dark} sdzSkip/>
     <About dark={dark}/>
     <Projects dark={dark}/>
     <Skills dark={dark}/>
     <Testimonials dark={dark}/>
+    <FAQSection dark={dark}/>
     <Contact dark={dark}/>
   </ScrollDepthScene>
 </main>
