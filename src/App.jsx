@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useRef, useCallback } from 'react'
-import './stylev4.css'
+import './style.css'
 import Shuffle from './components/Shuffle.jsx'
 import AnimatedCounter from './components/AnimatedCounter.jsx'
 import ScrollReveal from './components/ScrollReveal.jsx'
