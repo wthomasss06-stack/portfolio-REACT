@@ -41,26 +41,17 @@ const switcherStyle = {
   userSelect: 'none', whiteSpace: 'nowrap',
 }
 
-function SwitcherBtn({ mode, isMobile, onToggle }) {
+function SwitcherBtn({ mode, onToggle }) {
   const [hovered, setHovered] = useState(false)
-
-  const labels = isMobile
-    ? { win95: '🌐 Mode Moderne', appmobile: '🖥 Mode Win95' }
-    : { app: '🖥 Mode Win95', win95: '📱 Voir version mobile', appmobile: '💻 Mode Moderne' }
-
-  const titles = isMobile
-    ? { win95: 'Passer au portfolio moderne', appmobile: 'Passer au mode Win95' }
-    : { app: 'Passer au mode Win95', win95: 'Voir la version mobile', appmobile: 'Revenir au portfolio moderne' }
-
   return (
     <button
       style={{ ...switcherStyle, background: hovered ? '#d4d4d4' : '#c0c0c0', transition: 'background .1s' }}
       onClick={onToggle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      title={titles[mode]}
+      title={mode === 'win95' ? 'Passer au portfolio moderne' : 'Passer au mode Win95'}
     >
-      {labels[mode]}
+      {mode === 'win95' ? '🌐 Mode Moderne' : '🖥 Mode Win95'}
     </button>
   )
 }
@@ -69,24 +60,16 @@ function Root() {
   const isMobile = useIsMobile()
 
   const [mode, setMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem(MODE_KEY)
-      if (saved) return saved
-    } catch {}
-    return isMobile ? 'appmobile' : 'app'
+    try { return localStorage.getItem(MODE_KEY) || 'win95' }
+    catch { return 'win95' }
   })
-
-  // Sécurité : App (desktop) n'est jamais accessible sur mobile
-  useEffect(() => {
-    if (isMobile && mode === 'app') setMode('appmobile')
-  }, [isMobile, mode])
 
   useEffect(() => {
     document.body.classList.toggle('mobile-root', isMobile)
   }, [isMobile])
 
   useEffect(() => {
-    const activeCss = mode === 'app' ? styleDesktop : mode === 'appmobile' ? styleMobile : null
+    const activeCss = mode === 'modern' ? (isMobile ? styleMobile : styleDesktop) : null
     let styleEl = document.getElementById('dynamic-portfolio-styles')
     if (activeCss) {
       if (!styleEl) {
@@ -100,7 +83,7 @@ function Root() {
     } else {
       if (styleEl) styleEl.remove()
     }
-  }, [mode])
+  }, [mode, isMobile])
 
   useEffect(() => {
     try { localStorage.setItem(MODE_KEY, mode) } catch {}
@@ -119,24 +102,20 @@ function Root() {
     }
   }, [mode])
 
-  const toggle = () => {
-    if (isMobile) {
-      setMode(m => m === 'win95' ? 'appmobile' : 'win95')
-    } else {
-      setMode(m => m === 'app' ? 'win95' : m === 'win95' ? 'appmobile' : 'app')
-    }
-  }
+  const toggle = () => setMode(m => m === 'win95' ? 'modern' : 'win95')
 
   return (
     <>
-      {mode === 'win95' && (
-        <div style={{ height: '100%' }}>
-          <Win95App />
-        </div>
-      )}
-      {mode === 'appmobile' && <AppMobile />}
-      {mode === 'app' && <ModernApp />}
-      <SwitcherBtn mode={mode} isMobile={isMobile} onToggle={toggle} />
+      <div style={{ display: mode === 'win95' ? 'block' : 'none', height: '100%' }}>
+        <Win95App />
+      </div>
+      <div style={{ display: mode === 'modern' && isMobile ? 'block' : 'none' }}>
+        <AppMobile />
+      </div>
+      <div style={{ display: mode === 'modern' && !isMobile ? 'block' : 'none' }}>
+        <ModernApp />
+      </div>
+      {!isMobile && <SwitcherBtn mode={mode} onToggle={toggle} />}
     </>
   )
 }
