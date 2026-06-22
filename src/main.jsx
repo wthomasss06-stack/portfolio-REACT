@@ -16,6 +16,14 @@ import styleDesktop from './style.css?inline'
 import styleMobile from './stylemobile.css?inline'
 
 const MODE_KEY = 'akafolio-mode'
+const VALID_MODES = ['app', 'appmobile', 'win95']
+
+// Modes desktop-only : jamais accessibles sur mobile (sécurité ci-dessous)
+const DESKTOP_ONLY_MODES = ['app']
+
+// Ordres de cycle pour le bouton switcher
+const DESKTOP_CYCLE = ['app', 'win95', 'appmobile']
+const MOBILE_CYCLE  = ['appmobile', 'win95']
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(
@@ -30,6 +38,16 @@ function useIsMobile() {
   return isMobile
 }
 
+// Lit le mode sauvegardé, mais ignore toute valeur héritée d'une ancienne
+// version (ex: "modern", "appv4") qui ne correspond plus à rien ici → évite l'écran blanc.
+function readSavedMode() {
+  try {
+    const saved = localStorage.getItem(MODE_KEY)
+    if (saved && VALID_MODES.includes(saved)) return saved
+  } catch {}
+  return null
+}
+
 const switcherStyle = {
   position: 'fixed', bottom: '50px', right: '12px', zIndex: 99999,
   display: 'flex', alignItems: 'center', gap: '6px',
@@ -41,17 +59,32 @@ const switcherStyle = {
   userSelect: 'none', whiteSpace: 'nowrap',
 }
 
-function SwitcherBtn({ mode, onToggle }) {
+// Le bouton affiche toujours la destination (le mode vers lequel on bascule)
+const NEXT_LABEL_DESKTOP = {
+  app:       { label: '🖥 Mode Win95',           title: 'Passer au mode Win95' },
+  win95:     { label: '📱 Voir version mobile',   title: 'Voir la version mobile' },
+  appmobile: { label: '💻 Version actuelle',      title: 'Revenir à la version actuelle' },
+}
+
+const NEXT_LABEL_MOBILE = {
+  win95:     { label: '🌐 Mode Moderne', title: 'Passer au portfolio moderne' },
+  appmobile: { label: '🖥 Mode Win95',   title: 'Passer au mode Win95' },
+}
+
+function SwitcherBtn({ mode, isMobile, onToggle }) {
   const [hovered, setHovered] = useState(false)
+  const map = isMobile ? NEXT_LABEL_MOBILE : NEXT_LABEL_DESKTOP
+  const current = map[mode] || NEXT_LABEL_DESKTOP.app
+
   return (
     <button
       style={{ ...switcherStyle, background: hovered ? '#d4d4d4' : '#c0c0c0', transition: 'background .1s' }}
       onClick={onToggle}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      title={mode === 'win95' ? 'Passer au portfolio moderne' : 'Passer au mode Win95'}
+      title={current.title}
     >
-      {mode === 'win95' ? '🌐 Mode Moderne' : '🖥 Mode Win95'}
+      {current.label}
     </button>
   )
 }
@@ -60,16 +93,31 @@ function Root() {
   const isMobile = useIsMobile()
 
   const [mode, setMode] = useState(() => {
-    try { return localStorage.getItem(MODE_KEY) || 'win95' }
-    catch { return 'win95' }
+    const saved = readSavedMode()
+    if (saved) return saved
+    return isMobile ? 'appmobile' : 'app'
   })
+
+  // Sécurité : modes desktop-only jamais sur mobile, et on rattrape toute
+  // valeur de mode invalide qui aurait pu se glisser dans le state/localStorage
+  // (ex: un vieux "modern" ou "appv4" laissé par une ancienne version).
+  useEffect(() => {
+    if (!VALID_MODES.includes(mode)) {
+      setMode(isMobile ? 'appmobile' : 'app')
+      return
+    }
+    if (isMobile && DESKTOP_ONLY_MODES.includes(mode)) setMode('appmobile')
+  }, [isMobile, mode])
 
   useEffect(() => {
     document.body.classList.toggle('mobile-root', isMobile)
   }, [isMobile])
 
   useEffect(() => {
-    const activeCss = mode === 'modern' ? (isMobile ? styleMobile : styleDesktop) : null
+    const activeCss =
+      mode === 'app' ? styleDesktop :
+      mode === 'appmobile' ? styleMobile :
+      null
     let styleEl = document.getElementById('dynamic-portfolio-styles')
     if (activeCss) {
       if (!styleEl) {
@@ -83,7 +131,7 @@ function Root() {
     } else {
       if (styleEl) styleEl.remove()
     }
-  }, [mode, isMobile])
+  }, [mode])
 
   useEffect(() => {
     try { localStorage.setItem(MODE_KEY, mode) } catch {}
@@ -102,10 +150,16 @@ function Root() {
     }
   }, [mode])
 
-  const toggle = () => setMode(m => m === 'win95' ? 'modern' : 'win95')
+  const toggle = () => {
+    const cycle = isMobile ? MOBILE_CYCLE : DESKTOP_CYCLE
+    setMode(m => {
+      const idx = cycle.indexOf(m)
+      return cycle[(idx === -1 ? 0 : idx + 1) % cycle.length]
+    })
+  }
 
-  // Un seul portfolio monté à la fois (plus de display:none qui laissait
-  // les 3 arbres DOM coexister → c'était ça qui cassait les ancres #contact etc.)
+  // Un seul portfolio monté à la fois (pas de display:none qui ferait
+  // coexister plusieurs arbres DOM → c'était ça qui cassait les ancres #contact etc.)
   return (
     <>
       {mode === 'win95' && (
@@ -113,9 +167,9 @@ function Root() {
           <Win95App />
         </div>
       )}
-      {mode === 'modern' && isMobile && <AppMobile />}
-      {mode === 'modern' && !isMobile && <ModernApp />}
-      {!isMobile && <SwitcherBtn mode={mode} onToggle={toggle} />}
+      {mode === 'appmobile' && <AppMobile />}
+      {mode === 'app' && <ModernApp />}
+      <SwitcherBtn mode={mode} isMobile={isMobile} onToggle={toggle} />
     </>
   )
 }
