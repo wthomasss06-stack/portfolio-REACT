@@ -1264,6 +1264,28 @@ const Navbar = ({dark, onToggle}) => {
     fn();
     window.addEventListener('scroll',fn,{passive:true}); return ()=>window.removeEventListener('scroll',fn);
   },[]);
+
+  // Bloque le scroll de la page derrière le drawer quand il est ouvert
+  // (sans perdre la position de scroll à la fermeture)
+  useEffect(()=>{
+    if(!open) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    return ()=>{
+      body.style.position = '';
+      body.style.top = '';
+      body.style.left = '';
+      body.style.right = '';
+      body.style.width = '';
+      window.scrollTo(0, scrollY);
+    };
+  },[open]);
+
   const goGooey = useGooeyTransition('mobile');
   const go=id=>{ setOpen(false); setTimeout(()=>goGooey(id), 120); };
 
