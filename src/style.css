@@ -165,7 +165,7 @@
    }
    /* Phase 1 : logo centré légèrement plus grand */
    .nb-topbar-logoblock--hero .nb-logo-img {
-     height: clamp(30px,4.5vw,50px);
+     height: clamp(50px,6vw,72px);
    }
    .nb-logo-text {
      font-family: var(--fd); font-weight: 700;
@@ -186,7 +186,7 @@
      -webkit-text-fill-color: transparent;
    }
    /* Logo images sizing (header / drawer / loader) — adjusted slightly larger */
-   .nb-logo-img { height: clamp(28px,4vw,44px); width: auto; display: block; object-fit: contain; }
+   .nb-logo-img { height: clamp(44px,5.5vw,64px); width: auto; display: block; object-fit: contain; }
    .ld-logo { height: clamp(60px,10vw,110px); width: auto; display: block; object-fit: contain; }
    .ld-word img { display:block; }
    /* nb-logo-acc : TECH part is already colored by parent gradient — override not needed */
@@ -202,6 +202,43 @@
    .nb-sep { opacity: .35; }
    /* Horloge en light mode sur hero : on garde blanc car le bg hero est sombre */
    body.light-mode .nb-topbar-clock { color: rgba(255,255,255,0.82); }
+
+   /* ─── MICRO-INTERACTION phase 1 → phase 2 ───────────────────────────
+      Le logo gauche (phase 2) entre depuis le bord gauche avec un léger
+      fondu + glissement. Le logo centré (phase 1) sort vers le haut.
+      Tout le mécanisme passe par des classes CSS + keyframes.
+      Le JS (Navbar) ajoute/retire .scrolled sur .nb-topbar ;
+      les animations se déclenchent uniquement quand les classes
+      sont montées/retirées (via animation-fill-mode: both).
+      ─────────────────────────────────────────────────────────────────── */
+   @keyframes nb-slide-in-left {
+     from { opacity: 0; transform: translateX(-14px) scale(0.92); }
+     to   { opacity: 1; transform: translateX(0)     scale(1);    }
+   }
+   @keyframes nb-slide-out-up {
+     from { opacity: 1; transform: translateY(0)   scale(1);    }
+     to   { opacity: 0; transform: translateY(-10px) scale(0.94); }
+   }
+   @keyframes nb-fade-in {
+     from { opacity: 0; transform: translateY(4px); }
+     to   { opacity: 1; transform: translateY(0);   }
+   }
+
+   /* Phase 2 : le logoblock gauche entre en slide-left */
+   .nb-topbar.scrolled .nb-topbar-logoblock:not(.nb-topbar-logoblock--hero) {
+     animation: nb-slide-in-left 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+   }
+   /* Phase 1 : le logo centré disparaît vers le haut quand on scrolle
+      (géré par le retrait du DOM dans le JSX — on anime sa sortie via
+       une classe .nb-center-exit ajoutée par le hook JS) */
+   .nb-topbar-center-exit {
+     animation: nb-slide-out-up 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+     pointer-events: none;
+   }
+   /* Phase 2 → phase 1 : retour logo centré depuis en bas (scroll up) */
+   .nb-topbar-center-enter {
+     animation: nb-fade-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+   }
 
    /* Toggle thème */
    .nb-theme-btn {
@@ -380,7 +417,7 @@
    }
    .nb-drawer-logo {
      display: flex; align-items: center; cursor: pointer;
-     height: 40px;
+     height: 60px;
    }
    .nb-drawer-logo .nb-logo-img { height: 100%; width: auto; display: block; }
 
@@ -655,7 +692,7 @@
      font-family: 'Space Mono', monospace; font-size: 10px;
      letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
    }
-   .hsl { width: 2px; height: 40px; background: rgba(255,255,255,.2); position: relative; overflow: hidden; }
+   .hsl { width: 2px; height: 60px; background: rgba(255,255,255,.2); position: relative; overflow: hidden; }
    .hsl::after {
      content: ''; position: absolute; top: -50%; left: 0;
      width: 100%; height: 50%; background: var(--accent);
@@ -2283,7 +2320,7 @@
      color: #F2EDE8;
      background: #1a1208;
    }
-   /* Inputs et select dans la zone force-dark */
+   /* Inputs et select dans la zone force-dark — bascule désormais avec le thème */
    .force-dark input,
    .force-dark textarea,
    .force-dark select {
@@ -2293,6 +2330,17 @@
    }
    .force-dark input::placeholder,
    .force-dark textarea::placeholder { color: rgba(242,237,232,0.35) !important; }
+   body.light-mode .force-dark input,
+   body.light-mode .force-dark textarea,
+   body.light-mode .force-dark select {
+     background: #FFFFFF !important;
+     border-color: #FF5500 !important;
+     color: #0A0A0A !important;
+   }
+   body.light-mode .force-dark input::placeholder,
+   body.light-mode .force-dark textarea::placeholder { color: rgba(10,10,10,0.35) !important; }
+   body.light-mode .force-dark .form-field label { color: rgba(10,10,10,0.55); }
+   body.light-mode .force-dark .form-note { color: rgba(10,10,10,0.45); }
    /* Code block */
    .force-dark .code-block { background: #0A0A0A !important; }
    /* Contact status badge */
@@ -2317,6 +2365,7 @@
    .force-dark .coj-list-link:hover { color: #FF5500; }
    /* select option */
    .force-dark select option { background: #0A0A0A; color: #F2EDE8; }
+   body.light-mode .force-dark select option { background: #FFFFFF; color: #0A0A0A; }
    @media(max-width: 700px) {
      /* sticky peut être instable sur certains mobiles/iOS Safari avec le scroll
         global custom du site → on retombe sur un fond fixe plus court et discret */
@@ -2420,28 +2469,29 @@
      position: relative;
      border: 2.5px solid #FF5500;
      border-radius: 20px;
-     /* Toujours dark — indépendant du thème global */
-     background: #0A0A0A;
+     /* Bascule clair/sombre via variables locales, indépendantes du --bg/--text hérité de .force-dark */
      --text: #F2EDE8;
      --muted: rgba(242,237,232,0.45);
      --bg: #0A0A0A;
-     color: #F2EDE8;
+     background: var(--bg);
+     color: var(--text);
      box-shadow: 4px 4px 0 #FF5500;
      padding: 2rem;
      display: flex;
      flex-direction: column;
      gap: 1.5rem;
      overflow: hidden;
-     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     transition: transform 0.3s ease, box-shadow 0.3s ease, background .3s, color .3s;
    }
-   /* Forcer dark même en light-mode */
+   /* Mode clair : carte passe en blanc/noir comme le reste du site */
    body.light-mode .github-card-large {
-     background: #0A0A0A;
+     --bg: #FFFFFF;
+     --text: #0A0A0A;
+     --muted: rgba(10,10,10,0.45);
+     background: var(--bg);
      border-color: #FF5500;
      box-shadow: 4px 4px 0 #FF5500;
-     color: #F2EDE8;
-     --text: #F2EDE8;
-     --muted: rgba(242,237,232,0.45);
+     color: var(--text);
    }
    
    .github-card-large:hover {
@@ -2470,17 +2520,15 @@
      font-size: 1.25rem;
      font-weight: 800;
      margin: 0;
-     color: #F2EDE8;
+     color: var(--text);
    }
-   body.light-mode .github-card-large-title { color: #F2EDE8; }
    
    .github-card-large-user {
      font-family: 'Space Mono', monospace;
      font-size: 0.72rem;
      margin: 2px 0 0 0;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
    }
-   body.light-mode .github-card-large-user { color: rgba(242,237,232,0.45); }
    
    .github-card-large-user a {
      color: var(--accent);
@@ -2509,7 +2557,7 @@
      font-family: var(--fd);
      font-size: 0.7rem;
      font-weight: 700;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      background: transparent;
      border: none;
      border-right: 2.5px solid #FF5500;
@@ -2518,7 +2566,6 @@
    }
    
    body.light-mode .github-tab-btn {
-     color: rgba(242,237,232,0.45);
      border-right-color: rgba(255,85,0,.35);
    }
    
@@ -2563,10 +2610,9 @@
    .github-stat-lbl {
      font-size: 0.65rem;
      font-family: 'Space Mono', monospace;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      margin-top: 4px;
    }
-   body.light-mode .github-stat-lbl { color: rgba(242,237,232,0.45); }
    
    /* Grid layout */
    .github-grid-scroll-wrapper {
@@ -2580,12 +2626,11 @@
      justify-content: space-between;
      margin-left: 30px;
      font-size: 9px;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      font-family: 'Space Mono', monospace;
      margin-bottom: 6px;
      min-width: 720px;
    }
-   body.light-mode .github-months-row { color: rgba(242,237,232,0.45); }
    
    .github-grid-container {
      display: flex;
@@ -2598,13 +2643,12 @@
      grid-template-rows: repeat(7, 10px);
      gap: 3px;
      font-size: 8px;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      font-family: 'Space Mono', monospace;
      padding-right: 6px;
      text-align: right;
      line-height: 10px;
    }
-   body.light-mode .github-grid-days { color: rgba(242,237,232,0.45); }
    
    .github-grid {
      display: grid;
@@ -2632,10 +2676,10 @@
      border: 1px solid rgba(255, 85, 0, 0.08);
    }
    
-   /* En light-mode la card reste dark → level-0 garde couleur orange sombre */
+   /* En light-mode la carte passe en blanc → cases vides en gris léger plutôt qu'invisibles */
    body.light-mode .github-square.level-0 {
-     background: rgba(255, 85, 0, 0.05);
-     border: 1px solid rgba(255, 85, 0, 0.08);
+     background: rgba(10, 10, 10, 0.04);
+     border: 1px solid rgba(10, 10, 10, 0.08);
    }
    
    .github-square.level-1 { background: #ffd3b6; }
@@ -2648,13 +2692,12 @@
      justify-content: space-between;
      align-items: center;
      font-size: 0.65rem;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      font-family: 'Space Mono', monospace;
      margin-top: 1rem;
      flex-wrap: wrap;
      gap: 0.8rem;
    }
-   body.light-mode .github-grid-footer { color: rgba(242,237,232,0.45); }
    
    .github-legend {
      display: flex;
@@ -2742,28 +2785,25 @@
      font-family: var(--fd);
      font-size: 0.95rem;
      font-weight: 700;
-     color: #F2EDE8;
+     color: var(--text);
    }
-   body.light-mode .github-repo-name { color: #F2EDE8; }
    
    .github-repo-stats {
      display: flex;
      gap: 10px;
      font-size: 0.65rem;
      font-family: 'Space Mono', monospace;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
    }
-   body.light-mode .github-repo-stats { color: rgba(242,237,232,0.45); }
    
    .github-repo-desc {
      font-size: 0.78rem;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
      line-height: 1.5;
      margin: 0;
      flex-grow: 1;
      text-align: left;
    }
-   body.light-mode .github-repo-desc { color: rgba(242,237,232,0.45); }
    
    .github-repo-lang-bar {
      height: 4px;
@@ -2782,9 +2822,8 @@
      justify-content: space-between;
      font-family: 'Space Mono', monospace;
      font-size: 0.65rem;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
    }
-   body.light-mode .github-repo-footer { color: rgba(242,237,232,0.45); }
    
    /* Feed tab layout */
    .github-tab-content-feed {
@@ -2837,24 +2876,21 @@
    }
    
    .github-log-time {
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
    }
-   body.light-mode .github-log-time { color: rgba(242,237,232,0.45); }
    
    .github-log-msg {
      font-size: 0.78rem;
      margin: 0 0 6px 0;
-     color: #F2EDE8;
+     color: var(--text);
      line-height: 1.4;
    }
-   body.light-mode .github-log-msg { color: #F2EDE8; }
    
    .github-log-commits-count {
      font-family: 'Space Mono', monospace;
      font-size: 0.6rem;
-     color: rgba(242,237,232,0.45);
+     color: var(--muted);
    }
-   body.light-mode .github-log-commits-count { color: rgba(242,237,232,0.45); }
    
    .github-feed-right {
      display: flex;
@@ -3115,23 +3151,25 @@
    .ft-bb-nav a:hover { color: var(--accent); transform: translateX(4px); }
 
    .ft-bb-logo { display: flex; align-items: center; justify-content: center; flex: 1; min-width: 60px; }
-   .ft-bb-logo img { width: 34px; height: 34px; object-fit: contain; opacity: .95; }
+   .ft-bb-logo img { width: 88px; height: 88px; object-fit: contain; opacity: .95; }
 
    .ft-bb-right { display: flex; flex-direction: column; align-items: flex-end; gap: .85rem; text-align: right; }
    .ft-bb-copyright { font-family: 'Space Mono', monospace; font-size: .7rem; color: rgba(255,255,255,.8); letter-spacing: .02em; }
    .ft-bb-cta {
      display: inline-flex; align-items: center; gap: .6rem;
-     background: #fff; color: #0A0A0A;
+     --bg: #0A0A0A; --text: #FFFFFF;
+     background: var(--bg); color: var(--text);
      border-radius: 999px; padding: .65rem .4rem .65rem 1.2rem;
      text-decoration: none; font-family: var(--fd); font-weight: 700; font-size: .82rem;
-     transition: transform .25s cubic-bezier(.175,.885,.32,1.275), box-shadow .25s;
+     transition: transform .25s cubic-bezier(.175,.885,.32,1.275), box-shadow .25s, background .3s, color .3s;
    }
+   body.light-mode .ft-bb-cta { --bg: #FFFFFF; --text: #0A0A0A; }
    .ft-bb-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(10,10,10,.3); }
    .ft-bb-cta-arrow {
      display: inline-flex; align-items: center; justify-content: center;
      width: 26px; height: 26px; border-radius: 50%;
-     background: #0A0A0A; color: #fff;
-     transition: transform .25s cubic-bezier(.175,.885,.32,1.275);
+     background: var(--text); color: var(--bg);
+     transition: transform .25s cubic-bezier(.175,.885,.32,1.275), background .3s, color .3s;
    }
    .ft-bb-cta:hover .ft-bb-cta-arrow { transform: rotate(45deg); }
    .ft-bb-email { font-family: 'Space Mono', monospace; font-size: .72rem; color: rgba(255,255,255,.9); text-decoration: none; transition: color .2s; }

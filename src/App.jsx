@@ -1052,7 +1052,12 @@ function Navbar({ theme, onToggleTheme }) {
    return () => window.removeEventListener('scroll', onScroll)
  }, [])
 
- /* Navbar transparent → solid au scroll */
+ /* ── refs pour la micro-interaction phase 1 ↔ 2 ── */
+ const prevScrolledRef = useRef(false)
+ const leftRef         = useRef(null)
+ const centerRef       = useRef(null)
+
+ /* Navbar transparent → solid au scroll + micro-animation GSAP */
  useEffect(() => {
    const heroEl   = document.getElementById('hero')
    if (!heroEl) { setScrolled(window.scrollY > 60); return }
@@ -1065,6 +1070,51 @@ function Navbar({ theme, onToggleTheme }) {
    io.observe(heroEl)
    return () => io.disconnect()
  }, [])
+
+ /* ── GSAP micro-animation au changement de phase ── */
+ useEffect(() => {
+   const wasScrolled = prevScrolledRef.current
+   prevScrolledRef.current = scrolled
+
+   const leftEl   = leftRef.current
+   const centerEl = centerRef.current
+
+   if (scrolled && !wasScrolled) {
+     /* phase 1 → 2 : logo gauche slide in depuis gauche / center slide out haut */
+     if (centerEl) {
+       gsap.fromTo(centerEl,
+         { opacity: 1, y: 0, scale: 1 },
+         { opacity: 0, y: -10, scale: 0.92, duration: 0.2, ease: 'power2.in',
+           onComplete: () => { gsap.set(centerEl, { clearProps: 'all' }) }
+         }
+       )
+     }
+     if (leftEl) {
+       gsap.fromTo(leftEl,
+         { opacity: 0, x: -14, scale: 0.9 },
+         { opacity: 1, x: 0, scale: 1, duration: 0.36,
+           ease: 'expo.out', delay: 0.06, clearProps: 'all' }
+       )
+     }
+   } else if (!scrolled && wasScrolled) {
+     /* phase 2 → 1 : logo gauche slide out vers gauche / center fade in */
+     if (leftEl) {
+       gsap.fromTo(leftEl,
+         { opacity: 1, x: 0, scale: 1 },
+         { opacity: 0, x: -10, scale: 0.94, duration: 0.18, ease: 'power2.in',
+           onComplete: () => { gsap.set(leftEl, { clearProps: 'all' }) }
+         }
+       )
+     }
+     if (centerEl) {
+       gsap.fromTo(centerEl,
+         { opacity: 0, y: 8, scale: 0.94 },
+         { opacity: 1, y: 0, scale: 1, duration: 0.3,
+           ease: 'expo.out', delay: 0.08, clearProps: 'all' }
+       )
+     }
+   }
+ }, [scrolled])
 
  const scrollTo = id => {
    const el = document.getElementById(id)
@@ -1129,7 +1179,7 @@ function Navbar({ theme, onToggleTheme }) {
      <header className={`nb-topbar${scrolled ? ' scrolled' : ''}`}>
 
        {/* Gauche */}
-       <div className="nb-topbar-left">
+       <div className="nb-topbar-left" ref={leftRef}>
          {scrolled ? (
            <div className="nb-topbar-logoblock" onClick={() => scrollTo('hero')}>{logoBlock}</div>
          ) : (
@@ -1140,7 +1190,7 @@ function Navbar({ theme, onToggleTheme }) {
        </div>
 
        {/* Centre */}
-       <div className="nb-topbar-center">
+       <div className="nb-topbar-center" ref={centerRef}>
          {!scrolled && (
            <div className="nb-topbar-logoblock nb-topbar-logoblock--hero" onClick={() => scrollTo('hero')}>
              {logoBlock}
@@ -1250,7 +1300,11 @@ function Hero() {
 
  {/* CTA */}
  <div className="hv4-ctas hv4-rv" style={{ '--d': '.7s' }}>
- <a href="https://wa.me/2250142507750" target="_blank" rel="noopener noreferrer" className="btn-fill">
+ <a
+   href="#contact"
+   className="btn-fill"
+   onClick={e => { e.preventDefault(); scrollTo('contact') }}
+ >
  Contactez-moi
  <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
  </a>
@@ -2406,10 +2460,13 @@ function PricingSection() {
 
             {/* CTA */}
             <a
-              href="https://wa.me/2250142507750"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contact"
               className={`prc-cta${plan.isPopular ? ' prc-cta--pop' : ''}`}
+              onClick={e => {
+                e.preventDefault()
+                const el = document.getElementById('contact')
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' })
+              }}
             >
               Démarrer le projet
               <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
@@ -3286,7 +3343,7 @@ function Footer() {
 
  <div className="ft-bb-right">
  <span className="ft-bb-copyright">© 2026 AKATech</span>
- <a href="https://wa.me/2250142507750" target="_blank" rel="noopener noreferrer" className="ft-bb-cta">
+ <a href="#contact" className="ft-bb-cta" onClick={e => { e.preventDefault(); const el = document.getElementById('contact'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }) }}>
  Réserver un appel
  <span className="ft-bb-cta-arrow" aria-hidden="true">
  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg>

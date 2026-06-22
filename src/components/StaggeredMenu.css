@@ -36,20 +36,24 @@
 
 /* ════════════════════════════════════
    BOUTON TOGGLE — pill arrondi
+   Hauteur calée sur le header (54px) :
+   padding vertical calculé pour que
+   height effective = ~34px (même que nb-theme-btn)
    ════════════════════════════════════ */
 .sm-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: var(--bg);
   border: 2px solid var(--text);
   border-radius: 999px;
-  padding: 8px 16px 8px 14px;
+  /* height cible ~36px = line-height 1em ~9px + padding 13px*2 + border 2px*2 */
+  padding: 9px 18px 9px 16px;
   cursor: pointer;
   color: var(--text);
   font-family: 'Space Mono', monospace;
-  font-size: .62rem;
+  font-size: .65rem;
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -91,8 +95,8 @@
 /* ── Icône +/× dans le toggle ── */
 .sm-icon {
   position: relative;
-  width: 13px; height: 13px;
-  flex: 0 0 13px;
+  width: 14px; height: 14px;
+  flex: 0 0 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -140,13 +144,13 @@
 /* ── Logo ── */
 .sm-panel-logo { margin-bottom: 3rem; }
 .sm-panel-logo-img {
-  height: 32px; width: auto;
+  height: clamp(52px, 7vw, 72px); width: auto;
   object-fit: contain;
   display: block;
 }
 .sm-panel-logo-text {
   font-family: 'Bebas Neue', monospace;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   color: var(--text);
   letter-spacing: .08em;
 }
