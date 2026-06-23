@@ -686,6 +686,13 @@
      border: 2px solid rgba(0,0,0,.3); display: inline-block;
      flex-shrink: 0; border-radius: 50%; animation: blink 1.4s ease-in-out infinite;
    }
+   .hero-availability {
+     display: flex; align-items: center; gap: 8px;
+     font-family: 'Space Mono', monospace; font-size: 11px;
+     letter-spacing: .04em; color: var(--muted);
+     margin-bottom: clamp(18px,3vh,30px);
+   }
+   @media(max-width:900px){ .hero-availability { display: none; } }
    .hero-scroll {
      position: absolute; bottom: 32px; left: var(--pad);
      display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -905,6 +912,25 @@
      color: var(--text);
      line-height: .95;
      margin: 0;
+     position: relative;
+   }
+   /* ── Ghost cycle sur sh-title — même mécanique que
+      .sm-panel-item-ghost du StaggeredMenu : texte en contour
+      seul (stroke), couleur = fond du thème (blanc en clair,
+      noir en sombre). Piloté par le même IntersectionObserver
+      que titleCyc/subCyc : se décode à l'entrée en viewport,
+      se brouille à la sortie — pas de hover ── */
+   .sh-title-ghost {
+     position: absolute;
+     inset: 0;
+     display: flex;
+     align-items: center;
+     pointer-events: none;
+     overflow: hidden;
+   }
+   .sh-title-ghost .sh-cycle-line {
+     -webkit-text-stroke: 1.5px var(--text);
+     color: transparent;
    }
    .sh-sub {
      font-family: 'Space Mono', monospace;
@@ -1802,7 +1828,7 @@
      background: radial-gradient(circle at center, rgba(255,85,0,.03) 0%, transparent 70%);
      overflow: hidden;
    }
-   .svc-stack { position: relative; width: min(480px, 62%); aspect-ratio: 2/3; perspective: 1000px; }
+   .svc-stack { position: relative; width: min(560px, 70%); aspect-ratio: 1/1; max-height: 80vh; perspective: 1000px; }
    .svc-img {
      position: absolute; inset: 0; width: 100%; height: 100%;
      object-fit: cover; border-radius: 20px;
@@ -1816,7 +1842,7 @@
    body.light-mode .svc-img { box-shadow: 0 32px 80px rgba(0,0,0,.18); }
 
    @media (max-width: 1100px) {
-     .svc-stack { width: min(400px, 56%); max-height: 80vh; }
+     .svc-stack { width: min(440px, 60%); max-height: 70vh; }
    }
    @media (max-width: 768px) {
      .svc-header { padding: 8vh 6vw 4vh; }
@@ -1825,7 +1851,7 @@
      .svc-grid { grid-template-columns: 1fr; height: auto; gap: 3rem; padding-bottom: 4vh; }
      .svc-text-col { height: auto; min-height: 46vh; }
      .svc-img-col { height: 46vh; border-left: none; border-top: 1px solid rgba(255,85,0,.06); }
-     .svc-stack { width: auto; height: 85%; max-width: 70%; }
+     .svc-stack { width: auto; height: 85%; max-width: 85%; aspect-ratio: 1/1; }
    }
 
    /* ══════════════════════════════════════════
@@ -1858,6 +1884,10 @@
      max-width: 1040px;
      margin: 0 auto;
      animation: priceIn .38s ease both;
+   }
+   .prc-grid--single {
+     grid-template-columns: 1fr;
+     max-width: 420px;
    }
    @keyframes priceIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
@@ -1961,6 +1991,16 @@
      background: rgba(255,255,255,.1);
      border-color: rgba(255,255,255,.2);
    }
+
+   .prc-plan-desc {
+     font-family: 'Space Mono', monospace;
+     font-size: .68rem;
+     line-height: 1.4;
+     color: var(--muted);
+     margin-top: 10px;
+   }
+   .prc-card--pop .prc-plan-desc { color: rgba(10,10,10,.65); }
+   body.light-mode .prc-card--pop .prc-plan-desc { color: rgba(255,255,255,.7); }
 
    /* ── Séparateur ── */
    .prc-sep {

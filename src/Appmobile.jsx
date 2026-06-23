@@ -495,6 +495,7 @@ const SERVICES = [
   { n:"02", icon:"chart-bar",  title:"Cartes Interactives & Dashboards", sub:"Cartes Mapbox et visualisation de données", desc:"Intégration de cartes interactives Mapbox / Leaflet et de dashboards de visualisation de données.", img:"/assets/images/service/dasbord.webp", features:["Cartes Mapbox / Leaflet","Dashboards de données","Interfaces lisibles & actionnables"] },
   { n:"03", icon:"server",     title:"API & Backend Robustes",          sub:"Connectez et automatisez vos systèmes", desc:"Conception d'API RESTful sécurisées avec Django ou Flask, auth JWT et déploiement.", img:"/assets/images/service/api.webp", features:["API RESTful Django / Flask","Auth JWT & gestion des rôles","Intégration Mobile Money"] },
   { n:"04", icon:"tools",      title:"Maintenance & Support",           sub:"Votre projet performant, sécurisé et à jour", desc:"Suivi technique, corrections de bugs, mises à jour de sécurité et améliorations continues.", img:"/assets/images/service/maintenence.webp", features:["Suivi technique continu","Mises à jour de sécurité","Améliorations sur la durée"] },
+  { n:"05", icon:"map-marked-alt", title:"Fiche Google My Business",    sub:"Soyez visible sur Google Maps et la recherche locale", desc:"Création ou optimisation de votre fiche Google et suivi mensuel : avis, publications et statistiques.", img:"/assets/images/service/fiche-google.webp", features:["Création ou optimisation de la fiche","Description optimisée SEO local","Suivi mensuel : avis & statistiques"] },
 ];
 
 /* ─── Processus A à Z — de l'acompte à la livraison ─── */
@@ -534,42 +535,56 @@ const PRICING_TABS = [
       { badge:"STARTER",  price:"70 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
         features:["3 pages","Design responsive","Section projets","Formulaire contact","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
       { badge:"STANDARD", price:"120 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
-        features:["5 pages","Animations modernes","Projets détaillés","SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+        features:["5 pages","Animations modernes","Projets détaillés","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
       { badge:"PREMIUM",  price:"180 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
-        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+        features:["Design personnalisé","Animations avancées","Blog intégré","🔎 SEO + AEO/GEO","⚡ Optimisation performance (SXO)","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 15 000 FCFA/mois"] },
     ]
   },
   {
     key:"vitrine", label:"Site Vitrine", icon:"Globe",
     plans:[
-      { badge:"STARTER", price:"150 000 FCFA", title:"Starter", delivery:"5 jours",
-        features:["5 pages","Design responsive","Formulaire contact","SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support"] },
+      { badge:"STARTER", price:"180 000 FCFA", title:"Starter", delivery:"5 à 7 jours",
+        features:["5 pages","Design responsive","Formulaire contact","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support","🔁 Maintenance dès 15 000 FCFA/mois"] },
       { badge:"PRO",     price:"270 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
-        features:["10 pages","Design premium","Blog intégré","SEO avancé","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h"] },
+        features:["10 pages","Design premium","Blog intégré","🔎 SEO + AEO","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h","🔁 Maintenance dès 20 000 FCFA/mois"] },
       { badge:"ELITE",   price:"450 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
-        features:["15 à 20 pages","Design sur mesure","CMS complet","SEO + Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","➕ Page supp. : 20 000 FCFA"] },
+        features:["15 à 20 pages","Design sur mesure","CMS complet","🔎 SEO + AEO + GEO + Analytics","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","🔁 Maintenance dès 25 000 FCFA/mois","➕ Page supp. : 20 000 FCFA"] },
     ]
   },
   {
     key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
     plans:[
       { badge:"STARTER", price:"400 000 FCFA",   title:"Starter", delivery:"14 jours",
-        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support"] },
+        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 25 000 FCFA/mois"] },
       { badge:"PRO",     price:"650 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
-        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin"] },
+        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","🔎 SEO produits (SEO/AEO)","📈 CRO (tunnel d'achat optimisé)","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin","🔁 Maintenance dès 35 000 FCFA/mois"] },
       { badge:"ELITE",   price:"1 000 000 FCFA", title:"Elite",   delivery:"30 jours",
-        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe"] },
+        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","🤖 Optimisation IA (GEO)","📈 CRO (tunnel d'achat optimisé)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe","🔁 Maintenance dès 50 000 FCFA/mois"] },
     ]
   },
   {
     key:"saas", label:"App SaaS", icon:"Cpu",
     plans:[
       { badge:"MVP",        price:"700 000 FCFA",         title:"MVP",        delivery:"3 à 4 semaines",
-        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","🌐 Nom de domaine offert (1 an)","🛠 1 mois support","⚠️ Hébergement inclus 1–3 mois"] },
-      { badge:"SCALE",      price:"Sur devis",            title:"Scale",      delivery:"4 à 6 semaines", isPopular:true,
-        features:["Multi-tenant","Analytics temps réel","Intégrations (paiement, email…)","Support prioritaire","1 200 000 – 2 000 000 FCFA"] },
+        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","🌐 Nom de domaine offert (1 an)","🛠 1 mois support","⚠️ Hébergement inclus 1–3 mois","🔁 Maintenance dès 50 000 FCFA/mois"] },
+      { badge:"SCALE",      price:"Dès 1 200 000 FCFA",   title:"Scale",      delivery:"4 à 6 semaines", isPopular:true,
+        features:["Multi-tenant","Analytics temps réel","📈 Onboarding optimisé (CRO)","Intégrations (paiement, email…)","Support prioritaire","🔁 Maintenance sur devis"] },
       { badge:"ENTERPRISE", price:"À partir de 2 500 000 FCFA", title:"Enterprise", delivery:"6 à 10 semaines",
-        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe"] },
+        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe","🔁 Maintenance sur devis"] },
+    ]
+  },
+  {
+    key:"gbp", label:"Fiche Google", icon:"GMap",
+    plans:[
+      { badge:"CRÉATION", price:"20 000 FCFA", title:"Création", delivery:"1 à 2 jours", isPopular:true,
+        desc:"Vous n'avez pas encore de fiche Google ? Création complète de zéro.",
+        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","🔎 Description optimisée SEO local","Mots-clés locaux ciblés","🗺 Intégration carte sur le site"] },
+      { badge:"OPTIMISATION", price:"12 000 FCFA", title:"Optimisation", delivery:"1 jour",
+        desc:"Fiche déjà existante ? On corrige et améliore ce qui est en place.",
+        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","🔎 Description optimisée SEO local","Mots-clés locaux ciblés"] },
+      { badge:"SUIVI MENSUEL", price:"10 000 FCFA/mois", title:"Suivi mensuel", delivery:"Continu",
+        desc:"Gestion continue : avis, publications et statistiques chaque mois.",
+        features:["💬 Réponse aux avis clients","📣 Posts Google réguliers","📊 Suivi statistiques de fiche"] },
     ]
   },
 ];
@@ -2394,8 +2409,8 @@ const AnimPricingFeature = ({ text, dark }) => {
 const PortfolioPricingFeature = AnimPricingFeature;
 
 const LUCIDE_TAB_ICONS = { Globe: SvgGlobe, ShoppingCart: SvgShoppingCart, Cpu: SvgCpu, Star: SvgStar };
-const ANIM_TAB_ICONS   = { Globe: ()=><PricingAnimIcon type="globe" size={15}/>, ShoppingCart: ()=><PricingAnimIcon type="cart" size={15}/>, Cpu: ()=><PricingAnimIcon type="code" size={15}/>, Star: ()=><PricingAnimIcon type="star" size={15}/> };
-const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations." };
+const ANIM_TAB_ICONS   = { Globe: ()=><PricingAnimIcon type="globe" size={15}/>, ShoppingCart: ()=><PricingAnimIcon type="cart" size={15}/>, Cpu: ()=><PricingAnimIcon type="code" size={15}/>, Star: ()=><PricingAnimIcon type="star" size={15}/>, GMap: ()=><PricingAnimIcon type="map" size={15}/> };
+const TAB_SUBTITLES = { vitrine:"Pour présenter votre activité avec élégance.", ecommerce:"Pour vendre en ligne et gérer vos commandes.", saas:"Pour des applications web complètes sur-mesure.", portfolio:"Pour mettre en valeur vos réalisations.", gbp:"Pour être visible sur Google Maps & la recherche locale." };
 
 const PricingTabs = ({dark}) => {
   const [activeTab,setActiveTab]=useState(0); const [animKey,setAnimKey]=useState(0);
@@ -2411,21 +2426,22 @@ const PricingTabs = ({dark}) => {
     const n=parseInt(s.replace(/\s/g,'').replace('FCFA',''));
     return isNaN(n)?s:Math.round(n*1.25).toLocaleString('fr-FR')+' FCFA';
   };
+  const isPureAmount=(s)=>/^[\d\s]+FCFA$/.test(s.trim());
   const PricingCard=({p,idx=0,tilt=false})=>{
     const inner=(
       <div className={`pc3-card ${p.isPopular?'pc3-card--pop':''} ${dark?'pc3-card--dark':''}`}>
         {p.isPopular&&<div className={`pc3-pop-label ${dark?'pc3-pop-label--dark':''}`}><PricingAnimIcon type="star" size={12}/> PLUS POPULAIRE</div>}
         <div className="pc3-top">
           <span className="pc3-num">0{idx+1}</span>
-          <span className="pc3-promo-badge"><PricingAnimIcon type="star" size={11}/> −25%</span>
+          {isPureAmount(p.price)&&<span className="pc3-promo-badge"><PricingAnimIcon type="star" size={11}/> −25%</span>}
         </div>
         <div className="pc3-plan">{p.badge}</div>
-        <p className="pc3-tagline">{TAB_SUBTITLES[tab.key]||''}</p>
+        <p className="pc3-tagline">{p.desc||TAB_SUBTITLES[tab.key]||''}</p>
         <div className="pc3-prices">
-          <span className="pc3-original">{strikePrice(p.price)}</span>
+          {isPureAmount(p.price)&&<span className="pc3-original">{strikePrice(p.price)}</span>}
           <div className="pc3-discounted">
-            <span className="pc3-amount">{p.price.replace(' FCFA','')}</span>
-            <span className="pc3-currency"> FCFA</span>
+            <span className="pc3-amount">{p.price.replace(' FCFA','').replace('/mois','')}</span>
+            <span className="pc3-currency"> FCFA{p.price.includes('/mois')?'/mois':''}</span>
           </div>
         </div>
         <p className="pc3-delivery"><PricingAnimIcon type="clock" size={15}/> {p.delivery}</p>

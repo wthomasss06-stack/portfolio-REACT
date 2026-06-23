@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Crawlers IA / AEO / GEO — autorisés explicitement
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+Sitemap: https://akafolio160502.vercel.app/sitemap.xml

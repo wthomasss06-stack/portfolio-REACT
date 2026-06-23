@@ -105,6 +105,41 @@ function useSHCycleText(text, scramble = true) {
 }
 
 /* ════════════════════════════════════════════
+ SH GHOST SCROLL — texte fantôme en contour (stroke)
+ superposé au titre de section. Même mécanique que
+ useSHCycleText (scramble → cycle → texte final,
+ sens inverse à la sortie), piloté par le MÊME
+ IntersectionObserver que titleCyc/subCyc — se
+ déclenche à l'entrée/sortie du viewport, pas au hover.
+ ════════════════════════════════════════════ */
+function useSHGhostScroll(text, cycles = 3) {
+ const innerRef = useRef(null)
+ const tweenRef = useRef(null)
+ const [lines, setLines] = useState([text])
+
+ const play = useCallback((opening = true) => {
+ if (!text) return
+ tweenRef.current?.kill()
+ const seq = shBuildCycleSequence(opening, text, cycles)
+ setLines(seq)
+ requestAnimationFrame(() => {
+ const inner = innerRef.current
+ if (!inner) return
+ gsap.set(inner, { yPercent: 0 })
+ const finalShift = ((seq.length - 1) / seq.length) * 100
+ tweenRef.current = gsap.to(inner, {
+ yPercent: -finalShift,
+ duration: 0.42 + seq.length * 0.055,
+ ease: 'power4.out',
+ overwrite: 'auto',
+ })
+ })
+ }, [text, cycles])
+
+ return { innerRef, lines, play }
+}
+
+/* ════════════════════════════════════════════
  HERO NAME CYCLE — même texte qui défile (plain)
  déclenché par IntersectionObserver sur le hero
  ════════════════════════════════════════════ */
@@ -199,6 +234,7 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
  const wrapRef   = useRef(null)
  const titleCyc  = useSHCycleText(title, false)   // défile avec le même texte, sans glitch chars
  const subCyc    = useSHCycleText(sub,   true)    // garde le scramble de caractères
+ const ghost     = useSHGhostScroll(title)        // ghost text en contour, même cycle entrée/sortie
 
  useEffect(() => {
  const el = wrapRef.current
@@ -208,17 +244,17 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
  entries => entries.forEach(entry => {
  if (entry.isIntersecting) {
  hasEntered = true
- titleCyc.play(true); subCyc.play(true)
+ titleCyc.play(true); subCyc.play(true); ghost.play(true)
  } else if (hasEntered) {
  // sortie de section (scroll monte ou descend) → cycle en sens inverse
- titleCyc.play(false); subCyc.play(false)
+ titleCyc.play(false); subCyc.play(false); ghost.play(false)
  }
  }),
  { threshold: 0.4, rootMargin: '0px 0px -10% 0px' }
  )
  io.observe(el)
  return () => io.disconnect()
- }, [titleCyc.play, subCyc.play])
+ }, [titleCyc.play, subCyc.play, ghost.play])
 
  return (
  <div className={`sh-wrap ${className}`} style={style} ref={wrapRef}>
@@ -228,6 +264,14 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
  <span className="sh-cycle-wrap">
  <span className="sh-cycle-inner" ref={titleCyc.innerRef}>
  {titleCyc.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
+ </span>
+ </span>
+ {/* Ghost cycle — contour seul, couleur = fond du thème, suit le même cycle entrée/sortie viewport */}
+ <span className="sh-title-ghost" aria-hidden="true">
+ <span className="sh-cycle-wrap">
+ <span className="sh-cycle-inner" ref={ghost.innerRef}>
+ {ghost.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
+ </span>
  </span>
  </span>
  </h2>
@@ -354,6 +398,7 @@ function HorizontalParallax() {
  src={s.icon}
  alt={s.word}
  className="hpx-logo-img"
+ loading="lazy"
  onError={e => { e.target.style.opacity = '0' }}
  />
  </div>
@@ -647,9 +692,9 @@ const PRICING_TABS = [
   {
     key: 'portfolio', label: 'Portfolio',
     plans: [
-      { title: 'Starter', price: '70 000 FCFA', delivery: '3 à 5 jours' },
-      { title: 'Standard', price: '120 000 FCFA', delivery: '5 à 7 jours', isPopular: true },
-      { title: 'Premium', price: '180 000 FCFA', delivery: '7 à 10 jours' },
+      { title: 'Starter', price: '100 000 FCFA', delivery: '3 à 5 jours' },
+      { title: 'Standard', price: '175 000 FCFA', delivery: '5 à 7 jours', isPopular: true },
+      { title: 'Premium', price: '275 000 FCFA', delivery: '7 à 10 jours' },
     ],
     rows: [
       { label: 'Nombre de pages',        cells: ['3 pages',    '5 pages',    'Illimité'] },
@@ -657,22 +702,24 @@ const PRICING_TABS = [
       { label: 'Animations modernes',    cells: [false,        true,         true] },
       { label: 'Section projets',        cells: [true,         true,         true] },
       { label: 'Formulaire contact',     cells: [true,         true,         true] },
-      { label: 'SEO de base',            cells: [false,        true,         true] },
+      { label: 'SEO',                    cells: [false,        'SEO de base', 'SEO + AEO/GEO'] },
+      { label: 'CRO (CTA + preuve sociale)', cells: [false,    false,        true] },
       { label: 'Projets détaillés',      cells: [false,        true,         true] },
       { label: 'Design personnalisé',    cells: [false,        false,        true] },
       { label: 'Blog intégré',           cells: [false,        false,        true] },
-      { label: 'Optimisation perf.',     cells: [false,        false,        true] },
+      { label: 'Optimisation perf. (SXO)', cells: [false,      false,        true] },
       { label: 'Nom de domaine (1 an)',  cells: [true,         true,         true] },
       { label: 'Hébergement (1 an)',     cells: [true,         true,         true] },
       { label: 'Support',                cells: [false,        false,        '1 mois'] },
+      { label: 'Maintenance mensuelle',  cells: ['20 000 à 40 000/mois', '20 000 à 40 000/mois', '20 000 à 40 000/mois'] },
     ],
   },
   {
     key: 'vitrine', label: 'Site Vitrine',
     plans: [
-      { title: 'Starter', price: '150 000 FCFA', delivery: '5 jours' },
-      { title: 'Pro',     price: '270 000 FCFA', delivery: '7 à 10 jours', isPopular: true },
-      { title: 'Elite',   price: '450 000 FCFA', delivery: '10 à 14 jours' },
+      { title: 'Starter', price: '220 000 FCFA', delivery: '5 à 7 jours' },
+      { title: 'Pro',     price: '350 000 FCFA', delivery: '7 à 10 jours', isPopular: true },
+      { title: 'Elite',   price: '550 000 FCFA', delivery: '10 à 14 jours' },
     ],
     rows: [
       { label: 'Nombre de pages',        cells: ['5 pages',    '10 pages',   '15–20 pages'] },
@@ -680,22 +727,25 @@ const PRICING_TABS = [
       { label: 'Design premium',         cells: [false,        true,         true] },
       { label: 'Design sur mesure',      cells: [false,        false,        true] },
       { label: 'Formulaire contact',     cells: [true,         true,         true] },
-      { label: 'SEO',                    cells: ['Base',       'Avancé',     'SEO + Analytics'] },
+      { label: 'SEO',                    cells: ['Base',       'Avancé (SEO + AEO)', 'SEO + AEO + GEO + Analytics'] },
+      { label: 'CRO (CTA + preuve sociale)', cells: [false,    true,         true] },
+      { label: 'Optimisation SXO',       cells: [false,        true,         true] },
       { label: 'Blog intégré',           cells: [false,        true,         true] },
       { label: 'CMS complet',            cells: [false,        false,        true] },
       { label: 'Nom de domaine (1 an)',  cells: [true,         true,         true] },
       { label: 'Hébergement (1 an)',     cells: [false,        true,         true] },
       { label: 'Support',                cells: ['1 mois',     '3 mois',     '6 mois'] },
       { label: 'Formation',              cells: [false,        '2h',         'Complète'] },
-      { label: 'Page supp.',             cells: [false,        false,        '20 000 FCFA'] },
+      { label: 'Maintenance mensuelle',  cells: ['20 000 à 40 000/mois', '20 000 à 40 000/mois', '20 000 à 40 000/mois'] },
+      { label: 'Page supp.',             cells: ['15 000 à 25 000 FCFA', '15 000 à 25 000 FCFA', '15 000 à 25 000 FCFA'] },
     ],
   },
   {
     key: 'ecommerce', label: 'E-commerce',
     plans: [
-      { title: 'Starter', price: '400 000 FCFA', delivery: '14 jours' },
-      { title: 'Pro',     price: '650 000 FCFA', delivery: '21 jours', isPopular: true },
-      { title: 'Elite',   price: '1 000 000 FCFA', delivery: '30 jours' },
+      { title: 'Starter', price: '450 000 FCFA',   delivery: '14 jours' },
+      { title: 'Pro',     price: '750 000 FCFA',   delivery: '21 jours', isPopular: true },
+      { title: 'Elite',   price: '1 200 000 FCFA', delivery: '30 jours' },
     ],
     rows: [
       { label: 'Produits',               cells: ["Jusqu'à 50",  '200–500',     'Illimités'] },
@@ -705,6 +755,9 @@ const PRICING_TABS = [
       { label: 'Gestion commandes',      cells: [true,          true,          true] },
       { label: 'Gestion stock temps réel', cells: [false,       true,          true] },
       { label: 'Tableau de bord',        cells: [true,          true,          true] },
+      { label: 'SEO produits (SEO/AEO)', cells: [false,         true,          true] },
+      { label: 'Optimisation IA (GEO)',  cells: [false,         false,         true] },
+      { label: "CRO (tunnel d'achat optimisé)", cells: [false,  true,          true] },
       { label: 'Analytics',              cells: [false,         true,          true] },
       { label: 'Rapports avancés',       cells: [false,         false,         true] },
       { label: 'Automatisations',        cells: [false,         false,         true] },
@@ -712,30 +765,48 @@ const PRICING_TABS = [
       { label: 'Hébergement (1 an)',     cells: [true,          true,          true] },
       { label: 'Support',                cells: ['1 mois',      '3 mois',      '6 mois'] },
       { label: 'Formation',              cells: [false,         'Admin',       'Équipe'] },
+      { label: 'Maintenance mensuelle',  cells: ['20 000 à 40 000/mois', '20 000 à 40 000/mois', '20 000 à 40 000/mois'] },
     ],
   },
   {
-    key: 'saas', label: 'App SaaS',
+    key: 'saas', label: 'App Web / SaaS',
     plans: [
-      { title: 'MVP',        price: '700 000 FCFA',           delivery: '3–4 semaines' },
-      { title: 'Scale',      price: 'Sur devis',              delivery: '4–6 semaines', isPopular: true },
-      { title: 'Enterprise', price: 'À partir de 2 500 000',  delivery: '6–10 semaines' },
+      { title: 'Sur devis', price: 'Étude personnalisée', delivery: 'Après diagnostic gratuit',
+        desc: "Chaque projet SaaS est unique. J'étudie la complexité réelle (architecture, intégrations, sécurité, volume) avant de donner un prix juste et engageant." },
     ],
     rows: [
-      { label: 'Authentification + rôles', cells: [true,         true,          true] },
-      { label: 'Dashboard',              cells: ['Basique',     'Avancé',      'Sur mesure'] },
-      { label: 'API REST',               cells: [true,          true,          true] },
-      { label: 'Multi-tenant',           cells: [false,         true,          true] },
-      { label: 'Analytics temps réel',   cells: [false,         true,          true] },
-      { label: 'Intégrations tierces',   cells: [false,         true,          true] },
-      { label: 'Architecture microservices', cells: [false,     false,         true] },
-      { label: 'Sécurité renforcée',     cells: [false,         false,         true] },
-      { label: 'SLA',                    cells: [false,         false,         '99.9%'] },
-      { label: 'Déploiement cloud',      cells: [true,          true,          true] },
-      { label: 'Nom de domaine (1 an)',  cells: [true,          true,          true] },
-      { label: 'Hébergement',            cells: ['1–3 mois',    true,          true] },
-      { label: 'Support',                cells: ['1 mois',      'Prioritaire', 'Dédié'] },
-      { label: 'Formation équipe',       cells: [false,         false,         true] },
+      { label: 'Diagnostic gratuit de votre besoin', cells: [true] },
+      { label: 'Authentification + rôles',       cells: [true] },
+      { label: 'API REST',                       cells: [true] },
+      { label: 'Dashboard sur mesure',           cells: [true] },
+      { label: 'Intégrations tierces (paiement, email…)', cells: [true] },
+      { label: 'Multi-tenant (si besoin)',       cells: [true] },
+      { label: 'Onboarding optimisé (CRO)',      cells: [true] },
+      { label: 'Déploiement cloud',              cells: [true] },
+      { label: 'Devis détaillé sous 48h',        cells: [true] },
+      { label: 'Accompagnement post-lancement',  cells: [true] },
+    ],
+  },
+  {
+    key: 'gbp', label: 'Fiche Google',
+    plans: [
+      { title: 'Création',     price: '20 000 FCFA',     delivery: '1 à 2 jours', isPopular: true, desc: "Vous n'avez pas encore de fiche Google ? Création complète de zéro." },
+      { title: 'Optimisation', price: '12 000 FCFA',     delivery: '1 jour', desc: 'Fiche déjà existante ? On corrige et améliore ce qui est en place.' },
+      { title: 'Suivi mensuel', price: '10 000 FCFA/mois', delivery: 'Continu', desc: 'Gestion continue : avis, publications et statistiques chaque mois.' },
+    ],
+    rows: [
+      { label: 'Création de la fiche (de zéro)', cells: [true,  false, false] },
+      { label: 'Vérification infos (NAP)',     cells: [true,  true,  false] },
+      { label: 'Horaires + zone de service',   cells: [true,  true,  false] },
+      { label: 'Catégorie + attributs',        cells: [true,  true,  false] },
+      { label: 'Lien vers le site web',        cells: [true,  true,  false] },
+      { label: 'Ajout photos (logo, local, produits)', cells: [true, true, false] },
+      { label: 'Description optimisée SEO local', cells: [true, true, false] },
+      { label: "Mots-clés locaux ciblés",      cells: [true,  true,  false] },
+      { label: 'Intégration carte sur le site', cells: [true,  false, false] },
+      { label: 'Réponse aux avis clients',     cells: [false, false, true] },
+      { label: 'Posts Google réguliers',       cells: [false, false, true] },
+      { label: 'Suivi statistiques de fiche',  cells: [false, false, true] },
     ],
   },
 ]
@@ -1310,6 +1381,12 @@ function Hero() {
  </a>
  </div>
 
+ {/* Réassurance CRO : disponibilité + délai de réponse, visible sans scroll */}
+ <div className="hero-availability hv4-rv" style={{ '--d': '.82s' }}>
+ <span className="hero-dot" aria-hidden="true" />
+ <span>Disponible maintenant · réponse sous 24h</span>
+ </div>
+
  </div>
 
  {/* RIGHT — Lanyard 3D desktop */}
@@ -1442,6 +1519,7 @@ function FeaturedCreationDesktop() {
  src={proj.img}
  alt={`${proj.title} desktop`}
  className="fc-screen-img"
+ loading="lazy"
  onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
  />
  <div className="fc-screen-ph" style={{ display: 'none' }}>
@@ -1468,6 +1546,7 @@ function FeaturedCreationDesktop() {
  src={src}
  alt={`${proj.title} mobile ${i + 1}`}
  className="fc-screen-img fc-slide-img"
+ loading="lazy"
  />
  ))}
  </div>
@@ -1847,6 +1926,7 @@ function About() {
        src="/assets/images/IMG_20250124_124101KK.webp"
        alt="M'Bollo Aka Elvis"
        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 10%' }}
+       loading="lazy"
        onError={e => { e.target.style.display = 'none' }}
      />
    </div>
@@ -2024,6 +2104,7 @@ function SkillCard({ sk }) {
  src={sk.icon}
  alt={sk.name}
  style={{ filter: hovered ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.55)', transition: 'filter .25s' }}
+ loading="lazy"
  onError={e => { e.target.style.opacity = '.4' }}
  />
  <span>{sk.name}</span>
@@ -2045,6 +2126,7 @@ function SkillBandItem({ sk }) {
  src={sk.icon}
  alt={sk.name}
  style={{ filter: hovered ? 'grayscale(0) brightness(1)' : 'grayscale(1) brightness(0.55)', transition: 'filter .25s' }}
+ loading="lazy"
  onError={e => { e.target.style.opacity = '.4' }}
  />
  <span>{sk.name}</span>
@@ -2259,6 +2341,14 @@ const SERVICES_DATA = [
  img: '/assets/images/service/maintenence.webp',
  imgAlt: 'Maintenance et support',
  },
+ {
+ num: '05',
+ title: 'Fiche Google\nMy Business',
+ sub: 'Soyez visible sur Google Maps et la recherche locale',
+ desc: "Création ou optimisation de votre fiche Google (NAP, catégories, photos, description SEO local) et suivi mensuel : réponse aux avis, publications et statistiques. Plus de clients vous trouvent près de chez eux.",
+ img: '/assets/images/service/fiche-google.webp',
+ imgAlt: 'Fiche Google My Business',
+ },
 ]
 
 function ServicesSection() {
@@ -2323,7 +2413,7 @@ function ServicesSection() {
  <div className="svc-header">
  <SectionHeading num="03" title="Services" sub="Ce que je peux faire pour vous" subAs="h2" style={{ marginBottom: '.8rem' }} />
  <h3 className="about-text svc-header-text">
- Quatre offres complémentaires, de la conception au support continu —
+ Cinq offres complémentaires, de la conception au support continu —
  pour un projet qui reste performant dans la durée.
  </h3>
  </div>
@@ -2416,7 +2506,7 @@ function PricingSection() {
       </div>
 
       {/* ── Cartes ── */}
-      <div className="prc-grid" key={currentTab}>
+      <div className={`prc-grid${tab.plans.length === 1 ? ' prc-grid--single' : ''}`} key={currentTab}>
         {tab.plans.map((plan, ci) => (
           <div key={ci} className={`prc-card${plan.isPopular ? ' prc-card--pop' : ''}`}>
 
@@ -2436,6 +2526,7 @@ function PricingSection() {
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
                 Délai : {plan.delivery}
               </div>
+              {plan.desc && <p className="prc-plan-desc">{plan.desc}</p>}
             </div>
 
             {/* Séparateur */}
@@ -2468,7 +2559,7 @@ function PricingSection() {
                 if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' })
               }}
             >
-              Démarrer le projet
+              {tab.key === 'saas' ? 'Demander un devis gratuit' : 'Démarrer le projet'}
               <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
             </a>
 
@@ -3338,7 +3429,7 @@ function Footer() {
  </nav>
 
  <div className="ft-bb-logo">
- <img src="/assets/images/logo-akatech.webp" alt="AKATech" onError={e => { e.target.style.display = 'none' }} />
+ <img src="/assets/images/logo-akatech.webp" alt="AKATech" loading="lazy" onError={e => { e.target.style.display = 'none' }} />
  </div>
 
  <div className="ft-bb-right">

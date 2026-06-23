@@ -3,5 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m "nouvell version app a jour 1"
+git commit -m "nouvell version app a jour 2"
 git push
+
+

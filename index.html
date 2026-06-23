@@ -3,18 +3,316 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portfolio d'M'BOLLO Aka Elvis - Développeur Full Stack spécialisé en React, Python/Django, Flask et technologies web modernes" />
-    <meta name="keywords" content="développeur web, full stack, React, Python, Django, Flask, portfolio, AKATech" />
-    <meta name="author" content="M'BOLLO Aka Elvis" />
 
-    <title>M'BOLLO Aka Elvis — Développeur Full Stack | AKATech</title>
+    <!-- ════════════ SEO de base ════════════ -->
+    <title>M'Bollo Aka Elvis — Développeur Web Full Stack à Abidjan | AKATech</title>
+    <meta name="description" content="M'Bollo Aka Elvis, développeur web full stack à Abidjan (Côte d'Ivoire) : sites vitrines, e-commerce, applications React/Django/Flask. Devis rapide, livraison sous 3 à 14 jours, nom de domaine et hébergement offerts 1 an." />
+    <meta name="keywords" content="développeur web Abidjan, développeur full stack Côte d'Ivoire, créer un site web Abidjan, développeur React Django, AKATech, agence web Abidjan, création site e-commerce Côte d'Ivoire" />
+    <meta name="author" content="M'Bollo Aka Elvis" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="language" content="French" />
+    <meta name="geo.region" content="CI" />
+    <meta name="geo.placename" content="Abidjan" />
 
-    <!-- Favicon -->
+    <!-- Canonical -->
+    <link rel="canonical" href="https://akafolio160502.vercel.app/" />
+
+    <!-- ════════════ Open Graph (Facebook, LinkedIn, WhatsApp) ════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://akafolio160502.vercel.app/" />
+    <meta property="og:title" content="M'Bollo Aka Elvis — Développeur Web Full Stack à Abidjan" />
+    <meta property="og:description" content="Sites vitrines, e-commerce et applications web sur mesure. React, Django, Flask. Basé à Abidjan, je livre des projets propres, rapides et pensés pour convertir." />
+    <meta property="og:image" content="https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="M'Bollo Aka Elvis — AKATech" />
+
+    <!-- ════════════ Twitter Card ════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="M'Bollo Aka Elvis — Développeur Web Full Stack à Abidjan" />
+    <meta name="twitter:description" content="Sites vitrines, e-commerce et applications web sur mesure. React, Django, Flask. Basé à Abidjan." />
+    <meta name="twitter:image" content="https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp" />
+
+    <!-- Favicon + PWA -->
     <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/images/favicon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#FF5500" />
+
+    <!-- Performance : preconnect / dns-prefetch (zéro CDN externe pour les polices, mais utile pour les fallback Unsplash) -->
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
     <!-- Polices chargées via @fontsource dans src/fonts.css (bundlées Vite) -->
 
     <!-- Font Awesome chargé via @fortawesome/fontawesome-free dans src/main.jsx -->
+
+    <!-- ════════════ Structured Data — AEO / GEO (lu par Google, Bing, ChatGPT, Perplexity, Gemini) ════════════ -->
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "M'Bollo Aka Elvis",
+  "alternateName": "Aka Elvis",
+  "url": "https://akafolio160502.vercel.app/",
+  "image": "https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp",
+  "jobTitle": "Développeur Web Full Stack",
+  "description": "Développeur web full stack basé à Abidjan, Côte d'Ivoire, spécialisé en React, Django et Flask. Fondateur de AKATech.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Abidjan",
+    "addressCountry": "CI"
+  },
+  "email": "mailto:wthomasss06@gmail.com",
+  "telephone": "+225-01-42-50-77-50",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "AKATech",
+    "url": "https://akatech.vercel.app/"
+  },
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "UVCI - Université Virtuelle de Côte d'Ivoire",
+    "url": "https://uvci.edu.ci/"
+  },
+  "sameAs": [
+    "https://github.com/wthomasss06-stack",
+    "https://www.linkedin.com/in/m-bollo-aka-60a1b1340/",
+    "https://web.facebook.com/profile.php?id=61577494705852",
+    "https://akatech.vercel.app/"
+  ],
+  "knowsAbout": [
+    "React",
+    "JavaScript",
+    "Python",
+    "Django",
+    "Flask",
+    "Node.js",
+    "Développement Web Full Stack",
+    "API REST",
+    "GSAP",
+    "Next.js",
+    "SEO",
+    "UI/UX Design"
+  ]
+}
+    </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "AKATech — M'Bollo Aka Elvis, Développeur Web Full Stack",
+  "image": "https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp",
+  "url": "https://akafolio160502.vercel.app/",
+  "telephone": "+225-01-42-50-77-50",
+  "email": "wthomasss06@gmail.com",
+  "priceRange": "100000 FCFA - 1200000 FCFA",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Abidjan",
+    "addressCountry": "CI"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 5.3599517,
+    "longitude": -4.0082563
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Côte d'Ivoire"
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "M'Bollo Aka Elvis"
+  },
+  "sameAs": [
+    "https://github.com/wthomasss06-stack",
+    "https://www.linkedin.com/in/m-bollo-aka-60a1b1340/",
+    "https://web.facebook.com/profile.php?id=61577494705852"
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Création de Portfolio",
+        "description": "Site portfolio responsive, animé, optimisé conversion."
+      },
+      "priceCurrency": "XOF",
+      "price": "100000"
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Site Vitrine",
+        "description": "Site vitrine professionnel avec SEO, blog et CMS."
+      },
+      "priceCurrency": "XOF",
+      "price": "220000"
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Boutique E-commerce",
+        "description": "Boutique en ligne avec paiement Mobile Money, gestion de stock."
+      },
+      "priceCurrency": "XOF",
+      "price": "450000"
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Application Web / SaaS",
+        "description": "Application web sur mesure avec API REST, authentification et dashboard."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Création et optimisation de fiche Google My Business",
+        "description": "Création, optimisation et suivi mensuel de fiche Google pour le référencement local."
+      },
+      "priceCurrency": "XOF",
+      "price": "20000"
+    }
+  ]
+}
+    </script>
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Comment se déroule le paiement de mon site ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le paiement se fait en deux fois : 50% à la commande pour démarrer le projet, et les 50% restants à la livraison, juste avant de recevoir les fichiers finaux et les accès."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Pourquoi un acompte est-il demandé avant de commencer ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "L'acompte confirme votre commande et me permet de démarrer le développement immédiatement, de récupérer vos contenus (logo, textes, photos) et de vous garantir le délai annoncé. Sans acompte, le projet n'est pas priorisé dans mon planning."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels moyens de paiement acceptez-vous ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Orange Money, MTN Mobile Money, Wave ou virement bancaire. Vous précisez votre moyen préféré au moment de la commande et je vous envoie les coordonnées correspondantes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel est le délai pour recevoir mon site ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cela dépend du pack choisi : 3 à 5 jours pour un portfolio simple, davantage pour une vitrine, une boutique e-commerce ou une application plus complexe. Le délai exact est précisé dans le devis et démarre dès réception de l'acompte et de vos contenus."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quand mon site est-il mis en ligne ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Une fois le solde réglé. Avant cela, je vous partage un lien de prévisualisation pour valider le design et le contenu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Puis-je voir mon site avant qu'il soit en ligne ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, toujours. Vous recevez un lien de prévisualisation pour tester le site, faire vos retours et demander des ajustements avant la mise en ligne officielle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien de modifications sont incluses ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Les petites corrections — textes, couleurs, ajustements visuels — sont incluses pendant la phase de validation. Les modifications majeures, comme un changement de structure ou l'ajout de pages, font l'objet d'un devis complémentaire."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quel pack choisir pour mon projet ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tout dépend de vos besoins : portfolio, vitrine, boutique e-commerce ou application plus complexe type SaaS. Je vous conseille gratuitement lors du brief initial pour identifier le pack le plus adapté."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Le nom de domaine et l'hébergement sont-ils vraiment gratuits ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, la première année est offerte sur tous les packs. Après cette période, vous payez simplement le renouvellement — environ 15 000 à 30 000 FCFA par an selon le domaine — et je vous envoie un rappel avant l'expiration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quels contenus dois-je fournir ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Votre logo, vos photos, vos textes de présentation et vos informations de contact. Plus ces éléments arrivent vite, plus le développement avance rapidement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Je n'ai pas de logo ni de textes, pouvez-vous m'aider ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Je peux proposer un logo simple, utiliser des visuels libres de droits adaptés à votre activité, ou rédiger une trame de textes professionnels que vous ajustez ensuite. Ces services s'ajoutent au devis initial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qui gère mon site après la livraison ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vous. Je vous transmets tous les accès — administration, hébergement, nom de domaine — ainsi qu'un tutoriel simple pour modifier vos textes et images sans dépendre de moi."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Que se passe-t-il si le délai annoncé n'est pas respecté ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "C'est rare, mais si cela arrive de mon fait, une pénalité s'applique sur le montant total et vous pouvez demander l'annulation du projet avec un remboursement partiel. Ces conditions figurent dans le devis signé."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mon site a un bug après la livraison, que faites-vous ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je corrige gratuitement tout bug lié à mon développement pendant le mois suivant la livraison — inclus dans le pack Premium, possible en option sur les autres packs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Comment commander mon site ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Trois étapes : on échange sur votre projet et le pack adapté, je vous envoie un devis avec l'acompte de 50%, puis dès réception du paiement je démarre le développement."
+      }
+    }
+  ]
+}
+    </script>
 
     <style>
       /* Base reset — overflow géré dynamiquement par main.jsx selon le mode */
@@ -25,7 +323,18 @@
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Contenu de secours visible par les crawlers avant hydration React (AEO/GEO) -->
+      <noscript>
+        <h1>M'Bollo Aka Elvis — Développeur Web Full Stack à Abidjan</h1>
+        <p>
+          Développeur web full stack basé à Abidjan, Côte d'Ivoire, spécialisé en React,
+          Django et Flask. Fondateur de AKATech. Création de portfolios, sites vitrines,
+          boutiques e-commerce et applications web sur mesure.
+        </p>
+        <p>Contact : wthomasss06@gmail.com · WhatsApp +225 01 42 50 77 50</p>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

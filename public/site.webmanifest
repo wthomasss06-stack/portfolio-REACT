@@ -1,0 +1,21 @@
+{
+  "name": "M'Bollo Aka Elvis — Développeur Web Full Stack",
+  "short_name": "Aka Elvis",
+  "description": "Portfolio de M'Bollo Aka Elvis, développeur web full stack à Abidjan. AKATech.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#FF5500",
+  "icons": [
+    {
+      "src": "/assets/images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
