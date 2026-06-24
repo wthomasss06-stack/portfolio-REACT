@@ -532,45 +532,42 @@ const PRICING_TABS = [
   {
     key:"portfolio", label:"Portfolio", icon:"Star",
     plans:[
-      { badge:"STARTER",  price:"70 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
+      { badge:"STARTER",  price:"100 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
         features:["3 pages","Design responsive","Section projets","Formulaire contact","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
-      { badge:"STANDARD", price:"120 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
+      { badge:"STANDARD", price:"175 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
         features:["5 pages","Animations modernes","Projets détaillés","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
-      { badge:"PREMIUM",  price:"180 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
-        features:["Design personnalisé","Animations avancées","Blog intégré","🔎 SEO + AEO/GEO","⚡ Optimisation performance (SXO)","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 15 000 FCFA/mois"] },
+      { badge:"PREMIUM",  price:"275 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
+        features:["Design personnalisé","Animations avancées","Blog intégré","🔎 SEO + AEO/GEO","⚡ Optimisation performance (SXO)","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
     ]
   },
   {
     key:"vitrine", label:"Site Vitrine", icon:"Globe",
     plans:[
-      { badge:"STARTER", price:"180 000 FCFA", title:"Starter", delivery:"5 à 7 jours",
-        features:["5 pages","Design responsive","Formulaire contact","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support","🔁 Maintenance dès 15 000 FCFA/mois"] },
-      { badge:"PRO",     price:"270 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
-        features:["10 pages","Design premium","Blog intégré","🔎 SEO + AEO","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h","🔁 Maintenance dès 20 000 FCFA/mois"] },
-      { badge:"ELITE",   price:"450 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
-        features:["15 à 20 pages","Design sur mesure","CMS complet","🔎 SEO + AEO + GEO + Analytics","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","🔁 Maintenance dès 25 000 FCFA/mois","➕ Page supp. : 20 000 FCFA"] },
+      { badge:"STARTER", price:"220 000 FCFA", title:"Starter", delivery:"5 à 7 jours",
+        features:["5 pages","Design responsive","Formulaire contact","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+      { badge:"PRO",     price:"350 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
+        features:["10 pages","Design premium","Blog intégré","🔎 SEO + AEO","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+      { badge:"ELITE",   price:"550 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
+        features:["15 à 20 pages","Design sur mesure","CMS complet","🔎 SEO + AEO + GEO + Analytics","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois","➕ Page supp. : 15 000 à 25 000 FCFA"] },
     ]
   },
   {
     key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
     plans:[
-      { badge:"STARTER", price:"400 000 FCFA",   title:"Starter", delivery:"14 jours",
-        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 25 000 FCFA/mois"] },
-      { badge:"PRO",     price:"650 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
-        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","🔎 SEO produits (SEO/AEO)","📈 CRO (tunnel d'achat optimisé)","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin","🔁 Maintenance dès 35 000 FCFA/mois"] },
-      { badge:"ELITE",   price:"1 000 000 FCFA", title:"Elite",   delivery:"30 jours",
-        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","🤖 Optimisation IA (GEO)","📈 CRO (tunnel d'achat optimisé)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe","🔁 Maintenance dès 50 000 FCFA/mois"] },
+      { badge:"STARTER", price:"450 000 FCFA",   title:"Starter", delivery:"14 jours",
+        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+      { badge:"PRO",     price:"750 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
+        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","🔎 SEO produits (SEO/AEO)","📈 CRO (tunnel d'achat optimisé)","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+      { badge:"ELITE",   price:"1 200 000 FCFA", title:"Elite",   delivery:"30 jours",
+        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","🤖 Optimisation IA (GEO)","📈 CRO (tunnel d'achat optimisé)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
     ]
   },
   {
     key:"saas", label:"App SaaS", icon:"Cpu",
     plans:[
-      { badge:"MVP",        price:"700 000 FCFA",         title:"MVP",        delivery:"3 à 4 semaines",
-        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","🌐 Nom de domaine offert (1 an)","🛠 1 mois support","⚠️ Hébergement inclus 1–3 mois","🔁 Maintenance dès 50 000 FCFA/mois"] },
-      { badge:"SCALE",      price:"Dès 1 200 000 FCFA",   title:"Scale",      delivery:"4 à 6 semaines", isPopular:true,
-        features:["Multi-tenant","Analytics temps réel","📈 Onboarding optimisé (CRO)","Intégrations (paiement, email…)","Support prioritaire","🔁 Maintenance sur devis"] },
-      { badge:"ENTERPRISE", price:"À partir de 2 500 000 FCFA", title:"Enterprise", delivery:"6 à 10 semaines",
-        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe","🔁 Maintenance sur devis"] },
+      { badge:"SUR DEVIS", price:"Étude personnalisée", title:"Sur devis", delivery:"Après diagnostic gratuit",
+        desc:"Chaque projet SaaS est unique. J'étudie la complexité réelle (architecture, intégrations, sécurité, volume) avant de donner un prix juste et engageant.",
+        features:["Diagnostic gratuit de votre besoin","Authentification + rôles","API REST","Dashboard sur mesure","Intégrations tierces (paiement, email…)","Multi-tenant (si besoin)","📈 Onboarding optimisé (CRO)","Déploiement cloud","📋 Devis détaillé sous 48h","Accompagnement post-lancement"] },
     ]
   },
   {
