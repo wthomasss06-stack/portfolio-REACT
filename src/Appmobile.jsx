@@ -533,33 +533,33 @@ const PRICING_TABS = [
     key:"portfolio", label:"Portfolio", icon:"Star",
     plans:[
       { badge:"STARTER",  price:"100 000 FCFA",  title:"Starter",  delivery:"3 à 5 jours",
-        features:["3 pages","Design responsive","Section projets","Formulaire contact","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+        features:["3 pages","Design responsive","Section projets","Formulaire contact","Nom de domaine offert (1 an)","Hébergement inclus (1 an)"] },
       { badge:"STANDARD", price:"175 000 FCFA", title:"Standard", delivery:"5 à 7 jours", isPopular:true,
-        features:["5 pages","Animations modernes","Projets détaillés","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)"] },
+        features:["5 pages","Animations modernes","Projets détaillés","SEO de base","Nom de domaine offert (1 an)","Hébergement inclus (1 an)"] },
       { badge:"PREMIUM",  price:"275 000 FCFA", title:"Premium",  delivery:"7 à 10 jours",
-        features:["Design personnalisé","Animations avancées","Blog intégré","🔎 SEO + AEO/GEO","⚡ Optimisation performance (SXO)","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["Design personnalisé","Animations avancées","Blog intégré","SEO + AEO/GEO","Optimisation performance (SXO)","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","1 mois support","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
     ]
   },
   {
     key:"vitrine", label:"Site Vitrine", icon:"Globe",
     plans:[
       { badge:"STARTER", price:"220 000 FCFA", title:"Starter", delivery:"5 à 7 jours",
-        features:["5 pages","Design responsive","Formulaire contact","🔎 SEO de base","🌐 Nom de domaine offert (1 an)","❌ Hébergement non inclus","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["5 pages","Design responsive","Formulaire contact","SEO de base","Nom de domaine offert (1 an)","Hébergement non inclus","1 mois support","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
       { badge:"PRO",     price:"350 000 FCFA", title:"Pro",     delivery:"7 à 10 jours", isPopular:true,
-        features:["10 pages","Design premium","Blog intégré","🔎 SEO + AEO","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation 2h","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["10 pages","Design premium","Blog intégré","SEO + AEO","CRO (CTA + preuve sociale)","Optimisation SXO","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","3 mois support","Formation 2h","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
       { badge:"ELITE",   price:"550 000 FCFA", title:"Elite",   delivery:"10 à 14 jours",
-        features:["15 à 20 pages","Design sur mesure","CMS complet","🔎 SEO + AEO + GEO + Analytics","📈 CRO (CTA + preuve sociale)","⚡ Optimisation SXO","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation complète","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois","➕ Page supp. : 15 000 à 25 000 FCFA"] },
+        features:["15 à 20 pages","Design sur mesure","CMS complet","SEO + AEO + GEO + Analytics","CRO (CTA + preuve sociale)","Optimisation SXO","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","6 mois support","Formation complète","Maintenance dès 20 000 à 40 000 FCFA/mois","Page supp. : 15 000 à 25 000 FCFA"] },
     ]
   },
   {
     key:"ecommerce", label:"E-commerce", icon:"ShoppingCart",
     plans:[
       { badge:"STARTER", price:"450 000 FCFA",   title:"Starter", delivery:"14 jours",
-        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 1 mois support","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","1 mois support","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
       { badge:"PRO",     price:"750 000 FCFA",   title:"Pro",     delivery:"21 jours", isPopular:true,
-        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","🔎 SEO produits (SEO/AEO)","📈 CRO (tunnel d'achat optimisé)","Analytics","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 3 mois support","🎓 Formation admin","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["200 à 500 produits","Multi-paiement","Gestion stock temps réel","SEO produits (SEO/AEO)","CRO (tunnel d'achat optimisé)","Analytics","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","3 mois support","Formation admin","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
       { badge:"ELITE",   price:"1 200 000 FCFA", title:"Elite",   delivery:"30 jours",
-        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","🤖 Optimisation IA (GEO)","📈 CRO (tunnel d'achat optimisé)","Rapports avancés","🌐 Nom de domaine offert (1 an)","🖥 Hébergement inclus (1 an)","🛠 6 mois support","🎓 Formation équipe","🔁 Maintenance dès 20 000 à 40 000 FCFA/mois"] },
+        features:["Produits illimités","API paiement personnalisée","Automatisations (emails, factures)","Optimisation IA (GEO)","CRO (tunnel d'achat optimisé)","Rapports avancés","Nom de domaine offert (1 an)","Hébergement inclus (1 an)","6 mois support","Formation équipe","Maintenance dès 20 000 à 40 000 FCFA/mois"] },
     ]
   },
   {
@@ -567,7 +567,7 @@ const PRICING_TABS = [
     plans:[
       { badge:"SUR DEVIS", price:"Étude personnalisée", title:"Sur devis", delivery:"Après diagnostic gratuit",
         desc:"Chaque projet SaaS est unique. J'étudie la complexité réelle (architecture, intégrations, sécurité, volume) avant de donner un prix juste et engageant.",
-        features:["Diagnostic gratuit de votre besoin","Authentification + rôles","API REST","Dashboard sur mesure","Intégrations tierces (paiement, email…)","Multi-tenant (si besoin)","📈 Onboarding optimisé (CRO)","Déploiement cloud","📋 Devis détaillé sous 48h","Accompagnement post-lancement"] },
+        features:["Diagnostic gratuit de votre besoin","Authentification + rôles","API REST","Dashboard sur mesure","Intégrations tierces (paiement, email…)","Multi-tenant (si besoin)","Onboarding optimisé (CRO)","Déploiement cloud","Devis détaillé sous 48h","Accompagnement post-lancement"] },
     ]
   },
   {
@@ -575,13 +575,13 @@ const PRICING_TABS = [
     plans:[
       { badge:"CRÉATION", price:"20 000 FCFA", title:"Création", delivery:"1 à 2 jours", isPopular:true,
         desc:"Vous n'avez pas encore de fiche Google ? Création complète de zéro.",
-        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","🔎 Description optimisée SEO local","Mots-clés locaux ciblés","🗺 Intégration carte sur le site"] },
+        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","Description optimisée SEO local","Mots-clés locaux ciblés","Intégration carte sur le site"] },
       { badge:"OPTIMISATION", price:"12 000 FCFA", title:"Optimisation", delivery:"1 jour",
         desc:"Fiche déjà existante ? On corrige et améliore ce qui est en place.",
-        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","🔎 Description optimisée SEO local","Mots-clés locaux ciblés"] },
+        features:["Vérification infos (NAP)","Horaires + zone de service","Catégorie + attributs","Lien vers le site web","Photos (logo, local, produits)","Description optimisée SEO local","Mots-clés locaux ciblés"] },
       { badge:"SUIVI MENSUEL", price:"10 000 FCFA/mois", title:"Suivi mensuel", delivery:"Continu",
         desc:"Gestion continue : avis, publications et statistiques chaque mois.",
-        features:["💬 Réponse aux avis clients","📣 Posts Google réguliers","📊 Suivi statistiques de fiche"] },
+        features:["Réponse aux avis clients","Posts Google réguliers","Suivi statistiques de fiche"] },
     ]
   },
 ];

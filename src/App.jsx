@@ -1866,7 +1866,7 @@ function About() {
 
  <div className="about-text-col">
  <h3 className="about-text-lg">
- Je suis développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
+ Je suis <strong>M'Bollo Aka Elvis</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
  créer des produits utiles, beaux et agréables à utiliser.
  </h3>
 
@@ -1935,7 +1935,7 @@ function About() {
        fontFamily: 'var(--fd)', fontWeight: 800,
        fontSize: '1rem', color: 'var(--text)',
        letterSpacing: '-.01em', lineHeight: 1.2,
-     }}>Mbollo Aka Elvis</span>
+     }}>M'bollo Aka Elvis</span>
      <span style={{
        fontFamily: "'Space Mono', monospace",
        fontSize: '.62rem', letterSpacing: '.06em',

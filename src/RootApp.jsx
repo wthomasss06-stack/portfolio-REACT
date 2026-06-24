@@ -1,4 +1,16 @@
+// ════════════════════════════════════════════════════════════════
+// RootApp.jsx — MODIFIÉ pour SSG + SEO
+//
+// 2 changements uniquement par rapport à l'original :
+//   1. HelmetProvider wrappe tout l'arbre
+//   2. <SEOHead /> injecté une seule fois ici (pas dans chaque App)
+//
+// Tout le reste (modes, switcher, CSS dynamique) est IDENTIQUE.
+// ════════════════════════════════════════════════════════════════
+
 import { useState, useEffect } from 'react'
+import { HelmetProvider }      from 'react-helmet-async'
+import { SEOHead }             from './useSEO.jsx'
 
 // ── Les trois portfolios ──
 import ModernApp from './App.jsx'
@@ -7,20 +19,14 @@ import Win95App  from './Win95Portfolio.jsx'
 
 // ── CSS via Vite inline strings ──
 import styleDesktop from './style.css?inline'
-import styleMobile from './stylemobile.css?inline'
+import styleMobile  from './stylemobile.css?inline'
 
-const MODE_KEY = 'akafolio-mode'
-const VALID_MODES = ['app', 'appmobile', 'win95']
-
-// Modes desktop-only : jamais accessibles sur mobile (sécurité ci-dessous)
+const MODE_KEY         = 'akafolio-mode'
+const VALID_MODES      = ['app', 'appmobile', 'win95']
 const DESKTOP_ONLY_MODES = ['app']
-
-// Modes mobile-only : jamais accessibles sur desktop (sécurité symétrique)
-const MOBILE_ONLY_MODES = ['appmobile']
-
-// Ordres de cycle pour le bouton switcher
-const DESKTOP_CYCLE = ['app', 'win95']
-const MOBILE_CYCLE  = ['appmobile', 'win95']
+const MOBILE_ONLY_MODES  = ['appmobile']
+const DESKTOP_CYCLE    = ['app', 'win95']
+const MOBILE_CYCLE     = ['appmobile', 'win95']
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(
@@ -35,8 +41,6 @@ function useIsMobile() {
   return isMobile
 }
 
-// Lit le mode sauvegardé, mais ignore toute valeur héritée d'une ancienne
-// version (ex: "modern", "appv4") qui ne correspond plus à rien ici → évite l'écran blanc.
 function readSavedMode() {
   try {
     const saved = localStorage.getItem(MODE_KEY)
@@ -56,10 +60,9 @@ const switcherStyle = {
   userSelect: 'none', whiteSpace: 'nowrap',
 }
 
-// Le bouton affiche toujours la destination (le mode vers lequel on bascule)
 const NEXT_LABEL_DESKTOP = {
-  app:   { label: '🖥 Mode Win95',    title: 'Passer au mode Win95' },
-  win95: { label: '🌐 Mode Moderne',  title: 'Revenir au mode moderne' },
+  app:   { label: '🖥 Mode Win95',   title: 'Passer au mode Win95' },
+  win95: { label: '🌐 Mode Moderne', title: 'Revenir au mode moderne' },
 }
 
 const NEXT_LABEL_MOBILE = {
@@ -69,9 +72,8 @@ const NEXT_LABEL_MOBILE = {
 
 function SwitcherBtn({ mode, isMobile, onToggle }) {
   const [hovered, setHovered] = useState(false)
-  const map = isMobile ? NEXT_LABEL_MOBILE : NEXT_LABEL_DESKTOP
+  const map     = isMobile ? NEXT_LABEL_MOBILE : NEXT_LABEL_DESKTOP
   const current = map[mode] || NEXT_LABEL_DESKTOP.app
-
   return (
     <button
       style={{ ...switcherStyle, background: hovered ? '#d4d4d4' : '#c0c0c0', transition: 'background .1s' }}
@@ -94,17 +96,13 @@ export default function RootApp() {
     return isMobile ? 'appmobile' : 'app'
   })
 
-  // Sécurité : modes desktop-only jamais sur mobile, modes mobile-only jamais
-  // sur desktop, et on rattrape toute valeur de mode invalide qui aurait pu
-  // se glisser dans le state/localStorage (ex: un vieux "modern" ou "appv4"
-  // laissé par une ancienne version).
   useEffect(() => {
     if (!VALID_MODES.includes(mode)) {
       setMode(isMobile ? 'appmobile' : 'app')
       return
     }
-    if (isMobile && DESKTOP_ONLY_MODES.includes(mode)) setMode('appmobile')
-    if (!isMobile && MOBILE_ONLY_MODES.includes(mode)) setMode('app')
+    if (isMobile  && DESKTOP_ONLY_MODES.includes(mode)) setMode('appmobile')
+    if (!isMobile && MOBILE_ONLY_MODES.includes(mode))  setMode('app')
   }, [isMobile, mode])
 
   useEffect(() => {
@@ -113,9 +111,8 @@ export default function RootApp() {
 
   useEffect(() => {
     const activeCss =
-      mode === 'app' ? styleDesktop :
-      mode === 'appmobile' ? styleMobile :
-      null
+      mode === 'app'       ? styleDesktop :
+      mode === 'appmobile' ? styleMobile  : null
     let styleEl = document.getElementById('dynamic-portfolio-styles')
     if (activeCss) {
       if (!styleEl) {
@@ -123,9 +120,7 @@ export default function RootApp() {
         styleEl.id = 'dynamic-portfolio-styles'
         document.head.appendChild(styleEl)
       }
-      if (styleEl.textContent !== activeCss) {
-        styleEl.textContent = activeCss
-      }
+      if (styleEl.textContent !== activeCss) styleEl.textContent = activeCss
     } else {
       if (styleEl) styleEl.remove()
     }
@@ -156,18 +151,17 @@ export default function RootApp() {
     })
   }
 
-  // Un seul portfolio monté à la fois (pas de display:none qui ferait
-  // coexister plusieurs arbres DOM → c'était ça qui cassait les ancres #contact etc.)
   return (
-    <>
-      {mode === 'win95' && (
-        <div style={{ height: '100%' }}>
-          <Win95App />
-        </div>
-      )}
+    // ── NOUVEAU : HelmetProvider active react-helmet-async ──
+    // SEOHead injecte title, meta, og, structured data dans le <head>
+    // Au build SSG → ces balises sont dans le HTML statique
+    // Google les lit directement sans exécuter JS.
+    <HelmetProvider>
+      <SEOHead />
+      {mode === 'win95'     && <div style={{ height: '100%' }}><Win95App /></div>}
       {mode === 'appmobile' && <AppMobile />}
-      {mode === 'app' && <ModernApp />}
+      {mode === 'app'       && <ModernApp />}
       <SwitcherBtn mode={mode} isMobile={isMobile} onToggle={toggle} />
-    </>
+    </HelmetProvider>
   )
 }
