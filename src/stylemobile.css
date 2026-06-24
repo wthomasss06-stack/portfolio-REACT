@@ -1316,7 +1316,9 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 
 /* ABOUT */
 .about-grid { display:grid; grid-template-columns:1fr 1.2fr; gap:60px; align-items:start }
-.about-left,.about-right { display:flex; flex-direction:column; gap:16px }
+.about-left,.about-right { display:flex; flex-direction:column; gap:16px; min-width:0; overflow:hidden }
+.about-right p { word-break:break-word; overflow-wrap:break-word }
+.about-right h3 { word-break:break-word; overflow-wrap:break-word }
 /* about-quote : plasma bg + overlay orange */
 .about-quote { position:relative; overflow:hidden; border:2px solid var(--border); padding:20px 24px; background:var(--acc); box-shadow:var(--shadow) }
 .about-quote::after { content:''; position:absolute; inset:0; background:rgba(200,60,0,0.38); pointer-events:none; z-index:0 }
@@ -1567,8 +1569,9 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
   .cr-hslide-inner { grid-template-columns:1fr; gap:20px; padding:20px }
   .cr-himg-wrap { order:0 }
   .cr-hinfo { order:1 }
-  .about-grid { grid-template-columns:1fr; gap:32px }
+  .about-grid { grid-template-columns:1fr; gap:32px; width:100%; overflow:hidden }
   .about-img-wrap { max-width:300px; margin:0 auto }
+  .about-right { width:100%; max-width:100% }
   .contact-grid { grid-template-columns:1fr; gap:32px }
   .form-row { grid-template-columns:1fr }
   .svc-grid,.svc-desk { display:none }

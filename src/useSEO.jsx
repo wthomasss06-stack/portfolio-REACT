@@ -22,8 +22,8 @@ export const SEO_CONFIG = {
       "M'Bollo Aka Elvis, développeur web full stack à Abidjan (Côte d'Ivoire) : sites vitrines, e-commerce, applications React/Django/Flask. Devis rapide, livraison sous 3 à 14 jours, nom de domaine et hébergement offerts 1 an.",
     keywords:
       "développeur web Abidjan, développeur full stack Côte d'Ivoire, créer un site web Abidjan, développeur React Django, AKATech, agence web Abidjan, création site e-commerce Côte d'Ivoire",
-    url: 'https://akafolio160502.vercel.app/',
-    image: 'https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp',
+    url: 'https://mbolloaka-dev.vercel.app/',
+    image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
   },
 }
 
@@ -35,8 +35,8 @@ export const STRUCTURED_DATA = {
     '@type': 'Person',
     name: "M'Bollo Aka Elvis",
     alternateName: 'Aka Elvis',
-    url: 'https://akafolio160502.vercel.app/',
-    image: 'https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp',
+    url: 'https://mbolloaka-dev.vercel.app/',
+    image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     jobTitle: 'Développeur Web Full Stack',
     description:
       "Développeur web full stack basé à Abidjan, Côte d'Ivoire, spécialisé en React, Django et Flask. Fondateur de AKATech.",
@@ -50,7 +50,7 @@ export const STRUCTURED_DATA = {
     worksFor: {
       '@type': 'Organization',
       name: 'AKATech',
-      url: 'https://akatech.vercel.app/',
+      url: 'https://akatech-agence.vercel.app/',
     },
     alumniOf: {
       '@type': 'CollegeOrUniversity',
@@ -59,9 +59,9 @@ export const STRUCTURED_DATA = {
     },
     sameAs: [
       'https://github.com/wthomasss06-stack',
-      'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',
+      'https://www.linkedin.com/in/m-bollo-aka',
       'https://web.facebook.com/profile.php?id=61577494705852',
-      'https://akatech.vercel.app/',
+      'https://akatech-agence.vercel.app/',
     ],
     knowsAbout: [
       'Développement Web',
@@ -85,9 +85,9 @@ export const STRUCTURED_DATA = {
       '@type': 'Person',
       name: "M'Bollo Aka Elvis",
     },
-    url: 'https://akatech.vercel.app/',
-    logo: 'https://akatech.vercel.app/favicon.png',
-    image: 'https://akafolio160502.vercel.app/assets/images/IMG_20250124_124101KK.webp',
+    url: 'https://akatech-agence.vercel.app/',
+    logo: 'https://akatech-agence.vercel.app/favicon.png',
+    image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     description:
       "AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions digitales sur-mesure : sites vitrines, e-commerce, applications SaaS et portfolios modernes.",
     address: {

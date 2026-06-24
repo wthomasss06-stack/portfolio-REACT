@@ -453,7 +453,7 @@ const PROJECTS = [
     images:["/assets/images/projects/akatech-preview.webp","/assets/images/projects/akatech-preview2.webp","/assets/images/projects/akatech-preview3.webp"],
     tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"],
     stats:[{icon:"rocket",label:"Agence officielle"},{icon:"palette",label:"Design premium"},{icon:"globe",label:"En production"}],
-    url:"https://akatech.vercel.app/", year:"2025", isPremium:true, isAgency:true },
+    url:"https://akatech-agence.vercel.app/", year:"2025", isPremium:true, isAgency:true },
   { id:14, title:"Université les Anges", subtitle:"Site Institutionnel", cat:"en-ligne", progress:100,
     description:"Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
     image:"/assets/images/projects/universitelesanges-preview.webp",
@@ -1365,9 +1365,9 @@ const Navbar = ({dark, onToggle}) => {
         </div>
         <div className="mob-drawer-footer">
           <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
-          <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+          <a href="https://www.linkedin.com/in/m-bollo-aka" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
           <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
-          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+          <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
           <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
         </div>
       </div>
@@ -2447,7 +2447,7 @@ const PricingTabs = ({dark}) => {
           <AnimPricingFeature key={fi} text={f} dark={dark}/>
         ))}</ul>
         <div className="pc3-ctas">
-          <a href="https://akatech.vercel.app/pricing/" target="_blank" rel="noreferrer"
+          <a href="https://akatech-agence.vercel.app/pricing/" target="_blank" rel="noreferrer"
             className={`btn ${dark?'btn--ghost-neon':'btn--ghost'} btn--full mi-glint pc3-cta`}>
             <SvgGlobe size={14}/> Détails
           </a>
@@ -2823,7 +2823,7 @@ const About = ({dark}) => {
             <p>Mon parcours a commencé dans le <strong>réseau</strong> et la <strong>sécurité informatique</strong>, et cette base m'a appris à construire avec méthode, à penser la fiabilité et à garder une vision propre de l'architecture.</p>
             <p>Avec le temps, j'ai trouvé ma place dans le développement web. Aujourd'hui, j'aime concevoir des interfaces qui respirent, qui bougent, et qui donnent une vraie sensation de produit fini.</p>
             <p>Je travaille surtout avec <strong>React</strong> et <strong>Django</strong>, tout en explorant <strong>Next.js</strong>, <strong>GSAP</strong>, <strong>Framer Motion</strong> et parfois <strong>Three.js</strong> pour donner plus de vie et de profondeur aux expériences.</p>
-            <p>En grande partie <strong>autodidacte</strong>, j'apprends en construisant, en testant et en améliorant chaque projet. C'est aussi dans cet esprit que j'ai créé <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" style={{color:'var(--acc)',fontWeight:700,textDecoration:'none',borderBottom:'1.5px solid var(--acc)'}}>AKATech</a>, un espace où je donne forme à des idées web modernes et concrètes.</p>
+            <p>En grande partie <strong>autodidacte</strong>, j'apprends en construisant, en testant et en améliorant chaque projet. C'est aussi dans cet esprit que j'ai créé <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer" style={{color:'var(--acc)',fontWeight:700,textDecoration:'none',borderBottom:'1.5px solid var(--acc)'}}>AKATech</a>, un espace où je donne forme à des idées web modernes et concrètes.</p>
             <div className={`about-tags ${dark?'about-tags--dark':''}`}>{["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"].map(t=><span key={t}>{t}</span>)}</div>
             <MagBtn className={`btn ${dark?'btn--neon':'btn--primary'} mi-glint`} onClick={()=>document.getElementById('contact')?.scrollIntoView({behavior:'smooth'})}>Disponible pour opportunités →</MagBtn>
           </div>
@@ -3704,10 +3704,10 @@ function AnimatedBeamMobile({ dark }) {
 
   const nodeLinks = [
     { id:'mob-cojn-github',   href:'https://github.com/wthomasss06-stack',                        label:'GitHub',   icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg> },
-    { id:'mob-cojn-linkedin',  href:'https://www.linkedin.com/in/m-bollo-aka-60a1b1340/',          label:'LinkedIn',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> },
+    { id:'mob-cojn-linkedin',  href:'https://www.linkedin.com/in/m-bollo-aka',          label:'LinkedIn',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg> },
     { id:'mob-cojn-facebook',  href:'https://web.facebook.com/profile.php?id=61577494705852',      label:'Facebook',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> },
     { id:'mob-cojn-whatsapp',  href:'https://wa.me/2250142507750',                                 label:'WhatsApp',  icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/></svg> },
-    { id:'mob-cojn-akatech',   href:'https://akatech.vercel.app/',                                 label:'AKATech',   icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg> },
+    { id:'mob-cojn-akatech',   href:'https://akatech-agence.vercel.app/',                                 label:'AKATech',   icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/></svg> },
     { id:'mob-cojn-gmail',     href:'mailto:wthomasss06@gmail.com',                                label:'Gmail',     icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg> },
     { id:'mob-cojn-uvci',      href:'https://uvci.edu.ci/',                                        label:'UVCI',      icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
     { id:'mob-cojn-cv',        href:'/assets/CV_MBOLLO_AKA_ELVIS.pdf',                            label:'Mon CV',    download:true, icon:<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> },
@@ -4203,9 +4203,9 @@ const Footer = ({dark}) => (
       </div>
       <div className="footer-links">
         <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark?"#ffffff":"#1a1a1a"}/></a>
-        <a href="https://www.linkedin.com/in/m-bollo-aka-60a1b1340/" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
+        <a href="https://www.linkedin.com/in/m-bollo-aka" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark?"#ffffff":"#1a1a1a"}/></a>
         <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark?"#ffffff":"#1a1a1a"}/></a>
-        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
+        <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark?"#fff":"#1a1a1a"}/></a>
         <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16}/></a>
       </div>
     </div>
