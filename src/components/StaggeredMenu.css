@@ -144,7 +144,7 @@
 /* ── Logo ── */
 .sm-panel-logo { margin-bottom: 3rem; }
 .sm-panel-logo-img {
-  height: clamp(52px, 7vw, 72px); width: auto;
+  height: clamp(72px, 10vw, 110px); width: auto;
   object-fit: contain;
   display: block;
 }

@@ -1381,7 +1381,7 @@ const Navbar = ({ dark, onToggle }) => {
       <header className={`nb-topbar ${scrolled ? 'nb-topbar--scrolled' : ''} ${dark ? 'nb-topbar--dark' : ''}`}>
         {/* Gauche : logo + nom */}
         <div className="nb-topbar-left" onClick={() => go('home')} style={{ cursor: 'pointer' }}>
-          <AkafolioLogo size={38} dark={dark} animate={false} />
+          <AkafolioLogo size={52} dark={dark} animate={false} />
         </div>
 
         {/* Centre : date + heure */}
@@ -1418,7 +1418,7 @@ const Navbar = ({ dark, onToggle }) => {
       {/* ── MOBILE DRAWER ── */}
       <div className={`mob-drawer ${open ? 'mob-drawer--open' : ''} ${dark ? 'mob-drawer--dark' : ''}`} aria-hidden={!open}>
         <div className="mob-drawer-header">
-          <AkafolioLogo size={32} dark={dark} animate={false} />
+          <AkafolioLogo size={48} dark={dark} animate={false} />
           <button className="mob-drawer-close" onClick={() => setOpen(false)} aria-label="Fermer le menu"><LI name="times" color={dark ? "#fff" : "#1a1a1a"} /></button>
         </div>
         <nav className="mob-drawer-nav">
@@ -3887,7 +3887,7 @@ function AnimatedBeamMobile({ dark }) {
                 <img
                   src="/assets/images/logo-akatech.webp"
                   alt="AKATech"
-                  style={{ width: '58px', height: '58px', objectFit: 'contain', borderRadius: '50%' }}
+                  style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%' }}
                   onError={e => { e.target.style.display = 'none' }}
                 />
               </div>
@@ -4280,7 +4280,7 @@ const Contact = ({ dark }) => {
 const Footer = ({ dark }) => (
   <footer className={`footer ${dark ? 'footer--dark' : 'footer--light'}`}>
     <div className="footer-inner">
-      <div className="footer-logo"><AkafolioLogo size={38} dark={dark} animate={false} /></div>
+      <div className="footer-logo"><AkafolioLogo size={58} dark={dark} animate={false} /></div>
       <div className="footer-mid">
         <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>

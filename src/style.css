@@ -165,7 +165,7 @@
    }
    /* Phase 1 : logo centré légèrement plus grand */
    .nb-topbar-logoblock--hero .nb-logo-img {
-     height: clamp(50px,6vw,72px);
+     height: clamp(68px,8.5vw,100px);
    }
    .nb-logo-text {
      font-family: var(--fd); font-weight: 700;
@@ -186,7 +186,7 @@
      -webkit-text-fill-color: transparent;
    }
    /* Logo images sizing (header / drawer / loader) — adjusted slightly larger */
-   .nb-logo-img { height: clamp(44px,5.5vw,64px); width: auto; display: block; object-fit: contain; }
+   .nb-logo-img { height: clamp(56px,7vw,84px); width: auto; display: block; object-fit: contain; }
    .ld-logo { height: clamp(60px,10vw,110px); width: auto; display: block; object-fit: contain; }
    .ld-word img { display:block; }
    /* nb-logo-acc : TECH part is already colored by parent gradient — override not needed */
@@ -3191,7 +3191,7 @@
    .ft-bb-nav a:hover { color: var(--accent); transform: translateX(4px); }
 
    .ft-bb-logo { display: flex; align-items: center; justify-content: center; flex: 1; min-width: 60px; }
-   .ft-bb-logo img { width: 88px; height: 88px; object-fit: contain; opacity: .95; }
+   .ft-bb-logo img { width: 130px; height: 130px; object-fit: contain; opacity: .95; }
 
    .ft-bb-right { display: flex; flex-direction: column; align-items: flex-end; gap: .85rem; text-align: right; }
    .ft-bb-copyright { font-family: 'Space Mono', monospace; font-size: .7rem; color: rgba(255,255,255,.8); letter-spacing: .02em; }
