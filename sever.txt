@@ -3,7 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m "ssg.seo"
+git commit -m "derniier"
 git push
 
 

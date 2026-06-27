@@ -6,7 +6,7 @@
 
 **Portfolio interactif full-stack** · React 18 · WebGL · GSAP · Neo-Brutalism
 
-[![Live Demo](https://img.shields.io/badge/Démo_live-akafolio160502.vercel.app-FF5500?style=for-the-badge)](https://akafolio160502.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Démo_live-akafolio160502.vercel.app-FF5500?style=for-the-badge)](https://mbolloaka-dev.vercel.app/)
 [![AKATech](https://img.shields.io/badge/AKATech-akatech.vercel.app-0A0A0A?style=for-the-badge)](https://akatech.vercel.app/)
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
