@@ -4056,7 +4056,27 @@
      23%{ opacity:1; }
      100%{ opacity:1; }
    }
-   
+
+   /* ════════════════════════════════════════════
+      EXPLOSION TYPO — chars individuels
+      Créés dynamiquement par splitName() à 100%
+   ════════════════════════════════════════════ */
+
+   .ld-char {
+     display: inline-block;
+     transform-style: preserve-3d;
+     will-change: transform, opacity;
+   }
+
+   .ld-name {
+     transform-style: preserve-3d;
+   }
+
+   .ld-name .decrypt-text {
+     transform-style: preserve-3d;
+     display: inline-block;
+   }
+
    /* ════════════════════════════════════════════
       ROLE
    ════════════════════════════════════════════ */

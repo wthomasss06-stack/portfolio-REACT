@@ -905,115 +905,149 @@ const FAQ_ITEMS = [
 
 function Loader({ onDone }) {
   const [progress, setProgress] = useState(0)
-  const loaderRef = useRef(null)
+  const loaderRef   = useRef(null)
+  const nameRef     = useRef(null)
+  const explodedRef = useRef(false)
+  const onDoneRef   = useRef(onDone)
+  useEffect(() => { onDoneRef.current = onDone }, [onDone])
 
-  /* ── Loader entrance animations ── */
+  /* ── Entrance animations ── */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      /* percent counter drops in */
-      gsap.fromTo('.ld-percent', { y: -32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.1 })
-      /* name + role stagger up */
+      gsap.fromTo('.ld-percent',
+        { y: -32, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', delay: 0.1 }
+      )
       gsap.fromTo(
         ['.ld-name', '.ld-role'],
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out', stagger: 0.12, delay: 0.28 }
       )
-      /* progress bar container */
-      gsap.fromTo('.ld-progress-wrap', { scaleX: 0, opacity: 0, transformOrigin: 'left center' }, { scaleX: 1, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 })
-      /* corner tag drifts up from bottom */
-      gsap.fromTo('.ld-corner', { y: 14, opacity: 0 }, { y: 0, opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 })
-      /* scanline flicker */
-      gsap.fromTo('.ld-scanline', { opacity: 0 }, { opacity: 0.08, duration: 1.2, ease: 'steps(4)', delay: 0.2 })
+      gsap.fromTo('.ld-progress-wrap',
+        { scaleX: 0, opacity: 0, transformOrigin: 'left center' },
+        { scaleX: 1, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 }
+      )
+      gsap.fromTo('.ld-corner',
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+      )
+      gsap.fromTo('.ld-scanline',
+        { opacity: 0 },
+        { opacity: 0.08, duration: 1.2, ease: 'steps(4)', delay: 0.2 }
+      )
     }, loaderRef)
     return () => ctx.revert()
   }, [])
 
+  /* ── Decrypt effect — glitch chars binaires 0/1 ── */
+  useEffect(() => {
+    const letters = '01'
+    const el = document.querySelector('.decrypt-text')
+    if (!el) return
+    const original = 'MBOLLO AKA ELVIS'
+    let iteration = 0
+    const iv = setInterval(() => {
+      el.innerText = original.split('').map((letter, index) => {
+        if (index < iteration) return original[index]
+        return letters[Math.floor(Math.random() * letters.length)]
+      }).join('')
+      if (iteration >= original.length) clearInterval(iv)
+      iteration += 1 / 2
+    }, 40)
+    return () => clearInterval(iv)
+  }, [])
+
+  /* ── Progress counter + explosion — tout dans un seul useEffect ── */
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
         const next = prev + Math.random() * 12
-
         if (next >= 100) {
           clearInterval(interval)
-
-          /* Transition staircase (GooeyTransition) : couvre l'écran,
-          au midpoint on masque le loader, puis les colonnes remontent */
           setTimeout(() => {
-            const loaderEl = loaderRef.current
-            if (loaderEl) {
-              const main = document.querySelector('main')
+            /* guard : une seule fois */
+            if (explodedRef.current) return
+            explodedRef.current = true
 
-              runGridTransition(() => {
-                /* midpoint — loader et main swappent sous les colonnes */
-                if (loaderEl) {
-                  loaderEl.style.visibility = 'hidden'
-                  loaderEl.style.pointerEvents = 'none'
-                }
-                if (main) {
-                  gsap.set(main, { y: '6vh', opacity: 0 })
-                  gsap.to(main, { y: '0%', opacity: 1, duration: 0.7, ease: 'power3.out' })
-                }
-                onDone()
-              })
-            } else {
-              onDone()
-            }
-          }, 300)
+            const loader = loaderRef.current
+            if (!loader) { onDoneRef.current(); return }
 
+            /* ── 1. Split .decrypt-text en spans .ld-char ── */
+            const nameEl = nameRef.current
+            if (!nameEl) { onDoneRef.current(); return }
+            const decryptEl = nameEl.querySelector('.decrypt-text')
+            if (!decryptEl) { onDoneRef.current(); return }
+
+            const raw = 'MBOLLO AKA ELVIS'
+            decryptEl.innerHTML = ''
+            const chars = Array.from(raw).map(letter => {
+              const span = document.createElement('span')
+              span.className = 'ld-char'
+              span.textContent = letter
+              decryptEl.appendChild(span)
+              return span
+            })
+
+            /* ── 2. Fige bar + stoppe pulse ── */
+            const bar = loader.querySelector('.ld-progress')
+            if (bar) gsap.set(bar, { width: '100%' })
+            const pct = loader.querySelector('.ld-percent')
+            if (pct) gsap.set(pct, { clearProps: 'animation' })
+
+            /* ── 3. Fade out tout sauf le nom ── */
+            gsap.to(['.ld-percent', '.ld-role', '.ld-progress-wrap', '.ld-corner'], {
+              opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
+            })
+
+            /* ── 4. Perspective 3D sur le conteneur du nom ── */
+            gsap.set(nameEl, { perspective: 1200, transformStyle: 'preserve-3d' })
+            gsap.set(decryptEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
+
+            /* ── 5. Explosion chars ── */
+            const mid = (chars.length - 1) / 2
+            const tl = gsap.timeline({
+              delay: 0.15,
+              onComplete: () => {
+                gsap.to(loader, {
+                  opacity: 0, duration: 0.45, ease: 'power2.inOut',
+                  onComplete: () => {
+                    loader.style.visibility = 'hidden'
+                    loader.style.pointerEvents = 'none'
+                    const main = document.querySelector('main')
+                    if (main) {
+                      gsap.set(main, { y: '5vh', opacity: 0 })
+                      gsap.to(main, { y: '0%', opacity: 1, duration: 0.75, ease: 'power3.out' })
+                    }
+                    onDoneRef.current()
+                  }
+                })
+              }
+            })
+
+            chars.forEach((char, i) => {
+              const spreadX = (i - mid) * 190 + (Math.random() - 0.5) * 140
+              const spreadY = (Math.random() - 0.5) * 380
+              const dz      = 280 + Math.random() * 600
+              tl.to(char, {
+                x: spreadX, y: spreadY, z: dz,
+                rotationX: (Math.random() - 0.5) * 340,
+                rotationY: (Math.random() - 0.5) * 340,
+                rotationZ: (Math.random() - 0.5) * 180,
+                opacity: 0,
+                duration: 0.9,
+                ease: 'power2.out',
+                delay: i * 0.03,
+              }, 0)
+            })
+
+          }, 350)
           return 100
         }
-
         return next
       })
     }, 120)
-
     return () => clearInterval(interval)
-  }, [onDone])
-
-  /* =========================
-  DECRYPT EFFECT
-  ========================= */
-
-  useEffect(() => {
-
-    const letters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-
-    let iteration = 0
-
-    const el = document.querySelector(".decrypt-text")
-
-    if (!el) return
-
-    const original = "MBOLLO AKA ELVIS"
-
-    const interval = setInterval(() => {
-
-      el.innerText = original
-        .split("")
-        .map((letter, index) => {
-
-          if (index < iteration) {
-            return original[index]
-          }
-
-          return letters[
-            Math.floor(Math.random() * letters.length)
-          ]
-        })
-        .join("")
-
-      if (iteration >= original.length) {
-        clearInterval(interval)
-      }
-
-      iteration += 1 / 2
-
-    }, 40)
-
-    return () => clearInterval(interval)
-
-  }, [])
+  }, []) /* eslint-disable-line react-hooks/exhaustive-deps */
 
   return (
     <div id="loader" ref={loaderRef}>
@@ -1033,8 +1067,8 @@ function Loader({ onDone }) {
           <span>%</span>
         </div>
 
-        {/* NAME */}
-        <div className="ld-name">
+        {/* NAME — ref pour splitName() */}
+        <div className="ld-name" ref={nameRef}>
           <div className="decrypt-text">
             MBOLLO AKA ELVIS
           </div>
@@ -1049,9 +1083,7 @@ function Loader({ onDone }) {
         <div className="ld-progress-wrap">
           <div
             className="ld-progress"
-            style={{
-              width: `${progress}%`
-            }}
+            style={{ width: `${progress}%` }}
           />
         </div>
 
