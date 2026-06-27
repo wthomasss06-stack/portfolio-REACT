@@ -49,32 +49,32 @@ const AnimIcon = ({ type, size = 15, color = '#FF5500', className = '' }) => {
    + titres qui glissent en contre-sens (parallax heading)
    ════════════════════════════════════════════ */
 const HPSLIDES = [
-  { word: 'REACT',      color: '#61DAFB', icon: '/assets/icons/devicon/react/react-original.svg',           label: 'Frontend Library' },
+  { word: 'REACT', color: '#61DAFB', icon: '/assets/icons/devicon/react/react-original.svg', label: 'Frontend Library' },
   { word: 'JAVASCRIPT', color: '#F7DF1E', icon: '/assets/icons/devicon/javascript/javascript-original.svg', label: 'Langage Universel' },
-  { word: 'NEXT.JS',    color: '#F2EDE8', lightColor: '#1A1A1A', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg', label: 'React Framework' },
-  { word: 'PYTHON',     color: '#4B8BBE', icon: '/assets/icons/devicon/python/python-original.svg',         label: 'Backend & Data' },
-  { word: 'DJANGO',     color: '#44B78B', icon: '/assets/icons/devicon/django/django-plain.svg',            label: 'Web Framework' },
-  { word: 'MYSQL',      color: '#F29111', icon: '/assets/icons/devicon/mysql/mysql-original.svg',           label: 'Base de Données' },
+  { word: 'NEXT.JS', color: '#F2EDE8', lightColor: '#1A1A1A', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg', label: 'React Framework' },
+  { word: 'PYTHON', color: '#4B8BBE', icon: '/assets/icons/devicon/python/python-original.svg', label: 'Backend & Data' },
+  { word: 'DJANGO', color: '#44B78B', icon: '/assets/icons/devicon/django/django-plain.svg', label: 'Web Framework' },
+  { word: 'MYSQL', color: '#F29111', icon: '/assets/icons/devicon/mysql/mysql-original.svg', label: 'Base de Données' },
 ]
 
 function HorizontalParallax() {
   const sectionRef = useRef(null)
-  const trackRef   = useRef(null)
+  const trackRef = useRef(null)
 
   useEffect(() => {
     const section = sectionRef.current
-    const track   = trackRef.current
+    const track = trackRef.current
     if (!section || !track) return
 
-    const headings  = track.querySelectorAll('.hpx-word')
+    const headings = track.querySelectorAll('.hpx-word')
     const totalSlides = headings.length
 
     const update = () => {
-      const rect        = section.getBoundingClientRect()
-      const sectionH    = section.offsetHeight
-      const viewH       = window.innerHeight
-      let   progress    = -rect.top / (sectionH - viewH)
-      progress          = Math.max(0, Math.min(1, progress))
+      const rect = section.getBoundingClientRect()
+      const sectionH = section.offsetHeight
+      const viewH = window.innerHeight
+      let progress = -rect.top / (sectionH - viewH)
+      progress = Math.max(0, Math.min(1, progress))
 
       /* ── 1. Translation horizontale du carrousel ── */
       const maxVW = (totalSlides - 1) * 100
@@ -84,7 +84,7 @@ function HorizontalParallax() {
       const seg = 1 / totalSlides
       headings.forEach((h, i) => {
         const start = i * seg
-        const end   = (i + 1) * seg
+        const end = (i + 1) * seg
         let xOffset
         if (progress >= start && progress <= end) {
           const local = (progress - start) / seg   // 0 → 1 dans la slide
@@ -194,8 +194,8 @@ function useSplitTextReveal() {
           if (killed) return
           ch.style.transition = `transform .85s cubic-bezier(.22,1,.36,1) ${i * staggerMs}ms,
                                   opacity   .7s  ease          ${i * staggerMs}ms`
-          ch.style.transform  = 'translateY(0) rotateX(0)'
-          ch.style.opacity    = '1'
+          ch.style.transform = 'translateY(0) rotateX(0)'
+          ch.style.opacity = '1'
         }, delay)
       })
     }
@@ -206,8 +206,8 @@ function useSplitTextReveal() {
           if (killed) return
           w.style.transition = `transform .9s cubic-bezier(.22,1,.36,1) ${i * staggerMs}ms,
                                  opacity   .75s ease          ${i * staggerMs}ms`
-          w.style.transform  = 'translateY(0)'
-          w.style.opacity    = '1'
+          w.style.transform = 'translateY(0)'
+          w.style.opacity = '1'
         }, delay)
       })
     }
@@ -277,7 +277,7 @@ function useSplitTextReveal() {
         el._stDone = true
         setTimeout(() => {
           if (!killed) {
-            el.style.opacity   = '1'
+            el.style.opacity = '1'
             el.style.transform = 'translateY(0)'
             el.style.transition = 'opacity .8s ease, transform .9s cubic-bezier(.22,1,.36,1)'
           }
@@ -355,87 +355,87 @@ function useScrollAnimations() {
       }
       /* Fade + slide up for generic reveal elements */
       gsap.utils.toArray('.gs-reveal').forEach(el => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 48, filter: 'blur(6px)' },
-        {
-          opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Stagger children groups */
-    gsap.utils.toArray('.gs-stagger').forEach(parent => {
-      gsap.fromTo(parent.children,
-        { opacity: 0, y: 32, scale: 0.96 },
-        {
-          opacity: 1, y: 0, scale: 1, duration: 0.72, ease: 'power3.out', stagger: 0.1,
-          scrollTrigger: { trigger: parent, start: 'top 85%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Skill icons — bounce in */
-    gsap.utils.toArray('.gs-skill').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 20, scale: 0.8, rotation: -8 },
-        {
-          opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.55,
-          ease: 'back.out(1.8)', delay: i * 0.04,
-          scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Section titles — clip-path wipe */
-    gsap.utils.toArray('.gs-title').forEach(el => {
-      gsap.fromTo(el,
-        { clipPath: 'inset(100% 0 0 0)', opacity: 0 },
-        {
-          clipPath: 'inset(0% 0 0 0)', opacity: 1, duration: 1.1, ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Pricing cards — cascade */
-    gsap.utils.toArray('.gs-card').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 60, rotateX: 12 },
-        {
-          opacity: 1, y: 0, rotateX: 0, duration: 0.78, ease: 'power3.out', delay: i * 0.12,
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Timeline items — slide from left/right alternately */
-    gsap.utils.toArray('.gs-timeline-item').forEach((el, i) => {
-      const fromLeft = i % 2 === 0
-      gsap.fromTo(el,
-        { opacity: 0, x: fromLeft ? -60 : 60, scale: 0.95 },
-        {
-          opacity: 1, x: 0, scale: 1, duration: 0.85, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
-    /* Stats counter animation */
-    document.querySelectorAll('.gs-counter').forEach(el => {
-      const target = parseFloat(el.dataset.target)
-      const suffix = el.dataset.suffix || ''
-      const obj = { val: 0 }
-      gsap.to(obj, {
-        val: target, duration: 1.8, ease: 'power2.out',
-        onUpdate: () => { el.textContent = (Number.isInteger(target) ? Math.round(obj.val) : obj.val.toFixed(1)) + suffix },
-        scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        gsap.fromTo(el,
+          { opacity: 0, y: 48, filter: 'blur(6px)' },
+          {
+            opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+          }
+        )
       })
-    })
-    /* Horizontal line drawing */
-    gsap.utils.toArray('.gs-line').forEach(el => {
-      gsap.fromTo(el,
-        { scaleX: 0, transformOrigin: 'left center' },
-        {
-          scaleX: 1, duration: 1.2, ease: 'expo.out',
-          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
-        }
-      )
-    })
+      /* Stagger children groups */
+      gsap.utils.toArray('.gs-stagger').forEach(parent => {
+        gsap.fromTo(parent.children,
+          { opacity: 0, y: 32, scale: 0.96 },
+          {
+            opacity: 1, y: 0, scale: 1, duration: 0.72, ease: 'power3.out', stagger: 0.1,
+            scrollTrigger: { trigger: parent, start: 'top 85%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
+      /* Skill icons — bounce in */
+      gsap.utils.toArray('.gs-skill').forEach((el, i) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 20, scale: 0.8, rotation: -8 },
+          {
+            opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.55,
+            ease: 'back.out(1.8)', delay: i * 0.04,
+            scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
+      /* Section titles — clip-path wipe */
+      gsap.utils.toArray('.gs-title').forEach(el => {
+        gsap.fromTo(el,
+          { clipPath: 'inset(100% 0 0 0)', opacity: 0 },
+          {
+            clipPath: 'inset(0% 0 0 0)', opacity: 1, duration: 1.1, ease: 'expo.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
+      /* Pricing cards — cascade */
+      gsap.utils.toArray('.gs-card').forEach((el, i) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 60, rotateX: 12 },
+          {
+            opacity: 1, y: 0, rotateX: 0, duration: 0.78, ease: 'power3.out', delay: i * 0.12,
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
+      /* Timeline items — slide from left/right alternately */
+      gsap.utils.toArray('.gs-timeline-item').forEach((el, i) => {
+        const fromLeft = i % 2 === 0
+        gsap.fromTo(el,
+          { opacity: 0, x: fromLeft ? -60 : 60, scale: 0.95 },
+          {
+            opacity: 1, x: 0, scale: 1, duration: 0.85, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
+      /* Stats counter animation */
+      document.querySelectorAll('.gs-counter').forEach(el => {
+        const target = parseFloat(el.dataset.target)
+        const suffix = el.dataset.suffix || ''
+        const obj = { val: 0 }
+        gsap.to(obj, {
+          val: target, duration: 1.8, ease: 'power2.out',
+          onUpdate: () => { el.textContent = (Number.isInteger(target) ? Math.round(obj.val) : obj.val.toFixed(1)) + suffix },
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        })
+      })
+      /* Horizontal line drawing */
+      gsap.utils.toArray('.gs-line').forEach(el => {
+        gsap.fromTo(el,
+          { scaleX: 0, transformOrigin: 'left center' },
+          {
+            scaleX: 1, duration: 1.2, ease: 'expo.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+          }
+        )
+      })
       ScrollTrigger.refresh()
     }
 
@@ -458,24 +458,24 @@ function useScrollAnimations() {
    DONNÉES
    ════════════════════════════════════════════ */
 const PROJECTS = [
-  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.webp', images: ['/assets/images/projects/monmarket-preview.webp','/assets/images/projects/monmarket-preview2.webp','/assets/images/projects/monmarket-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024' },
-  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.webp', images: ['/assets/images/projects/techflow-preview.webp','/assets/images/projects/techflow-preview2.webp','/assets/images/projects/techflow-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024' },
-  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.webp', images: ['/assets/images/projects/terrasafe-preview.webp','/assets/images/projects/terrasafe-preview2.webp','/assets/images/projects/terrasafe-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024' },
+  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.webp', images: ['/assets/images/projects/monmarket-preview.webp', '/assets/images/projects/monmarket-preview2.webp', '/assets/images/projects/monmarket-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024' },
+  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.webp', images: ['/assets/images/projects/techflow-preview.webp', '/assets/images/projects/techflow-preview2.webp', '/assets/images/projects/techflow-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024' },
+  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.webp', images: ['/assets/images/projects/terrasafe-preview.webp', '/assets/images/projects/terrasafe-preview2.webp', '/assets/images/projects/terrasafe-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024' },
   { id: 4, title: 'Chap-chapMAP', sub: 'Navigation Intelligente', cat: 'demo', img: '/assets/images/projects/chapchapmap-preview.webp', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['JavaScript', 'Leaflet.js', 'OSRM API', 'Geolocation API'], url: '/demos/chap-chapMAP.html', desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.", year: '2023' },
   { id: 5, title: 'ElvisMarket', sub: 'Interface E-commerce', cat: 'demo', img: '/assets/images/projects/elvismarket-preview.webp', imgFb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'LocalStorage'], url: '/demos/projet2.html', desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.", year: '2023' },
   { id: 6, title: 'MonCashJour', sub: 'Gestion de Ventes', cat: 'demo', img: '/assets/images/projects/moncashjour-preview.webp', imgFb: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'Chart.js'], url: '/demos/projet1.html', desc: 'Application de gestion de ventes quotidiennes destinée aux petits commerçants.', year: '2023' },
   { id: 7, title: 'LivreurTrack Pro', sub: 'Suivi Logistique', cat: 'demo', img: '/assets/images/projects/livreurtrack-preview.webp', imgFb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600', tech: ['JavaScript', 'Bootstrap 5', 'LocalStorage', 'Camera API'], url: '/demos/projet3.html', desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.", year: '2023' },
   { id: 8, title: 'LinkedIn Banner Pro', sub: 'Générateur SaaS', cat: 'en-cours', img: '/assets/images/projects/linkedin-banner-preview.webp', imgFb: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', tech: ['JavaScript', 'Canvas API', 'Tailwind CSS'], url: '/demos/projet7.html', desc: 'Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles.', year: '2025' },
-  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.webp', images: ['/assets/images/projects/tati-preview.webp','/assets/images/projects/tati-preview2.webp','/assets/images/projects/tati-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024' },
-  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.webp', images: ['/assets/images/projects/mk-preview.webp','/assets/images/projects/mk-preview2.webp','/assets/images/projects/mk-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024' },
-  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.webp', images: ['/assets/images/projects/beatstore-preview.webp','/assets/images/projects/beatstore-preview2.webp','/assets/images/projects/beatstore-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025' },
-  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.webp', images: ['/assets/images/projects/newhorizon-preview.webp','/assets/images/projects/newhorizon-preview2.webp','/assets/images/projects/newhorizon-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
-  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', images: ['/assets/images/projects/akatech-preview.webp','/assets/images/projects/akatech-preview2.webp','/assets/images/projects/akatech-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech-agence.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
-  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.webp', images: ['/assets/images/projects/universitelesanges-preview.webp','/assets/images/projects/universitelesanges-preview2.webp','/assets/images/projects/universitelesanges-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
-  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.webp', images: ['/assets/images/projects/nexura-preview.webp','/assets/images/projects/nexura-responsive.webp','/assets/images/projects/nexura-responsive2.webp'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
+  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.webp', images: ['/assets/images/projects/tati-preview.webp', '/assets/images/projects/tati-preview2.webp', '/assets/images/projects/tati-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024' },
+  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.webp', images: ['/assets/images/projects/mk-preview.webp', '/assets/images/projects/mk-preview2.webp', '/assets/images/projects/mk-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024' },
+  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.webp', images: ['/assets/images/projects/beatstore-preview.webp', '/assets/images/projects/beatstore-preview2.webp', '/assets/images/projects/beatstore-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025' },
+  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.webp', images: ['/assets/images/projects/newhorizon-preview.webp', '/assets/images/projects/newhorizon-preview2.webp', '/assets/images/projects/newhorizon-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
+  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', images: ['/assets/images/projects/akatech-preview.webp', '/assets/images/projects/akatech-preview2.webp', '/assets/images/projects/akatech-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
+  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.webp', images: ['/assets/images/projects/universitelesanges-preview.webp', '/assets/images/projects/universitelesanges-preview2.webp', '/assets/images/projects/universitelesanges-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
+  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.webp', images: ['/assets/images/projects/nexura-preview.webp', '/assets/images/projects/nexura-responsive.webp', '/assets/images/projects/nexura-responsive2.webp'], imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
   { id: 16, title: 'KokoEat', sub: 'Livraison Alimentaire', cat: 'en-cours', img: '/assets/images/projects/kokoeat-preview.webp', imgFb: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', tech: ['React', 'Django REST', 'PostgreSQL', 'Vercel'], url: '#', desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.", year: '2025' },
-  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.webp', images: ['/assets/images/projects/jean-edy-preview.webp','/assets/images/projects/jean-edy-preview2.webp','/assets/images/projects/jean-edy-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. et skeuomorphisme complet.", year: '2026' },
-  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.webp', images: ['/assets/images/projects/laverie-preview.webp','/assets/images/projects/laverie-preview2.webp','/assets/images/projects/laverie-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
+  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.webp', images: ['/assets/images/projects/jean-edy-preview.webp', '/assets/images/projects/jean-edy-preview2.webp', '/assets/images/projects/jean-edy-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. et skeuomorphisme complet.", year: '2026' },
+  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.webp', images: ['/assets/images/projects/laverie-preview.webp', '/assets/images/projects/laverie-preview2.webp', '/assets/images/projects/laverie-preview3.webp'], imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
 ]
 
 const SERVICES = [
@@ -618,27 +618,27 @@ const PRICING_TABS = [
 
 const SKILLS = {
   frontend: [
-    { name: 'React',      icon: '/assets/icons/devicon/react/react-original.svg',           color: '#61DAFB' },
+    { name: 'React', icon: '/assets/icons/devicon/react/react-original.svg', color: '#61DAFB' },
     { name: 'JavaScript', icon: '/assets/icons/devicon/javascript/javascript-original.svg', color: '#F7DF1E' },
-    { name: 'Next.js',    icon: '/assets/icons/devicon/nextjs/nextjs-original.svg',         color: '#ffffff' },
-    { name: 'Tailwind',   icon: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
-    { name: 'HTML5',      icon: '/assets/icons/devicon/html5/html5-original.svg',           color: '#E34F26' },
-    { name: 'CSS3',       icon: '/assets/icons/devicon/css3/css3-original.svg',             color: '#1572B6' },
-    { name: 'Bootstrap',  icon: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',   color: '#7952B3' },
+    { name: 'Next.js', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg', color: '#ffffff' },
+    { name: 'Tailwind', icon: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
+    { name: 'HTML5', icon: '/assets/icons/devicon/html5/html5-original.svg', color: '#E34F26' },
+    { name: 'CSS3', icon: '/assets/icons/devicon/css3/css3-original.svg', color: '#1572B6' },
+    { name: 'Bootstrap', icon: '/assets/icons/devicon/bootstrap/bootstrap-original.svg', color: '#7952B3' },
   ],
   backend: [
-    { name: 'Python',  icon: '/assets/icons/devicon/python/python-original.svg', color: '#4B8BBE' },
-    { name: 'Flask',   icon: '/assets/icons/devicon/flask/flask-original.svg',   color: '#AAAAAA' },
-    { name: 'Django',  icon: '/assets/icons/devicon/django/django-plain.svg',    color: '#44B78B' },
+    { name: 'Python', icon: '/assets/icons/devicon/python/python-original.svg', color: '#4B8BBE' },
+    { name: 'Flask', icon: '/assets/icons/devicon/flask/flask-original.svg', color: '#AAAAAA' },
+    { name: 'Django', icon: '/assets/icons/devicon/django/django-plain.svg', color: '#44B78B' },
     { name: 'Node.js', icon: '/assets/icons/devicon/nodejs/nodejs-original.svg', color: '#539E43' },
-    { name: 'MySQL',   icon: '/assets/icons/devicon/mysql/mysql-original.svg',   color: '#F29111' },
+    { name: 'MySQL', icon: '/assets/icons/devicon/mysql/mysql-original.svg', color: '#F29111' },
   ],
   tools: [
-    { name: 'Git',    icon: '/assets/icons/devicon/git/git-original.svg',    color: '#F05032' },
-    { name: 'VS Code',icon: '/assets/icons/devicon/vscode/vscode-original.svg', color: '#007ACC' },
+    { name: 'Git', icon: '/assets/icons/devicon/git/git-original.svg', color: '#F05032' },
+    { name: 'VS Code', icon: '/assets/icons/devicon/vscode/vscode-original.svg', color: '#007ACC' },
     { name: 'GitHub', icon: '/assets/icons/devicon/github/github-original.svg', color: '#ffffff' },
-    { name: 'Vercel', icon: '/assets/icons/devicon/vercel/vercel-original.svg',  color: '#ffffff' },
-    { name: 'Prisma', icon: '/assets/icons/devicon/prisma/prisma-original.svg',  color: '#2D3748' },
+    { name: 'Vercel', icon: '/assets/icons/devicon/vercel/vercel-original.svg', color: '#ffffff' },
+    { name: 'Prisma', icon: '/assets/icons/devicon/prisma/prisma-original.svg', color: '#2D3748' },
   ],
 }
 
@@ -730,7 +730,7 @@ function Loader({ onDone }) {
               runGridTransition(() => {
                 /* midpoint — loader et main swappent sous les colonnes */
                 if (loaderEl) {
-                  loaderEl.style.visibility  = 'hidden'
+                  loaderEl.style.visibility = 'hidden'
                   loaderEl.style.pointerEvents = 'none'
                 }
                 if (main) {
@@ -921,17 +921,17 @@ function Navbar({ theme, onToggleTheme }) {
         {/* Sun */}
         <span className="att-icon att-sun">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
-            <circle cx="12" cy="12" r="4"/>
-            <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
-            <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
+            <circle cx="12" cy="12" r="4" />
+            <line x1="12" y1="2" x2="12" y2="4" /><line x1="12" y1="20" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="4" y2="12" /><line x1="20" y1="12" x2="22" y2="12" />
+            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34" /><line x1="17.66" y1="17.66" x2="19.07" y2="19.07" />
+            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66" /><line x1="17.66" y1="6.34" x2="19.07" y2="4.93" />
           </svg>
         </span>
         {/* Moon */}
         <span className="att-icon att-moon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
-            <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>
+            <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" />
           </svg>
         </span>
       </span>
@@ -1009,7 +1009,7 @@ function Navbar({ theme, onToggleTheme }) {
             { href: 'https://github.com/wthomasss06-stack', title: 'GitHub', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg> },
             { href: 'https://www.linkedin.com/in/m-bollo-aka', title: 'LinkedIn', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
             { href: 'mailto:wthomasss06@gmail.com', title: 'Email', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="15" rx="3" /><path d="M2 8l10 7 10-7" /></svg> },
-            { href: 'https://akatech-agence.vercel.app/', title: 'AKATech', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.5" ry="9.5" /><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".5" /></svg> },
+            { href: 'https://akatech.vercel.app/', title: 'AKATech', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.5" ry="9.5" /><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".5" /></svg> },
           ].map(({ href, title, d }) => (
             <a key={title} href={href} target="_blank" rel="noreferrer" title={title}>{d}</a>
           ))}
@@ -1123,10 +1123,10 @@ function Hero() {
    ════════════════════════════════════════════ */
 function StickyStack() {
   const STATS = [
-    { target: 18,  suffix: '',  label: 'Projets',    delay: 0   },
-    { target: 3,   suffix: '+', label: 'Années',     delay: 120 },
-    { target: 12,  suffix: '',  label: 'En prod.',   delay: 240 },
-    { target: 33,  suffix: '',  label: 'Outils',     delay: 360 },
+    { target: 18, suffix: '', label: 'Projets', delay: 0 },
+    { target: 3, suffix: '+', label: 'Années', delay: 120 },
+    { target: 12, suffix: '', label: 'En prod.', delay: 240 },
+    { target: 33, suffix: '', label: 'Outils', delay: 360 },
   ]
 
   const slides = [
@@ -1290,9 +1290,9 @@ function FeaturedCreationDesktop() {
           <div className="fc-desktop-wrap">
             <div className="fc-desktop-shell">
               <div className="fc-desktop-bar">
-                <span className="fc-dot fc-dot--r"/>
-                <span className="fc-dot fc-dot--y"/>
-                <span className="fc-dot fc-dot--g"/>
+                <span className="fc-dot fc-dot--r" />
+                <span className="fc-dot fc-dot--y" />
+                <span className="fc-dot fc-dot--g" />
                 <span className="fc-bar-url">nexura-one.vercel.app</span>
               </div>
               <div className="fc-desktop-screen">
@@ -1310,7 +1310,7 @@ function FeaturedCreationDesktop() {
           </div>
           <div className="fc-mobile-wrap">
             <div className="fc-mobile-shell">
-              <div className="fc-mobile-notch"/>
+              <div className="fc-mobile-notch" />
               <div className="fc-mobile-screen">
                 <div className="fc-slide-track" style={{ transform: `translateY(-${slide * 50}%)`, transition: 'transform .6s cubic-bezier(.4,0,.2,1)', willChange: 'transform' }}>
                   {FC_MOBILE_SLIDES.map((src, i) => (
@@ -1318,13 +1318,13 @@ function FeaturedCreationDesktop() {
                   ))}
                 </div>
               </div>
-              <div className="fc-mobile-home"/>
+              <div className="fc-mobile-home" />
             </div>
             <div className="fc-resp-badge">
-              <AnimIcon type="check" size={12} color="#FF5500"/> 100% Responsive
+              <AnimIcon type="check" size={12} color="#FF5500" /> 100% Responsive
             </div>
           </div>
-          <div className="fc-glow"/>
+          <div className="fc-glow" />
         </div>
         {/* ── Info panel ── */}
         <div className="fc-info fc-entry">
@@ -1343,7 +1343,7 @@ function FeaturedCreationDesktop() {
           </div>
           <p className="fc-desc">{proj.desc}</p>
           <a href={proj.url} target="_blank" rel="noreferrer" className="fc-cta">
-            <AnimIcon type="globe" size={15} color="currentColor"/> Voir le projet
+            <AnimIcon type="globe" size={15} color="currentColor" /> Voir le projet
           </a>
         </div>
       </div>
@@ -1366,43 +1366,43 @@ function About() {
     <section id="about-section" className="sec" style={{ padding: 0, borderTop: '1px solid rgba(255,85,0,.08)' }}>
       <div className="about-grid">
         <div className="about-left">
-  <div
-    className="about-photo-wrap"
-    style={{
-      width: '620px',
-      height: '760px',
-      maxWidth: '100%',
-      position: 'relative',
-      overflow: 'hidden',
-      borderRadius: '32px'
-    }}
-  >
-    <div className="about-photo-deco" />
+          <div
+            className="about-photo-wrap"
+            style={{
+              width: '620px',
+              height: '760px',
+              maxWidth: '100%',
+              position: 'relative',
+              overflow: 'hidden',
+              borderRadius: '32px'
+            }}
+          >
+            <div className="about-photo-deco" />
 
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'relative'
-      }}
-    >
-      <InfiniteMenu
-        items={ABOUT_ITEMS}
-        scale={1}
-        showOverlay={false}
-      />
-    </div>
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'relative'
+              }}
+            >
+              <InfiniteMenu
+                items={ABOUT_ITEMS}
+                scale={1}
+                showOverlay={false}
+              />
+            </div>
 
-    <div className="about-photo-tag">
-      TOUCHE TON CURSEUR ICI ,Decouvre moi
-    </div>
+            <div className="about-photo-tag">
+              TOUCHE TON CURSEUR ICI ,Decouvre moi
+            </div>
 
-    <div className="about-avail">
-      <span className="about-avail-dot" />
-      FULL-STACK DEV
-    </div>
-  </div>
-</div>
+            <div className="about-avail">
+              <span className="about-avail-dot" />
+              FULL-STACK DEV
+            </div>
+          </div>
+        </div>
         <div className="about-right">
           <div className="about-block">
             <div className="sec-eyebrow">// Qui suis-je ?</div>
@@ -1410,42 +1410,42 @@ function About() {
               <ScrollReveal>Alors, c'est moi.</ScrollReveal>
             </h2>
             <p className="about-text">
-  À la base, je venais du monde du <strong>réseau</strong> et de la 
-  <strong> sécurité informatique</strong>. 
-  Mais au fil du temps, j’ai commencé à aimer autre chose : créer, imaginer, 
-  construire des interfaces et voir des idées prendre vie à l’écran.
-</p>
+              À la base, je venais du monde du <strong>réseau</strong> et de la
+              <strong> sécurité informatique</strong>.
+              Mais au fil du temps, j’ai commencé à aimer autre chose : créer, imaginer,
+              construire des interfaces et voir des idées prendre vie à l’écran.
+            </p>
 
-<p className="about-text" style={{ marginTop: '1rem' }}>
-  Petit à petit, je me suis donc orienté vers le développement web, 
-  où j’ai trouvé un équilibre entre <strong>logique</strong>, 
-  <strong> créativité</strong> et <strong>expérience utilisateur</strong>. 
-  Aujourd’hui, j’aime autant développer une architecture solide 
-  que concevoir une interface qui procure une vraie sensation.
-</p>
+            <p className="about-text" style={{ marginTop: '1rem' }}>
+              Petit à petit, je me suis donc orienté vers le développement web,
+              où j’ai trouvé un équilibre entre <strong>logique</strong>,
+              <strong> créativité</strong> et <strong>expérience utilisateur</strong>.
+              Aujourd’hui, j’aime autant développer une architecture solide
+              que concevoir une interface qui procure une vraie sensation.
+            </p>
 
-<p className="about-text" style={{ marginTop: '1rem' }}>
-  Je développe principalement avec <strong>React</strong>, 
-  <strong> Django</strong> et <strong>Next.js</strong>, 
-  tout en explorant les animations web, la data visualisation, 
-  la cartographie interactive et les expériences immersives inspirées 
-  du motion design moderne.
-</p>
+            <p className="about-text" style={{ marginTop: '1rem' }}>
+              Je développe principalement avec <strong>React</strong>,
+              <strong> Django</strong> et <strong>Next.js</strong>,
+              tout en explorant les animations web, la data visualisation,
+              la cartographie interactive et les expériences immersives inspirées
+              du motion design moderne.
+            </p>
 
-<p className="about-text" style={{ marginTop: '1rem' }}>
-  Je suis aussi en grande partie <strong>autodidacte</strong>. 
-  J’apprends vite, j’expérimente beaucoup et chaque projet est pour moi 
-  une nouvelle manière de progresser, tester des idées et repousser mon niveau.
-</p>
+            <p className="about-text" style={{ marginTop: '1rem' }}>
+              Je suis aussi en grande partie <strong>autodidacte</strong>.
+              J’apprends vite, j’expérimente beaucoup et chaque projet est pour moi
+              une nouvelle manière de progresser, tester des idées et repousser mon niveau.
+            </p>
 
-<p className="about-text" style={{ marginTop: '1rem' }}>
-  Et pour transformer cette évolution en quelque chose de concret, j'ai créé{' '}
-  <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer"
-     style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--accent)' }}>
-    AKATech
-  </a>{' '}: un espace où je conçois des produits web modernes, des portfolios immersifs
-  et des solutions digitales pensées pour de vrais usages.
-</p>
+            <p className="about-text" style={{ marginTop: '1rem' }}>
+              Et pour transformer cette évolution en quelque chose de concret, j'ai créé{' '}
+              <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
+                style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--accent)' }}>
+                AKATech
+              </a>{' '}: un espace où je conçois des produits web modernes, des portfolios immersifs
+              et des solutions digitales pensées pour de vrais usages.
+            </p>
           </div>
           <div className="about-block">
             <div className="sec-eyebrow">// Stack principale</div>
@@ -1474,9 +1474,9 @@ function About() {
                     >
                       <span className="skew-item-link-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                          <polyline points="15 3 21 3 21 9"/>
-                          <line x1="10" y1="14" x2="21" y2="3"/>
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
                         </svg>
                         Voir le projet
                       </span>
@@ -1671,14 +1671,14 @@ function SkewSection() {
       const onEnter = ev => {
         const e = edge(ev, item.getBoundingClientRect())
         gsap.set(marquee, { y: e === 'top' ? '-101%' : '101%' })
-        gsap.set(inner,   { y: e === 'top' ? '101%'  : '-101%' })
+        gsap.set(inner, { y: e === 'top' ? '101%' : '-101%' })
         gsap.to([marquee, inner], { y: '0%', duration: 0.6, ease: 'expo.out' })
         tw.play()
       }
       const onLeave = ev => {
         const e = edge(ev, item.getBoundingClientRect())
         gsap.to(marquee, { y: e === 'top' ? '-101%' : '101%', duration: 0.6, ease: 'expo.out' })
-        gsap.to(inner,   { y: e === 'top' ? '101%'  : '-101%', duration: 0.6, ease: 'expo.out' })
+        gsap.to(inner, { y: e === 'top' ? '101%' : '-101%', duration: 0.6, ease: 'expo.out' })
       }
 
       link.addEventListener('mouseenter', onEnter)
@@ -2057,53 +2057,53 @@ function GallerySection() {
 
       /* ── Icônes tech depuis /assets/icons/devicon/ ── */
       const TECH_ICONS = {
-        'React':                   { src: '/assets/icons/devicon/react/react-original.svg',                     color: '#61DAFB' },
-        'JavaScript':              { src: '/assets/icons/devicon/javascript/javascript-original.svg',           color: '#F7DF1E' },
-        'HTML + JS vanilla':       { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
-        'HTML / Tailwind CSS':     { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
-        'Next.js':                 { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
-        'Next.js 14':              { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
-        'Next.js 15':              { src: '/assets/icons/devicon/nextjs/nextjs-original.svg',                   color: '#ffffff' },
-        'Python':                  { src: '/assets/icons/devicon/python/python-original.svg',                   color: '#4B8BBE' },
-        'Python/Flask':            { src: '/assets/icons/devicon/flask/flask-original.svg',                     color: '#AAAAAA' },
-        'Django':                  { src: '/assets/icons/devicon/django/django-plain.svg',                      color: '#44B78B' },
-        'Django REST':             { src: '/assets/icons/devicon/django/django-plain.svg',                      color: '#44B78B' },
-        'Flask':                   { src: '/assets/icons/devicon/flask/flask-original.svg',                     color: '#AAAAAA' },
-        'MySQL':                   { src: '/assets/icons/devicon/mysql/mysql-original.svg',                     color: '#F29111' },
-        'Node.js':                 { src: '/assets/icons/devicon/nodejs/nodejs-original.svg',                   color: '#539E43' },
-        'Tailwind CSS':            { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg',         color: '#38BDF8' },
-        'Bootstrap':               { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',             color: '#7952B3' },
-        'Bootstrap 5':             { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg',             color: '#7952B3' },
-        'HTML':                    { src: '/assets/icons/devicon/html5/html5-original.svg',                     color: '#E34F26' },
-        'CSS':                     { src: '/assets/icons/devicon/css3/css3-original.svg',                       color: '#1572B6' },
-        'Git':                     { src: '/assets/icons/devicon/git/git-original.svg',                         color: '#F05032' },
-        'GitHub':                  { src: '/assets/icons/devicon/github/github-original.svg',                   color: '#ffffff' },
-        'Vercel':                  { src: '/assets/icons/devicon/vercel/vercel-original.svg',                   color: '#ffffff' },
-        'Vercel + PythonAnywhere': { src: '/assets/icons/devicon/vercel/vercel-original.svg',                   color: '#ffffff' },
-        'Prisma':                  { src: '/assets/icons/devicon/prisma/prisma-original.svg',                   color: '#2D3748' },
-        'PostgreSQL':              { src: '/assets/icons/devicon/postgresql/postgresql-original.svg',           color: '#336791' },
-        'Redis & Celery':          { src: '/assets/icons/devicon/rediscelery/rediscelery-original.svg',         color: '#DC382D' },
-        'Redis':                   { src: '/assets/icons/devicon/redis/redis-original.svg',                     color: '#DC382D' },
-        'Framer Motion':           { src: '/assets/icons/devicon/framermotion/framermotion-original.svg',       color: '#BB4BFF' },
-        'Bulma':                   { src: '/assets/icons/devicon/bulma/bulma-plain.svg',                        color: '#00D1B2' },
-        'Canvas API':              { src: '/assets/icons/devicon/canvasapi/canvasapi-original.svg',             color: '#FF8C00' },
-        'Howler.js':               { src: '/assets/icons/devicon/howlerjs/howlerjs-original.svg',               color: '#FF6B35' },
-        'WebSockets':              { src: '/assets/icons/devicon/websockets/websockets-original.svg',           color: '#FF9500' },
-        'WebGL Aurora':            { src: '/assets/icons/devicon/webgl/webgl-original.svg',                     color: '#7B2FF7' },
-        'PythonAnywhere':          { src: '/assets/icons/devicon/pythonanywhere/pythonanywhere-original.svg',   color: '#4B8BBE' },
-        'Chart.js':                { src: '/assets/icons/devicon/chartjs/chartjs-original.svg',                 color: '#FF6384' },
-        'Leaflet.js':              { src: '/assets/icons/devicon/leafletjs/leafletjs-original.svg',             color: '#1A9641' },
-        'Camera API':              { src: '/assets/icons/devicon/cameraapi/cameraapi-original.svg',             color: '#888888' },
-        'Geolocation API':         { src: '/assets/icons/devicon/geolocationapi/geolocationapi-original.svg',   color: '#4285F4' },
-        'LocalStorage':            { src: '/assets/icons/devicon/localstorage/localstorage-original.svg',       color: '#F7DF1E' },
-        'OSRM API':                { src: '/assets/icons/devicon/osrmapi/osrmapi-original.svg',                 color: '#E84C3D' },
-        'Vite':                    { src: '/assets/icons/devicon/vitejs/vitejs-original.svg',                   color: '#BD34FE' },
-        'GSAP':                    { src: '/assets/icons/devicon/gsap/gsap-original.svg',                       color: '#88CE02' },
-        'React Router v6':         { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg',         color: '#F44250' },
-        'React Router':            { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg',         color: '#F44250' },
-        'EmailJS':                 { src: '/assets/icons/devicon/emailjs/emailjs-original.svg',                 color: '#F4921B' },
-        'React 18':                { src: '/assets/icons/devicon/react/react-original.svg',                     color: '#61DAFB' },
-        'TailwindCSS':             { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg',         color: '#38BDF8' },
+        'React': { src: '/assets/icons/devicon/react/react-original.svg', color: '#61DAFB' },
+        'JavaScript': { src: '/assets/icons/devicon/javascript/javascript-original.svg', color: '#F7DF1E' },
+        'HTML + JS vanilla': { src: '/assets/icons/devicon/html5/html5-original.svg', color: '#E34F26' },
+        'HTML / Tailwind CSS': { src: '/assets/icons/devicon/html5/html5-original.svg', color: '#E34F26' },
+        'Next.js': { src: '/assets/icons/devicon/nextjs/nextjs-original.svg', color: '#ffffff' },
+        'Next.js 14': { src: '/assets/icons/devicon/nextjs/nextjs-original.svg', color: '#ffffff' },
+        'Next.js 15': { src: '/assets/icons/devicon/nextjs/nextjs-original.svg', color: '#ffffff' },
+        'Python': { src: '/assets/icons/devicon/python/python-original.svg', color: '#4B8BBE' },
+        'Python/Flask': { src: '/assets/icons/devicon/flask/flask-original.svg', color: '#AAAAAA' },
+        'Django': { src: '/assets/icons/devicon/django/django-plain.svg', color: '#44B78B' },
+        'Django REST': { src: '/assets/icons/devicon/django/django-plain.svg', color: '#44B78B' },
+        'Flask': { src: '/assets/icons/devicon/flask/flask-original.svg', color: '#AAAAAA' },
+        'MySQL': { src: '/assets/icons/devicon/mysql/mysql-original.svg', color: '#F29111' },
+        'Node.js': { src: '/assets/icons/devicon/nodejs/nodejs-original.svg', color: '#539E43' },
+        'Tailwind CSS': { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
+        'Bootstrap': { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg', color: '#7952B3' },
+        'Bootstrap 5': { src: '/assets/icons/devicon/bootstrap/bootstrap-original.svg', color: '#7952B3' },
+        'HTML': { src: '/assets/icons/devicon/html5/html5-original.svg', color: '#E34F26' },
+        'CSS': { src: '/assets/icons/devicon/css3/css3-original.svg', color: '#1572B6' },
+        'Git': { src: '/assets/icons/devicon/git/git-original.svg', color: '#F05032' },
+        'GitHub': { src: '/assets/icons/devicon/github/github-original.svg', color: '#ffffff' },
+        'Vercel': { src: '/assets/icons/devicon/vercel/vercel-original.svg', color: '#ffffff' },
+        'Vercel + PythonAnywhere': { src: '/assets/icons/devicon/vercel/vercel-original.svg', color: '#ffffff' },
+        'Prisma': { src: '/assets/icons/devicon/prisma/prisma-original.svg', color: '#2D3748' },
+        'PostgreSQL': { src: '/assets/icons/devicon/postgresql/postgresql-original.svg', color: '#336791' },
+        'Redis & Celery': { src: '/assets/icons/devicon/rediscelery/rediscelery-original.svg', color: '#DC382D' },
+        'Redis': { src: '/assets/icons/devicon/redis/redis-original.svg', color: '#DC382D' },
+        'Framer Motion': { src: '/assets/icons/devicon/framermotion/framermotion-original.svg', color: '#BB4BFF' },
+        'Bulma': { src: '/assets/icons/devicon/bulma/bulma-plain.svg', color: '#00D1B2' },
+        'Canvas API': { src: '/assets/icons/devicon/canvasapi/canvasapi-original.svg', color: '#FF8C00' },
+        'Howler.js': { src: '/assets/icons/devicon/howlerjs/howlerjs-original.svg', color: '#FF6B35' },
+        'WebSockets': { src: '/assets/icons/devicon/websockets/websockets-original.svg', color: '#FF9500' },
+        'WebGL Aurora': { src: '/assets/icons/devicon/webgl/webgl-original.svg', color: '#7B2FF7' },
+        'PythonAnywhere': { src: '/assets/icons/devicon/pythonanywhere/pythonanywhere-original.svg', color: '#4B8BBE' },
+        'Chart.js': { src: '/assets/icons/devicon/chartjs/chartjs-original.svg', color: '#FF6384' },
+        'Leaflet.js': { src: '/assets/icons/devicon/leafletjs/leafletjs-original.svg', color: '#1A9641' },
+        'Camera API': { src: '/assets/icons/devicon/cameraapi/cameraapi-original.svg', color: '#888888' },
+        'Geolocation API': { src: '/assets/icons/devicon/geolocationapi/geolocationapi-original.svg', color: '#4285F4' },
+        'LocalStorage': { src: '/assets/icons/devicon/localstorage/localstorage-original.svg', color: '#F7DF1E' },
+        'OSRM API': { src: '/assets/icons/devicon/osrmapi/osrmapi-original.svg', color: '#E84C3D' },
+        'Vite': { src: '/assets/icons/devicon/vitejs/vitejs-original.svg', color: '#BD34FE' },
+        'GSAP': { src: '/assets/icons/devicon/gsap/gsap-original.svg', color: '#88CE02' },
+        'React Router v6': { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg', color: '#F44250' },
+        'React Router': { src: '/assets/icons/devicon/reactrouter/reactrouter-original.svg', color: '#F44250' },
+        'EmailJS': { src: '/assets/icons/devicon/emailjs/emailjs-original.svg', color: '#F4921B' },
+        'React 18': { src: '/assets/icons/devicon/react/react-original.svg', color: '#61DAFB' },
+        'TailwindCSS': { src: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
       }
 
       const makeTechIcon = techName => {
@@ -2380,21 +2380,21 @@ function TestimonialsSection() {
 function GitHubInteractiveCard() {
   const GH_USER = 'wthomasss06-stack'
 
-  const [activeTab, setActiveTab]   = useState('grid')
-  const [tooltip, setTooltip]       = useState({ show: false, text: '', x: 0, y: 0 })
+  const [activeTab, setActiveTab] = useState('grid')
+  const [tooltip, setTooltip] = useState({ show: false, text: '', x: 0, y: 0 })
   const [terminalLines, setTerminalLines] = useState([])
-  const [isPushing, setIsPushing]   = useState(false)
+  const [isPushing, setIsPushing] = useState(false)
   const [logs, setLogs] = useState([
-    { id: 1, time: 'Il y a 10 min',    repo: 'shop-ci',      msg: 'fix: validation du panier et mobile money API', commits: 2 },
-    { id: 2, time: 'Il y a 2 heures',  repo: 'akatech',      msg: 'feat: ajout des animations GSAP de survol',     commits: 1 },
-    { id: 3, time: 'Hier',             repo: 'terrasafe',    msg: 'security: validation CSRF sur le formulaire',    commits: 3 },
-    { id: 4, time: 'Il y a 3 jours',   repo: 'chap-chapMAP', msg: 'refactor: optimisation des couches Leaflet',     commits: 1 },
+    { id: 1, time: 'Il y a 10 min', repo: 'shop-ci', msg: 'fix: validation du panier et mobile money API', commits: 2 },
+    { id: 2, time: 'Il y a 2 heures', repo: 'akatech', msg: 'feat: ajout des animations GSAP de survol', commits: 1 },
+    { id: 3, time: 'Hier', repo: 'terrasafe', msg: 'security: validation CSRF sur le formulaire', commits: 3 },
+    { id: 4, time: 'Il y a 3 jours', repo: 'chap-chapMAP', msg: 'refactor: optimisation des couches Leaflet', commits: 1 },
   ])
 
-  const [ghLoading,     setGhLoading]     = useState(true)
-  const [ghError,       setGhError]       = useState(false)
-  const [ghUser,        setGhUser]        = useState(null)
-  const [ghRepos,       setGhRepos]       = useState([])
+  const [ghLoading, setGhLoading] = useState(true)
+  const [ghError, setGhError] = useState(false)
+  const [ghUser, setGhUser] = useState(null)
+  const [ghRepos, setGhRepos] = useState([])
   const [contributions, setContributions] = useState([])
   const [ghStats, setGhStats] = useState({
     totalContribs: null, longestStreak: null, thisMonth: null, topLang: 'React / Python',
@@ -2409,18 +2409,18 @@ function GitHubInteractiveCard() {
     startDate.setDate(startDate.getDate() - dow)
     for (let i = 0; i < 371; i++) {
       const currentDate = new Date(startDate); currentDate.setDate(startDate.getDate() + i)
-      const isWeekend = [0,6].includes(currentDate.getDay())
+      const isWeekend = [0, 6].includes(currentDate.getDay())
       let count = 0; const rand = Math.random()
-      if (isWeekend) { if (rand > 0.85) count = Math.floor(Math.random()*3)+1 }
+      if (isWeekend) { if (rand > 0.85) count = Math.floor(Math.random() * 3) + 1 }
       else {
         if (rand > 0.45) {
-          if (rand > 0.92) count = Math.floor(Math.random()*8)+5
-          else if (rand > 0.72) count = Math.floor(Math.random()*4)+2
+          if (rand > 0.92) count = Math.floor(Math.random() * 8) + 5
+          else if (rand > 0.72) count = Math.floor(Math.random() * 4) + 2
           else count = 1
         }
       }
       let level = 0
-      if (count > 0) { if (count<=2) level=1; else if (count<=4) level=2; else if (count<=7) level=3; else level=4 }
+      if (count > 0) { if (count <= 2) level = 1; else if (count <= 4) level = 2; else if (count <= 7) level = 3; else level = 4 }
       data.push({ date: currentDate, count, level })
     }
     return data
@@ -2463,7 +2463,7 @@ function GitHubInteractiveCard() {
       fetchWithTimeout(`https://api.github.com/users/${GH_USER}`, { headers })
         .then(r => r.ok ? r.json() : null)
         .then(user => { if (!cancelled && user && !user.message) setGhUser(user) })
-        .catch(() => {})
+        .catch(() => { })
 
       /* 2. Repos */
       fetchWithTimeout(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=stars`, { headers })
@@ -2471,11 +2471,11 @@ function GitHubInteractiveCard() {
         .then(repos => {
           if (cancelled || !Array.isArray(repos)) return
           const sorted = repos.filter(r => !r.fork)
-            .sort((a,b) => (b.stargazers_count||0) - (a.stargazers_count||0))
+            .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
             .slice(0, 4)
           setGhRepos(sorted)
         })
-        .catch(() => {})
+        .catch(() => { })
 
       /* 3. Contributions — tenter l'API tierce avec retry sur l'API officielle */
       let contribOk = false
@@ -2488,19 +2488,19 @@ function GitHubInteractiveCard() {
           if (!cancelled && data?.contributions?.length) {
             const grid = buildGrid(data.contributions)
             setContributions(grid)
-            const all   = data.contributions
-            const total = all.reduce((s,d) => s+d.count, 0)
-            let maxStreak=0, streak=0
-            all.forEach(d => { if(d.count>0){streak++;maxStreak=Math.max(maxStreak,streak)}else streak=0 })
+            const all = data.contributions
+            const total = all.reduce((s, d) => s + d.count, 0)
+            let maxStreak = 0, streak = 0
+            all.forEach(d => { if (d.count > 0) { streak++; maxStreak = Math.max(maxStreak, streak) } else streak = 0 })
             const now = new Date()
             const thisMonth = all
-              .filter(d => { const dt=new Date(d.date); return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear() })
-              .reduce((s,d)=>s+d.count,0)
+              .filter(d => { const dt = new Date(d.date); return dt.getMonth() === now.getMonth() && dt.getFullYear() === now.getFullYear() })
+              .reduce((s, d) => s + d.count, 0)
             setGhStats({ totalContribs: total, longestStreak: maxStreak, thisMonth, topLang: 'React / Python' })
             contribOk = true
           }
         }
-      } catch (_) {}
+      } catch (_) { }
 
       /* Fallback si la contrib API a échoué */
       if (!contribOk && !cancelled) {
@@ -2519,12 +2519,12 @@ function GitHubInteractiveCard() {
   const handleSquareHover = (e, day) => {
     const rect = e.currentTarget.getBoundingClientRect()
     const parentRect = e.currentTarget.offsetParent?.getBoundingClientRect() || rect
-    const opts = { day:'numeric', month:'short', year:'numeric' }
+    const opts = { day: 'numeric', month: 'short', year: 'numeric' }
     const dateStr = day.date?.toLocaleDateString('fr-FR', opts) || '—'
-    const text = `${day.count} contribution${day.count>1?'s':''} · ${dateStr}`
-    setTooltip({ show:true, text, x: rect.left-parentRect.left+rect.width/2, y: rect.top-parentRect.top-36 })
+    const text = `${day.count} contribution${day.count > 1 ? 's' : ''} · ${dateStr}`
+    setTooltip({ show: true, text, x: rect.left - parentRect.left + rect.width / 2, y: rect.top - parentRect.top - 36 })
   }
-  const handleSquareLeave = () => setTooltip(p => ({...p, show:false}))
+  const handleSquareLeave = () => setTooltip(p => ({ ...p, show: false }))
 
   /* ── Simulation git push ── */
   const runPushSimulation = () => {
@@ -2546,21 +2546,21 @@ function GitHubInteractiveCard() {
     const next = () => {
       if (cur < lines.length) {
         setTerminalLines(p => [...p, lines[cur++]])
-        setTimeout(next, cur<=3 ? 600 : 250)
+        setTimeout(next, cur <= 3 ? 600 : 250)
       } else {
         setIsPushing(false)
-        setLogs(p => [{ id:Date.now(), time:"À l'instant", repo:'elvis-portfolio', msg:'feat: design interactive stats grid', commits:1 }, ...p])
+        setLogs(p => [{ id: Date.now(), time: "À l'instant", repo: 'elvis-portfolio', msg: 'feat: design interactive stats grid', commits: 1 }, ...p])
       }
     }
     setTimeout(next, 200)
   }
 
-  const months = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
+  const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
 
   /* helper stat display */
   const statVal = (v, suffix = '') => {
     if (ghLoading) return <span className="gh-stat-skeleton" />
-    if (v === null || v === undefined) return <span style={{color:'var(--muted)',fontSize:'.85em'}}>—</span>
+    if (v === null || v === undefined) return <span style={{ color: 'var(--muted)', fontSize: '.85em' }}>—</span>
     return typeof v === 'number' ? v.toLocaleString('fr') + suffix : v
   }
 
@@ -2569,14 +2569,14 @@ function GitHubInteractiveCard() {
       {/* ── HEADER ── */}
       <div className="github-card-large-header">
         <div className="github-card-large-logo">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block' }}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
           </svg>
           <div>
             <h3 className="github-card-large-title">Activité GitHub</h3>
             <p className="github-card-large-user">
               <a href={`https://github.com/${GH_USER}`} target="_blank" rel="noreferrer">@{GH_USER}</a>
-              {ghUser && <span style={{ color:'var(--muted)', marginLeft:'8px', fontSize:'.62rem' }}>· {ghUser.public_repos} repos · {ghUser.followers} followers</span>}
+              {ghUser && <span style={{ color: 'var(--muted)', marginLeft: '8px', fontSize: '.62rem' }}>· {ghUser.public_repos} repos · {ghUser.followers} followers</span>}
             </p>
           </div>
           <span className="github-live-badge">
@@ -2586,8 +2586,8 @@ function GitHubInteractiveCard() {
         </div>
 
         <div className="github-card-large-tabs">
-          {[['grid','Contributions'],['repos','Projets & Dépôts'],['feed','Flux de Commit']].map(([key,lbl])=>(
-            <button key={key} className={`github-tab-btn${activeTab===key?' active':''}`} onClick={()=>setActiveTab(key)}>{lbl}</button>
+          {[['grid', 'Contributions'], ['repos', 'Projets & Dépôts'], ['feed', 'Flux de Commit']].map(([key, lbl]) => (
+            <button key={key} className={`github-tab-btn${activeTab === key ? ' active' : ''}`} onClick={() => setActiveTab(key)}>{lbl}</button>
           ))}
         </div>
       </div>
@@ -2607,7 +2607,7 @@ function GitHubInteractiveCard() {
                 <span className="github-stat-lbl">Série max</span>
               </div>
               <div className="github-stat-item">
-                <span className="github-stat-num" style={{color:'var(--accent)'}}>{ghStats.topLang}</span>
+                <span className="github-stat-num" style={{ color: 'var(--accent)' }}>{ghStats.topLang}</span>
                 <span className="github-stat-lbl">Technologies favorites</span>
               </div>
               <div className="github-stat-item">
@@ -2618,7 +2618,7 @@ function GitHubInteractiveCard() {
 
             <div className="github-grid-scroll-wrapper">
               <div className="github-months-row">
-                {months.map((m,idx)=>(
+                {months.map((m, idx) => (
                   <span key={idx} className="github-month-lbl">{m}</span>
                 ))}
               </div>
@@ -2628,18 +2628,18 @@ function GitHubInteractiveCard() {
                 </div>
                 {contributions.length > 0 ? (
                   <div className="github-grid">
-                    {contributions.map((day,idx)=>(
+                    {contributions.map((day, idx) => (
                       <div
                         key={idx}
                         className={`github-square level-${day.level}`}
-                        onMouseEnter={(e)=>handleSquareHover(e,day)}
+                        onMouseEnter={(e) => handleSquareHover(e, day)}
                         onMouseLeave={handleSquareLeave}
                       />
                     ))}
                   </div>
                 ) : (
                   <div className="github-grid-skeleton">
-                    {Array.from({length: 371}).map((_,i) => (
+                    {Array.from({ length: 371 }).map((_, i) => (
                       <div key={i} className="github-square-skeleton" />
                     ))}
                   </div>
@@ -2649,7 +2649,7 @@ function GitHubInteractiveCard() {
 
             {ghStats.totalContribs === null && !ghLoading && (
               <div className="gh-api-notice">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                 API GitHub temporairement indisponible · grille générée localement
               </div>
             )}
@@ -2658,7 +2658,7 @@ function GitHubInteractiveCard() {
               <span>Survolez les carrés pour voir le détail · données GitHub en temps réel</span>
               <div className="github-legend">
                 <span>Moins</span>
-                {[0,1,2,3,4].map(l=><div key={l} className={`github-square level-${l}`}/>)}
+                {[0, 1, 2, 3, 4].map(l => <div key={l} className={`github-square level-${l}`} />)}
                 <span>Plus</span>
               </div>
             </div>
@@ -2669,35 +2669,35 @@ function GitHubInteractiveCard() {
         {activeTab === 'repos' && (
           <div className="github-tab-content-repos">
             {ghLoading ? (
-              <div style={{ textAlign:'center', padding:'2rem', color:'var(--muted)', fontFamily:"'Space Mono',monospace", fontSize:'.7rem' }}>
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--muted)', fontFamily: "'Space Mono',monospace", fontSize: '.7rem' }}>
                 Chargement des dépôts GitHub…
               </div>
             ) : (ghRepos.length > 0 ? ghRepos : [
-              { name:'ShopCI',       description:'Marketplace E-commerce locale avec intégration mobile money.',  stargazers_count:14, forks_count:4,  language:'JavaScript' },
-              { name:'TerraSafe',    description:"Plateforme foncière de prévention des risques d'arnaque.",       stargazers_count:8,  forks_count:2,  language:'Python' },
-              { name:'AKATech',      description:'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count:21, forks_count:5,  language:'TypeScript' },
-              { name:'chap-chapMAP', description:"Cartographie interactive pour l'itinéraire et la livraison.",    stargazers_count:5,  forks_count:1,  language:'JavaScript' },
-            ]).map((repo,i)=>{
-              const langColor = { JavaScript:'#f1e05a', Python:'#3572A5', TypeScript:'#2b7489', HTML:'#e34c26', CSS:'#563d7c' }
-              const pct = { JavaScript:'100% JS', Python:'55% Py / 45% HTML', TypeScript:'90% TS / 10% CSS', HTML:'100% HTML' }
+              { name: 'ShopCI', description: 'Marketplace E-commerce locale avec intégration mobile money.', stargazers_count: 14, forks_count: 4, language: 'JavaScript' },
+              { name: 'TerraSafe', description: "Plateforme foncière de prévention des risques d'arnaque.", stargazers_count: 8, forks_count: 2, language: 'Python' },
+              { name: 'AKATech', description: 'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
+              { name: 'chap-chapMAP', description: "Cartographie interactive pour l'itinéraire et la livraison.", stargazers_count: 5, forks_count: 1, language: 'JavaScript' },
+            ]).map((repo, i) => {
+              const langColor = { JavaScript: '#f1e05a', Python: '#3572A5', TypeScript: '#2b7489', HTML: '#e34c26', CSS: '#563d7c' }
+              const pct = { JavaScript: '100% JS', Python: '55% Py / 45% HTML', TypeScript: '90% TS / 10% CSS', HTML: '100% HTML' }
               const color = langColor[repo.language] || '#FF5500'
               return (
                 <div key={i} className="github-repo-card">
                   <div className="github-repo-header">
                     <span className="github-repo-name">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" style={{ display:'inline', marginRight:'6px', verticalAlign:'text-top' }}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" style={{ display: 'inline', marginRight: '6px', verticalAlign: 'text-top' }}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
                       {repo.html_url
-                        ? <a href={repo.html_url} target="_blank" rel="noreferrer" style={{ color:'inherit', textDecoration:'none' }}>{repo.name}</a>
+                        ? <a href={repo.html_url} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{repo.name}</a>
                         : repo.name}
                     </span>
                     <div className="github-repo-stats">
-                      <span>★ {repo.stargazers_count||0}</span>
-                      <span>⌥ {repo.forks_count||0}</span>
+                      <span>★ {repo.stargazers_count || 0}</span>
+                      <span>⌥ {repo.forks_count || 0}</span>
                     </div>
                   </div>
                   <p className="github-repo-desc">{repo.description}</p>
                   <div className="github-repo-lang-bar">
-                    <div className="github-repo-lang-progress" style={{ width:'70%', background:color }} />
+                    <div className="github-repo-lang-progress" style={{ width: '70%', background: color }} />
                   </div>
                   <div className="github-repo-footer">
                     <span>{repo.language || 'Web'}</span>
@@ -2714,14 +2714,14 @@ function GitHubInteractiveCard() {
           <div className="github-tab-content-feed">
             <div className="github-feed-left">
               <div className="github-logs-list">
-                {logs.map((log)=>(
+                {logs.map((log) => (
                   <div key={log.id} className="github-log-item">
                     <div className="github-log-meta">
                       <span className="github-log-repo">{GH_USER}/{log.repo}</span>
                       <span className="github-log-time">{log.time}</span>
                     </div>
                     <p className="github-log-msg">{log.msg}</p>
-                    <span className="github-log-commits-count">{log.commits} commit{log.commits>1?'s':''} pushed</span>
+                    <span className="github-log-commits-count">{log.commits} commit{log.commits > 1 ? 's' : ''} pushed</span>
                   </div>
                 ))}
               </div>
@@ -2730,14 +2730,14 @@ function GitHubInteractiveCard() {
               <div className="github-terminal">
                 <div className="github-terminal-header">
                   <div className="github-terminal-dots">
-                    <span className="dot-red"/><span className="dot-yellow"/><span className="dot-green"/>
+                    <span className="dot-red" /><span className="dot-yellow" /><span className="dot-green" />
                   </div>
                   <span className="github-terminal-title">bash - {GH_USER}@github:~</span>
                 </div>
                 <div className="github-terminal-body">
                   <div className="github-terminal-welcome">Prêt pour la simulation de commit en direct.</div>
-                  {terminalLines.map((line,idx)=>(<div key={idx} className="github-terminal-line">{line}</div>))}
-                  {isPushing && <div className="github-terminal-cursor"/>}
+                  {terminalLines.map((line, idx) => (<div key={idx} className="github-terminal-line">{line}</div>))}
+                  {isPushing && <div className="github-terminal-cursor" />}
                 </div>
               </div>
               <button className="github-push-btn" onClick={runPushSimulation} disabled={isPushing}>
@@ -2749,9 +2749,9 @@ function GitHubInteractiveCard() {
       </div>
 
       {tooltip.show && (
-        <div className="github-tooltip" style={{ left:tooltip.x, top:tooltip.y }}>
+        <div className="github-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
           {tooltip.text}
-          <div className="github-tooltip-arrow"/>
+          <div className="github-tooltip-arrow" />
         </div>
       )}
     </div>
@@ -2835,7 +2835,7 @@ function ContactSection({ onToast }) {
     { id: 'cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
     { id: 'cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg> },
     { id: 'cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg> },
-    { id: 'cojn-akatech', href: 'https://akatech-agence.vercel.app/', label: 'AKATech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
+    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
     { id: 'cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 7 10-7" /></svg> },
     { id: 'cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg> },
     { id: 'cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
@@ -3007,7 +3007,7 @@ function Footer() {
                   src="/assets/images/qrcodeCV.webp"
                   alt="QR Code CV"
                   className="ft-qr-img"
-                  onError={e => { e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=https://akatech-agence.vercel.app/' }}
+                  onError={e => { e.target.src = 'https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=https://akatech.vercel.app/' }}
                 />
                 <div className="ft-qr-badge">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -3050,9 +3050,9 @@ function Footer() {
 
       {/* Barre de bas */}
       <div className="ft-bottom">
-        <span>© 2026 — M'Bollo Aka Elvis · <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer">AKATech</a> · Abidjan</span>
+        <span>© 2026 — M'Bollo Aka Elvis · <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">AKATech</a> · Abidjan</span>
         <span style={{ color: 'rgba(255,255,255,.15)' }}>·</span>
-        <a href="https://akatech-agence.vercel.app/" target="_blank" rel="noreferrer">akatech-agence.vercel.app</a>
+        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">akatech-agence.vercel.app</a>
       </div>
     </footer>
   )
@@ -3183,17 +3183,17 @@ function ScrollTopBtn() {
       const ufoOsc = ctx.createOscillator(); ufoOsc.type = 'triangle'
       ufoOsc.frequency.setValueAtTime(150, now)
       ufoOsc.frequency.exponentialRampToValueAtTime(1800, now + 1.2)
-      
+
       const lfo = ctx.createOscillator(); lfo.frequency.value = 24 // Fast cosmic wobble
       const lfoGain = ctx.createGain(); lfoGain.gain.value = 140
-      
+
       lfo.connect(lfoGain); lfoGain.connect(ufoOsc.frequency)
-      
+
       const ufoGain = ctx.createGain()
       ufoGain.gain.setValueAtTime(0, now)
       ufoGain.gain.linearRampToValueAtTime(0.5, now + 0.05)
       ufoGain.gain.exponentialRampToValueAtTime(0.001, now + 1.3)
-      
+
       ufoOsc.connect(ufoGain); ufoGain.connect(ctx.destination)
       lfo.start(now); ufoOsc.start(now)
       lfo.stop(now + 1.3); ufoOsc.stop(now + 1.3)

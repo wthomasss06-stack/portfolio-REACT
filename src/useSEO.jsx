@@ -50,7 +50,7 @@ export const STRUCTURED_DATA = {
     worksFor: {
       '@type': 'Organization',
       name: 'AKATech',
-      url: 'https://akatech-agence.vercel.app/',
+      url: 'https://akatech.vercel.app/',
     },
     alumniOf: {
       '@type': 'CollegeOrUniversity',
@@ -61,7 +61,7 @@ export const STRUCTURED_DATA = {
       'https://github.com/wthomasss06-stack',
       'https://www.linkedin.com/in/m-bollo-aka',
       'https://web.facebook.com/profile.php?id=61577494705852',
-      'https://akatech-agence.vercel.app/',
+      'https://akatech.vercel.app/',
     ],
     knowsAbout: [
       'Développement Web',
@@ -85,8 +85,8 @@ export const STRUCTURED_DATA = {
       '@type': 'Person',
       name: "M'Bollo Aka Elvis",
     },
-    url: 'https://akatech-agence.vercel.app/',
-    logo: 'https://akatech-agence.vercel.app/favicon.png',
+    url: 'https://akatech.vercel.app/',
+    logo: 'https://akatech.vercel.app/favicon.png',
     image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     description:
       "AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions digitales sur-mesure : sites vitrines, e-commerce, applications SaaS et portfolios modernes.",

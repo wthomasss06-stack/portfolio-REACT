@@ -14,234 +14,320 @@ import React, {
 // ═══════════════════════════════════════════════════════════════
 
 const ME = {
-  name:     "M'BOLLO Aka Elvis",
-  short:    "Elvis K.",
-  title:    "Développeur Fullstack",
-  agency:   "AKATech",
-  tagline:  "Je construis des apps web modernes pour l'Afrique",
-  email:    "wthomasss06@gmail.com",
-  phone:    "+225 01 42 50 77 50",
+  name: "M'BOLLO Aka Elvis",
+  short: "Elvis K.",
+  title: "Développeur Fullstack",
+  agency: "AKATech",
+  tagline: "Je construis des apps web modernes pour l'Afrique",
+  email: "wthomasss06@gmail.com",
+  phone: "+225 01 42 50 77 50",
   whatsapp: "+225 01 42 50 77 50",
-  github:   "https://github.com/wthomasss06-stack",
+  github: "https://github.com/wthomasss06-stack",
   linkedin: "https://www.linkedin.com/in/m-bollo-aka",
-  site:     "https://akatech-agence.vercel.app",
+  site: "https://akatech-agence.vercel.app",
   facebook: "https://web.facebook.com/profile.php?id=61577494705852",
   location: "Abidjan, Côte d'Ivoire",
-  photo:    "/assets/images/IMG_20250124_124101KK.jpg",
-  cv:       "/assets/CV_MBOLLO_AKA_ELVIS.pdf",
+  photo: "/assets/images/IMG_20250124_124101KK.jpg",
+  cv: "/assets/CV_MBOLLO_AKA_ELVIS.pdf",
 };
 
 const PROJECTS = [
-  { id:1,  title:"ShopCI",             subtitle:"Marketplace E-commerce",       cat:"en-ligne",  progress:65,  year:"2024", isPremium:true,
-    desc:"Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
-    tech:["React","Django","Bootstrap 5","Vercel + PythonAnywhere"], url:"https://shop-ci.vercel.app/",
-    image:"/assets/images/projects/monmarket-preview.jpg", color:"#0066cc" },
-  { id:2,  title:"TechFlow",           subtitle:"Site Vitrine Professionnel",    cat:"en-ligne",  progress:97,  year:"2024", isPremium:true,
-    desc:"Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
-    tech:["HTML","Tailwind CSS","JavaScript","Vercel"], url:"https://techflow-ten.vercel.app/",
-    image:"/assets/images/projects/techflow-preview.jpg", color:"#006644" },
-  { id:3,  title:"TerraSafe",          subtitle:"Marketplace Foncière",          cat:"en-ligne",  progress:85,  year:"2024", isPremium:true,
-    desc:"Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
-    tech:["Python/Flask","MySQL","JavaScript","Bootstrap 5"], url:"https://wthomassss06.pythonanywhere.com",
-    image:"/assets/images/projects/terrasafe-preview.jpg", color:"#8B0000" },
-  { id:4,  title:"Chap-chapMAP",       subtitle:"Navigation Intelligente",       cat:"demo",      progress:100, year:"2023",
-    desc:"Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
-    tech:["JavaScript","Leaflet.js","OSRM API","Geolocation API"], url:"/demos/chap-chapMAP.html",
-    image:"/assets/images/projects/chapchapmap-preview.jpg", color:"#005580" },
-  { id:5,  title:"ElvisMarket",        subtitle:"Interface E-commerce",          cat:"demo",      progress:100, year:"2023",
-    desc:"Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
-    tech:["HTML","JS vanilla","Tailwind CSS","LocalStorage"], url:"/demos/projet2.html",
-    image:"/assets/images/projects/elvismarket-preview.jpg", color:"#555500" },
-  { id:6,  title:"MonCashJour",        subtitle:"Gestion de Ventes",             cat:"demo",      progress:100, year:"2023",
-    desc:"Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
-    tech:["HTML","JS vanilla","Tailwind CSS","Chart.js"], url:"/demos/projet1.html",
-    image:"/assets/images/projects/moncashjour-preview.jpg", color:"#006633" },
-  { id:7,  title:"LivreurTrack Pro",   subtitle:"Suivi Logistique",              cat:"demo",      progress:100, year:"2023",
-    desc:"Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
-    tech:["JavaScript","Bootstrap 5","LocalStorage","Camera API"], url:"/demos/projet3.html",
-    image:"/assets/images/projects/livreurtrack-preview.jpg", color:"#660066" },
-  { id:8,  title:"LinkedIn Banner Pro",subtitle:"Générateur SaaS",               cat:"en-cours",  progress:30,  year:"2025",
-    desc:"Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
-    tech:["JavaScript","Canvas API","Tailwind CSS"], url:"/demos/projet7.html",
-    image:"/assets/images/projects/linkedin-banner-preview.jpg", color:"#003366" },
-  { id:9,  title:"Tati",              subtitle:"Portfolio & Vitrine Moderne",    cat:"en-ligne",  progress:100, year:"2024", isPremium:true,
-    desc:"Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair.",
-    tech:["React","Tailwind CSS","Framer Motion","Vercel"], url:"https://tatii.vercel.app/",
-    image:"/assets/images/projects/tati-preview.jpg", color:"#336600" },
-  { id:10, title:"MK",               subtitle:"Portfolio Graphiste Client",      cat:"en-ligne",  progress:100, year:"2024", isPremium:true,
-    desc:"Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
-    tech:["React","Tailwind CSS","Framer Motion","Vercel"], url:"https://mory01ff.vercel.app/",
-    image:"/assets/images/projects/mk-preview.jpg", color:"#006699" },
-  { id:11, title:"ManoBeat 777",     subtitle:"Portfolio Beatmaker",             cat:"en-ligne",  progress:100, year:"2025", isPremium:true,
-    desc:"Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp.",
-    tech:["React","Tailwind CSS","Howler.js","Vercel"], url:"https://xxx-x.vercel.app/",
-    image:"/assets/images/projects/beatstore-preview.jpg", color:"#660033" },
-  { id:12, title:"New Horizon",      subtitle:"Location de Résidences",          cat:"en-ligne",  progress:100, year:"2025", isPremium:true,
-    desc:"Plateforme de location de résidences meublées haut de gamme. Interface moderne, backend Flask sécurisé avec API REST.",
-    tech:["Next.js","Flask","Python","MySQL","Vercel"], url:"https://new-horizonservice.vercel.app/",
-    image:"/assets/images/projects/newhorizon-preview.jpg", color:"#003355" },
-  { id:13, title:"AKATech",         subtitle:"Agence Digitale Abidjan",          cat:"en-ligne",  progress:100, year:"2025", isPremium:true, isAgency:true,
-    desc:"Site officiel de mon agence — Aurora WebGL, animations Framer Motion, design vert/noir premium.",
-    tech:["Next.js 15","Framer Motion","WebGL Aurora","Vercel"], url:"https://akatech-agence.vercel.app/",
-    image:"/assets/images/projects/akatech-preview.jpg", color:"#002211" },
-  { id:14, title:"Univ. les Anges", subtitle:"Site Institutionnel",              cat:"en-ligne",  progress:100, year:"2025", isPremium:true,
-    desc:"Site institutionnel moderne pour l'Université les Anges : formations, actualités, contacts. Interface responsive.",
-    tech:["HTML","CSS","Bulma","Bootstrap","Vercel"], url:"https://universitelesanges.vercel.app/",
-    image:"/assets/images/projects/universitelesanges-preview.jpg", color:"#3B006B" },
-  { id:15, title:"NEXURA", subtitle:"Marketplace Nouvelle Gén.",              cat:"en-ligne",  progress:85,  year:"2025", isPremium:true,
-    desc:"Marketplace nouvelle génération — évolution de TerraSafe. Résidences meublées, motos & véhicules, bureaux, terrains. Auth sécurisée, KYC, WebSockets.",
-    tech:["Next.js 14","Django REST","PostgreSQL","WebSockets","Redis & Celery"], url:"https://nexura-one.vercel.app/",
-    image:"/assets/images/projects/nexura-preview.jpg", color:"#003344" },
-  { id:16, title:"KokoEat",         subtitle:"Livraison Alimentaire",          cat:"en-cours",  progress:40,  year:"2025",
-    desc:"Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
-    tech:["React","Django REST","PostgreSQL","Vercel"], url:"#",
-    image:"/assets/images/projects/kokoeat-preview.jpg", color:"#cc4400" },
-  { id:17, title:"Jean Edy · Portfolio", subtitle:"Portfolio React UI Avancé",  cat:"en-ligne",  progress:100, year:"2026", isPremium:true,
-    desc:"Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
-    tech:["React 18","Vite","GSAP","Framer Motion","TailwindCSS"], url:"https://jean-edy-dev.vercel.app/",
-    image:"/assets/images/projects/jean-edy-preview.jpg", color:"#1a1a66" },
-  { id:18, title:"MD Laverie Pressing", subtitle:"Site Vitrine Pressing",       cat:"en-ligne",  progress:100, year:"2025", isPremium:true,
-    desc:"Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
-    tech:["React 18","Vite","GSAP","React Router v6","EmailJS"], url:"https://laverie-plus.vercel.app/",
-    image:"/assets/images/projects/laverie-preview.jpg", color:"#004466" },
+  {
+    id: 1, title: "ShopCI", subtitle: "Marketplace E-commerce", cat: "en-ligne", progress: 65, year: "2024", isPremium: true,
+    desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
+    tech: ["React", "Django", "Bootstrap 5", "Vercel + PythonAnywhere"], url: "https://shop-ci.vercel.app/",
+    image: "/assets/images/projects/monmarket-preview.jpg", color: "#0066cc"
+  },
+  {
+    id: 2, title: "TechFlow", subtitle: "Site Vitrine Professionnel", cat: "en-ligne", progress: 97, year: "2024", isPremium: true,
+    desc: "Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
+    tech: ["HTML", "Tailwind CSS", "JavaScript", "Vercel"], url: "https://techflow-ten.vercel.app/",
+    image: "/assets/images/projects/techflow-preview.jpg", color: "#006644"
+  },
+  {
+    id: 3, title: "TerraSafe", subtitle: "Marketplace Foncière", cat: "en-ligne", progress: 85, year: "2024", isPremium: true,
+    desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
+    tech: ["Python/Flask", "MySQL", "JavaScript", "Bootstrap 5"], url: "https://wthomassss06.pythonanywhere.com",
+    image: "/assets/images/projects/terrasafe-preview.jpg", color: "#8B0000"
+  },
+  {
+    id: 4, title: "Chap-chapMAP", subtitle: "Navigation Intelligente", cat: "demo", progress: 100, year: "2023",
+    desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
+    tech: ["JavaScript", "Leaflet.js", "OSRM API", "Geolocation API"], url: "/demos/chap-chapMAP.html",
+    image: "/assets/images/projects/chapchapmap-preview.jpg", color: "#005580"
+  },
+  {
+    id: 5, title: "ElvisMarket", subtitle: "Interface E-commerce", cat: "demo", progress: 100, year: "2023",
+    desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
+    tech: ["HTML", "JS vanilla", "Tailwind CSS", "LocalStorage"], url: "/demos/projet2.html",
+    image: "/assets/images/projects/elvismarket-preview.jpg", color: "#555500"
+  },
+  {
+    id: 6, title: "MonCashJour", subtitle: "Gestion de Ventes", cat: "demo", progress: 100, year: "2023",
+    desc: "Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
+    tech: ["HTML", "JS vanilla", "Tailwind CSS", "Chart.js"], url: "/demos/projet1.html",
+    image: "/assets/images/projects/moncashjour-preview.jpg", color: "#006633"
+  },
+  {
+    id: 7, title: "LivreurTrack Pro", subtitle: "Suivi Logistique", cat: "demo", progress: 100, year: "2023",
+    desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
+    tech: ["JavaScript", "Bootstrap 5", "LocalStorage", "Camera API"], url: "/demos/projet3.html",
+    image: "/assets/images/projects/livreurtrack-preview.jpg", color: "#660066"
+  },
+  {
+    id: 8, title: "LinkedIn Banner Pro", subtitle: "Générateur SaaS", cat: "en-cours", progress: 30, year: "2025",
+    desc: "Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
+    tech: ["JavaScript", "Canvas API", "Tailwind CSS"], url: "/demos/projet7.html",
+    image: "/assets/images/projects/linkedin-banner-preview.jpg", color: "#003366"
+  },
+  {
+    id: 9, title: "Tati", subtitle: "Portfolio & Vitrine Moderne", cat: "en-ligne", progress: 100, year: "2024", isPremium: true,
+    desc: "Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair.",
+    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"], url: "https://tatii.vercel.app/",
+    image: "/assets/images/projects/tati-preview.jpg", color: "#336600"
+  },
+  {
+    id: 10, title: "MK", subtitle: "Portfolio Graphiste Client", cat: "en-ligne", progress: 100, year: "2024", isPremium: true,
+    desc: "Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
+    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"], url: "https://mory01ff.vercel.app/",
+    image: "/assets/images/projects/mk-preview.jpg", color: "#006699"
+  },
+  {
+    id: 11, title: "ManoBeat 777", subtitle: "Portfolio Beatmaker", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
+    desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp.",
+    tech: ["React", "Tailwind CSS", "Howler.js", "Vercel"], url: "https://xxx-x.vercel.app/",
+    image: "/assets/images/projects/beatstore-preview.jpg", color: "#660033"
+  },
+  {
+    id: 12, title: "New Horizon", subtitle: "Location de Résidences", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
+    desc: "Plateforme de location de résidences meublées haut de gamme. Interface moderne, backend Flask sécurisé avec API REST.",
+    tech: ["Next.js", "Flask", "Python", "MySQL", "Vercel"], url: "https://new-horizonservice.vercel.app/",
+    image: "/assets/images/projects/newhorizon-preview.jpg", color: "#003355"
+  },
+  {
+    id: 13, title: "AKATech", subtitle: "Agence Digitale Abidjan", cat: "en-ligne", progress: 100, year: "2025", isPremium: true, isAgency: true,
+    desc: "Site officiel de mon agence — Aurora WebGL, animations Framer Motion, design vert/noir premium.",
+    tech: ["Next.js 15", "Framer Motion", "WebGL Aurora", "Vercel"], url: "https://akatech.vercel.app/",
+    image: "/assets/images/projects/akatech-preview.jpg", color: "#002211"
+  },
+  {
+    id: 14, title: "Univ. les Anges", subtitle: "Site Institutionnel", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
+    desc: "Site institutionnel moderne pour l'Université les Anges : formations, actualités, contacts. Interface responsive.",
+    tech: ["HTML", "CSS", "Bulma", "Bootstrap", "Vercel"], url: "https://universitelesanges.vercel.app/",
+    image: "/assets/images/projects/universitelesanges-preview.jpg", color: "#3B006B"
+  },
+  {
+    id: 15, title: "NEXURA", subtitle: "Marketplace Nouvelle Gén.", cat: "en-ligne", progress: 85, year: "2025", isPremium: true,
+    desc: "Marketplace nouvelle génération — évolution de TerraSafe. Résidences meublées, motos & véhicules, bureaux, terrains. Auth sécurisée, KYC, WebSockets.",
+    tech: ["Next.js 14", "Django REST", "PostgreSQL", "WebSockets", "Redis & Celery"], url: "https://nexura-one.vercel.app/",
+    image: "/assets/images/projects/nexura-preview.jpg", color: "#003344"
+  },
+  {
+    id: 16, title: "KokoEat", subtitle: "Livraison Alimentaire", cat: "en-cours", progress: 40, year: "2025",
+    desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
+    tech: ["React", "Django REST", "PostgreSQL", "Vercel"], url: "#",
+    image: "/assets/images/projects/kokoeat-preview.jpg", color: "#cc4400"
+  },
+  {
+    id: 17, title: "Jean Edy · Portfolio", subtitle: "Portfolio React UI Avancé", cat: "en-ligne", progress: 100, year: "2026", isPremium: true,
+    desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
+    tech: ["React 18", "Vite", "GSAP", "Framer Motion", "TailwindCSS"], url: "https://jean-edy-dev.vercel.app/",
+    image: "/assets/images/projects/jean-edy-preview.jpg", color: "#1a1a66"
+  },
+  {
+    id: 18, title: "MD Laverie Pressing", subtitle: "Site Vitrine Pressing", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
+    desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
+    tech: ["React 18", "Vite", "GSAP", "React Router v6", "EmailJS"], url: "https://laverie-plus.vercel.app/",
+    image: "/assets/images/projects/laverie-preview.jpg", color: "#004466"
+  },
 ];
 
 const SKILLS = {
-  frontend:[
-    { name:"React",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",          pct:90 },
-    { name:"JavaScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",pct:88 },
-    { name:"TypeScript", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",pct:70 },
-    { name:"Next.js",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",         pct:85 },
-    { name:"Tailwind",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",pct:92 },
-    { name:"HTML5",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",           pct:95 },
-    { name:"CSS3",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",             pct:90 },
-    { name:"Bootstrap",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg",  pct:85 },
+  frontend: [
+    { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", pct: 90 },
+    { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", pct: 88 },
+    { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg", pct: 70 },
+    { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", pct: 85 },
+    { name: "Tailwind", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg", pct: 92 },
+    { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg", pct: 95 },
+    { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg", pct: 90 },
+    { name: "Bootstrap", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg", pct: 85 },
   ],
-  backend:[
-    { name:"Python",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",  pct:85 },
-    { name:"Flask",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg",    pct:82 },
-    { name:"Django",  icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg",     pct:75 },
-    { name:"Node.js", icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",  pct:70 },
-    { name:"MySQL",   icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",    pct:80 },
+  backend: [
+    { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", pct: 85 },
+    { name: "Flask", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg", pct: 82 },
+    { name: "Django", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg", pct: 75 },
+    { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", pct: 70 },
+    { name: "MySQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg", pct: 80 },
   ],
-  tools:[
-    { name:"Git",          icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",         pct:90 },
-    { name:"VS Code",      icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",   pct:95 },
-    { name:"GitHub",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",   pct:90 },
-    { name:"Vercel",       icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg",   pct:88 },
-    { name:"Claude AI",    icon:"https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.svg", pct:85 },
-    { name:"ChatGPT",      icon:"https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg",             pct:80 },
-    { name:"PythonAnywhere",icon:"https://www.pythonanywhere.com/static/anywhere/images/PA-logo.svg",              pct:75 },
-    { name:"Netlify",      icon:"https://logo.svgcdn.com/logos/netlify.svg",                                       pct:78 },
+  tools: [
+    { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg", pct: 90 },
+    { name: "VS Code", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg", pct: 95 },
+    { name: "GitHub", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg", pct: 90 },
+    { name: "Vercel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg", pct: 88 },
+    { name: "Claude AI", icon: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/claude-ai-icon.svg", pct: 85 },
+    { name: "ChatGPT", icon: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg", pct: 80 },
+    { name: "PythonAnywhere", icon: "https://www.pythonanywhere.com/static/anywhere/images/PA-logo.svg", pct: 75 },
+    { name: "Netlify", icon: "https://logo.svgcdn.com/logos/netlify.svg", pct: 78 },
   ],
-  autres:[
-    { name:"Windows",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",   pct:95 },
-    { name:"Android",    icon:"https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg",     pct:80 },
-    { name:"Word",       icon:"https://img.icons8.com/fluency/48/microsoft-word-2019.png",                          pct:90 },
-    { name:"Excel",      icon:"https://img.icons8.com/fluency/48/microsoft-excel-2019.png",                         pct:85 },
-    { name:"PowerPoint", icon:"https://img.icons8.com/fluency/48/microsoft-powerpoint-2019.png",                    pct:85 },
-    { name:"MS Project", icon:"https://img.icons8.com/fluency/48/microsoft-project-2019.png",                       pct:75 },
-    { name:"Maintenance",icon:"https://img.icons8.com/fluency/48/maintenance.png",                                  pct:88 },
-    { name:"Support",    icon:"https://img.icons8.com/fluency/48/technical-support.png",                            pct:90 },
+  autres: [
+    { name: "Windows", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg", pct: 95 },
+    { name: "Android", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg", pct: 80 },
+    { name: "Word", icon: "https://img.icons8.com/fluency/48/microsoft-word-2019.png", pct: 90 },
+    { name: "Excel", icon: "https://img.icons8.com/fluency/48/microsoft-excel-2019.png", pct: 85 },
+    { name: "PowerPoint", icon: "https://img.icons8.com/fluency/48/microsoft-powerpoint-2019.png", pct: 85 },
+    { name: "MS Project", icon: "https://img.icons8.com/fluency/48/microsoft-project-2019.png", pct: 75 },
+    { name: "Maintenance", icon: "https://img.icons8.com/fluency/48/maintenance.png", pct: 88 },
+    { name: "Support", icon: "https://img.icons8.com/fluency/48/technical-support.png", pct: 90 },
   ],
 };
 
 const TIMELINE = [
-  { date:"2025–2026", icon:"fa-rocket", title:"Développeur Freelance Fullstack", company:"AKATech",
-    desc:"Conception et déploiement de 10+ apps web (SaaS, e-commerce, plateformes). APIs REST Django/Flask, dashboards, déploiement cloud.",
-    items:[
+  {
+    date: "2025–2026", icon: "fa-rocket", title: "Développeur Freelance Fullstack", company: "AKATech",
+    desc: "Conception et déploiement de 10+ apps web (SaaS, e-commerce, plateformes). APIs REST Django/Flask, dashboards, déploiement cloud.",
+    items: [
       "Conception et déploiement de plus de 10 applications web (SaaS, e-commerce, plateformes)",
       "Développement d'API REST avec Django et Flask",
       "Mise en place de dashboards et systèmes de gestion de données",
       "Déploiement cloud (Vercel, PythonAnywhere, Netlify)",
     ],
-    tags:["Freelance","Full-Stack","Django","React","SaaS","Data"] },
-  { date:"Mai–Nov. 2025", icon:"fa-briefcase", title:"Informaticien Stagiaire", company:"Mairie d'Agboville",
-    desc:"Maintenance parc informatique, support technique, numérisation des données et création d'outils numériques internes.",
-    items:[
+    tags: ["Freelance", "Full-Stack", "Django", "React", "SaaS", "Data"]
+  },
+  {
+    date: "Mai–Nov. 2025", icon: "fa-briefcase", title: "Informaticien Stagiaire", company: "Mairie d'Agboville",
+    desc: "Maintenance parc informatique, support technique, numérisation des données et création d'outils numériques internes.",
+    items: [
       "Maintenance du parc informatique et du réseau",
       "Support technique aux utilisateurs",
       "Contribution à la gestion et à la numérisation des données",
       "Appui à la création d'outils numériques internes",
-    ] },
-  { date:"2023–2024", icon:"fa-graduation-cap", title:"Projet Académique – ARTICI", company:"UVCI",
-    desc:"Plateforme web de promotion de l'artisanat local. Travail collaboratif pluridisciplinaire, optimisation et sécurité.",
-    items:[
+    ]
+  },
+  {
+    date: "2023–2024", icon: "fa-graduation-cap", title: "Projet Académique – ARTICI", company: "UVCI",
+    desc: "Plateforme web de promotion de l'artisanat local. Travail collaboratif pluridisciplinaire, optimisation et sécurité.",
+    items: [
       "Plateforme web de promotion de l'artisanat local",
       "Travail collaboratif en équipe pluridisciplinaire",
       "Optimisation des performances et sécurité applicative",
-    ] },
-  { date:"2023–2024", icon:"fa-book", title:"Licence en Réseau & Sécurité Info", company:"UVCI",
-    desc:"Formation complète en développement web, bases de données et sécurité des applications.",
-    tags:["Certification E-Banking","Réf: CC/24-002485"] },
-  { date:"2020–2021", icon:"fa-school", title:"Baccalauréat Série D", company:"Lycée Moderne d'Arrah",
-    desc:"Mention : Assez Bien." },
+    ]
+  },
+  {
+    date: "2023–2024", icon: "fa-book", title: "Licence en Réseau & Sécurité Info", company: "UVCI",
+    desc: "Formation complète en développement web, bases de données et sécurité des applications.",
+    tags: ["Certification E-Banking", "Réf: CC/24-002485"]
+  },
+  {
+    date: "2020–2021", icon: "fa-school", title: "Baccalauréat Série D", company: "Lycée Moderne d'Arrah",
+    desc: "Mention : Assez Bien."
+  },
 ];
 
 const SERVICES_DATA = [
-  { n:"01", icon:"fa-laptop-code",   title:"Applications Web",       desc:"Apps CRUD complètes, dashboards de gestion, solutions sur-mesure.",
-    features:["Applications CRUD complètes","Dashboards de gestion","Solutions sur-mesure"] },
-  { n:"02", icon:"fa-plug",          title:"API RESTful",             desc:"APIs Python/Flask documentées, sécurisées, prêtes pour la production.",
-    features:["API RESTful avec Python","Documentation complète","Sécurité intégrée"] },
-  { n:"03", icon:"fa-mobile-alt",    title:"Interfaces Responsives",  desc:"Design et intégration d'interfaces modernes et adaptatives.",
-    features:["Design responsive","UX optimale","Performance maximale"] },
-  { n:"04", icon:"fa-database",      title:"Bases de Données",        desc:"Conception et optimisation de bases de données MySQL.",
-    features:["Modélisation de données","Requêtes SQL optimisées","Intégrité des données"] },
-  { n:"05", icon:"fa-lock",          title:"Sécurité Applicative",    desc:"Bonnes pratiques de sécurité intégrées dès la conception.",
-    features:["Protection des données","Gestion des accès","Sécurisation Python"] },
-  { n:"06", icon:"fa-tools",         title:"Support Technique",       desc:"Maintenance informatique et assistance technique utilisateur.",
-    features:["Maintenance matérielle","Support utilisateur","Résolution de problèmes"] },
+  {
+    n: "01", icon: "fa-laptop-code", title: "Applications Web", desc: "Apps CRUD complètes, dashboards de gestion, solutions sur-mesure.",
+    features: ["Applications CRUD complètes", "Dashboards de gestion", "Solutions sur-mesure"]
+  },
+  {
+    n: "02", icon: "fa-plug", title: "API RESTful", desc: "APIs Python/Flask documentées, sécurisées, prêtes pour la production.",
+    features: ["API RESTful avec Python", "Documentation complète", "Sécurité intégrée"]
+  },
+  {
+    n: "03", icon: "fa-mobile-alt", title: "Interfaces Responsives", desc: "Design et intégration d'interfaces modernes et adaptatives.",
+    features: ["Design responsive", "UX optimale", "Performance maximale"]
+  },
+  {
+    n: "04", icon: "fa-database", title: "Bases de Données", desc: "Conception et optimisation de bases de données MySQL.",
+    features: ["Modélisation de données", "Requêtes SQL optimisées", "Intégrité des données"]
+  },
+  {
+    n: "05", icon: "fa-lock", title: "Sécurité Applicative", desc: "Bonnes pratiques de sécurité intégrées dès la conception.",
+    features: ["Protection des données", "Gestion des accès", "Sécurisation Python"]
+  },
+  {
+    n: "06", icon: "fa-tools", title: "Support Technique", desc: "Maintenance informatique et assistance technique utilisateur.",
+    features: ["Maintenance matérielle", "Support utilisateur", "Résolution de problèmes"]
+  },
 ];
 
 const PRICING_TABS = [
-  { key:"portfolio", label:"Portfolio", icon:"fa-globe",
-    plans:[
-      { badge:"STARTER",  price:"70 000 FCFA",  delivery:"3–5 jours",
-        features:["3 pages","Design responsive","Section projets","Formulaire contact","Nom de domaine offert (1 an)","Hébergement inclus (1 an)"] },
-      { badge:"STANDARD", price:"120 000 FCFA", delivery:"5–7 jours", isPopular:true,
-        features:["5 pages","Animations modernes","Projets détaillés","SEO de base","Nom de domaine offert (1 an)","Hébergement inclus (1 an)"] },
-      { badge:"PREMIUM",  price:"180 000 FCFA", delivery:"7–10 jours",
-        features:["Design personnalisé","Animations avancées","Blog intégré","Optimisation performance","Nom de domaine offert","Hébergement inclus","1 mois support"] },
+  {
+    key: "portfolio", label: "Portfolio", icon: "fa-globe",
+    plans: [
+      {
+        badge: "STARTER", price: "70 000 FCFA", delivery: "3–5 jours",
+        features: ["3 pages", "Design responsive", "Section projets", "Formulaire contact", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
+      },
+      {
+        badge: "STANDARD", price: "120 000 FCFA", delivery: "5–7 jours", isPopular: true,
+        features: ["5 pages", "Animations modernes", "Projets détaillés", "SEO de base", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
+      },
+      {
+        badge: "PREMIUM", price: "180 000 FCFA", delivery: "7–10 jours",
+        features: ["Design personnalisé", "Animations avancées", "Blog intégré", "Optimisation performance", "Nom de domaine offert", "Hébergement inclus", "1 mois support"]
+      },
     ]
   },
-  { key:"vitrine", label:"Site Vitrine", icon:"fa-building",
-    plans:[
-      { badge:"STARTER", price:"150 000 FCFA", delivery:"5 jours",
-        features:["5 pages","Design responsive","Formulaire contact","SEO de base","Nom de domaine offert (1 an)","1 mois support"] },
-      { badge:"PRO",     price:"270 000 FCFA", delivery:"7–10 jours", isPopular:true,
-        features:["10 pages","Design premium","Blog intégré","SEO avancé","Nom de domaine offert","Hébergement inclus","3 mois support","Formation 2h"] },
-      { badge:"ELITE",   price:"450 000 FCFA", delivery:"10–14 jours",
-        features:["15–20 pages","Design sur mesure","CMS complet","SEO + Analytics","Nom de domaine offert","Hébergement inclus","6 mois support","Formation complète"] },
+  {
+    key: "vitrine", label: "Site Vitrine", icon: "fa-building",
+    plans: [
+      {
+        badge: "STARTER", price: "150 000 FCFA", delivery: "5 jours",
+        features: ["5 pages", "Design responsive", "Formulaire contact", "SEO de base", "Nom de domaine offert (1 an)", "1 mois support"]
+      },
+      {
+        badge: "PRO", price: "270 000 FCFA", delivery: "7–10 jours", isPopular: true,
+        features: ["10 pages", "Design premium", "Blog intégré", "SEO avancé", "Nom de domaine offert", "Hébergement inclus", "3 mois support", "Formation 2h"]
+      },
+      {
+        badge: "ELITE", price: "450 000 FCFA", delivery: "10–14 jours",
+        features: ["15–20 pages", "Design sur mesure", "CMS complet", "SEO + Analytics", "Nom de domaine offert", "Hébergement inclus", "6 mois support", "Formation complète"]
+      },
     ]
   },
-  { key:"ecommerce", label:"E-commerce", icon:"fa-shopping-cart",
-    plans:[
-      { badge:"STARTER", price:"400 000 FCFA",   delivery:"14 jours",
-        features:["Jusqu'à 50 produits","Paiement Mobile Money","Gestion commandes","Tableau de bord","Hébergement inclus","1 mois support"] },
-      { badge:"PRO",     price:"650 000 FCFA",   delivery:"21 jours", isPopular:true,
-        features:["200–500 produits","Multi-paiement","Gestion stock temps réel","Analytics","Hébergement inclus","3 mois support","Formation admin"] },
-      { badge:"ELITE",   price:"1 000 000 FCFA", delivery:"30 jours",
-        features:["Produits illimités","API paiement personnalisée","Automatisations","Rapports avancés","Hébergement inclus","6 mois support","Formation équipe"] },
+  {
+    key: "ecommerce", label: "E-commerce", icon: "fa-shopping-cart",
+    plans: [
+      {
+        badge: "STARTER", price: "400 000 FCFA", delivery: "14 jours",
+        features: ["Jusqu'à 50 produits", "Paiement Mobile Money", "Gestion commandes", "Tableau de bord", "Hébergement inclus", "1 mois support"]
+      },
+      {
+        badge: "PRO", price: "650 000 FCFA", delivery: "21 jours", isPopular: true,
+        features: ["200–500 produits", "Multi-paiement", "Gestion stock temps réel", "Analytics", "Hébergement inclus", "3 mois support", "Formation admin"]
+      },
+      {
+        badge: "ELITE", price: "1 000 000 FCFA", delivery: "30 jours",
+        features: ["Produits illimités", "API paiement personnalisée", "Automatisations", "Rapports avancés", "Hébergement inclus", "6 mois support", "Formation équipe"]
+      },
     ]
   },
-  { key:"saas", label:"App SaaS", icon:"fa-cog",
-    plans:[
-      { badge:"MVP",        price:"700 000 FCFA",          delivery:"3–4 semaines",
-        features:["Authentification + rôles","Dashboard basique","API REST","Déploiement cloud","1 mois support","Hébergement 1–3 mois"] },
-      { badge:"SCALE",      price:"1 200 000 – 2 000 000", delivery:"4–6 semaines", isPopular:true,
-        features:["Multi-tenant","Analytics temps réel","Intégrations paiement/email","Support prioritaire"] },
-      { badge:"ENTERPRISE", price:"À partir de 2 500 000", delivery:"6–10 semaines",
-        features:["Architecture microservices","Sécurité renforcée","SLA 99.9%","Formation équipe"] },
+  {
+    key: "saas", label: "App SaaS", icon: "fa-cog",
+    plans: [
+      {
+        badge: "MVP", price: "700 000 FCFA", delivery: "3–4 semaines",
+        features: ["Authentification + rôles", "Dashboard basique", "API REST", "Déploiement cloud", "1 mois support", "Hébergement 1–3 mois"]
+      },
+      {
+        badge: "SCALE", price: "1 200 000 – 2 000 000", delivery: "4–6 semaines", isPopular: true,
+        features: ["Multi-tenant", "Analytics temps réel", "Intégrations paiement/email", "Support prioritaire"]
+      },
+      {
+        badge: "ENTERPRISE", price: "À partir de 2 500 000", delivery: "6–10 semaines",
+        features: ["Architecture microservices", "Sécurité renforcée", "SLA 99.9%", "Formation équipe"]
+      },
     ]
   },
 ];
 
 const FAQ = [
-  { q:"Combien coûte un site web ?",               a:"Les projets commencent à 60 000 FCFA pour un site vitrine. Le prix dépend des fonctionnalités demandées." },
-  { q:"Combien de temps prend la création ?",      a:"Un site vitrine : 5–10 jours. Un projet complexe (e-commerce, SaaS) : plusieurs semaines selon la complexité." },
-  { q:"Puis-je modifier mon site moi-même ?",      a:"Oui. Une formation rapide est incluse dans la plupart des offres pour gérer votre site facilement." },
-  { q:"Proposez-vous un support après livraison ?",a:"Oui. Support technique disponible après la livraison selon la formule choisie." },
-  { q:"Les prix sont-ils fixes ?",                 a:"Chaque projet étant unique, les tarifs varient. Un devis gratuit est établi après discussion." },
+  { q: "Combien coûte un site web ?", a: "Les projets commencent à 60 000 FCFA pour un site vitrine. Le prix dépend des fonctionnalités demandées." },
+  { q: "Combien de temps prend la création ?", a: "Un site vitrine : 5–10 jours. Un projet complexe (e-commerce, SaaS) : plusieurs semaines selon la complexité." },
+  { q: "Puis-je modifier mon site moi-même ?", a: "Oui. Une formation rapide est incluse dans la plupart des offres pour gérer votre site facilement." },
+  { q: "Proposez-vous un support après livraison ?", a: "Oui. Support technique disponible après la livraison selon la formule choisie." },
+  { q: "Les prix sont-ils fixes ?", a: "Chaque projet étant unique, les tarifs varient. Un devis gratuit est établi après discussion." },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -926,7 +1012,7 @@ function useCSS() {
 // ═══════════════════════════════════════════════════════════════
 
 // Module-level: mémorise la position même après unmount
-let _mx = typeof window !== 'undefined' ? window.innerWidth  / 2 : 400;
+let _mx = typeof window !== 'undefined' ? window.innerWidth / 2 : 400;
 let _my = typeof window !== 'undefined' ? window.innerHeight / 2 : 300;
 
 function CustomCursor() {
@@ -951,8 +1037,8 @@ function CustomCursor() {
 
   return (
     <div className="w95-cursor" ref={ref}>
-      <div className="w95-cursor-inner"/>
-      <div className="w95-cursor-dot"/>
+      <div className="w95-cursor-inner" />
+      <div className="w95-cursor-dot" />
     </div>
   );
 }
@@ -962,23 +1048,23 @@ function CustomCursor() {
 // ═══════════════════════════════════════════════════════════════
 
 const Fa = ({ icon, style = {} }) => (
-  <i className={`fas fa-${icon}`} style={style} aria-hidden="true"/>
+  <i className={`fas fa-${icon}`} style={style} aria-hidden="true" />
 );
 
 // Icône pour la titlebar (blanche)
 const TitleIcon = ({ type }) => {
   const map = {
-    welcome:  'desktop',
-    about:    'user',
+    welcome: 'desktop',
+    about: 'user',
     projects: 'folder-open',
-    skills:   'code',
+    skills: 'code',
     services: 'briefcase',
-    contact:  'envelope',
-    faq:      'question-circle',
-    detail:   'file-alt',
-    gallery:  'images',
+    contact: 'envelope',
+    faq: 'question-circle',
+    detail: 'file-alt',
+    gallery: 'images',
   };
-  return <Fa icon={map[type] || 'window-maximize'} style={{ fontSize:12, color:'#fff' }}/>;
+  return <Fa icon={map[type] || 'window-maximize'} style={{ fontSize: 12, color: '#fff' }} />;
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -988,12 +1074,12 @@ const TitleIcon = ({ type }) => {
 function Clock() {
   const [t, setT] = useState('');
   useEffect(() => {
-    const tick = () => setT(new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }));
+    const tick = () => setT(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
     tick(); const id = setInterval(tick, 30000); return () => clearInterval(id);
   }, []);
   return (
     <div className="w95-clock">
-      <Fa icon="volume-up" style={{ fontSize:11 }}/>
+      <Fa icon="volume-up" style={{ fontSize: 11 }} />
       <span>{t}</span>
     </div>
   );
@@ -1004,65 +1090,65 @@ function Clock() {
 // ═══════════════════════════════════════════════════════════════
 
 const ICON_SVGS = {
-  about:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#1a5fa8"/>
-    <circle cx="20" cy="14" r="6" fill="#fff" opacity=".9"/>
-    <path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="20" cy="14" r="3" fill="#60aaff"/></svg>
+  about: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#1a5fa8" />
+      <circle cx="20" cy="14" r="6" fill="#fff" opacity=".9" />
+      <path d="M8 34c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="20" cy="14" r="3" fill="#60aaff" /></svg>
   ),
-  projects:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#daa520"/>
-    <rect x="4" y="4" width="14" height="14" rx="2" fill="#fff" opacity=".9"/>
-    <rect x="22" y="4" width="14" height="14" rx="2" fill="#fff" opacity=".7"/>
-    <rect x="4" y="22" width="14" height="14" rx="2" fill="#fff" opacity=".7"/>
-    <rect x="22" y="22" width="14" height="14" rx="2" fill="#fff" opacity=".9"/>
-    <rect x="6" y="6" width="10" height="10" rx="1" fill="#c8890a"/>
-    <rect x="24" y="24" width="10" height="10" rx="1" fill="#c8890a"/></svg>
+  projects: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#daa520" />
+      <rect x="4" y="4" width="14" height="14" rx="2" fill="#fff" opacity=".9" />
+      <rect x="22" y="4" width="14" height="14" rx="2" fill="#fff" opacity=".7" />
+      <rect x="4" y="22" width="14" height="14" rx="2" fill="#fff" opacity=".7" />
+      <rect x="22" y="22" width="14" height="14" rx="2" fill="#fff" opacity=".9" />
+      <rect x="6" y="6" width="10" height="10" rx="1" fill="#c8890a" />
+      <rect x="24" y="24" width="10" height="10" rx="1" fill="#c8890a" /></svg>
   ),
-  skills:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#006644"/>
-    <path d="M8 20h6l4-10 6 20 4-14 4 4h6" stroke="#fff" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/></svg>
+  skills: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#006644" />
+      <path d="M8 20h6l4-10 6 20 4-14 4 4h6" stroke="#fff" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" /></svg>
   ),
-  services:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#6b21a8"/>
-    <circle cx="20" cy="20" r="10" stroke="#fff" strokeWidth="2"/>
-    <path d="M20 10v4M20 26v4M10 20h4M26 20h4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="20" cy="20" r="4" fill="#fff"/></svg>
+  services: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#6b21a8" />
+      <circle cx="20" cy="20" r="10" stroke="#fff" strokeWidth="2" />
+      <path d="M20 10v4M20 26v4M10 20h4M26 20h4" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="20" cy="20" r="4" fill="#fff" /></svg>
   ),
-  contact:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#b91c1c"/>
-    <rect x="6" y="10" width="28" height="20" rx="3" fill="#fff" opacity=".9"/>
-    <path d="M6 13l14 9 14-9" stroke="#b91c1c" strokeWidth="2"/></svg>
+  contact: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#b91c1c" />
+      <rect x="6" y="10" width="28" height="20" rx="3" fill="#fff" opacity=".9" />
+      <path d="M6 13l14 9 14-9" stroke="#b91c1c" strokeWidth="2" /></svg>
   ),
-  faq:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#0e7490"/>
-    <path d="M14 16c0-3.314 2.686-6 6-6s6 2.686 6 6c0 3-3 5-3 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="20" cy="30" r="2" fill="#fff"/></svg>
+  faq: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#0e7490" />
+      <path d="M14 16c0-3.314 2.686-6 6-6s6 2.686 6 6c0 3-3 5-3 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="20" cy="30" r="2" fill="#fff" /></svg>
   ),
-  github:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#1a1a2e"/>
-    <path d="M20 6C12.268 6 6 12.268 6 20c0 6.19 4.008 11.433 9.568 13.29.7.128.957-.303.957-.674 0-.333-.012-1.213-.019-2.38-3.893.846-4.715-1.876-4.715-1.876-.636-1.617-1.553-2.047-1.553-2.047-1.27-.867.096-.85.096-.85 1.404.099 2.143 1.442 2.143 1.442 1.25 2.14 3.278 1.522 4.077 1.163.127-.904.49-1.522.89-1.872-3.108-.354-6.375-1.554-6.375-6.917 0-1.527.546-2.776 1.44-3.754-.144-.355-.624-1.777.137-3.706 0 0 1.174-.376 3.847 1.434A13.389 13.389 0 0120 12.51c1.19.005 2.388.16 3.507.472 2.67-1.81 3.843-1.434 3.843-1.434.763 1.93.283 3.35.139 3.706.896.978 1.44 2.227 1.44 3.754 0 5.376-3.272 6.56-6.389 6.906.502.432.949 1.285.949 2.59 0 1.87-.017 3.377-.017 3.836 0 .374.252.81.963.673C29.995 31.43 34 26.19 34 20c0-7.732-6.268-14-14-14z" fill="#fff" opacity=".9"/></svg>
+  github: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#1a1a2e" />
+      <path d="M20 6C12.268 6 6 12.268 6 20c0 6.19 4.008 11.433 9.568 13.29.7.128.957-.303.957-.674 0-.333-.012-1.213-.019-2.38-3.893.846-4.715-1.876-4.715-1.876-.636-1.617-1.553-2.047-1.553-2.047-1.27-.867.096-.85.096-.85 1.404.099 2.143 1.442 2.143 1.442 1.25 2.14 3.278 1.522 4.077 1.163.127-.904.49-1.522.89-1.872-3.108-.354-6.375-1.554-6.375-6.917 0-1.527.546-2.776 1.44-3.754-.144-.355-.624-1.777.137-3.706 0 0 1.174-.376 3.847 1.434A13.389 13.389 0 0120 12.51c1.19.005 2.388.16 3.507.472 2.67-1.81 3.843-1.434 3.843-1.434.763 1.93.283 3.35.139 3.706.896.978 1.44 2.227 1.44 3.754 0 5.376-3.272 6.56-6.389 6.906.502.432.949 1.285.949 2.59 0 1.87-.017 3.377-.017 3.836 0 .374.252.81.963.673C29.995 31.43 34 26.19 34 20c0-7.732-6.268-14-14-14z" fill="#fff" opacity=".9" /></svg>
   ),
-  akatech:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#002211"/>
-    <text x="4" y="26" fontFamily="monospace" fontSize="20" fontWeight="900" fill="#00ff88">AK</text>
-    <rect x="4" y="28" width="32" height="2" fill="#00ff88" opacity=".5"/></svg>
+  akatech: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#002211" />
+      <text x="4" y="26" fontFamily="monospace" fontSize="20" fontWeight="900" fill="#00ff88">AK</text>
+      <rect x="4" y="28" width="32" height="2" fill="#00ff88" opacity=".5" /></svg>
   ),
-  welcome:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#003366"/>
-    <rect x="4" y="6" width="32" height="22" rx="3" fill="#fff" opacity=".15"/>
-    <rect x="6" y="8" width="28" height="18" rx="2" fill="#1a4a8a"/>
-    <path d="M6 8l14 11 14-11" stroke="#60aaff" strokeWidth="1.5"/>
-    <rect x="14" y="30" width="12" height="3" rx="1" fill="#fff" opacity=".5"/></svg>
+  welcome: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#003366" />
+      <rect x="4" y="6" width="32" height="22" rx="3" fill="#fff" opacity=".15" />
+      <rect x="6" y="8" width="28" height="18" rx="2" fill="#1a4a8a" />
+      <path d="M6 8l14 11 14-11" stroke="#60aaff" strokeWidth="1.5" />
+      <rect x="14" y="30" width="12" height="3" rx="1" fill="#fff" opacity=".5" /></svg>
   ),
-  gallery:(
-    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#7c3aed"/>
-    <rect x="4" y="8" width="14" height="11" rx="2" fill="#fff" opacity=".85"/>
-    <rect x="22" y="8" width="14" height="11" rx="2" fill="#fff" opacity=".65"/>
-    <rect x="4" y="22" width="14" height="11" rx="2" fill="#fff" opacity=".65"/>
-    <rect x="22" y="22" width="14" height="11" rx="2" fill="#fff" opacity=".85"/>
-    <circle cx="11" cy="13" r="3" fill="#7c3aed" opacity=".6"/>
-    <path d="M4 17l4-4 4 4 3-3 3 3" stroke="#7c3aed" strokeWidth="1.2" opacity=".6"/></svg>
+  gallery: (
+    <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="4" fill="#7c3aed" />
+      <rect x="4" y="8" width="14" height="11" rx="2" fill="#fff" opacity=".85" />
+      <rect x="22" y="8" width="14" height="11" rx="2" fill="#fff" opacity=".65" />
+      <rect x="4" y="22" width="14" height="11" rx="2" fill="#fff" opacity=".65" />
+      <rect x="22" y="22" width="14" height="11" rx="2" fill="#fff" opacity=".85" />
+      <circle cx="11" cy="13" r="3" fill="#7c3aed" opacity=".6" />
+      <path d="M4 17l4-4 4 4 3-3 3 3" stroke="#7c3aed" strokeWidth="1.2" opacity=".6" /></svg>
   ),
 };
 
@@ -1071,17 +1157,17 @@ const ICON_SVGS = {
 // ═══════════════════════════════════════════════════════════════
 
 const BOOT_LINES = [
-  { t:300,  cls:'white', txt:'AKAFOLIO BIOS v3.0 — Copyright AKATech 2025' },
-  { t:600,  cls:'white', txt:'CPU: Elvis K. Fullstack Dev @ 3.6GHz' },
-  { t:900,  cls:'ok',    txt:'[OK] RAM Check ............. 14 Projets détectés' },
-  { t:1100, cls:'ok',    txt:'[OK] Frontend drivers ....... React 18 ✓' },
-  { t:1300, cls:'ok',    txt:'[OK] Backend services ........ Flask/Django ✓' },
-  { t:1500, cls:'ok',    txt:'[OK] Deployment module ....... Vercel ✓' },
-  { t:1700, cls:'ok',    txt:'[OK] AKATech Agency .......... En ligne ✓' },
-  { t:1900, cls:'warn',  txt:'[WARN] Café restant ........... Critique' },
-  { t:2100, cls:'ok',    txt:'[OK] Windows XP Wallpaper .... Chargé ✓' },
-  { t:2300, cls:'info',  txt:'[INFO] Localisation ........... Abidjan, CI' },
-  { t:2600, cls:'ok',    txt:'[OK] Système prêt ............ AKAFOLIO OS' },
+  { t: 300, cls: 'white', txt: 'AKAFOLIO BIOS v3.0 — Copyright AKATech 2025' },
+  { t: 600, cls: 'white', txt: 'CPU: Elvis K. Fullstack Dev @ 3.6GHz' },
+  { t: 900, cls: 'ok', txt: '[OK] RAM Check ............. 14 Projets détectés' },
+  { t: 1100, cls: 'ok', txt: '[OK] Frontend drivers ....... React 18 ✓' },
+  { t: 1300, cls: 'ok', txt: '[OK] Backend services ........ Flask/Django ✓' },
+  { t: 1500, cls: 'ok', txt: '[OK] Deployment module ....... Vercel ✓' },
+  { t: 1700, cls: 'ok', txt: '[OK] AKATech Agency .......... En ligne ✓' },
+  { t: 1900, cls: 'warn', txt: '[WARN] Café restant ........... Critique' },
+  { t: 2100, cls: 'ok', txt: '[OK] Windows XP Wallpaper .... Chargé ✓' },
+  { t: 2300, cls: 'info', txt: '[INFO] Localisation ........... Abidjan, CI' },
+  { t: 2600, cls: 'ok', txt: '[OK] Système prêt ............ AKAFOLIO OS' },
 ];
 
 function useBootWebGL(canvasRef, active) {
@@ -1136,14 +1222,14 @@ function BootScreen({ onDone }) {
 
   return (
     <div className="w95-boot">
-      <canvas ref={canvasRef} className="w95-boot-canvas" style={{ pointerEvents:'none' }}/>
+      <canvas ref={canvasRef} className="w95-boot-canvas" style={{ pointerEvents: 'none' }} />
       <div className="w95-boot-content">
         <div className="w95-boot-title">AKAfolio OS v3</div>
         {lines.map((l, i) => (
           <div key={i} className={`w95-boot-line ${l.cls}`}>{l.txt}</div>
         ))}
         <div className="w95-boot-progress">
-          <div className="w95-boot-bar" style={{ width:`${progress}%` }}/>
+          <div className="w95-boot-bar" style={{ width: `${progress}%` }} />
         </div>
         {done ? (
           <button className="w95-boot-enter" onClick={onDone}>
@@ -1160,15 +1246,15 @@ function BootScreen({ onDone }) {
 
 /* Chemins d'adresse par type de fenêtre */
 const WIN_ADDRESS = {
-  welcome:  'C:\\AKAfolio\\Accueil',
-  about:    'C:\\AKAfolio\\À_propos',
-  skills:   'C:\\AKAfolio\\Compétences',
+  welcome: 'C:\\AKAfolio\\Accueil',
+  about: 'C:\\AKAfolio\\À_propos',
+  skills: 'C:\\AKAfolio\\Compétences',
   projects: 'C:\\AKAfolio\\Projets',
   services: 'C:\\AKAfolio\\Services_&_Tarifs',
-  contact:  'C:\\AKAfolio\\Contact',
-  gallery:  'C:\\AKAfolio\\Galerie',
-  faq:      'C:\\AKAfolio\\FAQ',
-  detail:   'C:\\AKAfolio\\Projets\\Détail',
+  contact: 'C:\\AKAfolio\\Contact',
+  gallery: 'C:\\AKAfolio\\Galerie',
+  faq: 'C:\\AKAfolio\\FAQ',
+  detail: 'C:\\AKAfolio\\Projets\\Détail',
 };
 
 /* Logo Windows 4 carrés */
@@ -1176,10 +1262,10 @@ function WinLogo() {
   return (
     <div className="w95-winlogo">
       <div className="w95-winlogo-grid">
-        <span style={{background:'#f24'}}/>
-        <span style={{background:'#fa0'}}/>
-        <span style={{background:'#0af'}}/>
-        <span style={{background:'#cc0'}}/>
+        <span style={{ background: '#f24' }} />
+        <span style={{ background: '#fa0' }} />
+        <span style={{ background: '#0af' }} />
+        <span style={{ background: '#cc0' }} />
       </div>
     </div>
   );
@@ -1192,36 +1278,36 @@ function WinToolbar({ winType, onClose, onMinimize }) {
       {/* Icône dossier */}
       <button className="w95-toolbtn" title="Dossier">
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path d="M1 3v10h14v-8h-7l-2-2z" fill="goldenrod" stroke="#000" strokeWidth=".5"/>
+          <path d="M1 3v10h14v-8h-7l-2-2z" fill="goldenrod" stroke="#000" strokeWidth=".5" />
         </svg>
       </button>
       {/* Icône home */}
       <button className="w95-toolbtn" title="Accueil">
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path d="M8 1l-7 7h2v7h4v-4h2v4h4v-7h2z" fill="goldenrod"/>
+          <path d="M8 1l-7 7h2v7h4v-4h2v4h4v-7h2z" fill="goldenrod" />
         </svg>
       </button>
-      <div className="w95-toolsep"/>
+      <div className="w95-toolsep" />
       {/* Précédent / Suivant */}
-      <button className="w95-toolbtn" title="Précédent" style={{color:'green',fontWeight:900}}>◀</button>
-      <button className="w95-toolbtn" title="Suivant"   style={{color:'#888',fontWeight:900}}>▶</button>
-      <div className="w95-toolsep"/>
+      <button className="w95-toolbtn" title="Précédent" style={{ color: 'green', fontWeight: 900 }}>◀</button>
+      <button className="w95-toolbtn" title="Suivant" style={{ color: '#888', fontWeight: 900 }}>▶</button>
+      <div className="w95-toolsep" />
       {/* Annuler / Actualiser */}
-      <button className="w95-toolbtn" title="Annuler" onClick={e=>{e.stopPropagation();onClose?.();}} style={{color:'red',fontWeight:900}}>×</button>
-      <button className="w95-toolbtn" title="Actualiser" style={{color:'green',fontWeight:900,display:'inline-block',transform:'rotate(90deg)'}}>↻</button>
+      <button className="w95-toolbtn" title="Annuler" onClick={e => { e.stopPropagation(); onClose?.(); }} style={{ color: 'red', fontWeight: 900 }}>×</button>
+      <button className="w95-toolbtn" title="Actualiser" style={{ color: 'green', fontWeight: 900, display: 'inline-block', transform: 'rotate(90deg)' }}>↻</button>
       {/* Logo Windows à droite */}
-      <WinLogo/>
+      <WinLogo />
     </div>
   );
 }
 
 function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFocused, zIndex,
-                  menuItems=[], statusText='', onClose, onMinimize, onFocus, children }) {
+  menuItems = [], statusText = '', onClose, onMinimize, onFocus, children }) {
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
-  const mobilePos  = { x: 4, y: 10 };
+  const mobilePos = { x: 4, y: 10 };
   const mobileSize = { w: window.innerWidth - 8, h: window.innerHeight - 80 };
-  const [pos,  setPos]  = useState(isMobile ? mobilePos  : (defaultPos  || { x:120, y:50 }));
-  const [size, setSize] = useState(isMobile ? mobileSize : (defaultSize || { w:520, h:400 }));
+  const [pos, setPos] = useState(isMobile ? mobilePos : (defaultPos || { x: 120, y: 50 }));
+  const [size, setSize] = useState(isMobile ? mobileSize : (defaultSize || { w: 520, h: 400 }));
   const [maxed, setMaxed] = useState(false);
   const [closing, setClosing] = useState(false);
   const drag = useRef(null);
@@ -1250,7 +1336,7 @@ function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFo
     const sx = e.clientX - pos.x, sy = e.clientY - pos.y;
     drag.current = { sx, sy };
     const move = e2 => { if (drag.current) setPos({ x: e2.clientX - drag.current.sx, y: e2.clientY - drag.current.sy }); };
-    const up   = () => { drag.current = null; window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+    const up = () => { drag.current = null; window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
     onFocus?.();
@@ -1283,7 +1369,7 @@ function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFo
     const sx = e.clientX - size.w, sy = e.clientY - size.h;
     resize.current = { sx, sy };
     const move = e2 => { if (resize.current) setSize({ w: Math.max(280, e2.clientX - resize.current.sx), h: Math.max(160, e2.clientY - resize.current.sy) }); };
-    const up   = () => { resize.current = null; window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+    const up = () => { resize.current = null; window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
   };
@@ -1294,25 +1380,25 @@ function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFo
 
   return (
     <div
-      className={`w95-win${closing?' closing':''}`}
-      style={{ left: maxed?0:pos.x, top: maxed?0:pos.y, width: size.w, height: size.h, zIndex, position:'absolute' }}
+      className={`w95-win${closing ? ' closing' : ''}`}
+      style={{ left: maxed ? 0 : pos.x, top: maxed ? 0 : pos.y, width: size.w, height: size.h, zIndex, position: 'absolute' }}
       onMouseDown={() => onFocus?.()}
     >
       <div className="w95-win-inner">
 
         {/* ── Titlebar ── */}
-        <div className={`w95-titlebar${isFocused?'':' inactive'}`} onMouseDown={onDragStart} onTouchStart={onTouchDragStart}>
+        <div className={`w95-titlebar${isFocused ? '' : ' inactive'}`} onMouseDown={onDragStart} onTouchStart={onTouchDragStart}>
           <span className="w95-titlebar-icon">
-            <TitleIcon type={winType}/>
+            <TitleIcon type={winType} />
           </span>
           <span className="w95-titlebar-title">{title}</span>
           <div className="w95-titlebar-btns">
-            <button className="w95-wbtn help" onClick={e=>e.stopPropagation()} title="Aide">?</button>
-            <button className="w95-wbtn" onClick={e=>{e.stopPropagation();onMinimize?.();}} title="Réduire">–</button>
-            <button className="w95-wbtn" onClick={e=>{e.stopPropagation();handleMax();}} title="Agrandir">
+            <button className="w95-wbtn help" onClick={e => e.stopPropagation()} title="Aide">?</button>
+            <button className="w95-wbtn" onClick={e => { e.stopPropagation(); onMinimize?.(); }} title="Réduire">–</button>
+            <button className="w95-wbtn" onClick={e => { e.stopPropagation(); handleMax(); }} title="Agrandir">
               {maxed ? '❐' : '◻'}
             </button>
-            <button className="w95-wbtn close" onClick={e=>{e.stopPropagation();handleClose();}} title="Fermer">×</button>
+            <button className="w95-wbtn close" onClick={e => { e.stopPropagation(); handleClose(); }} title="Fermer">×</button>
           </div>
         </div>
 
@@ -1324,7 +1410,7 @@ function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFo
         )}
 
         {/* ── Toolbar ── */}
-        <WinToolbar winType={winType} onClose={handleClose} onMinimize={onMinimize}/>
+        <WinToolbar winType={winType} onClose={handleClose} onMinimize={onMinimize} />
 
         {/* ── Address bar ── */}
         <div className="w95-addrbar">
@@ -1339,8 +1425,8 @@ function Window({ id, winType, title, defaultPos, defaultSize, isMinimized, isFo
         <div className="w95-statusbar">
           <div className="w95-statuscell main">{statusText}</div>
           <div className="w95-statuscell sm"></div>
-          <div className="w95-statuscell resize" onMouseDown={onResizeStart} style={{cursor:'se-resize'}}>
-            <div className="w95-resize-grip"/>
+          <div className="w95-statuscell resize" onMouseDown={onResizeStart} style={{ cursor: 'se-resize' }}>
+            <div className="w95-resize-grip" />
           </div>
         </div>
 
@@ -1359,20 +1445,20 @@ function Lightbox({ items, index = 0, onClose }) {
   const [zoomed, setZoomed] = useState(false);
   const touchStartX = useRef(null);
 
-  const item     = items ? items[cur] : null;
-  const src      = item?.src      || items;
-  const title    = item?.title    || 'Photo';
+  const item = items ? items[cur] : null;
+  const src = item?.src || items;
+  const title = item?.title || 'Photo';
   const subtitle = item?.subtitle || '';
-  const url      = item?.url      || null;
-  const color    = item?.color    || 'var(--navy)';
-  const total    = items?.length  || 1;
-  const hasPrev  = cur > 0;
-  const hasNext  = cur < total - 1;
+  const url = item?.url || null;
+  const color = item?.color || 'var(--navy)';
+  const total = items?.length || 1;
+  const hasPrev = cur > 0;
+  const hasNext = cur < total - 1;
 
   useEffect(() => {
     const esc = e => { if (e.key === 'Escape') onClose(); };
     const arr = e => {
-      if (e.key === 'ArrowLeft'  && hasPrev) { setCur(i => i - 1); setZoomed(false); }
+      if (e.key === 'ArrowLeft' && hasPrev) { setCur(i => i - 1); setZoomed(false); }
       if (e.key === 'ArrowRight' && hasNext) { setCur(i => i + 1); setZoomed(false); }
     };
     window.addEventListener('keydown', esc);
@@ -1380,18 +1466,18 @@ function Lightbox({ items, index = 0, onClose }) {
     return () => { window.removeEventListener('keydown', esc); window.removeEventListener('keydown', arr); };
   }, [onClose, hasPrev, hasNext]);
 
-  const addrPath = `C:\\AKAfolio\\Images\\${title.replace(/\s+/g,'_')}`;
+  const addrPath = `C:\\AKAfolio\\Images\\${title.replace(/\s+/g, '_')}`;
 
   const goNext = () => { if (hasNext) { setCur(i => i + 1); setZoomed(false); } };
   const goPrev = () => { if (hasPrev) { setCur(i => i - 1); setZoomed(false); } };
 
   // Swipe touch support
   const onTouchStart = e => { touchStartX.current = e.touches[0].clientX; };
-  const onTouchEnd   = e => {
+  const onTouchEnd = e => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     if (dx < -50) goNext();
-    if (dx >  50) goPrev();
+    if (dx > 50) goPrev();
     touchStartX.current = null;
   };
 
@@ -1402,14 +1488,14 @@ function Lightbox({ items, index = 0, onClose }) {
         {/* ── Titlebar ── */}
         <div className="w95-lb-titlebar">
           <div className="w95-lb-titlebar-icon">
-            <Fa icon="image" style={{ fontSize:8, color:'var(--navy)' }}/>
+            <Fa icon="image" style={{ fontSize: 8, color: 'var(--navy)' }} />
           </div>
           <span className="w95-lb-title">
-            <Fa icon="images" style={{ marginRight:5, color:'#adf', fontSize:10 }}/>
+            <Fa icon="images" style={{ marginRight: 5, color: '#adf', fontSize: 10 }} />
             {title} — Visionneuse d'images
           </span>
           <div className="w95-lb-btns">
-            <button className="w95-wbtn" title={zoomed ? 'Réduire' : 'Agrandir'} onClick={() => setZoomed(z => !z)} style={{ fontSize:9 }}>{zoomed ? '⊖' : '⊕'}</button>
+            <button className="w95-wbtn" title={zoomed ? 'Réduire' : 'Agrandir'} onClick={() => setZoomed(z => !z)} style={{ fontSize: 9 }}>{zoomed ? '⊖' : '⊕'}</button>
             <button className="w95-wbtn help" onClick={e => e.stopPropagation()}>?</button>
             <button className="w95-wbtn" onClick={onClose} title="Fermer">×</button>
           </div>
@@ -1420,25 +1506,25 @@ function Lightbox({ items, index = 0, onClose }) {
           <button className="w95-toolbtn" title="Précédent"
             disabled={!hasPrev}
             onClick={goPrev}
-            style={{ color: hasPrev ? 'green' : '#aaa', fontWeight:900, opacity: hasPrev ? 1 : .4 }}>◀</button>
+            style={{ color: hasPrev ? 'green' : '#aaa', fontWeight: 900, opacity: hasPrev ? 1 : .4 }}>◀</button>
           <button className="w95-toolbtn" title="Suivant"
             disabled={!hasNext}
             onClick={goNext}
-            style={{ color: hasNext ? 'var(--navy)' : '#aaa', fontWeight:900, opacity: hasNext ? 1 : .4 }}>▶</button>
-          <div className="w95-toolsep"/>
+            style={{ color: hasNext ? 'var(--navy)' : '#aaa', fontWeight: 900, opacity: hasNext ? 1 : .4 }}>▶</button>
+          <div className="w95-toolsep" />
           <button className="w95-toolbtn" title={zoomed ? 'Zoom off' : 'Zoom in'} onClick={() => setZoomed(z => !z)}
-            style={{ color: zoomed ? 'var(--acc)' : 'var(--navy)', fontWeight:900, fontSize:14 }}>
+            style={{ color: zoomed ? 'var(--acc)' : 'var(--navy)', fontWeight: 900, fontSize: 14 }}>
             {zoomed ? '🔍' : '🔎'}
           </button>
-          <div className="w95-toolsep"/>
+          <div className="w95-toolsep" />
           <button className="w95-toolbtn" title="Fermer" onClick={onClose}
-            style={{ color:'red', fontWeight:900 }}>×</button>
+            style={{ color: 'red', fontWeight: 900 }}>×</button>
           {total > 1 && (
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:10, marginLeft:8, color:'var(--text-muted)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, marginLeft: 8, color: 'var(--text-muted)' }}>
               {cur + 1} / {total}
             </span>
           )}
-          <WinLogo/>
+          <WinLogo />
         </div>
 
         {/* ── Address bar ── */}
@@ -1456,7 +1542,7 @@ function Lightbox({ items, index = 0, onClose }) {
           onTouchEnd={onTouchEnd}
         >
           {/* Bande couleur projet en haut */}
-          {color && <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:color, zIndex:3 }}/>}
+          {color && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: color, zIndex: 3 }} />}
 
           {/* Nav prev */}
           {total > 1 && (
@@ -1482,9 +1568,9 @@ function Lightbox({ items, index = 0, onClose }) {
             }}
           />
           {/* Placeholder si image manquante */}
-          <div style={{ display:'none', flexDirection:'column', alignItems:'center', gap:8, color:'#666' }}>
-            <Fa icon="image" style={{ fontSize:48, opacity:.3 }}/>
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:11 }}>Image non disponible</span>
+          <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: 8, color: '#666' }}>
+            <Fa icon="image" style={{ fontSize: 48, opacity: .3 }} />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11 }}>Image non disponible</span>
           </div>
 
           {/* Compteur */}
@@ -1494,10 +1580,10 @@ function Lightbox({ items, index = 0, onClose }) {
 
           {/* Hint zoom */}
           <div style={{
-            position:'absolute', bottom:8, right:8, fontSize:9,
-            background:'rgba(0,0,0,.55)', color:'#ccc',
-            padding:'2px 6px', fontFamily:'var(--font-mono)',
-            opacity: .7, pointerEvents:'none',
+            position: 'absolute', bottom: 8, right: 8, fontSize: 9,
+            background: 'rgba(0,0,0,.55)', color: '#ccc',
+            padding: '2px 6px', fontFamily: 'var(--font-mono)',
+            opacity: .7, pointerEvents: 'none',
           }}>
             {zoomed ? 'Clic pour réduire' : 'Clic pour zoomer'}
           </div>
@@ -1512,17 +1598,17 @@ function Lightbox({ items, index = 0, onClose }) {
         <div className="w95-lb-footer">
           <div className="w95-lb-caption">
             <div className="w95-lb-caption-title"
-                 style={{ borderLeft:`3px solid ${color}`, paddingLeft:6 }}>{title}</div>
+              style={{ borderLeft: `3px solid ${color}`, paddingLeft: 6 }}>{title}</div>
             {subtitle && <div className="w95-lb-caption-sub">{subtitle}</div>}
           </div>
           {url && (
             <a href={url} target="_blank" rel="noreferrer">
-              <button className="w95-btn primary" style={{ fontSize:10 }}>
-                <Fa icon="external-link-alt" style={{ marginRight:5 }}/>Voir le projet
+              <button className="w95-btn primary" style={{ fontSize: 10 }}>
+                <Fa icon="external-link-alt" style={{ marginRight: 5 }} />Voir le projet
               </button>
             </a>
           )}
-          <button className="w95-btn" style={{ fontSize:10 }} onClick={onClose}>Fermer</button>
+          <button className="w95-btn" style={{ fontSize: 10 }} onClick={onClose}>Fermer</button>
         </div>
 
         {/* ── Status bar ── */}
@@ -1530,7 +1616,7 @@ function Lightbox({ items, index = 0, onClose }) {
           <div className="w95-lb-scell main">
             {zoomed ? '🔍 Zoom activé — clic pour réduire' : (subtitle || 'Clic image pour zoomer · Swipe ou ◀▶ pour naviguer · Échap pour fermer')}
           </div>
-          <div className="w95-lb-scell sm" style={{ fontFamily:'var(--font-mono)' }}>
+          <div className="w95-lb-scell sm" style={{ fontFamily: 'var(--font-mono)' }}>
             {total > 1 ? `${cur + 1}/${total}` : 'JPG'}
           </div>
         </div>
@@ -1543,101 +1629,101 @@ function Lightbox({ items, index = 0, onClose }) {
 /* ── About ── */
 function AboutContent() {
   const [photoLightbox, setPhotoLightbox] = useState(false);
-  const SOFT_SKILLS = ["Esprit d'équipe","Créativité","Rigueur","Adaptabilité","Innovation"];
+  const SOFT_SKILLS = ["Esprit d'équipe", "Créativité", "Rigueur", "Adaptabilité", "Innovation"];
 
   return (
     <div>
 
       {/* ── En-tête : photo + identité + boutons ── */}
-      <div className="flex-row gap-12 mb-12 w95-about-row" style={{ alignItems:'flex-start' }}>
+      <div className="flex-row gap-12 mb-12 w95-about-row" style={{ alignItems: 'flex-start' }}>
         <div className="w95-about-photo" onClick={() => setPhotoLightbox(true)} title="Cliquer pour agrandir">
           <img src={ME.photo} alt={ME.name}
-            onError={e => { e.target.style.display='none'; e.target.parentNode.innerHTML='<span style="font-size:48px">👨‍💻</span>'; }}/>
+            onError={e => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<span style="font-size:48px">👨‍💻</span>'; }} />
         </div>
-        <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div className="w95-inset mb-8">
-            <div style={{ fontWeight:900, fontSize:15, color:'var(--navy)' }}>{ME.name}</div>
-            <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--text-muted)' }}>{ME.title} · {ME.agency}</div>
+            <div style={{ fontWeight: 900, fontSize: 15, color: 'var(--navy)' }}>{ME.name}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)' }}>{ME.title} · {ME.agency}</div>
           </div>
           {/* Boutons ligne 1 */}
-          <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:4 }}>
-            <a href={ME.site}     target="_blank" rel="noreferrer"><button className="w95-btn primary" style={{fontSize:10}}><Fa icon="globe" style={{marginRight:4}}/>AKATech</button></a>
-            <a href={ME.github}   target="_blank" rel="noreferrer"><button className="w95-btn"         style={{fontSize:10}}><Fa icon="code-branch" style={{marginRight:4}}/>GitHub</button></a>
-            <a href={ME.linkedin} target="_blank" rel="noreferrer"><button className="w95-btn"         style={{fontSize:10}}><Fa icon="user-tie" style={{marginRight:4}}/>LinkedIn</button></a>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+            <a href={ME.site} target="_blank" rel="noreferrer"><button className="w95-btn primary" style={{ fontSize: 10 }}><Fa icon="globe" style={{ marginRight: 4 }} />AKATech</button></a>
+            <a href={ME.github} target="_blank" rel="noreferrer"><button className="w95-btn" style={{ fontSize: 10 }}><Fa icon="code-branch" style={{ marginRight: 4 }} />GitHub</button></a>
+            <a href={ME.linkedin} target="_blank" rel="noreferrer"><button className="w95-btn" style={{ fontSize: 10 }}><Fa icon="user-tie" style={{ marginRight: 4 }} />LinkedIn</button></a>
           </div>
           {/* Boutons ligne 2 */}
-          <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-            <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer">
-              <button className="w95-btn green" style={{fontSize:10}}><Fa icon="comment" style={{marginRight:4}}/>WhatsApp</button></a>
-            <a href={ME.cv} download><button className="w95-btn" style={{fontSize:10}}><Fa icon="file-pdf" style={{marginRight:4}}/>CV PDF</button></a>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+              <button className="w95-btn green" style={{ fontSize: 10 }}><Fa icon="comment" style={{ marginRight: 4 }} />WhatsApp</button></a>
+            <a href={ME.cv} download><button className="w95-btn" style={{ fontSize: 10 }}><Fa icon="file-pdf" style={{ marginRight: 4 }} />CV PDF</button></a>
           </div>
         </div>
       </div>
 
       {/* ── Séparateur ── */}
-      <div style={{ height:1, background:'var(--silver-dk)', margin:'0 0 12px' }}/>
+      <div style={{ height: 1, background: 'var(--silver-dk)', margin: '0 0 12px' }} />
 
       {/* ── Profil détaillé ── */}
-      <div style={{ fontWeight:900, fontSize:12, marginBottom:8 }}>
-        <Fa icon="user" style={{ marginRight:5, color:'var(--navy)' }}/>Profil
+      <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 8 }}>
+        <Fa icon="user" style={{ marginRight: 5, color: 'var(--navy)' }} />Profil
       </div>
-      <div className="w95-panel" style={{ marginBottom:10 }}>
+      <div className="w95-panel" style={{ marginBottom: 10 }}>
         {/* Citation */}
         <div style={{
-          fontFamily:'var(--font-mono)', fontSize:10, fontStyle:'italic',
-          color:'var(--navy)', borderLeft:'3px solid var(--navy)',
-          paddingLeft:8, marginBottom:8, lineHeight:1.6
+          fontFamily: 'var(--font-mono)', fontSize: 10, fontStyle: 'italic',
+          color: 'var(--navy)', borderLeft: '3px solid var(--navy)',
+          paddingLeft: 8, marginBottom: 8, lineHeight: 1.6
         }}>
-          "Ce n'est pas important de réussir du premier coup.<br/>L'essentiel est de réussir au final."
-          <span style={{ display:'block', fontStyle:'normal', color:'var(--text-muted)', marginTop:2 }}>— Kevin Ressegaire</span>
+          "Ce n'est pas important de réussir du premier coup.<br />L'essentiel est de réussir au final."
+          <span style={{ display: 'block', fontStyle: 'normal', color: 'var(--text-muted)', marginTop: 2 }}>— Kevin Ressegaire</span>
         </div>
-        <div style={{ fontSize:11, lineHeight:1.7, color:'var(--text-main)', marginBottom:6 }}>
+        <div style={{ fontSize: 11, lineHeight: 1.7, color: 'var(--text-main)', marginBottom: 6 }}>
           Formé en <strong>Réseau et Sécurité Informatique</strong>, je conçois et mets en œuvre des applications web complètes — de l'interface React jusqu'au back-end Python — en appliquant les bonnes pratiques de développement et de sécurité dès la conception.
         </div>
-        <div style={{ fontSize:11, lineHeight:1.7, color:'var(--text-main)', marginBottom:6 }}>
+        <div style={{ fontSize: 11, lineHeight: 1.7, color: 'var(--text-main)', marginBottom: 6 }}>
           À l'aise avec <strong>Django, Flask, React, Next.js</strong> et <strong>MySQL</strong>, je développe aussi des solutions orientées <strong>Data &amp; Cartographie</strong> : dashboards, visualisations interactives et intégration de cartes (Leaflet, OpenStreetMap).
         </div>
-        <div style={{ fontSize:11, lineHeight:1.7, color:'var(--text-main)', marginBottom:8 }}>
+        <div style={{ fontSize: 11, lineHeight: 1.7, color: 'var(--text-main)', marginBottom: 8 }}>
           Via mon agence <strong>AKATech</strong>, j'ai livré plus de <strong>10 applications web</strong> — SaaS, e-commerce, plateformes — avec une approche orientée produit, sécurité et usages réels.
         </div>
         {/* Soft skills */}
-        <div style={{ display:'flex', gap:5, flexWrap:'wrap' }}>
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
           {SOFT_SKILLS.map(s => (
-            <span key={s} className="w95-raised" style={{ fontSize:10, fontFamily:'var(--font-mono)', color:'var(--navy)' }}>
-              <Fa icon="check" style={{ marginRight:3, color:'var(--acc2)', fontSize:9 }}/>{s}
+            <span key={s} className="w95-raised" style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--navy)' }}>
+              <Fa icon="check" style={{ marginRight: 3, color: 'var(--acc2)', fontSize: 9 }} />{s}
             </span>
           ))}
         </div>
       </div>
 
       {/* ── Séparateur ── */}
-      <div style={{ height:1, background:'var(--silver-dk)', margin:'0 0 12px' }}/>
+      <div style={{ height: 1, background: 'var(--silver-dk)', margin: '0 0 12px' }} />
 
       {/* ── Parcours professionnel ── */}
-      <div style={{ fontWeight:900, fontSize:12, marginBottom:8 }}>
-        <Fa icon="history" style={{ marginRight:5, color:'var(--navy)' }}/>Parcours professionnel
+      <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 8 }}>
+        <Fa icon="history" style={{ marginRight: 5, color: 'var(--navy)' }} />Parcours professionnel
       </div>
       {TIMELINE.map((t, i) => (
         <div className="w95-tl-item" key={i}>
-          <div className="w95-tl-dot"><Fa icon={t.icon} style={{ fontSize:11 }}/></div>
-          <div style={{ flex:1 }}>
+          <div className="w95-tl-dot"><Fa icon={t.icon} style={{ fontSize: 11 }} /></div>
+          <div style={{ flex: 1 }}>
             <div className="w95-tl-date">{t.date}</div>
             <div className="w95-tl-title">{t.title}</div>
-            <div className="w95-tl-co"><Fa icon="map-marker-alt" style={{ marginRight:4 }}/>{t.company}</div>
+            <div className="w95-tl-co"><Fa icon="map-marker-alt" style={{ marginRight: 4 }} />{t.company}</div>
             <div className="w95-tl-desc">{t.desc}</div>
             {/* Bullet items enrichis */}
             {t.items && (
-              <ul style={{ margin:'5px 0 4px 4px', padding:0 }}>
+              <ul style={{ margin: '5px 0 4px 4px', padding: 0 }}>
                 {t.items.map((item, j) => (
-                  <li key={j} style={{ listStyle:'none', fontSize:10, color:'var(--text-muted)', padding:'1px 0', display:'flex', alignItems:'flex-start', gap:4 }}>
-                    <Fa icon="angle-right" style={{ color:'var(--acc)', fontSize:9, marginTop:2, flexShrink:0 }}/>
+                  <li key={j} style={{ listStyle: 'none', fontSize: 10, color: 'var(--text-muted)', padding: '1px 0', display: 'flex', alignItems: 'flex-start', gap: 4 }}>
+                    <Fa icon="angle-right" style={{ color: 'var(--acc)', fontSize: 9, marginTop: 2, flexShrink: 0 }} />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             )}
             {t.tags && (
-              <div style={{ display:'flex', gap:4, flexWrap:'wrap', marginTop:4 }}>
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                 {t.tags.map(tag => <span key={tag} className="w95-proj-tag">{tag}</span>)}
               </div>
             )}
@@ -1646,20 +1732,20 @@ function AboutContent() {
       ))}
 
       {/* ── Séparateur ── */}
-      <div style={{ height:1, background:'var(--silver-dk)', margin:'12px 0' }}/>
+      <div style={{ height: 1, background: 'var(--silver-dk)', margin: '12px 0' }} />
 
       {/* ── Contact rapide ── */}
-      <div style={{ fontWeight:900, fontSize:12, marginBottom:8 }}>
-        <Fa icon="at" style={{ marginRight:5, color:'var(--navy)' }}/>Contact rapide
+      <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 8 }}>
+        <Fa icon="at" style={{ marginRight: 5, color: 'var(--navy)' }} />Contact rapide
       </div>
       <div className="w95-panel">
-        <div style={{ fontSize:11, lineHeight:2.2 }}>
-          <div><Fa icon="envelope"    style={{ marginRight:6, color:'var(--navy)', width:14 }}/><a href={`mailto:${ME.email}`} style={{color:'var(--navy)'}}>{ME.email}</a></div>
-          <div><Fa icon="phone"       style={{ marginRight:6, color:'var(--navy)', width:14 }}/><a href={`tel:${ME.phone}`}>{ME.phone}</a></div>
-          <div><Fa icon="map-marker-alt" style={{ marginRight:6, color:'var(--navy)', width:14 }}/>{ME.location}</div>
-          <div><Fa icon="globe"       style={{ marginRight:6, color:'var(--navy)', width:14 }}/><a href={ME.site}    target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>{ME.site}</a></div>
-          <div><Fa icon="code"        style={{ marginRight:6, color:'var(--navy)', width:14 }}/><a href={ME.github}  target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>{ME.github}</a></div>
-          <div><Fa icon="thumbs-up"   style={{ marginRight:6, color:'var(--navy)', width:14 }}/><a href={ME.facebook} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>Facebook AKATech</a></div>
+        <div style={{ fontSize: 11, lineHeight: 2.2 }}>
+          <div><Fa icon="envelope" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} /><a href={`mailto:${ME.email}`} style={{ color: 'var(--navy)' }}>{ME.email}</a></div>
+          <div><Fa icon="phone" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} /><a href={`tel:${ME.phone}`}>{ME.phone}</a></div>
+          <div><Fa icon="map-marker-alt" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} />{ME.location}</div>
+          <div><Fa icon="globe" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} /><a href={ME.site} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>{ME.site}</a></div>
+          <div><Fa icon="code" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} /><a href={ME.github} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>{ME.github}</a></div>
+          <div><Fa icon="thumbs-up" style={{ marginRight: 6, color: 'var(--navy)', width: 14 }} /><a href={ME.facebook} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>Facebook AKATech</a></div>
         </div>
       </div>
 
@@ -1667,11 +1753,11 @@ function AboutContent() {
       {photoLightbox && (
         <Lightbox
           items={[{
-            src:      ME.photo,
-            title:    ME.name,
+            src: ME.photo,
+            title: ME.name,
             subtitle: ME.title + ' · ' + ME.agency,
-            url:      ME.site,
-            color:    'var(--navy)',
+            url: ME.site,
+            color: 'var(--navy)',
           }]}
           index={0}
           onClose={() => setPhotoLightbox(false)}
@@ -1685,19 +1771,19 @@ function AboutContent() {
 function ProjectsContent({ onDetail }) {
   const [filter, setFilter] = useState('all');
   const [lbIndex, setLbIndex] = useState(null);
-  const cats   = ['all','en-ligne','demo','en-cours'];
-  const labels = { all:`Tous (${PROJECTS.length})`, 'en-ligne':'En ligne', demo:'Démos', 'en-cours':'En cours' };
-  const list   = useMemo(() =>
+  const cats = ['all', 'en-ligne', 'demo', 'en-cours'];
+  const labels = { all: `Tous (${PROJECTS.length})`, 'en-ligne': 'En ligne', demo: 'Démos', 'en-cours': 'En cours' };
+  const list = useMemo(() =>
     filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.cat === filter), [filter]);
 
   // Items pour le lightbox — seulement ceux avec une image
   const lbItems = useMemo(() =>
     list.filter(p => p.image).map(p => ({
-      src:      p.image,
-      title:    p.title,
+      src: p.image,
+      title: p.title,
       subtitle: p.subtitle + ' · ' + p.year,
-      url:      p.url,
-      color:    p.color,
+      url: p.url,
+      color: p.color,
     })), [list]);
 
   const openLightbox = (p, e) => {
@@ -1708,9 +1794,9 @@ function ProjectsContent({ onDetail }) {
 
   return (
     <div>
-      <div className="flex-row gap-8 mb-12" style={{ flexWrap:'wrap' }}>
+      <div className="flex-row gap-8 mb-12" style={{ flexWrap: 'wrap' }}>
         {cats.map(c => (
-          <button key={c} className={`w95-btn${filter===c?' primary':''}`} onClick={() => { setFilter(c); setLbIndex(null); }}>
+          <button key={c} className={`w95-btn${filter === c ? ' primary' : ''}`} onClick={() => { setFilter(c); setLbIndex(null); }}>
             {labels[c]}
           </button>
         ))}
@@ -1718,20 +1804,20 @@ function ProjectsContent({ onDetail }) {
       <div className="w95-proj-grid">
         {list.map(p => (
           <div key={p.id} className="w95-proj-card" onClick={() => onDetail?.(p)}>
-            <div className="w95-proj-bar" style={{ background:p.color }}/>
+            <div className="w95-proj-bar" style={{ background: p.color }} />
             {p.image
               ? <img src={p.image} alt={p.title} className="w95-proj-img"
-                  style={{ cursor:'zoom-in' }}
-                  onClick={e => openLightbox(p, e)}
-                  onError={e => { e.target.style.display='none'; }}/>
-              : <div className="w95-proj-img-ph" style={{ background:p.color }}>
-                  <Fa icon="folder" style={{ fontSize:28, color:'#fff', opacity:.6 }}/>
-                </div>
+                style={{ cursor: 'zoom-in' }}
+                onClick={e => openLightbox(p, e)}
+                onError={e => { e.target.style.display = 'none'; }} />
+              : <div className="w95-proj-img-ph" style={{ background: p.color }}>
+                <Fa icon="folder" style={{ fontSize: 28, color: '#fff', opacity: .6 }} />
+              </div>
             }
             <div className="w95-proj-body">
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div className="w95-proj-title">{p.title}</div>
-                {p.isPremium && <span className="w95-proj-badge"><Fa icon="star"/></span>}
+                {p.isPremium && <span className="w95-proj-badge"><Fa icon="star" /></span>}
               </div>
               <div className="w95-proj-sub">{p.subtitle} — {p.year}</div>
               <div className="w95-proj-desc">{p.desc}</div>
@@ -1745,7 +1831,7 @@ function ProjectsContent({ onDetail }) {
 
       {/* Lightbox avec navigation prev/next sur les images filtrées */}
       {lbIndex !== null && lbItems.length > 0 && (
-        <Lightbox items={lbItems} index={lbIndex} onClose={() => setLbIndex(null)}/>
+        <Lightbox items={lbItems} index={lbIndex} onClose={() => setLbIndex(null)} />
       )}
     </div>
   );
@@ -1756,32 +1842,32 @@ function ProjectDetailContent({ project, onBack }) {
   return (
     <div>
       <button className="w95-btn mb-12" onClick={onBack}>
-        <Fa icon="arrow-left" style={{ marginRight:5 }}/>Retour
+        <Fa icon="arrow-left" style={{ marginRight: 5 }} />Retour
       </button>
-      <div className="w95-inset" style={{ borderLeft:`4px solid ${project.color}`, marginBottom:12 }}>
+      <div className="w95-inset" style={{ borderLeft: `4px solid ${project.color}`, marginBottom: 12 }}>
         {project.image && (
           <img src={project.image} alt={project.title}
-            style={{ width:'100%', height:140, objectFit:'cover', display:'block', marginBottom:10 }}
-            onError={e => { e.target.style.display='none'; }}/>
+            style={{ width: '100%', height: 140, objectFit: 'cover', display: 'block', marginBottom: 10 }}
+            onError={e => { e.target.style.display = 'none'; }} />
         )}
-        <div style={{ fontWeight:900, fontSize:16, color:'var(--navy)', marginBottom:4 }}>{project.title}</div>
-        <div style={{ fontSize:11, color:'var(--text-muted)', marginBottom:8 }}>{project.subtitle} — {project.year}</div>
-        <div style={{ fontSize:12, lineHeight:1.6, marginBottom:10 }}>{project.desc}</div>
+        <div style={{ fontWeight: 900, fontSize: 16, color: 'var(--navy)', marginBottom: 4 }}>{project.title}</div>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>{project.subtitle} — {project.year}</div>
+        <div style={{ fontSize: 12, lineHeight: 1.6, marginBottom: 10 }}>{project.desc}</div>
         <div className="mb-8">
           <div className="w95-skill-label"><span>Avancement</span><span>{project.progress}%</span></div>
-          <SkillChunks pct={project.progress}/>
+          <SkillChunks pct={project.progress} />
         </div>
-        <div style={{ marginBottom:10 }}>
-          <div style={{ fontWeight:700, fontSize:11, marginBottom:4 }}>
-            <Fa icon="layer-group" style={{ marginRight:5 }}/>Stack technique :
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4 }}>
+            <Fa icon="layer-group" style={{ marginRight: 5 }} />Stack technique :
           </div>
-          <div style={{ display:'flex', gap:4, flexWrap:'wrap' }}>
-            {project.tech.map(t => <span key={t} className="w95-proj-tag" style={{ fontSize:11, padding:'2px 8px' }}>{t}</span>)}
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {project.tech.map(t => <span key={t} className="w95-proj-tag" style={{ fontSize: 11, padding: '2px 8px' }}>{t}</span>)}
           </div>
         </div>
         <a href={project.url} target="_blank" rel="noreferrer">
           <button className="w95-btn primary">
-            <Fa icon="external-link-alt" style={{ marginRight:5 }}/>Voir en ligne
+            <Fa icon="external-link-alt" style={{ marginRight: 5 }} />Voir en ligne
           </button>
         </a>
       </div>
@@ -1797,7 +1883,7 @@ function SkillChunks({ pct }) {
   return (
     <div className="w95-skill-track">
       {Array.from({ length: filled }).map((_, i) => (
-        <div key={i} className="w95-skill-chunk" style={{ animationDelay: `${i * 0.03}s` }}/>
+        <div key={i} className="w95-skill-chunk" style={{ animationDelay: `${i * 0.03}s` }} />
       ))}
     </div>
   );
@@ -1806,17 +1892,17 @@ function SkillChunks({ pct }) {
 function SkillsContent() {
   const Section = ({ title, skills, faIcon }) => (
     <div className="mb-12">
-      <div className="w95-raised mb-8" style={{ fontWeight:900, fontSize:12 }}>
-        <Fa icon={faIcon} style={{ marginRight:6 }}/>{title}
+      <div className="w95-raised mb-8" style={{ fontWeight: 900, fontSize: 12 }}>
+        <Fa icon={faIcon} style={{ marginRight: 6 }} />{title}
       </div>
-      <div className="w95-inset" style={{ padding:'10px 10px 4px', marginBottom:8 }}>
+      <div className="w95-inset" style={{ padding: '10px 10px 4px', marginBottom: 8 }}>
         {skills.map(s => (
           <div key={s.name}>
             <div className="w95-skill-label">
               <span>{s.name}</span>
-              <span style={{ fontFamily:'var(--font-mono)', fontSize:10 }}>{s.pct}%</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10 }}>{s.pct}%</span>
             </div>
-            <SkillChunks pct={s.pct}/>
+            <SkillChunks pct={s.pct} />
           </div>
         ))}
       </div>
@@ -1824,7 +1910,7 @@ function SkillsContent() {
         {skills.map(s => (
           <div key={s.name} className="w95-skill-card">
             <img src={s.icon} alt={s.name} className="w95-skill-icon"
-              onError={e => { e.target.style.display='none'; }}/>
+              onError={e => { e.target.style.display = 'none'; }} />
             <span className="w95-skill-name">{s.name}</span>
           </div>
         ))}
@@ -1833,17 +1919,17 @@ function SkillsContent() {
   );
   return (
     <div>
-      <Section title="Frontend"    faIcon="desktop"     skills={SKILLS.frontend}/>
-      <Section title="Backend"     faIcon="server"      skills={SKILLS.backend}/>
-      <Section title="Outils Dev"  faIcon="tools"       skills={SKILLS.tools}/>
-      <Section title="Autres"      faIcon="briefcase"   skills={SKILLS.autres}/>
+      <Section title="Frontend" faIcon="desktop" skills={SKILLS.frontend} />
+      <Section title="Backend" faIcon="server" skills={SKILLS.backend} />
+      <Section title="Outils Dev" faIcon="tools" skills={SKILLS.tools} />
+      <Section title="Autres" faIcon="briefcase" skills={SKILLS.autres} />
     </div>
   );
 }
 
 /* ── Services — deux sections distinctes ── */
 function ServicesContent() {
-  const [section, setSection]   = useState('services'); // 'services' | 'tarifs'
+  const [section, setSection] = useState('services'); // 'services' | 'tarifs'
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -1851,29 +1937,29 @@ function ServicesContent() {
       {/* Navigation deux sections */}
       <div className="w95-section-tabs">
         <button
-          className={`w95-section-tab${section==='services'?' active':''}`}
+          className={`w95-section-tab${section === 'services' ? ' active' : ''}`}
           onClick={() => setSection('services')}>
-          <Fa icon="tools"/>&nbsp;Services
+          <Fa icon="tools" />&nbsp;Services
         </button>
         <button
-          className={`w95-section-tab${section==='tarifs'?' active':''}`}
+          className={`w95-section-tab${section === 'tarifs' ? ' active' : ''}`}
           onClick={() => setSection('tarifs')}>
-          <Fa icon="tags"/>&nbsp;Tarifs
+          <Fa icon="tags" />&nbsp;Tarifs
         </button>
       </div>
 
       {/* ─── SECTION SERVICES ─── */}
       {section === 'services' && (
         <div>
-          <div style={{ fontWeight:900, fontSize:12, marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
-            <Fa icon="concierge-bell" style={{ color:'var(--navy)' }}/>
+          <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Fa icon="concierge-bell" style={{ color: 'var(--navy)' }} />
             Services proposés
           </div>
           <div className="w95-svc-grid">
             {SERVICES_DATA.map(s => (
               <div key={s.n} className="w95-svc-card">
-                <div className="w95-svc-n" style={{ display:'flex', alignItems:'center', gap:5 }}>
-                  <Fa icon={s.icon} style={{ fontSize:14, color:'var(--navy)', marginBottom:2 }}/>
+                <div className="w95-svc-n" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <Fa icon={s.icon} style={{ fontSize: 14, color: 'var(--navy)', marginBottom: 2 }} />
                   <span>{s.n}</span>
                 </div>
                 <div className="w95-svc-ttl">{s.title}</div>
@@ -1885,16 +1971,16 @@ function ServicesContent() {
             ))}
           </div>
 
-          <div style={{ height:1, background:'var(--silver-dk)', margin:'4px 0 12px' }}/>
+          <div style={{ height: 1, background: 'var(--silver-dk)', margin: '4px 0 12px' }} />
           <div className="w95-panel">
-            <div style={{ fontSize:11, lineHeight:1.6 }}>
-              <Fa icon="lightbulb" style={{ marginRight:5, color:'var(--acc)' }}/>
+            <div style={{ fontSize: 11, lineHeight: 1.6 }}>
+              <Fa icon="lightbulb" style={{ marginRight: 5, color: 'var(--acc)' }} />
               Chaque projet est unique — devis gratuit sous 24h.
             </div>
-            <div style={{ display:'flex', gap:8, marginTop:8 }}>
-              <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{fontSize:10}}><Fa icon="envelope" style={{marginRight:4}}/>Email</button></a>
-              <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer">
-                <button className="w95-btn green" style={{fontSize:10}}><Fa icon="comment" style={{marginRight:4}}/>WhatsApp</button>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{ fontSize: 10 }}><Fa icon="envelope" style={{ marginRight: 4 }} />Email</button></a>
+              <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+                <button className="w95-btn green" style={{ fontSize: 10 }}><Fa icon="comment" style={{ marginRight: 4 }} />WhatsApp</button>
               </a>
             </div>
           </div>
@@ -1904,8 +1990,8 @@ function ServicesContent() {
       {/* ─── SECTION TARIFS ─── */}
       {section === 'tarifs' && (
         <div>
-          <div style={{ fontWeight:900, fontSize:12, marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
-            <Fa icon="money-bill-wave" style={{ color:'var(--navy)' }}/>
+          <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Fa icon="money-bill-wave" style={{ color: 'var(--navy)' }} />
             Grille tarifaire
           </div>
 
@@ -1913,26 +1999,26 @@ function ServicesContent() {
           <div className="w95-price-tabs">
             {PRICING_TABS.map((t, i) => (
               <button key={t.key}
-                className={`w95-btn${activeTab===i?' primary':''}`}
-                style={{ fontSize:10, minWidth:0, padding:'3px 10px', display:'flex', alignItems:'center', gap:4 }}
+                className={`w95-btn${activeTab === i ? ' primary' : ''}`}
+                style={{ fontSize: 10, minWidth: 0, padding: '3px 10px', display: 'flex', alignItems: 'center', gap: 4 }}
                 onClick={() => setActiveTab(i)}>
-                <Fa icon={t.icon}/> {t.label}
+                <Fa icon={t.icon} /> {t.label}
               </button>
             ))}
           </div>
 
           <div className="w95-plan-grid">
             {PRICING_TABS[activeTab].plans.map((p, i) => (
-              <div key={i} className={`w95-plan-card${p.isPopular?' popular':''}`}>
+              <div key={i} className={`w95-plan-card${p.isPopular ? ' popular' : ''}`}>
                 {p.isPopular && (
-                  <div style={{ fontSize:9, color:'var(--acc)', fontWeight:800, marginBottom:2 }}>
-                    <Fa icon="fire"/> POPULAIRE
+                  <div style={{ fontSize: 9, color: 'var(--acc)', fontWeight: 800, marginBottom: 2 }}>
+                    <Fa icon="fire" /> POPULAIRE
                   </div>
                 )}
                 <div className="w95-plan-badge">{p.badge}</div>
                 <div className="w95-plan-price">{p.price}</div>
                 <div className="w95-plan-del">
-                  <Fa icon="clock" style={{ marginRight:3 }}/>{p.delivery}
+                  <Fa icon="clock" style={{ marginRight: 3 }} />{p.delivery}
                 </div>
                 <ul className="w95-plan-feat">
                   {p.features.map(f => <li key={f}>{f}</li>)}
@@ -1941,16 +2027,16 @@ function ServicesContent() {
             ))}
           </div>
 
-          <div style={{ height:1, background:'var(--silver-dk)', margin:'12px 0' }}/>
+          <div style={{ height: 1, background: 'var(--silver-dk)', margin: '12px 0' }} />
           <div className="w95-panel">
-            <div style={{ fontSize:11, lineHeight:1.6 }}>
-              <Fa icon="info-circle" style={{ marginRight:5, color:'var(--navy)' }}/>
+            <div style={{ fontSize: 11, lineHeight: 1.6 }}>
+              <Fa icon="info-circle" style={{ marginRight: 5, color: 'var(--navy)' }} />
               Tarifs indicatifs — devis personnalisé <strong>gratuit sous 24h</strong>.
             </div>
-            <div style={{ display:'flex', gap:8, marginTop:8 }}>
-              <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{fontSize:10}}><Fa icon="envelope" style={{marginRight:4}}/>Email</button></a>
-              <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer">
-                <button className="w95-btn green" style={{fontSize:10}}><Fa icon="comment" style={{marginRight:4}}/>WhatsApp</button></a>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{ fontSize: 10 }}><Fa icon="envelope" style={{ marginRight: 4 }} />Email</button></a>
+              <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+                <button className="w95-btn green" style={{ fontSize: 10 }}><Fa icon="comment" style={{ marginRight: 4 }} />WhatsApp</button></a>
             </div>
           </div>
         </div>
@@ -1961,43 +2047,43 @@ function ServicesContent() {
 
 /* ── Contact ── */
 function ContactContent({ onAlert }) {
-  const [form, setForm] = useState({ name:'', email:'', msg:'' });
-  const set = k => e => setForm(f => ({ ...f, [k]:e.target.value }));
+  const [form, setForm] = useState({ name: '', email: '', msg: '' });
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
   const send = () => {
     if (!form.name || !form.email || !form.msg) { onAlert('Remplissez tous les champs.', 'Erreur'); return; }
     onAlert(`Message envoyé ! Je vous réponds rapidement, ${form.name}.`, 'Succès');
-    setForm({ name:'', email:'', msg:'' });
+    setForm({ name: '', email: '', msg: '' });
   };
   return (
     <div>
       <div className="w95-panel mb-12">
-        <div style={{ fontWeight:900, fontSize:12, marginBottom:8 }}>
-          <Fa icon="satellite-dish" style={{ marginRight:5, color:'var(--navy)' }}/>Coordonnées
+        <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 8 }}>
+          <Fa icon="satellite-dish" style={{ marginRight: 5, color: 'var(--navy)' }} />Coordonnées
         </div>
-        <div style={{ fontSize:11, lineHeight:2.2 }}>
-          <div><Fa icon="envelope" style={{ width:16, marginRight:6, color:'var(--navy)' }}/><a href={`mailto:${ME.email}`} style={{color:'var(--navy)'}}>{ME.email}</a></div>
-          <div><Fa icon="phone" style={{ width:16, marginRight:6, color:'var(--navy)' }}/><a href={`tel:${ME.phone}`}>{ME.phone}</a></div>
-          <div><Fa icon="comment-dots" style={{ width:16, marginRight:6, color:'#128C7E' }}/><a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>WhatsApp</a></div>
-          <div><Fa icon="map-marker-alt" style={{ width:16, marginRight:6, color:'var(--navy)' }}/>{ME.location}</div>
-          <div><Fa icon="globe" style={{ width:16, marginRight:6, color:'var(--navy)' }}/><a href={ME.site} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>{ME.site}</a></div>
-          <div><Fa icon="code" style={{ width:16, marginRight:6, color:'var(--navy)' }}/><a href={ME.github} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>{ME.github}</a></div>
-          <div><Fa icon="user-tie" style={{ width:16, marginRight:6, color:'var(--navy)' }}/><a href={ME.linkedin} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>LinkedIn</a></div>
-          <div><Fa icon="thumbs-up" style={{ width:16, marginRight:6, color:'#1877F2' }}/><a href={ME.facebook} target="_blank" rel="noreferrer" style={{color:'var(--navy)'}}>Facebook AKATech</a></div>
-          <div><Fa icon="file-pdf" style={{ width:16, marginRight:6, color:'#c00' }}/><a href={ME.cv} download style={{color:'var(--navy)'}}>Télécharger CV PDF</a></div>
+        <div style={{ fontSize: 11, lineHeight: 2.2 }}>
+          <div><Fa icon="envelope" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} /><a href={`mailto:${ME.email}`} style={{ color: 'var(--navy)' }}>{ME.email}</a></div>
+          <div><Fa icon="phone" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} /><a href={`tel:${ME.phone}`}>{ME.phone}</a></div>
+          <div><Fa icon="comment-dots" style={{ width: 16, marginRight: 6, color: '#128C7E' }} /><a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>WhatsApp</a></div>
+          <div><Fa icon="map-marker-alt" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} />{ME.location}</div>
+          <div><Fa icon="globe" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} /><a href={ME.site} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>{ME.site}</a></div>
+          <div><Fa icon="code" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} /><a href={ME.github} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>{ME.github}</a></div>
+          <div><Fa icon="user-tie" style={{ width: 16, marginRight: 6, color: 'var(--navy)' }} /><a href={ME.linkedin} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>LinkedIn</a></div>
+          <div><Fa icon="thumbs-up" style={{ width: 16, marginRight: 6, color: '#1877F2' }} /><a href={ME.facebook} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)' }}>Facebook AKATech</a></div>
+          <div><Fa icon="file-pdf" style={{ width: 16, marginRight: 6, color: '#c00' }} /><a href={ME.cv} download style={{ color: 'var(--navy)' }}>Télécharger CV PDF</a></div>
         </div>
       </div>
-      <div className="w95-field"><label className="w95-label"><Fa icon="user" style={{ marginRight:5 }}/>Nom complet :</label>
-        <input className="w95-input" value={form.name} onChange={set('name')} placeholder="Votre nom"/></div>
-      <div className="w95-field"><label className="w95-label"><Fa icon="envelope" style={{ marginRight:5 }}/>Email :</label>
-        <input className="w95-input" type="email" value={form.email} onChange={set('email')} placeholder="votre@email.com"/></div>
-      <div className="w95-field"><label className="w95-label"><Fa icon="comment-alt" style={{ marginRight:5 }}/>Message :</label>
+      <div className="w95-field"><label className="w95-label"><Fa icon="user" style={{ marginRight: 5 }} />Nom complet :</label>
+        <input className="w95-input" value={form.name} onChange={set('name')} placeholder="Votre nom" /></div>
+      <div className="w95-field"><label className="w95-label"><Fa icon="envelope" style={{ marginRight: 5 }} />Email :</label>
+        <input className="w95-input" type="email" value={form.email} onChange={set('email')} placeholder="votre@email.com" /></div>
+      <div className="w95-field"><label className="w95-label"><Fa icon="comment-alt" style={{ marginRight: 5 }} />Message :</label>
         <textarea className="w95-input" rows={4} value={form.msg} onChange={set('msg')}
-          placeholder="Décrivez votre projet..." style={{ resize:'vertical', fontFamily:'var(--font-ui)' }}/></div>
-      <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-        <button className="w95-btn primary" onClick={send}><Fa icon="paper-plane" style={{ marginRight:5 }}/>Envoyer</button>
-        <button className="w95-btn" onClick={() => setForm({ name:'', email:'', msg:'' })}><Fa icon="eraser" style={{ marginRight:5 }}/>Effacer</button>
-        <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer">
-          <button className="w95-btn green"><Fa icon="comment" style={{ marginRight:5 }}/>WhatsApp</button></a>
+          placeholder="Décrivez votre projet..." style={{ resize: 'vertical', fontFamily: 'var(--font-ui)' }} /></div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button className="w95-btn primary" onClick={send}><Fa icon="paper-plane" style={{ marginRight: 5 }} />Envoyer</button>
+        <button className="w95-btn" onClick={() => setForm({ name: '', email: '', msg: '' })}><Fa icon="eraser" style={{ marginRight: 5 }} />Effacer</button>
+        <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+          <button className="w95-btn green"><Fa icon="comment" style={{ marginRight: 5 }} />WhatsApp</button></a>
       </div>
     </div>
   );
@@ -2008,30 +2094,30 @@ function FAQContent() {
   const [open, setOpen] = useState(null);
   return (
     <div>
-      <div style={{ fontWeight:900, fontSize:12, marginBottom:10 }}>
-        <Fa icon="question-circle" style={{ marginRight:5, color:'var(--navy)' }}/>Questions fréquentes
+      <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 10 }}>
+        <Fa icon="question-circle" style={{ marginRight: 5, color: 'var(--navy)' }} />Questions fréquentes
       </div>
       {FAQ.map((f, i) => (
         <div key={i} className="w95-faq-item">
-          <div className={`w95-faq-q${open===i?' open':''}`} onClick={() => setOpen(open===i?null:i)}>
-            <Fa icon={open===i?'chevron-down':'chevron-right'} style={{ fontSize:9 }}/>
+          <div className={`w95-faq-q${open === i ? ' open' : ''}`} onClick={() => setOpen(open === i ? null : i)}>
+            <Fa icon={open === i ? 'chevron-down' : 'chevron-right'} style={{ fontSize: 9 }} />
             <span>{f.q}</span>
           </div>
-          {open===i && <div className="w95-faq-a">{f.a}</div>}
+          {open === i && <div className="w95-faq-a">{f.a}</div>}
         </div>
       ))}
-      <div style={{ height:1, background:'var(--silver-dk)', margin:'16px 0 12px' }}/>
-      <div style={{ fontWeight:900, fontSize:12, marginBottom:8 }}>
-        <Fa icon="rocket" style={{ marginRight:5, color:'var(--navy)' }}/>Démarrer un projet
+      <div style={{ height: 1, background: 'var(--silver-dk)', margin: '16px 0 12px' }} />
+      <div style={{ fontWeight: 900, fontSize: 12, marginBottom: 8 }}>
+        <Fa icon="rocket" style={{ marginRight: 5, color: 'var(--navy)' }} />Démarrer un projet
       </div>
       <div className="w95-panel">
-        <div style={{ fontSize:11, lineHeight:1.6 }}>
+        <div style={{ fontSize: 11, lineHeight: 1.6 }}>
           Vous avez un projet en tête ? Contactez-moi pour un <strong>devis gratuit</strong> sous 24h.
         </div>
-        <div style={{ display:'flex', gap:8, marginTop:10 }}>
-          <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{fontSize:10}}><Fa icon="envelope" style={{marginRight:4}}/>Email</button></a>
-          <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g,'')}`} target="_blank" rel="noreferrer">
-            <button className="w95-btn green" style={{fontSize:10}}><Fa icon="comment" style={{marginRight:4}}/>WhatsApp</button></a>
+        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+          <a href={`mailto:${ME.email}`}><button className="w95-btn primary" style={{ fontSize: 10 }}><Fa icon="envelope" style={{ marginRight: 4 }} />Email</button></a>
+          <a href={`https://wa.me/${ME.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer">
+            <button className="w95-btn green" style={{ fontSize: 10 }}><Fa icon="comment" style={{ marginRight: 4 }} />WhatsApp</button></a>
         </div>
       </div>
     </div>
@@ -2041,30 +2127,32 @@ function FAQContent() {
 /* ── Welcome ── */
 function WelcomeContent({ onOpen }) {
   const art =
-`╔═════════════════════════════════╗
+    `╔═════════════════════════════════╗
 ║   AKAFOLIO v3 — Win95/WinXP OS  ║
 ║   by M'BOLLO Aka Elvis           ║
 ║   AKATech · Abidjan, CI          ║
 ╚═════════════════════════════════╝`;
   return (
     <div>
-      <pre style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--navy)', background:'var(--white)',
-        boxShadow:'var(--sunken)', padding:12, marginBottom:12, overflowX:'auto', lineHeight:1.4 }}>{art}</pre>
-      <div style={{ fontSize:12, lineHeight:1.7, marginBottom:14 }}>
-        Bienvenue dans mon portfolio interactif !<br/>
+      <pre style={{
+        fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--navy)', background: 'var(--white)',
+        boxShadow: 'var(--sunken)', padding: 12, marginBottom: 12, overflowX: 'auto', lineHeight: 1.4
+      }}>{art}</pre>
+      <div style={{ fontSize: 12, lineHeight: 1.7, marginBottom: 14 }}>
+        Bienvenue dans mon portfolio interactif !<br />
         Double-cliquez sur les icônes ou utilisez le menu <strong>Démarrer</strong>.
       </div>
-      <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {[
-          { id:'about',    label:'À propos',    icon:'user' },
-          { id:'projects', label:'Projets',     icon:'folder-open' },
-          { id:'skills',   label:'Skills',      icon:'code' },
-          { id:'services', label:'Services',    icon:'briefcase' },
-          { id:'contact',  label:'Contact',     icon:'envelope' },
-          { id:'faq',      label:'FAQ',         icon:'question-circle' },
+          { id: 'about', label: 'À propos', icon: 'user' },
+          { id: 'projects', label: 'Projets', icon: 'folder-open' },
+          { id: 'skills', label: 'Skills', icon: 'code' },
+          { id: 'services', label: 'Services', icon: 'briefcase' },
+          { id: 'contact', label: 'Contact', icon: 'envelope' },
+          { id: 'faq', label: 'FAQ', icon: 'question-circle' },
         ].map(({ id, label, icon }) => (
-          <button key={id} className="w95-btn" onClick={() => onOpen(id)} style={{ fontSize:10, display:'flex', alignItems:'center', gap:4 }}>
-            <Fa icon={icon}/> {label}
+          <button key={id} className="w95-btn" onClick={() => onOpen(id)} style={{ fontSize: 10, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Fa icon={icon} /> {label}
           </button>
         ))}
       </div>
@@ -2078,19 +2166,19 @@ function WelcomeContent({ onOpen }) {
 
 function AlertDialog({ msg, title, onClose }) {
   return (
-    <div className="w95-alert-overlay" onClick={e => e.target===e.currentTarget && onClose?.()}>
+    <div className="w95-alert-overlay" onClick={e => e.target === e.currentTarget && onClose?.()}>
       <div className="w95-alert-box">
         <div className="w95-alert-title">
-          <span style={{ fontWeight:800, fontSize:11, color:'#fff' }}>
-            <Fa icon="exclamation-triangle" style={{ marginRight:5 }}/>{title}
+          <span style={{ fontWeight: 800, fontSize: 11, color: '#fff' }}>
+            <Fa icon="exclamation-triangle" style={{ marginRight: 5 }} />{title}
           </span>
           <button className="w95-wbtn close" onClick={onClose}>
-            <svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+            <svg viewBox="0 0 10 10"><path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           </button>
         </div>
         <div className="w95-alert-body">
           <div className="w95-alert-msg">
-            <span className="w95-alert-icon"><Fa icon="comment-dots" style={{ fontSize:24 }}/></span>
+            <span className="w95-alert-icon"><Fa icon="comment-dots" style={{ fontSize: 24 }} /></span>
             <p className="w95-alert-text">{msg}</p>
           </div>
           <div className="w95-alert-btns"><button className="w95-btn primary" onClick={onClose}>OK</button></div>
@@ -2106,23 +2194,23 @@ function AlertDialog({ msg, title, onClose }) {
 
 function StartMenu({ onOpen, onClose }) {
   const items = [
-    { id:'welcome',  icon:'desktop',         label:'Bureau' },
-    { id:'about',    icon:'user',             label:'À propos' },
-    { id:'projects', icon:'folder-open',     label:'Projets' },
-    { id:'skills',   icon:'code',            label:'Compétences' },
-    { id:'services', icon:'briefcase',       label:'Services & Tarifs' },
-    { id:'contact',  icon:'envelope',        label:'Contact' },
-    { id:'faq',      icon:'question-circle', label:'FAQ' },
+    { id: 'welcome', icon: 'desktop', label: 'Bureau' },
+    { id: 'about', icon: 'user', label: 'À propos' },
+    { id: 'projects', icon: 'folder-open', label: 'Projets' },
+    { id: 'skills', icon: 'code', label: 'Compétences' },
+    { id: 'services', icon: 'briefcase', label: 'Services & Tarifs' },
+    { id: 'contact', icon: 'envelope', label: 'Contact' },
+    { id: 'faq', icon: 'question-circle', label: 'FAQ' },
     null,
-    { id:'_github',  icon:'code-branch',     label:'GitHub' },
-    { id:'_linkedin',icon:'user-tie',        label:'LinkedIn' },
-    { id:'_site',    icon:'globe',           label:'AKATech.vercel.app' },
+    { id: '_github', icon: 'code-branch', label: 'GitHub' },
+    { id: '_linkedin', icon: 'user-tie', label: 'LinkedIn' },
+    { id: '_site', icon: 'globe', label: 'AKATech.vercel.app' },
   ];
   const handle = id => {
     onClose();
-    if (id==='_github')  { window.open(ME.github, '_blank'); return; }
-    if (id==='_linkedin'){ window.open(ME.linkedin, '_blank'); return; }
-    if (id==='_site')    { window.open(ME.site, '_blank'); return; }
+    if (id === '_github') { window.open(ME.github, '_blank'); return; }
+    if (id === '_linkedin') { window.open(ME.linkedin, '_blank'); return; }
+    if (id === '_site') { window.open(ME.site, '_blank'); return; }
     onOpen(id);
   };
   return (
@@ -2131,11 +2219,11 @@ function StartMenu({ onOpen, onClose }) {
       <div className="w95-sm-items">
         {items.map((item, i) =>
           item === null
-            ? <div key={i} className="w95-sm-sep"/>
+            ? <div key={i} className="w95-sm-sep" />
             : <div key={item.id} className="w95-sm-item" onClick={() => handle(item.id)}>
-                <span className="w95-sm-icon"><Fa icon={item.icon}/></span>
-                <span>{item.label}</span>
-              </div>
+              <span className="w95-sm-icon"><Fa icon={item.icon} /></span>
+              <span>{item.label}</span>
+            </div>
         )}
       </div>
     </div>
@@ -2147,42 +2235,42 @@ function StartMenu({ onOpen, onClose }) {
 // ═══════════════════════════════════════════════════════════════
 
 const WIN_META = {
-  welcome:  { icon:'desktop',         title:'Bureau' },
-  about:    { icon:'user',            title:'À propos' },
-  projects: { icon:'folder-open',    title:'Projets' },
-  skills:   { icon:'code',           title:'Compétences' },
-  services: { icon:'briefcase',      title:'Services & Tarifs' },
-  contact:  { icon:'envelope',       title:'Contact' },
-  faq:      { icon:'question-circle',title:'FAQ' },
-  detail:   { icon:'file-alt',       title:'Projet' },
-  gallery:  { icon:'images',         title:'Galerie' },
+  welcome: { icon: 'desktop', title: 'Bureau' },
+  about: { icon: 'user', title: 'À propos' },
+  projects: { icon: 'folder-open', title: 'Projets' },
+  skills: { icon: 'code', title: 'Compétences' },
+  services: { icon: 'briefcase', title: 'Services & Tarifs' },
+  contact: { icon: 'envelope', title: 'Contact' },
+  faq: { icon: 'question-circle', title: 'FAQ' },
+  detail: { icon: 'file-alt', title: 'Projet' },
+  gallery: { icon: 'images', title: 'Galerie' },
 };
 
 function Taskbar({ windows, focusedId, onToggle, showStart, onStart }) {
   return (
     <div className="w95-taskbar">
-      <button className={`w95-start${showStart?' active':''}`} onClick={onStart}>
+      <button className={`w95-start${showStart ? ' active' : ''}`} onClick={onStart}>
         <div className="w95-start-logo">
-          <span style={{ background:'#f00', height:8, width:8 }}/>
-          <span style={{ background:'#0a0', height:8, width:8 }}/>
-          <span style={{ background:'#00f', height:8, width:8 }}/>
-          <span style={{ background:'#fa0', height:8, width:8 }}/>
+          <span style={{ background: '#f00', height: 8, width: 8 }} />
+          <span style={{ background: '#0a0', height: 8, width: 8 }} />
+          <span style={{ background: '#00f', height: 8, width: 8 }} />
+          <span style={{ background: '#fa0', height: 8, width: 8 }} />
         </div>
         <strong>Démarrer</strong>
       </button>
-      <div className="w95-tbsep"/>
+      <div className="w95-tbsep" />
       {windows.map(w => {
         const meta = WIN_META[w.type] || WIN_META.welcome;
         return (
           <button key={w.id}
-            className={`w95-tbbtn${focusedId===w.id&&!w.isMinimized?' active':''}`}
+            className={`w95-tbbtn${focusedId === w.id && !w.isMinimized ? ' active' : ''}`}
             onClick={() => onToggle(w.id)}>
-            <Fa icon={meta.icon} style={{ fontSize:11, flexShrink:0 }}/>
-            <span style={{ overflow:'hidden', textOverflow:'ellipsis' }}>{w.title || meta.title}</span>
+            <Fa icon={meta.icon} style={{ fontSize: 11, flexShrink: 0 }} />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{w.title || meta.title}</span>
           </button>
         );
       })}
-      <Clock/>
+      <Clock />
     </div>
   );
 }
@@ -2192,23 +2280,23 @@ function Taskbar({ windows, focusedId, onToggle, showStart, onStart }) {
 // ═══════════════════════════════════════════════════════════════
 
 const DESKTOP_ICONS_DEF = [
-  { id:'welcome',  icon:'welcome',  label:'Mon Portfolio' },
-  { id:'about',    icon:'about',    label:'À propos' },
-  { id:'projects', icon:'projects', label:'Projets' },
-  { id:'skills',   icon:'skills',   label:'Compétences' },
-  { id:'services', icon:'services', label:'Services & Tarifs' },
-  { id:'contact',  icon:'contact',  label:'Contact' },
-  { id:'faq',      icon:'faq',      label:'FAQ' },
-  { id:'_github',  icon:'github',   label:'GitHub' },
-  { id:'_site',    icon:'akatech',  label:'AKATech' },
+  { id: 'welcome', icon: 'welcome', label: 'Mon Portfolio' },
+  { id: 'about', icon: 'about', label: 'À propos' },
+  { id: 'projects', icon: 'projects', label: 'Projets' },
+  { id: 'skills', icon: 'skills', label: 'Compétences' },
+  { id: 'services', icon: 'services', label: 'Services & Tarifs' },
+  { id: 'contact', icon: 'contact', label: 'Contact' },
+  { id: 'faq', icon: 'faq', label: 'FAQ' },
+  { id: '_github', icon: 'github', label: 'GitHub' },
+  { id: '_site', icon: 'akatech', label: 'AKATech' },
 ];
 
 function DesktopIcon({ def, selected, onClick, pos, onDragEnd }) {
-  const clickRef  = useRef(0);
-  const dragRef   = useRef(null);
-  const nodeRef   = useRef(null);
+  const clickRef = useRef(0);
+  const dragRef = useRef(null);
+  const nodeRef = useRef(null);
   const [dragging, setDragging] = useState(false);
-  const [curPos,   setCurPos]   = useState(pos);
+  const [curPos, setCurPos] = useState(pos);
 
   // Sync external pos changes
   useEffect(() => { setCurPos(pos); }, [pos]);
@@ -2281,7 +2369,7 @@ function DesktopIcon({ def, selected, onClick, pos, onDragEnd }) {
     const t = e.touches[0];
     dragRef.current = {
       startX: t.clientX, startY: t.clientY,
-      origX: curPos.x,   origY: curPos.y,
+      origX: curPos.x, origY: curPos.y,
       moved: false,
     };
     setDragging(true);
@@ -2306,7 +2394,7 @@ function DesktopIcon({ def, selected, onClick, pos, onDragEnd }) {
   return (
     <div
       ref={nodeRef}
-      className={`w95-icon-abs${selected?' selected':''}${dragging?' dragging':''}`}
+      className={`w95-icon-abs${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`}
       style={{ left: curPos.x, top: curPos.y }}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
@@ -2328,27 +2416,27 @@ const nz = () => ++_z;
 
 function mkWin(type, opts = {}) {
   const defaults = {
-    welcome:  { pos:{ x:120, y:50  }, size:{ w:480, h:340 } },
-    about:    { pos:{ x:100, y:40  }, size:{ w:560, h:520 } },
-    projects: { pos:{ x:80,  y:30  }, size:{ w:660, h:540 } },
-    skills:   { pos:{ x:200, y:60  }, size:{ w:480, h:520 } },
-    services: { pos:{ x:130, y:45  }, size:{ w:620, h:580 } },
-    contact:  { pos:{ x:140, y:50  }, size:{ w:460, h:520 } },
-    faq:      { pos:{ x:160, y:70  }, size:{ w:500, h:460 } },
-    detail:   { pos:{ x:180, y:100 }, size:{ w:440, h:400 } },
-    gallery:  { pos:{ x:90,  y:40  }, size:{ w:720, h:560 } },
+    welcome: { pos: { x: 120, y: 50 }, size: { w: 480, h: 340 } },
+    about: { pos: { x: 100, y: 40 }, size: { w: 560, h: 520 } },
+    projects: { pos: { x: 80, y: 30 }, size: { w: 660, h: 540 } },
+    skills: { pos: { x: 200, y: 60 }, size: { w: 480, h: 520 } },
+    services: { pos: { x: 130, y: 45 }, size: { w: 620, h: 580 } },
+    contact: { pos: { x: 140, y: 50 }, size: { w: 460, h: 520 } },
+    faq: { pos: { x: 160, y: 70 }, size: { w: 500, h: 460 } },
+    detail: { pos: { x: 180, y: 100 }, size: { w: 440, h: 400 } },
+    gallery: { pos: { x: 90, y: 40 }, size: { w: 720, h: 560 } },
   };
-  const d = defaults[type] || { pos:{ x:100, y:80 }, size:{ w:480, h:380 } };
+  const d = defaults[type] || { pos: { x: 100, y: 80 }, size: { w: 480, h: 380 } };
   return {
-    id:          `${type}-${Date.now()}`,
+    id: `${type}-${Date.now()}`,
     type,
-    title:       opts.title || WIN_META[type]?.title || type,
-    pos:         opts.pos   || d.pos,
-    size:        opts.size  || d.size,
+    title: opts.title || WIN_META[type]?.title || type,
+    pos: opts.pos || d.pos,
+    size: opts.size || d.size,
     isMinimized: false,
-    closed:      false,
-    zIndex:      nz(),
-    data:        opts.data  || null,
+    closed: false,
+    zIndex: nz(),
+    data: opts.data || null,
   };
 }
 
@@ -2363,11 +2451,11 @@ export default function Win95Portfolio() {
   const [booted, setBooted] = useState(() => {
     try { return sessionStorage.getItem('w95-booted') === '1' } catch { return false }
   });
-  const [windows,   setWindows]   = useState(() => [mkWin('welcome')]);
+  const [windows, setWindows] = useState(() => [mkWin('welcome')]);
   const [focusedId, setFocusedId] = useState(() => null);
   const [showStart, setShowStart] = useState(false);
-  const [alert,     setAlert]     = useState(null);
-  const [selIcon,   setSelIcon]   = useState(null);
+  const [alert, setAlert] = useState(null);
+  const [selIcon, setSelIcon] = useState(null);
 
   // ── Positions des icônes (localStorage) ──
   const defaultIconPositions = useCallback(() => {
@@ -2385,32 +2473,32 @@ export default function Win95Portfolio() {
         const parsed = JSON.parse(saved);
         // Ensure all icons have positions
         const defaults = {};
-        DESKTOP_ICONS_DEF.forEach((d, i) => { defaults[d.id] = { x:20, y:20+i*90 }; });
+        DESKTOP_ICONS_DEF.forEach((d, i) => { defaults[d.id] = { x: 20, y: 20 + i * 90 }; });
         return { ...defaults, ...parsed };
       }
-    } catch {}
+    } catch { }
     const pos = {};
-    DESKTOP_ICONS_DEF.forEach((d, i) => { pos[d.id] = { x:20, y:20+i*90 }; });
+    DESKTOP_ICONS_DEF.forEach((d, i) => { pos[d.id] = { x: 20, y: 20 + i * 90 }; });
     return pos;
   });
 
   const handleIconDragEnd = useCallback((id, newPos) => {
     setIconPositions(prev => {
       const next = { ...prev, [id]: newPos };
-      try { localStorage.setItem('w95-icon-positions', JSON.stringify(next)); } catch {}
+      try { localStorage.setItem('w95-icon-positions', JSON.stringify(next)); } catch { }
       return next;
     });
   }, []);
 
   // Sauvegarde du boot dans sessionStorage
   useEffect(() => {
-    if (booted) { try { sessionStorage.setItem('w95-booted', '1') } catch {} }
+    if (booted) { try { sessionStorage.setItem('w95-booted', '1') } catch { } }
   }, [booted]);
 
   // Init focusedId after mount
   useEffect(() => {
     setFocusedId(w => w || windows[0]?.id || null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openWindow = useCallback((type, opts = {}) => {
@@ -2420,7 +2508,7 @@ export default function Win95Portfolio() {
         const ex = prev.find(w => w.type === type && !w.closed);
         if (ex) {
           const z = nz(); setFocusedId(ex.id);
-          return prev.map(w => w.id===ex.id ? { ...w, isMinimized:false, zIndex:z } : w);
+          return prev.map(w => w.id === ex.id ? { ...w, isMinimized: false, zIndex: z } : w);
         }
       }
       const win = mkWin(type, opts);
@@ -2430,40 +2518,40 @@ export default function Win95Portfolio() {
   }, []);
 
   const closeWindow = useCallback(id => {
-    setWindows(prev => prev.map(w => w.id===id ? { ...w, closed:true } : w));
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, closed: true } : w));
     setFocusedId(null);
   }, []);
 
   const minimizeWindow = useCallback(id => {
-    setWindows(prev => prev.map(w => w.id===id ? { ...w, isMinimized:true } : w));
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: true } : w));
     setFocusedId(null);
   }, []);
 
   const toggleWindow = useCallback(id => {
     setWindows(prev => {
-      const win = prev.find(w => w.id===id);
+      const win = prev.find(w => w.id === id);
       if (!win) return prev;
-      if (focusedId===id && !win.isMinimized) {
+      if (focusedId === id && !win.isMinimized) {
         setFocusedId(null);
-        return prev.map(w => w.id===id ? { ...w, isMinimized:true } : w);
+        return prev.map(w => w.id === id ? { ...w, isMinimized: true } : w);
       }
       const z = nz(); setFocusedId(id);
-      return prev.map(w => w.id===id ? { ...w, isMinimized:false, zIndex:z } : w);
+      return prev.map(w => w.id === id ? { ...w, isMinimized: false, zIndex: z } : w);
     });
   }, [focusedId]);
 
   const focusWindow = useCallback(id => {
     const z = nz(); setFocusedId(id);
-    setWindows(prev => prev.map(w => w.id===id ? { ...w, zIndex:z } : w));
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, zIndex: z } : w));
   }, []);
 
   const handleIcon = useCallback((id, isDbl) => {
     setSelIcon(id);
     if (isDbl) {
       setSelIcon(null);
-      if (id === '_github')  { window.open(ME.github, '_blank'); return; }
-      if (id === '_linkedin'){ window.open(ME.linkedin, '_blank'); return; }
-      if (id === '_site')    { window.open(ME.site, '_blank'); return; }
+      if (id === '_github') { window.open(ME.github, '_blank'); return; }
+      if (id === '_linkedin') { window.open(ME.linkedin, '_blank'); return; }
+      if (id === '_site') { window.open(ME.site, '_blank'); return; }
       openWindow(id);
     }
   }, [openWindow]);
@@ -2481,26 +2569,26 @@ export default function Win95Portfolio() {
   return (
     <>
       {/* CustomCursor rendu TOUJOURS — même pendant le boot */}
-      <CustomCursor/>
+      <CustomCursor />
 
       {!booted ? (
-        <BootScreen onDone={() => setBooted(true)}/>
+        <BootScreen onDone={() => setBooted(true)} />
       ) : (
         <div
           className="w95-desktop"
-          style={{ height:'100vh', overflow:'hidden', position:'relative' }}
+          style={{ height: '100vh', overflow: 'hidden', position: 'relative' }}
           onClick={() => setSelIcon(null)}
         >
-          <div className="w95-scanlines"/>
+          <div className="w95-scanlines" />
 
           {/* Desktop icons — draggables, positions dans localStorage */}
           {DESKTOP_ICONS_DEF.map((d, i) => (
             <DesktopIcon
               key={d.id}
               def={d}
-              selected={selIcon===d.id}
+              selected={selIcon === d.id}
               onClick={handleIcon}
-              pos={iconPositions[d.id] || { x:20, y:20+i*90 }}
+              pos={iconPositions[d.id] || { x: 20, y: 20 + i * 90 }}
               onDragEnd={handleIconDragEnd}
             />
           ))}
@@ -2515,38 +2603,38 @@ export default function Win95Portfolio() {
               defaultPos={win.pos}
               defaultSize={win.size}
               isMinimized={win.isMinimized}
-              isFocused={focusedId===win.id}
+              isFocused={focusedId === win.id}
               zIndex={win.zIndex}
               menuItems={
-                win.type==='projects' ? ['Fichier','Affichage','Filtre','Aide'] :
-                win.type==='services' ? ['Fichier','Services','Tarifs','Aide'] :
-                win.type==='about'    ? ['Créatif','Rigoureux','Autonome','Dynamique','Collectif'] :
-                win.type==='contact'  ? ['Fichier','Édition','Aide'] : []
+                win.type === 'projects' ? ['Fichier', 'Affichage', 'Filtre', 'Aide'] :
+                  win.type === 'services' ? ['Fichier', 'Services', 'Tarifs', 'Aide'] :
+                    win.type === 'about' ? ['Créatif', 'Rigoureux', 'Autonome', 'Dynamique', 'Collectif'] :
+                      win.type === 'contact' ? ['Fichier', 'Édition', 'Aide'] : []
               }
               statusText={
-                win.type==='projects' ? `${PROJECTS.length} projets · AKATech Portfolio` :
-                win.type==='skills'   ? 'Frontend · Backend · Outils · Autres' :
-                win.type==='services' ? 'Services + Tarifs · 4 offres' :
-                win.type==='contact'  ? 'Prêt.' : ''
+                win.type === 'projects' ? `${PROJECTS.length} projets · AKATech Portfolio` :
+                  win.type === 'skills' ? 'Frontend · Backend · Outils · Autres' :
+                    win.type === 'services' ? 'Services + Tarifs · 4 offres' :
+                      win.type === 'contact' ? 'Prêt.' : ''
               }
-              onClose={()    => closeWindow(win.id)}
-              onMinimize={()  => minimizeWindow(win.id)}
-              onFocus={()     => focusWindow(win.id)}
+              onClose={() => closeWindow(win.id)}
+              onMinimize={() => minimizeWindow(win.id)}
+              onFocus={() => focusWindow(win.id)}
             >
-              {win.type==='welcome'  && <WelcomeContent onOpen={openWindow}/>}
-              {win.type==='about'    && <AboutContent/>}
-              {win.type==='skills'   && <SkillsContent/>}
-              {win.type==='projects' && <ProjectsContent onDetail={p => openWindow('detail', { title:p.title, data:p, pos:{ x:180+Math.random()*60, y:80+Math.random()*40 } })}/>}
-              {win.type==='services' && <ServicesContent/>}
-              {win.type==='contact'  && <ContactContent onAlert={(m,t) => setAlert({ msg:m, title:t })}/>}
-              {win.type==='faq'      && <FAQContent/>}
-              {win.type==='detail'   && win.data && <ProjectDetailContent project={win.data} onBack={() => closeWindow(win.id)}/>}
+              {win.type === 'welcome' && <WelcomeContent onOpen={openWindow} />}
+              {win.type === 'about' && <AboutContent />}
+              {win.type === 'skills' && <SkillsContent />}
+              {win.type === 'projects' && <ProjectsContent onDetail={p => openWindow('detail', { title: p.title, data: p, pos: { x: 180 + Math.random() * 60, y: 80 + Math.random() * 40 } })} />}
+              {win.type === 'services' && <ServicesContent />}
+              {win.type === 'contact' && <ContactContent onAlert={(m, t) => setAlert({ msg: m, title: t })} />}
+              {win.type === 'faq' && <FAQContent />}
+              {win.type === 'detail' && win.data && <ProjectDetailContent project={win.data} onBack={() => closeWindow(win.id)} />}
             </Window>
           ))}
 
           {/* Start Menu */}
           {showStart && (
-            <StartMenu onOpen={openWindow} onClose={() => setShowStart(false)}/>
+            <StartMenu onOpen={openWindow} onClose={() => setShowStart(false)} />
           )}
 
           {/* Taskbar */}
@@ -2559,7 +2647,7 @@ export default function Win95Portfolio() {
           />
 
           {/* Alert */}
-          {alert && <AlertDialog msg={alert.msg} title={alert.title} onClose={() => setAlert(null)}/>}
+          {alert && <AlertDialog msg={alert.msg} title={alert.title} onClose={() => setAlert(null)} />}
         </div>
       )}
     </>
