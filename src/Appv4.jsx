@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+loimport { useState, useEffect, useRef, useCallback } from 'react'
 import ScrambleText from './components/ScrambleText.jsx'
 import Shuffle from './components/Shuffle.jsx'
 import AnimatedCounter from './components/AnimatedCounter.jsx'

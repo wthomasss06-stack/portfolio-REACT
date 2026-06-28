@@ -1193,112 +1193,169 @@ const Noise = () => (
 );
 
 // ═══════════════════════════════════════════════════════════════
-// LOADER v4 — page.js style, orange, responsive, dark/light
+// LOADER v5 — liquid blur, no fx divs, counter bas-droite, corner bas-gauche
 // ═══════════════════════════════════════════════════════════════
 const Loader = ({ onDone }) => {
   const [progress, setProgress] = useState(0)
   const loaderRef = useRef(null)
+  const nameRef   = useRef(null)
+  const explodedRef = useRef(false)
+  const onDoneRef   = useRef(onDone)
+  useEffect(() => { onDoneRef.current = onDone }, [onDone])
 
+  /* ── Liquid blur init ── */
+  useEffect(() => {
+    const blurEl = document.getElementById('mob-ld-liquid-blur')
+    if (blurEl) blurEl.setAttribute('stdDeviation', '28')
+  }, [])
+
+  /* ── Entrance animations ── */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.mob-ld-percent',
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 }
+      )
+      gsap.fromTo('.mob-ld-name', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.28 })
+      gsap.fromTo('.mob-ld-role',
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 }
+      )
+      gsap.fromTo('.mob-ld-corner',
+        { opacity: 0 },
+        { opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+      )
+    }, loaderRef)
+    return () => ctx.revert()
+  }, [])
+
+  /* ── Progress counter + liquid blur sync + explosion ── */
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
-        const next = prev + Math.random() * 12
+        /* Step petit au début (blur bien visible) — s'accélère vers la fin */
+        const eased = 1.5 + (prev / 100) * 4.5
+        const next = prev + Math.random() * eased
+
+        /* Sync blur SVG avec progress (28 → 0) */
+        const blurEl = document.getElementById('mob-ld-liquid-blur')
+        if (blurEl) {
+          const blurVal = Math.max(0, 28 * (1 - next / 100))
+          blurEl.setAttribute('stdDeviation', String(blurVal.toFixed(2)))
+        }
+
         if (next >= 100) {
           clearInterval(interval)
-          /* Transition scale-slide barba-01
-             — on anime le ref React, jamais .remove()
-             — onDone() démonte via setState, React gère le DOM */
           setTimeout(() => {
+            if (explodedRef.current) return
+            explodedRef.current = true
+
             const loaderEl = loaderRef.current
-            const appRoot = document.querySelector('.app')
-            if (loaderEl) {
-              const tl = gsap.timeline({
-                onComplete: () => {
-                  /* Cacher visuellement sans toucher au DOM — React démonte ensuite */
-                  if (loaderEl) {
+            if (!loaderEl) { onDoneRef.current(); return }
+
+            const nameEl = nameRef.current
+            if (!nameEl) { onDoneRef.current(); return }
+            const nameTextEl = nameEl.querySelector('.mob-ld-name-text')
+            if (!nameTextEl) { onDoneRef.current(); return }
+
+            /* Blur à zéro — nom net */
+            const blurEl2 = document.getElementById('mob-ld-liquid-blur')
+            if (blurEl2) blurEl2.setAttribute('stdDeviation', '0')
+
+            /* Split en chars pour explosion */
+            const raw = 'MBOLLO AKA ELVIS'
+            nameTextEl.innerHTML = ''
+            const chars = Array.from(raw).map(letter => {
+              const span = document.createElement('span')
+              span.className = 'mob-ld-char'
+              span.textContent = letter
+              nameTextEl.appendChild(span)
+              return span
+            })
+
+            /* Fade out percent, rôle, corner */
+            gsap.to(['.mob-ld-percent', '.mob-ld-role', '.mob-ld-corner'], {
+              opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
+            })
+
+            /* Perspective 3D */
+            gsap.set(nameEl, { perspective: 800, transformStyle: 'preserve-3d' })
+            gsap.set(nameTextEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
+
+            /* Explosion chars */
+            const mid = (chars.length - 1) / 2
+            const tl = gsap.timeline({
+              delay: 0.15,
+              onComplete: () => {
+                gsap.to(loaderEl, {
+                  opacity: 0, duration: 0.45, ease: 'power2.inOut',
+                  onComplete: () => {
                     loaderEl.style.visibility = 'hidden'
                     loaderEl.style.pointerEvents = 'none'
+                    onDoneRef.current()
                   }
-                  onDone()
-                }
-              })
-              /* leave : loader monte + rétrécit */
-              tl.to(loaderEl, {
-                y: '-100%', scale: 0.7, duration: 1.3,
-                ease: 'power3.inOut', transformOrigin: 'center center'
-              }, 0)
-              /* enter : app arrive par le bas */
-              if (appRoot) {
-                gsap.set(appRoot, { y: '8vh', scale: 0.96, transformOrigin: 'center top' })
-                tl.to(appRoot, {
-                  y: '0%', scale: 1, duration: 1.0,
-                  ease: 'power3.inOut', clearProps: 'transform'
-                }, 0.6)
+                })
               }
-            } else {
-              onDone()
-            }
-          }, 300)
+            })
+            chars.forEach((span, i) => {
+              const dist = i - mid
+              tl.to(span, {
+                x: dist * 80,
+                y: (Math.random() - 0.5) * 200,
+                z: Math.random() * 300 - 150,
+                rotationX: (Math.random() - 0.5) * 720,
+                rotationY: (Math.random() - 0.5) * 720,
+                scale: 0.2 + Math.random() * 0.5,
+                opacity: 0,
+                duration: 0.85,
+                ease: 'power2.out',
+                delay: i * 0.03,
+              }, 0)
+            })
+          }, 350)
           return 100
         }
         return next
       })
-    }, 120)
+    }, 210)
     return () => clearInterval(interval)
-  }, [onDone])
-
-  /* Decrypt effect */
-  useEffect(() => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-    let iteration = 0
-    const el = document.querySelector(".mob-decrypt-text")
-    if (!el) return
-    const original = "MBOLLO AKA ELVIS"
-    const iv = setInterval(() => {
-      el.innerText = original.split("").map((letter, index) => {
-        if (index < iteration) return original[index]
-        return letters[Math.floor(Math.random() * letters.length)]
-      }).join("")
-      if (iteration >= original.length) clearInterval(iv)
-      iteration += 1 / 2
-    }, 40)
-    return () => clearInterval(iv)
   }, [])
 
   return (
     <div id="mob-loader" ref={loaderRef}>
-      {/* Backgrounds */}
-      <div className="mob-ld-noise" />
-      <div className="mob-ld-grid" />
-      <div className="mob-ld-vignette" />
-      <div className="mob-ld-scanline" />
 
-      {/* Center content */}
+      {/* SVG filter liquid blur */}
+      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+        <defs>
+          <filter id="mob-ld-liquid-filter">
+            <feGaussianBlur id="mob-ld-liquid-blur" in="SourceGraphic" stdDeviation="28" result="blur" />
+            <feColorMatrix in="blur" mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -10"
+              result="goo" />
+            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* CENTER — nom + rôle */}
       <div className="mob-ld-center">
-        {/* Percent */}
-        <div className="mob-ld-percent">
-          {Math.floor(progress)}
-          <span>%</span>
+        <div className="mob-ld-name mob-ld-name--liquid" ref={nameRef}>
+          <div className="mob-ld-name-text mob-ld-name-xl">
+            MBOLLO AKA ELVIS
+          </div>
         </div>
-
-        {/* Name decrypt */}
-        <div className="mob-ld-name">
-          <div className="mob-decrypt-text">MBOLLO AKA ELVIS</div>
-        </div>
-
-        {/* Role */}
         <div className="mob-ld-role">
           FULL-STACK · UI/UX · PRODUCT BUILDER
         </div>
-
-        {/* Progress bar */}
-        <div className="mob-ld-progress-wrap">
-          <div className="mob-ld-progress" style={{ width: `${progress}%` }} />
-        </div>
       </div>
 
-      {/* Corner tag */}
-      <div className="mob-ld-corner">AKATech Experience System v2.6</div>
+      {/* COMPTEUR % — coin bas-droite */}
+      <div className="mob-ld-percent">
+        {Math.floor(progress)}<span>%</span>
+      </div>
+
+      {/* CORNER — coin bas-gauche */}
+      <div className="mob-ld-corner">v2.6</div>
     </div>
   )
 }
