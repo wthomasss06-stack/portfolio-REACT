@@ -3,7 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m "v2.6"
+git commit -m "v2.7"
 git push
 
 

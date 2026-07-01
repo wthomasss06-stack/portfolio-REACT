@@ -2213,11 +2213,10 @@
    
    /* ══════════ INFINITE TESTIMONIALS CAROUSEL ══════════ */
    /* ⚠️ NOTE : l'ancien sélecteur #hscroll-section (overflow:hidden) a été
-      retiré d'ici — cet ID est désormais utilisé par .fcx-section
-      (ProjectsHorizontalScroll, scroll horizontal piloté en JS), et
-      overflow:hidden sur l'ancêtre direct du sticky cassait le
-      position:sticky de .fcx-sticky. Le style de #hscroll-section
-      est géré par .fcx-section (voir plus bas dans ce fichier). */
+      retiré d'ici — cet ID est désormais utilisé par .tunnel-section
+      (ProjectsTunnel, tunnel WebGL pinné en GSAP ScrollTrigger), et
+      overflow:hidden sur l'ancêtre direct cassait le pin. Le style de
+      #hscroll-section est géré par .tunnel-section (voir plus bas). */
    .testi-band-wrap { width: 100%; overflow: hidden; position: relative; display: flex; align-items: center; padding: 2rem 0; }
    .testi-band { display: flex; gap: 2.5rem; will-change: transform; animation: testiBandAnim 40s linear infinite; }
    @keyframes testiBandAnim { 0% { transform: translateX(0); } 100% { transform: translateX(-33.3333%); } }
@@ -4390,40 +4389,28 @@
    Même mécanique que #hpx-section, contenu = fc-grid complet
    (mockup desktop + mockup mobile + panneau info) par slide.
    ══════════════════════════════════════════════════════════ */
-.fcx-section {
+/* ════════════════════════════════════════════
+ PROJECTS TUNNEL — remplace l'ancien .fcx-* (horizontal parallax)
+ GSAP ScrollTrigger gère le pin lui-même (pas de sticky CSS ici).
+ ════════════════════════════════════════════ */
+.tunnel-section {
   position: relative;
-  background: var(--bg);
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #020202;
   border-top: 2px solid rgba(255,85,0,.1);
 }
 
-.fcx-label {
-  position: sticky;
-  top: 12px;
-  left: 0;
-  z-index: 20;
-  pointer-events: none;
-  padding: 0 var(--pad);
-}
-.fcx-label-inner {
-  font-family: 'Space Mono', monospace;
-  font-size: .6rem;
-  letter-spacing: .45em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.fcx-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+#webgl-tunnel-container {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: stretch;  /* ← le track s'étire à 100vh, pas center qui le compresse */
+  height: 100%;
+  z-index: 1;
 }
 
-/* ── Titre de section flottant dans le sticky (hors du flux normal) ── */
-.fcx-section-label {
+.tunnel-section-label {
   position: absolute;
   top: 28px;
   left: 8vw;
@@ -4432,74 +4419,155 @@
   margin-bottom: 0;
   text-align: left;
 }
-.fcx-section-label .sh-title { font-size: clamp(1.1rem, 1.8vw, 1.6rem); line-height: 1.1; }
-.fcx-section-label .sh-wrap { margin-bottom: 0; }
-@media (max-width: 1100px) { .fcx-section-label { left: 6vw; } }
-@media (max-width: 768px)  { .fcx-section-label { left: 5vw; top: 18px; } }
-.fcx-track {
-  display: flex;
-  height: 100vh;        /* ← le track prend toute la hauteur du sticky */
-  flex-shrink: 0;       /* ← ne se compresse pas dans le flex parent */
-  will-change: transform;
-  list-style: none;
-  margin: 0; padding: 0;
-  transition: transform 60ms linear;
-}
+.tunnel-section-label .sh-title { font-size: clamp(1.1rem, 1.8vw, 1.6rem); line-height: 1.1; color: #fff; }
+.tunnel-section-label .sh-wrap { margin-bottom: 0; }
+.tunnel-section-label .sh-sub { color: rgba(255,255,255,.5); }
+@media (max-width: 1100px) { .tunnel-section-label { left: 6vw; } }
+@media (max-width: 768px)  { .tunnel-section-label { left: 5vw; top: 18px; } }
 
-/* ── Chaque slide projet : reprend .fc-grid en plein écran ── */
-.fcx-slide {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
+.tunnel-ui-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
   display: flex;
   align-items: center;
-  padding: 0 8vw;
-  overflow: hidden;
-}
-.fcx-slide .fc-grid { width: 100%; }
-.fcx-slide .fc-mockups,
-.fcx-slide .fc-info { opacity: 1; transform: none; } /* pas d'animation d'entrée ici : piloté par le scroll lui-même */
-
-/* ── Numéro de progression "03 / 18" ── */
-.fcx-counter {
-  position: absolute;
-  top: 28px;
-  right: 8vw;
-  z-index: 5;
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: .1em;
-  color: var(--muted);
+  justify-content: center;
   pointer-events: none;
+  text-align: center;
 }
-.fcx-counter strong { color: var(--accent); }
-
-/* ── Barre de progression horizontale (en bas) ── */
-.fcx-progress-track {
+.tunnel-ui-title {
   position: absolute;
-  bottom: 28px;
-  left: 8vw;
-  right: 8vw;
-  height: 2px;
-  background: rgba(255,85,0,.12);
-  z-index: 5;
-  border-radius: 2px;
-  overflow: hidden;
-}
-.fcx-progress-fill {
-  height: 100%;
-  background: var(--accent);
-  will-change: width;
-}
-
-@media (max-width: 1100px) {
-  .fcx-slide { padding: 0 6vw; }
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 9vw, 8rem);
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.85);
+  text-shadow: 0 0 40px rgba(255,85,0,.35);
+  mix-blend-mode: difference;
+  transition: opacity .15s linear;
+  white-space: nowrap;
 }
 @media (max-width: 768px) {
-  .fcx-slide { padding: 0 5vw; }
-  .fcx-counter { top: 18px; right: 5vw; font-size: .6rem; }
-  .fcx-progress-track { left: 5vw; right: 5vw; bottom: 18px; }
+  .tunnel-ui-title { font-size: clamp(2.2rem, 14vw, 4rem); }
+}
+
+/* ── Titre projet au survol : s'affiche centré à la même place que le titre par défaut ── */
+.tunnel-hover-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 8px));
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4.2vw, 3.4rem);
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.95);
+  text-shadow: 0 0 30px rgba(255,85,0,.5);
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity .2s ease, transform .2s ease;
+  max-width: 80vw;
+  text-align: center;
+  white-space: nowrap;
+}
+.tunnel-hover-title.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+@media (max-width: 768px) {
+  .tunnel-hover-title { font-size: clamp(1.3rem, 6vw, 2.2rem); }
+}
+
+/* ── Modal projet (clic sur une carte du tunnel) ── */
+.tunnel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(1,1,1,.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6vh 6vw;
+  animation: tunnelModalFade .25s ease both;
+}
+@keyframes tunnelModalFade { from { opacity: 0; } to { opacity: 1; } }
+
+.tunnel-modal {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 0;
+  background: var(--bg, #0a0a0a);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 1rem;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  animation: tunnelModalPop .3s cubic-bezier(.2,.9,.25,1) both;
+}
+@keyframes tunnelModalPop {
+  from { opacity: 0; transform: scale(.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.tunnel-modal-image {
+  position: relative;
+  background: #050505;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.tunnel-modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tunnel-modal-info {
+  padding: 2.4rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  color: var(--text, #f2ede8);
+}
+
+.tunnel-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(1,1,1,.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .18s ease, transform .18s ease, border-color .18s ease;
+}
+.tunnel-modal-close:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 900px) {
+  .tunnel-modal { grid-template-columns: 1fr; max-height: 92vh; }
+  .tunnel-modal-image { min-height: 220px; }
+  .tunnel-modal-info { padding: 1.6rem 1.4rem 2rem; }
 }
 
 /* ════════════════════════════════════════════
