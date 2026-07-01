@@ -230,9 +230,10 @@ function useSHRotatingCycle(texts, interval = 2500) {
  Titre/sous-titre se "décodent" (cycle-text) à
  chaque entrée de la section dans le viewport
  ════════════════════════════════════════════ */
-function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = {} }) {
+function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = {}, kinetic = true }) {
   const Sub = subAs === 'h2' ? 'h2' : 'p'
   const wrapRef = useRef(null)
+  const titleElRef = useRef(null)
   const titleCyc = useSHCycleText(title, false)   // défile avec le même texte, sans glitch chars
   const subCyc = useSHCycleText(sub, true)    // garde le scramble de caractères
   const ghost = useSHGhostScroll(title)        // ghost text en contour, même cycle entrée/sortie
@@ -257,11 +258,50 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
     return () => io.disconnect()
   }, [titleCyc.play, subCyc.play, ghost.play])
 
+  /* ── Effet "LA CINÉTIQUE" — le grand titre glisse de la gauche
+     vers la droite en fonction du scroll (GSAP ScrollTrigger scrub,
+     comme .marquee-container dans le prototype HTML de référence).
+     Départ poussé loin à gauche (xPercent -65) et arrivée poussée
+     loin à droite (xPercent 65) pour un glissement beaucoup plus
+     marqué, presque jusqu'au bord de l'écran (body est en
+     overflow-x:hidden, pas de scrollbar horizontale parasite).
+     Fenêtre de scroll resserrée (start/end à 85%/15% du viewport
+     au lieu de top bottom/bottom top) pour que le glissement se
+     joue plus vite, concentré sur le passage central du titre.
+     Ancré sur le passage du titre lui-même dans le viewport
+     (pas sur toute la section, souvent bien plus haute) pour que le
+     glissement reste visible à chaque fois, quelle que soit la
+     hauteur de la section. Désactivable via kinetic={false}
+     (ex. section Stack, laissée telle quelle). ── */
+  useEffect(() => {
+    if (!kinetic || !title) return
+    const titleEl = titleElRef.current
+    const wrapEl = wrapRef.current
+    if (!titleEl || !wrapEl) return
+
+    gsap.set(titleEl, { xPercent: -65 })
+    const tween = gsap.to(titleEl, {
+      xPercent: 65,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: wrapEl,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        scrub: true,
+      },
+    })
+    return () => {
+      tween.scrollTrigger?.kill()
+      tween.kill()
+      gsap.set(titleEl, { xPercent: 0 })
+    }
+  }, [kinetic, title])
+
   return (
     <div className={`sh-wrap ${className}`} style={style} ref={wrapRef}>
       <span className="sh-num">{num}</span>
       <div className="sh-body">
-        <h2 className="sh-title">
+        <h2 className="sh-title" ref={titleElRef}>
           <span className="sh-cycle-wrap">
             <span className="sh-cycle-inner" ref={titleCyc.innerRef}>
               {titleCyc.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
@@ -382,7 +422,7 @@ function HorizontalParallax() {
       <div className="hpx-sticky">
         {/* Heading flottant en absolute DANS le sticky (hors flux) */}
         <div className="fcx-section-label">
-          <SectionHeading num="02" title="Stack" sub="Meilleures armes" />
+          <SectionHeading num="02" title="Stack" sub="Meilleures armes" kinetic={false} />
         </div>
         <ul ref={trackRef} id="hpx-track" className="hpx-track">
           {HPSLIDES.map((s, i) => (
@@ -1763,9 +1803,9 @@ function ProjectsTunnel() {
       }
     `
 
-    // Plans agrandis (300x196, méga-format inspiré du prototype "megastructure")
-    const CARD_W = 300
-    const CARD_H = 196
+    // Plans agrandis (345x225, un cran au-dessus du méga-format précédent)
+    const CARD_W = 345
+    const CARD_H = 225
     const geometry = new THREE.PlaneGeometry(CARD_W, CARD_H, 20, 20)
 
     const debrisGroup = new THREE.Group()
@@ -1807,6 +1847,11 @@ function ProjectsTunnel() {
         mesh.position.z = -(loopIndex * LOOP_LENGTH) - i * SPACING
 
         mesh.lookAt(0, 0, mesh.position.z)
+        // lookAt() pointe l'axe -Z (arrière du plan) vers le centre du tunnel,
+        // donc la texture (face avant = +Z) se retrouvait tournée vers l'extérieur
+        // → on la voyait par l'arrière (DoubleSide) = image inversée en miroir.
+        // On retourne le plan à 180° pour présenter la vraie face à la caméra.
+        mesh.rotateY(Math.PI)
         mesh.rotation.z += Math.random() * 0.2
 
         debrisGroup.add(mesh)

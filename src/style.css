@@ -905,7 +905,7 @@
    }
    .sh-title {
      font-family: var(--fd);
-     font-size: clamp(2.8rem, 8.5vw, 6.5rem);
+     font-size: clamp(4.2rem, 12vw, 10rem);
      font-weight: 800;
      letter-spacing: -.02em;
      text-transform: uppercase;
@@ -4463,24 +4463,24 @@
   transform: translate(-50%, calc(-50% + 8px));
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
-  font-size: clamp(1.6rem, 4.2vw, 3.4rem);
-  letter-spacing: -.01em;
+  font-size: clamp(2.6rem, 9vw, 8rem);
+  letter-spacing: -.02em;
   text-transform: uppercase;
   color: rgba(255,255,255,.95);
   text-shadow: 0 0 30px rgba(255,85,0,.5);
   mix-blend-mode: difference;
   opacity: 0;
   transition: opacity .2s ease, transform .2s ease;
-  max-width: 80vw;
+  max-width: 88vw;
   text-align: center;
-  white-space: nowrap;
+  line-height: .95;
 }
 .tunnel-hover-title.is-visible {
   opacity: 1;
   transform: translate(-50%, -50%);
 }
 @media (max-width: 768px) {
-  .tunnel-hover-title { font-size: clamp(1.3rem, 6vw, 2.2rem); }
+  .tunnel-hover-title { font-size: clamp(2.2rem, 14vw, 4rem); }
 }
 
 /* ── Modal projet (clic sur une carte du tunnel) ── */
