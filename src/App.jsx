@@ -1847,11 +1847,6 @@ function ProjectsTunnel() {
         mesh.position.z = -(loopIndex * LOOP_LENGTH) - i * SPACING
 
         mesh.lookAt(0, 0, mesh.position.z)
-        // lookAt() pointe l'axe -Z (arrière du plan) vers le centre du tunnel,
-        // donc la texture (face avant = +Z) se retrouvait tournée vers l'extérieur
-        // → on la voyait par l'arrière (DoubleSide) = image inversée en miroir.
-        // On retourne le plan à 180° pour présenter la vraie face à la caméra.
-        mesh.rotateY(Math.PI)
         mesh.rotation.z += Math.random() * 0.2
 
         debrisGroup.add(mesh)
