@@ -2602,7 +2602,7 @@ function SkillsSection() {
 
   return (
     <section id="skills-section" className="sec">
-      <SectionHeading sub="Mes outils de travail" style={{ marginBottom: '1.2rem' }} />
+      
       <h3 className="about-text" style={{ maxWidth: '640px', marginBottom: '2rem' }}>
         Un ensemble d'<strong>outils maîtrisés</strong> au fil des projets, du frontend
         au backend, pour livrer du code fiable.
