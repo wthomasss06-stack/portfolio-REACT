@@ -10,3 +10,11 @@
   transform: scale(1);
   transform-origin: center;
 }
+
+/* Occupe le même espace que le canvas 3D pendant que le chunk Lanyard
+   (three + r3f + rapier + meshline) se charge, pour éviter tout layout shift. */
+.lanyard-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}

@@ -612,6 +612,13 @@
      display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
    }
    .hero-word { font-weight: 800; color: #F2EDE8; border-bottom: 3px solid var(--accent); padding-bottom: 2px; }
+   .hero-impact-line {
+     font-family: 'JetBrains Mono', monospace; font-size: clamp(13px, 1.15vw, 15px);
+     color: rgba(242,237,232,0.62); max-width: 460px; line-height: 1.6;
+     margin: 0 0 clamp(18px,3vh,28px); letter-spacing: .01em;
+   }
+   .hero-impact-line strong { color: var(--accent); font-weight: 700; }
+   @media (max-width: 900px) { .hero-impact-line { max-width: 100%; text-align: center; margin-left: auto; margin-right: auto; } }
    .cursor { color: var(--accent); font-weight: 700; animation: blink .8s steps(1) infinite; }
    .hv4-desc {
      font-family: var(--fb); font-size: clamp(14px, 1.55vw, 18px);
@@ -3560,12 +3567,20 @@
    .marquee {
      overflow: hidden;
      width: 100%;
-     border-top: 2.5px solid var(--text);
-     border-bottom: 2.5px solid var(--text);
-     background: var(--accent);
-     padding: 16px 0;
+     border-top: 2.5px solid rgba(255,255,255,.15);
+     border-bottom: 2.5px solid rgba(255,255,255,.15);
+     background: rgba(255,85,0,.95);
      position: relative;
-     z-index: 5;
+     z-index: 2;
+     margin: clamp(1rem, 2vw, 2.5rem) 0;
+     padding: 0 1rem;
+     border-radius: 12px;
+     box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+     height: clamp(48px, 6vw, 68px);
+     min-height: 48px;
+     max-height: 68px;
+     display: flex;
+     align-items: center;
    }
    body.light-mode .marquee {
      border-top: 2.5px solid #000000;
@@ -3573,6 +3588,9 @@
    }
    .marquee-track {
      display: flex;
+     flex-wrap: nowrap;
+     align-items: center;
+     width: max-content;
      white-space: nowrap;
      animation: marq 25s linear infinite;
    }
@@ -3582,6 +3600,7 @@
    }
    .mw {
      display: inline-flex;
+     flex: 0 0 auto;
      align-items: center;
      gap: 16px;
      padding: 0 16px;
@@ -3590,12 +3609,13 @@
      font-weight: 700;
      letter-spacing: .1em;
      text-transform: uppercase;
-     color: #0A0A0A;
+     color: #FFFFFF;
    }
    .mdot {
      opacity: .4;
      font-size: 8px;
      color: #0A0A0A;
+     flex: 0 0 auto;
    }
 
    /* ════════════════════════════════════════════
@@ -3785,20 +3805,25 @@
       ROLE — monospace sous le nom
    ════════════════════════════════════════════ */
 
-   .ld-role{
+   /* Role text with same liquid blur effect as name */
+   .ld-role {
      margin-top: 1rem;
-
      font-family: 'Space Mono', monospace;
      font-size: .68rem;
-
      letter-spacing: .3em;
      text-transform: uppercase;
-
-     color: rgba(255,255,255,.5);
+     color: rgba(255,255,255,.85);
+     /* Same liquid blur & brightness inversion as .ld-name for cohesive effect */
+     filter: url(#ld-liquid-filter) brightness(0) invert(1);
+     -webkit-filter: url(#ld-liquid-filter) brightness(0) invert(1);
+     text-shadow: 0 0 20px rgba(255,85,0,.15), 0 0 50px rgba(255,85,0,.05);
    }
 
-   body.light-mode .ld-role{
-     color: rgba(0,0,0,.55);
+   body.light-mode .ld-role {
+     color: rgba(0,0,0,.75);
+     filter: url(#ld-liquid-filter) brightness(0);
+     -webkit-filter: url(#ld-liquid-filter) brightness(0);
+     text-shadow: none;
    }
 
    /* ════════════════════════════════════════════
@@ -4343,6 +4368,11 @@
   transition: background .2s, border-color .2s;
 }
 .fc-tag:hover { background: rgba(255,85,0,.12); border-color: rgba(255,85,0,.5); }
+.fc-tag--icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px; width: 34px; height: 34px; border-radius: 10px;
+}
+.fc-tag--icon img { width: 18px; height: 18px; object-fit: contain; display: block; }
 .fc-desc { font-size: .9rem; line-height: 1.7; color: var(--muted); max-width: 44ch; }
 .fc-cta {
   display: inline-flex; align-items: center; gap: 8px;
@@ -4501,8 +4531,9 @@
 .tunnel-modal {
   position: relative;
   width: min(1100px, 100%);
+  height: 88vh;
   max-height: 88vh;
-  overflow-y: auto;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 0;
@@ -4517,10 +4548,12 @@
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ── Colonne image : fixe, ne scrolle jamais — seule la colonne
+   info (droite) défile. ── */
 .tunnel-modal-image {
   position: relative;
   background: #050505;
-  min-height: 280px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4534,6 +4567,9 @@
 }
 
 .tunnel-modal-info {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 2.4rem 2.2rem;
   display: flex;
   flex-direction: column;
@@ -4564,10 +4600,128 @@
   transform: rotate(90deg);
 }
 
+/* ── Badge repo privé / public, posé sur l'image ── */
+.fc-repo-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.fc-repo-badge--private {
+  background: rgba(1,1,1,.6);
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.85);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Actions du projet : CTA principal + lien GitHub / badge privé ── */
+.fc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; }
+.fc-cta-ghost {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 13px 22px;
+  background: transparent; color: var(--text, #f2ede8);
+  font-family: var(--fd); font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  text-decoration: none;
+  border: 2px solid rgba(255,255,255,.16); border-radius: 999px;
+  transition: border-color .2s, color .2s, transform .15s;
+}
+.fc-cta-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translate(-2px,-2px); }
+.fc-cta-ghost--disabled {
+  color: var(--muted); cursor: default; opacity: .7;
+}
+/* Petit indicateur pour projets dont le code est privé (affiché à côté du CTA) */
+.fc-cta-private {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--fd);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.fc-cta-ghost--disabled:hover { border-color: rgba(255,255,255,.16); color: var(--muted); transform: none; }
+
+/* ── Bouton "Détails du projet" / "Retour" ── */
+.fc-flip-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  align-self: flex-start;
+  margin-top: .3rem;
+  padding: 0;
+  background: none; border: none;
+  font-family: 'Space Mono', monospace; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s, opacity .2s;
+}
+.fc-flip-btn:hover { border-bottom-color: var(--accent); }
+
+/* ── Flip card : face avant (infos) / face arrière (cas d'étude) ──
+   3D flip en CSS pur, piloté par la classe .is-flipped côté React.
+   N'affecte que le panneau d'infos du modal — le reste (image, close) est inchangé. */
+.fc-flip { perspective: 1800px; }
+.fc-flip-inner {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.4,0,.2,1);
+}
+.fc-flip.is-flipped .fc-flip-inner { transform: rotateY(180deg); }
+.fc-flip-face {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  backface-visibility: hidden;
+}
+.fc-flip-face--front { position: relative; }
+.fc-flip-face--back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+/* Face avant masquée quand flipped, pour éviter tout clic fantôme derrière */
+.fc-flip.is-flipped .fc-flip-face--front { visibility: hidden; }
+.fc-flip:not(.is-flipped) .fc-flip-face--back { visibility: hidden; }
+
+.fc-case-label { margin-bottom: -.4rem; }
+.fc-case { display: flex; flex-direction: column; gap: 1.1rem; }
+.fc-case-block {
+  border-left: 2px solid rgba(255,85,0,.25);
+  padding-left: 1.1rem;
+}
+.fc-case-block--result { border-left-color: var(--accent); }
+.fc-case-tag {
+  display: block;
+  font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: .35rem;
+}
+.fc-case-block--result .fc-case-tag { color: #88ca53; }
+.fc-case-block p { font-size: .86rem; line-height: 1.65; color: var(--muted); margin: 0; }
+
 @media (max-width: 900px) {
-  .tunnel-modal { grid-template-columns: 1fr; max-height: 92vh; }
-  .tunnel-modal-image { min-height: 220px; }
+  .tunnel-modal {
+    grid-template-columns: 1fr;
+    grid-template-rows: 38vh 1fr;
+    height: 92vh;
+    max-height: 92vh;
+  }
+  .tunnel-modal-image { height: 100%; min-height: 0; }
   .tunnel-modal-info { padding: 1.6rem 1.4rem 2rem; }
+  .fc-flip-face--back { position: absolute; inset: 0; overflow-y: auto; }
 }
 
 /* ════════════════════════════════════════════

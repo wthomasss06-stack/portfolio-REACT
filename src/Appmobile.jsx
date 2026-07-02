@@ -2094,11 +2094,6 @@ const Hero = ({ dark }) => {
     </section>
   );
 };
-const Marquee = ({ dark }) => {
-  const words = ["React", "Django", "Flask", "Python", "TypeScript", "Tailwind", "MySQL", "Vercel", "Node.js", "Git", "REST API", "Bootstrap", "JavaScript"];
-  const d = [...words, ...words];
-  return (<div className={`marquee ${dark ? 'marquee--dark' : ''}`}><div className="marquee-track">{d.map((w, i) => <span key={i} className="mw">{w}<span className="mdot">◆</span></span>)}</div></div>);
-};
 
 /* Projets fixes pour la section vitrine mobile — même logique que le desktop */
 const FC_PROJECT_IDS = [16, 15];
@@ -4383,7 +4378,6 @@ export default function App() {
       <ScrollTop dark={dark} />
       <main>
         <ScrollDepthScene dark={dark}>
-          <Marquee dark={dark} />
           <Hero dark={dark} />
           <FeaturedCreation dark={dark} />
           <Services dark={dark} sdzSkip />

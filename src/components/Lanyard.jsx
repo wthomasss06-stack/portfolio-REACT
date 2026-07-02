@@ -72,7 +72,7 @@ export default function Lanyard({
 }
 
 function Band({
-  maxSpeed = 50,
+  maxSpeed = 35,
   minSpeed = 0,
   isMobile = false,
   frontImage = null,
@@ -95,7 +95,10 @@ function Band({
 
   const segmentProps = {
     type: 'dynamic', canSleep: true, colliders: false,
-    angularDamping: 4, linearDamping: 4
+    // Damping relevé (4 → 9) pour tuer l'oscillation résiduelle de la corde :
+    // avec 4, chaque petit à-coup (drag, resize, premier tick Rapier) mettait
+    // trop de temps à s'amortir et la carte continuait à osciller/tourner.
+    angularDamping: 9, linearDamping: 9
   };
 
   // card.glb and lanyard.png served from /public/assets/lanyard/
@@ -239,7 +242,11 @@ function Band({
       }
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
-      card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
+      // Correction proportionnelle plus douce (0.25 → 0.15) + clamp : sans ça,
+      // la carte pouvait légèrement dépasser sa cible en yaw et repartir dans
+      // l'autre sens en boucle, ce qui se lit comme une corde "instable".
+      const correctedY = Math.max(-2, Math.min(2, ang.y - rot.y * 0.15));
+      card.current.setAngvel({ x: ang.x, y: correctedY, z: ang.z });
     }
   });
 
@@ -250,19 +257,19 @@ function Band({
       <group position={[0, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+          <BallCollider args={[0.1]} restitution={0} friction={1} />
         </RigidBody>
         <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+          <BallCollider args={[0.1]} restitution={0} friction={1} />
         </RigidBody>
         <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}>
-          <BallCollider args={[0.1]} />
+          <BallCollider args={[0.1]} restitution={0} friction={1} />
         </RigidBody>
         <RigidBody
           position={[2, 0, 0]} ref={card} {...segmentProps}
           type={dragged ? 'kinematicPosition' : 'dynamic'}
         >
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <CuboidCollider args={[0.8, 1.125, 0.01]} restitution={0} friction={1} />
           <group
             scale={2.25} position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}

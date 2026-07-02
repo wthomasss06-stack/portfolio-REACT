@@ -8,14 +8,18 @@
 // Tout le reste (modes, switcher, CSS dynamique) est IDENTIQUE.
 // ════════════════════════════════════════════════════════════════
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, lazy } from 'react'
 import { HelmetProvider }      from 'react-helmet-async'
 import { SEOHead }             from './useSEO.jsx'
 
-// ── Les trois portfolios ──
-import ModernApp from './App.jsx'
-import AppMobile from './Appmobile.jsx'
-import Win95App  from './Win95Portfolio.jsx'
+// ── Les trois portfolios — chargés en lazy, un seul est monté à la fois.
+// Avant : les 3 bundles (chacun avec sa part de Three.js/GSAP/WebGL) étaient
+// importés en dur ici, donc TOUJOURS téléchargés au premier chargement, même
+// si l'utilisateur ne voit qu'un seul mode. Avec React.lazy, Vite génère un
+// chunk séparé par mode et seul celui affiché est réellement chargé.
+const ModernApp = lazy(() => import('./App.jsx'))
+const AppMobile = lazy(() => import('./Appmobile.jsx'))
+const Win95App  = lazy(() => import('./Win95Portfolio.jsx'))
 
 // ── CSS via Vite inline strings ──
 import styleDesktop from './style.css?inline'
@@ -84,6 +88,29 @@ function SwitcherBtn({ mode, isMobile, onToggle }) {
     >
       {current.label}
     </button>
+  )
+}
+
+function RootLoader() {
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9998,
+        background: '#0a0a0a', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+      }}
+      aria-hidden="true"
+    >
+      <div
+        style={{
+          width: 34, height: 34, borderRadius: '50%',
+          border: '2.5px solid rgba(255,85,0,.25)',
+          borderTopColor: '#FF5500',
+          animation: 'root-loader-spin .7s linear infinite',
+        }}
+      />
+      <style>{'@keyframes root-loader-spin { to { transform: rotate(360deg); } }'}</style>
+    </div>
   )
 }
 
@@ -158,9 +185,11 @@ export default function RootApp() {
     // Google les lit directement sans exécuter JS.
     <HelmetProvider>
       <SEOHead />
-      {mode === 'win95'     && <div style={{ height: '100%' }}><Win95App /></div>}
-      {mode === 'appmobile' && <AppMobile />}
-      {mode === 'app'       && <ModernApp />}
+      <Suspense fallback={<RootLoader />}>
+        {mode === 'win95'     && <div style={{ height: '100%' }}><Win95App /></div>}
+        {mode === 'appmobile' && <AppMobile />}
+        {mode === 'app'       && <ModernApp />}
+      </Suspense>
       <SwitcherBtn mode={mode} isMobile={isMobile} onToggle={toggle} />
     </HelmetProvider>
   )

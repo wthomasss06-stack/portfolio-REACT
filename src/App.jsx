@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo, Suspense, lazy } from 'react'
 import './style.css'
 import Shuffle from './components/Shuffle.jsx'
 import AnimatedCounter from './components/AnimatedCounter.jsx'
@@ -6,13 +6,12 @@ import ScrollReveal from './components/ScrollReveal.jsx'
 import TargetCursor from './components/TargetCursor.jsx'
 import TextPressure from './components/TextPressure.jsx'
 import Beams from './components/Beams.jsx'
-import InfiniteMenu from './components/InfiniteMenu.jsx'
-import './components/InfiniteMenu.css'
+// NOTE perf : InfiniteMenu (gl-matrix + shaders) était importé mais jamais rendu
+// nulle part dans ce fichier -> pur poids mort dans le bundle. Retiré.
 import { useSoundSystem } from './components/useClickSound.js'
 import SoundToggle from './components/SoundToggle.jsx'
 import { runGridTransition, useGooeyTransition } from './components/GooeyTransition.jsx'
 import ImageTrail from './components/ImageTrail.jsx'
-import Lanyard from './components/Lanyard.jsx'
 import CardSwap, { Card } from './components/CardSwap.jsx'
 import Stack from './components/Stack.jsx'
 import FlowingMenu from './components/FlowingMenu.jsx'
@@ -22,6 +21,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import StaggeredMenu from './components/StaggeredMenu.jsx'
 import * as THREE from 'three'
 gsap.registerPlugin(ScrollTrigger)
+
+// Lanyard = three + @react-three/fiber + @react-three/drei + @react-three/rapier + meshline.
+// C'est de loin le chunk le plus lourd du hero -> lazy-load pour ne pas bloquer le
+// premier paint pendant que le reste du hero (nom, CTA, disponibilité) s'affiche.
+const Lanyard = lazy(() => import('./components/Lanyard.jsx'))
 
 /* ════════════════════════════════════════════
  NAV_LINKS — source unique des liens de navigation.
@@ -348,8 +352,66 @@ const AnimIcon = ({ type, size = 15, color = '#FF5500', className = '' }) => {
     star: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" className={`anim-icon ${className}`}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
     check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" className={`anim-icon ${className}`}><polyline points="20 6 9 17 4 12" /></svg>,
     zap: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" className={`anim-icon ${className}`}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>,
+    github: <svg width={size} height={size} viewBox="0 0 24 24" fill={color} className={`anim-icon ${className}`}><path d="M12 .5C5.73.5.98 5.24.98 11.52c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.17.69-3.84-1.36-3.84-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.53-.29-5.19-1.27-5.19-5.63 0-1.24.44-2.26 1.17-3.06-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.17a10.9 10.9 0 0 1 5.72 0c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.73.8 1.17 1.82 1.17 3.06 0 4.37-2.67 5.34-5.21 5.62.41.36.77 1.06.77 2.14 0 1.55-.01 2.79-.01 3.17 0 .3.2.66.79.55 4.52-1.51 7.77-5.77 7.77-10.79C23.02 5.24 18.27.5 12 .5z" /></svg>,
+    lock: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={`anim-icon ${className}`}><rect x="3" y="11" width="18" height="10" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>,
+    flip: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={`anim-icon ${className}`}><path d="M17 2.1l4 4-4 4" /><path d="M3 12.6v-2a4 4 0 0 1 4-4h14" /><path d="M7 21.9l-4-4 4-4" /><path d="M21 11.4v2a4 4 0 0 1-4 4H3" /></svg>,
   }
   return icons[type] || null
+}
+
+/* ════════════════════════════════════════════
+ TECH ICONS — remplace le texte des pills fc-tag par les icônes
+ devicon déjà présentes dans /public/assets/icons/devicon/ (même
+ dossier utilisé par SKILLS plus bas). Matching par mot-clé, du plus
+ spécifique au plus générique, sur le libellé brut du projet (qui peut
+ être composé, ex. "HTML / Tailwind CSS"). Si aucune correspondance
+ fiable, ou si l'icône ne charge pas, on retombe sur le texte — jamais
+ d'icône cassée affichée. ════════════════════════════════════════════ */
+const TECH_ICON_RULES = [
+  ['next.js', '/assets/icons/devicon/nextjs/nextjs-original.svg'],
+  ['nodejs', '/assets/icons/devicon/nodejs/nodejs-original.svg'],
+  ['node.js', '/assets/icons/devicon/nodejs/nodejs-original.svg'],
+  ['django rest', '/assets/icons/devicon/django/django-plain.svg'],
+  ['django', '/assets/icons/devicon/django/django-plain.svg'],
+  ['flask', '/assets/icons/devicon/flask/flask-original.svg'],
+  ['python', '/assets/icons/devicon/python/python-original.svg'],
+  ['postgresql', '/assets/icons/devicon/postgresql/postgresql-original.svg'],
+  ['mysql', '/assets/icons/devicon/mysql/mysql-original.svg'],
+  ['redis', '/assets/icons/devicon/redis/redis-original.svg'],
+  ['react router', '/assets/icons/devicon/reactrouter/reactrouter-original.svg'],
+  ['tailwind', '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg'],
+  ['bootstrap', '/assets/icons/devicon/bootstrap/bootstrap-original.svg'],
+  ['bulma', '/assets/icons/devicon/bulma/bulma-plain.svg'],
+  ['framer motion', '/assets/icons/devicon/framermotion/framermotion-original.svg'],
+  ['vite', '/assets/icons/devicon/vitejs/vitejs-original.svg'],
+  ['react', '/assets/icons/devicon/react/react-original.svg'],
+  ['vercel', '/assets/icons/devicon/vercel/vercel-original.svg'],
+  ['github', '/assets/icons/devicon/github/github-original.svg'],
+  ['prisma', '/assets/icons/devicon/prisma/prisma-original.svg'],
+  ['html', '/assets/icons/devicon/html5/html5-original.svg'],
+  ['css', '/assets/icons/devicon/css3/css3-original.svg'],
+  ['javascript', '/assets/icons/devicon/javascript/javascript-original.svg'],
+  ['git', '/assets/icons/devicon/git/git-original.svg'],
+]
+
+function resolveTechIcon(label) {
+  const low = label.toLowerCase()
+  const rule = TECH_ICON_RULES.find(([key]) => low.includes(key))
+  return rule ? rule[1] : null
+}
+
+function TechTag({ label }) {
+  const iconSrc = useMemo(() => resolveTechIcon(label), [label])
+  const [broken, setBroken] = useState(false)
+
+  if (!iconSrc || broken) {
+    return <span className="fc-tag">{label}</span>
+  }
+  return (
+    <span className="fc-tag fc-tag--icon" title={label}>
+      <img src={iconSrc} alt={label} loading="lazy" onError={() => setBroken(true)} />
+    </span>
+  )
 }
 
 /* ════════════════════════════════════════════
@@ -685,24 +747,86 @@ function useScrollAnimations() {
  DONNÉES
  ════════════════════════════════════════════ */
 const PROJECTS = [
-  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.webp', responsive: '/assets/images/projects/shopci-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024' },
-  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.webp', responsive: '/assets/images/projects/techflow.webp', imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024' },
-  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.webp', responsive: '/assets/images/projects/terrasafe.webp', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024' },
-  { id: 4, title: 'Chap-chapMAP', sub: 'Navigation Intelligente', cat: 'demo', img: '/assets/images/projects/chapchapmap-preview.webp', responsive: '/assets/images/projects/chapchapmap.webp', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['JavaScript', 'Leaflet.js', 'OSRM API', 'Geolocation API'], url: '/demos/chap-chapMAP.html', desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.", year: '2023' },
-  { id: 5, title: 'ElvisMarket', sub: 'Interface E-commerce', cat: 'demo', img: '/assets/images/projects/elvismarket-preview.webp', responsive: '/assets/images/projects/elvismarket.webp', imgFb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'LocalStorage'], url: '/demos/projet2.html', desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.", year: '2023' },
-  { id: 6, title: 'MonCashJour', sub: 'Gestion de Ventes', cat: 'demo', img: '/assets/images/projects/moncashjour-preview.webp', responsive: '/assets/images/projects/moncashjour.webp', imgFb: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'Chart.js'], url: '/demos/projet1.html', desc: 'Application de gestion de ventes quotidiennes destinée aux petits commerçants.', year: '2023' },
-  { id: 7, title: 'LivreurTrack Pro', sub: 'Suivi Logistique', cat: 'demo', img: '/assets/images/projects/livreurtrack-preview.webp', responsive: '/assets/images/projects/livreurtrack.webp', imgFb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600', tech: ['JavaScript', 'Bootstrap 5', 'LocalStorage', 'Camera API'], url: '/demos/projet3.html', desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.", year: '2023' },
-  { id: 8, title: 'LinkedIn Banner Pro', sub: 'Générateur SaaS', cat: 'en-cours', img: '/assets/images/projects/linkedin-banner-preview.webp', responsive: '/assets/images/projects/linkedin-banner.webp', imgFb: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', tech: ['JavaScript', 'Canvas API', 'Tailwind CSS'], url: '/demos/projet7.html', desc: 'Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles.', year: '2025' },
-  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.webp', responsive: '/assets/images/projects/tati.webp', imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024' },
-  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.webp', responsive: '/assets/images/projects/mk.webp', imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024' },
-  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.webp', responsive: '/assets/images/projects/beatstore.webp', imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025' },
-  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.webp', responsive: '/assets/images/projects/newhorizon.webp', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025' },
-  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025' },
-  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.webp', responsive: '/assets/images/projects/universitelesanges.webp', imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025' },
-  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.webp', responsive: '/assets/images/projects/nexura-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025' },
-  { id: 16, title: 'KokoEat', sub: 'Livraison Alimentaire', cat: 'en-cours', img: '/assets/images/projects/kokoeat-preview.webp', responsive: '/assets/images/projects/kokoeat-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', tech: ['React', 'Django REST', 'PostgreSQL', 'Vercel'], url: '#', desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.", year: '2025' },
-  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.webp', responsive: '/assets/images/projects/jean-edy.webp', imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. et skeuomorphisme complet.", year: '2026' },
-  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.webp', responsive: '/assets/images/projects/laverie.webp', imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025' },
+  { id: 1, title: 'ShopCI', sub: 'Marketplace E-commerce', cat: 'en-ligne', img: '/assets/images/projects/monmarket-preview.webp', responsive: '/assets/images/projects/shopci-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600', tech: ['React', 'Django', 'Bootstrap 5', 'Vercel + PythonAnywhere'], url: 'https://shop-ci.vercel.app/', desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.", year: '2024',
+    private: true,
+    problem: "Les vendeurs locaux n'avaient pas de vitrine en ligne fiable pour centraliser leurs produits et rassurer les acheteurs.",
+    solution: "Marketplace multi-vendeurs avec back-office Django, fiches produits structurées et parcours d'achat simplifié.",
+    result: "Estimation : temps de mise en ligne d'un produit réduit à quelques minutes pour un vendeur, contre plusieurs heures avant." },
+  { id: 2, title: 'TechFlow', sub: 'Site Vitrine Professionnel', cat: 'en-ligne', img: '/assets/images/projects/techflow-preview.webp', responsive: '/assets/images/projects/techflow.webp', imgFb: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600', tech: ['HTML / Tailwind CSS', 'JavaScript', 'Vercel'], url: 'https://techflow-ten.vercel.app/', desc: 'Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.', year: '2024',
+    problem: "Le client n'avait aucune présence web pour présenter son activité tech de façon crédible.",
+    solution: "Site vitrine one-page rapide, structuré autour de l'offre et des preuves de confiance.",
+    result: "Estimation : site livré en moins d'une semaine, prêt à être partagé en prospection commerciale." },
+  { id: 3, title: 'TerraSafe', sub: 'Marketplace Foncière', cat: 'en-ligne', img: '/assets/images/projects/terrasafe-preview.webp', responsive: '/assets/images/projects/terrasafe.webp', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Python/Flask', 'MySQL', 'JavaScript', 'Bootstrap 5'], url: 'https://wthomassss06.pythonanywhere.com', desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.", year: '2024',
+    problem: "Trop d'arnaques sur la vente de terrains, faute de vérification des annonces et des vendeurs.",
+    solution: "Backend sécurisé Flask/MySQL avec recherche avancée et structuration des annonces foncières.",
+    result: "Architecture validée qui a servi de socle technique à NEXURA — preuve qu'elle tenait la route à l'échelle." },
+  { id: 4, title: 'Chap-chapMAP', sub: 'Navigation Intelligente', cat: 'demo', img: '/assets/images/projects/chapchapmap-preview.webp', responsive: '/assets/images/projects/chapchapmap.webp', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['JavaScript', 'Leaflet.js', 'OSRM API', 'Geolocation API'], url: '/demos/chap-chapMAP.html', desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.", year: '2023',
+    problem: "Se déplacer efficacement à Abidjan sans application de navigation locale fiable.",
+    solution: "Cartographie interactive avec géolocalisation temps réel et calcul d'itinéraires via l'API OSRM.",
+    result: "Démo technique validant la maîtrise des API de cartographie et de géolocalisation en conditions réelles." },
+  { id: 5, title: 'ElvisMarket', sub: 'Interface E-commerce', cat: 'demo', img: '/assets/images/projects/elvismarket-preview.webp', responsive: '/assets/images/projects/elvismarket.webp', imgFb: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'LocalStorage'], url: '/demos/projet2.html', desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.", year: '2023',
+    problem: "Maîtriser la gestion d'état et le panier dynamique en JS vanilla, sans framework, avant de passer à l'échelle.",
+    solution: "Interface e-commerce complète construite en JS vanilla + LocalStorage, sans dépendance lourde.",
+    result: "Projet d'entraînement dont l'architecture front a directement nourri ShopCI et TechFlow." },
+  { id: 6, title: 'MonCashJour', sub: 'Gestion de Ventes', cat: 'demo', img: '/assets/images/projects/moncashjour-preview.webp', responsive: '/assets/images/projects/moncashjour.webp', imgFb: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600', tech: ['HTML + JS vanilla', 'Tailwind CSS', 'Chart.js'], url: '/demos/projet1.html', desc: 'Application de gestion de ventes quotidiennes destinée aux petits commerçants.', year: '2023',
+    problem: "Les petits commerçants n'ont pas d'outil simple pour suivre leurs ventes journalières.",
+    solution: "Application de gestion de ventes avec visualisation Chart.js, pensée pour un usage terrain rapide.",
+    result: "Estimation : saisie et suivi des ventes du jour en moins de 2 minutes pour un commerçant." },
+  { id: 7, title: 'LivreurTrack Pro', sub: 'Suivi Logistique', cat: 'demo', img: '/assets/images/projects/livreurtrack-preview.webp', responsive: '/assets/images/projects/livreurtrack.webp', imgFb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600', tech: ['JavaScript', 'Bootstrap 5', 'LocalStorage', 'Camera API'], url: '/demos/projet3.html', desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.", year: '2023',
+    problem: "Les livraisons locales manquent de traçabilité : pas de preuve de dépôt, pas de suivi d'étapes.",
+    solution: "Système de suivi logistique avec validation photo (Camera API) et statuts de livraison en direct.",
+    result: "Simulation d'un vrai workflow logistique, de la prise en charge jusqu'à la preuve de livraison." },
+  { id: 8, title: 'LinkedIn Banner Pro', sub: 'Générateur SaaS', cat: 'en-cours', img: '/assets/images/projects/linkedin-banner-preview.webp', responsive: '/assets/images/projects/linkedin-banner.webp', imgFb: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=600', tech: ['JavaScript', 'Canvas API', 'Tailwind CSS'], url: '/demos/projet7.html', desc: 'Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles.', year: '2025',
+    problem: "Créer une bannière LinkedIn pro demande des outils de design payants ou complexes à prendre en main.",
+    solution: "Générateur SaaS avec rendu Canvas API, pensé pour un export rapide sans compétence design.",
+    result: "Projet en cours — objectif : générer une bannière personnalisée en moins de 60 secondes." },
+  { id: 9, title: 'Tati', sub: 'Portfolio & Vitrine Moderne', cat: 'en-ligne', img: '/assets/images/projects/tati-preview.webp', responsive: '/assets/images/projects/tati.webp', imgFb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://tatii.vercel.app/', desc: 'Portfolio personnel double fonction avec animations fluides, thème sombre/clair, design 100% responsive.', year: '2024',
+    github: 'https://github.com/wthomasss06-stack/tatii',
+    problem: "Besoin d'un portfolio personnel qui sorte du template classique, avec une vraie identité visuelle.",
+    solution: "Portfolio React/Framer Motion sur-mesure, thème clair/sombre, animations soignées de bout en bout.",
+    result: "Livré et déployé en production — utilisé activement comme vitrine professionnelle." },
+  { id: 10, title: 'MK', sub: 'Portfolio Graphiste Client', cat: 'en-ligne', img: '/assets/images/projects/mk-preview.webp', responsive: '/assets/images/projects/mk.webp', imgFb: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?w=600', tech: ['React', 'Tailwind CSS', 'Framer Motion', 'Vercel'], url: 'https://mory01ff.vercel.app/', desc: 'Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées.', year: '2024',
+    problem: "Un graphiste avait besoin d'une galerie en ligne qui valorise ses créations sans les noyer dans un template.",
+    solution: "Portfolio sur-mesure avec galerie immersive et animations pensées pour mettre le visuel en avant.",
+    result: "Livré au client et en ligne — sert de vitrine commerciale directe pour ses prestations." },
+  { id: 11, title: 'ManoBeat 777', sub: 'Portfolio Beatmaker', cat: 'en-ligne', img: '/assets/images/projects/beatstore-preview.webp', responsive: '/assets/images/projects/beatstore.webp', imgFb: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600', tech: ['React', 'Tailwind CSS', 'Howler.js', 'Vercel'], url: 'https://xxx-x.vercel.app/', desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne.", year: '2025',
+    problem: "Un beatmaker ivoirien n'avait aucun moyen de faire écouter ses créations en ligne de façon professionnelle.",
+    solution: "Portfolio audio avec lecteur intégré Howler.js pour écouter les créations directement sur le site.",
+    result: "Estimation : écoute d'un beat ramenée à un simple clic, sans passer par un lien externe." },
+  { id: 12, title: 'New Horizon Service', sub: 'Location de Résidences', cat: 'en-ligne', img: '/assets/images/projects/newhorizon-preview.webp', responsive: '/assets/images/projects/newhorizon.webp', imgFb: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600', tech: ['Next.js', 'Flask', 'Python', 'MySQL', 'Vercel'], url: 'https://new-horizonservice.vercel.app/', desc: 'Plateforme de location de résidences meublées haut de gamme avec backend Flask sécurisé.', year: '2025',
+    github: 'https://github.com/wthomasss06-stack/AllonsSomo',
+    problem: "Les résidences meublées haut de gamme manquaient d'une plateforme de location fiable et sécurisée.",
+    solution: "Plateforme Next.js/Flask avec backend sécurisé pour la gestion des annonces et des réservations.",
+    result: "En production — a servi de base validée avant l'évolution vers NEXURA." },
+  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025',
+    github: 'https://github.com/wthomasss06-stack/akatech-agencenext',
+    problem: "Mon agence n'avait pas de site propre capable de convertir les prospects en clients.",
+    solution: "Site agence Next.js 15 avec WebGL Aurora, animations Framer Motion et structure orientée conversion (process, pricing, projets).",
+    result: "En production, indexé rapidement sur Google — sert de vitrine commerciale principale." },
+  { id: 14, title: 'Université les Anges', sub: 'Site Institutionnel', cat: 'en-ligne', img: '/assets/images/projects/universitelesanges-preview.webp', responsive: '/assets/images/projects/universitelesanges.webp', imgFb: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600', tech: ['HTML', 'CSS', 'Bulma', 'Bootstrap', 'Vercel'], url: 'https://universitelesanges.vercel.app/', desc: "Site institutionnel moderne pour l'Université les Anges.", year: '2025',
+    github: 'https://github.com/wthomasss06-stack/universite-les-anges',
+    problem: "Une université privée avait besoin d'un site institutionnel crédible pour rassurer futurs étudiants et parents.",
+    solution: "Site institutionnel structuré (présentation, filières, contact) en HTML/Bulma/Bootstrap.",
+    result: "Livré et en ligne — utilisé comme point d'entrée officiel de l'établissement." },
+  { id: 15, title: 'NEXURA', sub: 'Marketplace Nouvelle Génération', cat: 'en-ligne', img: '/assets/images/projects/nexura-preview.webp', responsive: '/assets/images/projects/nexura-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600', tech: ['Next.js 14', 'Django REST', 'PostgreSQL', 'WebSockets', 'Redis & Celery'], url: 'https://nexura-one.vercel.app/', desc: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.", year: '2025',
+    private: true,
+    problem: "TerraSafe avait besoin de passer à l'échelle : plus de catégories, plus de sécurité, du temps réel.",
+    solution: "Marketplace nouvelle génération Next.js 14 + Django REST + WebSockets, KYC intégré, architecture pensée pour réduire le risque légal.",
+    result: "Projet le plus avancé techniquement du portfolio — repo privé (client), en évolution continue." },
+  { id: 16, title: 'KokoEat', sub: 'Livraison Alimentaire', cat: 'en-cours', img: '/assets/images/projects/kokoeat-preview.webp', responsive: '/assets/images/projects/kokoeat-responsive.webp', imgFb: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', tech: ['React', 'Django REST', 'PostgreSQL', 'Vercel'], url: '#', desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.", year: '2025',
+    problem: "Le marché ivoirien manque d'une app de livraison de repas pensée pour le paiement Mobile Money.",
+    solution: "App de commande en ligne avec suivi temps réel et intégration Mobile Money prévue.",
+    result: "Projet en cours de développement." },
+  { id: 17, title: 'Jean Edy · Portfolio', sub: 'Portfolio React UI Avancé', cat: 'en-ligne', img: '/assets/images/projects/jean-edy-preview.webp', responsive: '/assets/images/projects/jean-edy.webp', imgFb: 'https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=600', tech: ['React 18', 'Vite', 'GSAP', 'Framer Motion', 'TailwindCSS'], url: 'https://jean-edy-dev.vercel.app/', desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. et skeuomorphisme complet.", year: '2026',
+    private: true,
+    problem: "Un développeur avait besoin d'un portfolio qui démontre un niveau UI avancé pour ses candidatures.",
+    solution: "Portfolio React 18/GSAP avec direction artistique skeuomorphisme complet, sur-mesure.",
+    result: "Livré et en ligne — repo privé (client)." },
+  { id: 18, title: 'MD Laverie Pressing', sub: 'Site Vitrine Pressing', cat: 'en-ligne', img: '/assets/images/projects/laverie-preview.webp', responsive: '/assets/images/projects/laverie.webp', imgFb: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600', tech: ['React 18', 'Vite', 'GSAP', 'React Router v6', 'EmailJS'], url: 'https://laverie-plus.vercel.app/', desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP, grille packs pricing, formulaire contact EmailJS.", year: '2025',
+    github: 'https://github.com/wthomasss06-stack/PRESSING',
+    problem: "Un pressing à Abidjan n'avait aucune présence en ligne pour présenter ses tarifs et être contacté.",
+    solution: "Site vitrine React/GSAP avec hero slider, grille de tarifs claire et formulaire de contact EmailJS.",
+    result: "Livré et en ligne — génère des demandes de contact directement depuis le site." },
 ]
 
 const SERVICES = [
@@ -1433,7 +1557,10 @@ function Hero() {
               </span>
             </h3>
 
-
+            {/* Ligne d'impact — lead avec le résultat business, pas juste le métier */}
+            <p className="hero-impact-line hv4-rv" style={{ '--d': '.56s' }}>
+              Je conçois des solutions — <strong>18 projets livrés</strong>, <strong>100% en production</strong>.
+            </p>
 
             {/* CTA */}
             <div className="hv4-ctas hv4-rv" style={{ '--d': '.7s' }}>
@@ -1455,16 +1582,18 @@ function Hero() {
 
           </div>
 
-          {/* RIGHT — Lanyard 3D desktop */}
+          {/* RIGHT — Lanyard 3D desktop (lazy : three/r3f/rapier chargés à la volée) */}
           <div className="hv4-right hv4-rv" style={{ '--d': '.32s' }} id="hv4-right">
-            <Lanyard
-              position={[0, 0, 30]}
-              gravity={[0, -40, 0]}
-              fov={7}
-              transparent={true}
-              lanyardWidth={1}
-              frontImage="/assets/images/IMG_20250124_124101KK.webp"
-            />
+            <Suspense fallback={<div className="lanyard-fallback" aria-hidden="true" />}>
+              <Lanyard
+                position={[0, 0, 30]}
+                gravity={[0, -40, 0]}
+                fov={7}
+                transparent={true}
+                lanyardWidth={1}
+                frontImage="/assets/images/IMG_20250124_124101KK.webp"
+              />
+            </Suspense>
           </div>
 
         </div>
@@ -1530,22 +1659,6 @@ function HeroZoomSection() {
   )
 }
 
-function Marquee() {
-  const words = ["React", "Django", "Flask", "Python", "Tailwind", "MySQL", "Vercel", "Node.js", "Git", "REST API", "Bootstrap", "JavaScript"];
-  const d = [...words, ...words];
-  return (
-    <div className="marquee">
-      <div className="marquee-track">
-        {d.map((w, i) => (
-          <span key={i} className="mw">
-            {w}
-            <span className="mdot">◆</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 /* ════════════════════════════════════════════
  FEATURED CREATION — desktop
@@ -1730,6 +1843,7 @@ function ProjectsTunnel() {
   const containerRef = useRef(null)
   const titleRef = useRef(null)
   const [selectedProject, setSelectedProject] = useState(null)
+  const [caseFlipped, setCaseFlipped] = useState(false)
   const [hoveredProject, setHoveredProject] = useState(null)
   const selectedRef = useRef(null)
   const hoveredRef = useRef(null)
@@ -2163,9 +2277,9 @@ function ProjectsTunnel() {
       </div>
 
       {selectedProject && (
-        <div className="tunnel-modal-backdrop" onClick={() => setSelectedProject(null)}>
+        <div className="tunnel-modal-backdrop" onClick={() => { setSelectedProject(null); setCaseFlipped(false) }}>
           <div className="tunnel-modal" onClick={e => e.stopPropagation()}>
-            <button type="button" className="tunnel-modal-close" onClick={() => setSelectedProject(null)} aria-label="Fermer">
+            <button type="button" className="tunnel-modal-close" onClick={() => { setSelectedProject(null); setCaseFlipped(false) }} aria-label="Fermer">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
                 <line x1="5" y1="5" x2="19" y2="19" />
                 <line x1="19" y1="5" x2="5" y2="19" />
@@ -2177,25 +2291,78 @@ function ProjectsTunnel() {
             </div>
 
             <div className="tunnel-modal-info">
-              <h3 className="fc-name">{selectedProject.title}</h3>
-              <h3 className="fc-sub">{selectedProject.sub}</h3>
-              <div className="fc-meta">
-                <div className="fc-meta-row"><span className="fc-ml">Marché</span><span className="fc-mv">Côte d'Ivoire</span></div>
-                <div className="fc-meta-row"><span className="fc-ml">Rôle</span><span className="fc-mv">Conception & Développement</span></div>
-                <div className="fc-meta-row"><span className="fc-ml">Année</span><span className="fc-mv">{selectedProject.year}</span></div>
+              <div className={`fc-flip${caseFlipped ? ' is-flipped' : ''}`}>
+                <div className="fc-flip-inner">
+
+                  {/* ── Face avant : infos projet ── */}
+                  <div className="fc-flip-face fc-flip-face--front">
+                    <h3 className="fc-name">{selectedProject.title}</h3>
+                    <h3 className="fc-sub">{selectedProject.sub}</h3>
+                    <div className="fc-meta">
+                      <div className="fc-meta-row"><span className="fc-ml">Marché</span><span className="fc-mv">Côte d'Ivoire</span></div>
+                      <div className="fc-meta-row"><span className="fc-ml">Rôle</span><span className="fc-mv">Conception & Développement</span></div>
+                      <div className="fc-meta-row"><span className="fc-ml">Année</span><span className="fc-mv">{selectedProject.year}</span></div>
+                    </div>
+                    <div className="fc-tags">
+                      {selectedProject.tech.map(t => <TechTag key={t} label={t} />)}
+                    </div>
+                    <h3 className="fc-desc">{selectedProject.desc}</h3>
+                    <div className="fc-actions">
+                      <a
+                        href={selectedProject.url && selectedProject.url !== '#' ? selectedProject.url : '#'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`fc-cta ${(!selectedProject.url || selectedProject.url === '#') ? 'fc-cta--disabled' : ''}`}
+                        onClick={e => { if (!selectedProject.url || selectedProject.url === '#') e.preventDefault() }}
+                      >
+                        <AnimIcon type="globe" size={15} color="currentColor" /> Voir le projet
+                        <span className="btn-arr" aria-hidden="true">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                          </svg>
+                        </span>
+                      </a>
+                      {selectedProject.github ? (
+                        <a href={selectedProject.github} target="_blank" rel="noreferrer" className="fc-cta-ghost">
+                          <AnimIcon type="github" size={15} color="currentColor" /> Code source
+                        </a>
+                      ) : (
+                        <span className="fc-cta-private">
+                          <AnimIcon type="lock" size={12} color="currentColor" /> Code privé
+                        </span>
+                      )}
+                    </div>
+                    {(selectedProject.problem || selectedProject.result) && (
+                      <button type="button" className="fc-flip-btn" onClick={() => setCaseFlipped(true)}>
+                        <AnimIcon type="flip" size={14} color="currentColor" /> Détails du projet
+                      </button>
+                    )}
+                  </div>
+
+                  {/* ── Face arrière : cas d'étude Problème → Solution → Résultat ── */}
+                  <div className="fc-flip-face fc-flip-face--back">
+                    <h3 className="fc-sub fc-case-label">Cas d'étude</h3>
+                    <div className="fc-case">
+                      <div className="fc-case-block">
+                        <span className="fc-case-tag">Problème</span>
+                        <p>{selectedProject.problem}</p>
+                      </div>
+                      <div className="fc-case-block">
+                        <span className="fc-case-tag">Solution</span>
+                        <p>{selectedProject.solution}</p>
+                      </div>
+                      <div className="fc-case-block fc-case-block--result">
+                        <span className="fc-case-tag">Résultat</span>
+                        <p>{selectedProject.result}</p>
+                      </div>
+                    </div>
+                    <button type="button" className="fc-flip-btn" onClick={() => setCaseFlipped(false)}>
+                      <AnimIcon type="flip" size={14} color="currentColor" /> Retour au projet
+                    </button>
+                  </div>
+
+                </div>
               </div>
-              <div className="fc-tags">
-                {selectedProject.tech.map(t => <span key={t} className="fc-tag">{t}</span>)}
-              </div>
-              <h3 className="fc-desc">{selectedProject.desc}</h3>
-              <a href={selectedProject.url} target="_blank" rel="noreferrer" className="fc-cta">
-                <AnimIcon type="globe" size={15} color="currentColor" /> Voir le projet
-                <span className="btn-arr" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
-                  </svg>
-                </span>
-              </a>
             </div>
           </div>
         </div>
@@ -4257,7 +4424,6 @@ export default function App() {
         <Hero />
         <FeaturedCreationDesktop />
         <ProjectsTunnel />
-        <Marquee />
         <HeroZoomSection />
         <About />
         <Timeline />
