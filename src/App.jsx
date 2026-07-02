@@ -1150,16 +1150,32 @@ function Loader({ onDone }) {
               return span
             })
 
-            /* Fade out percent, rôle, corner, compteur */
-            gsap.to(['.ld-percent', '.ld-role', '.ld-corner'], {
+            /* Also split the role into chars so it explodes the same way */
+            const roleEl = loader.querySelector('.ld-role')
+            let roleChars = []
+            if (roleEl) {
+              const roleRaw = roleEl.textContent.trim() || ''
+              roleEl.innerHTML = ''
+              roleChars = Array.from(roleRaw).map(letter => {
+                const span = document.createElement('span')
+                span.className = 'ld-char ld-role-char'
+                span.textContent = letter
+                roleEl.appendChild(span)
+                return span
+              })
+            }
+
+            /* Fade out percent and corner immediately; role will be animated by chars */
+            gsap.to(['.ld-percent', '.ld-corner'], {
               opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
             })
 
             /* Perspective 3D */
             gsap.set(nameEl, { perspective: 1200, transformStyle: 'preserve-3d' })
             gsap.set(nameTextEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
+            if (roleEl) gsap.set(roleEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
 
-            /* Explosion chars */
+            /* Explosion chars for name and role — name first, then role with lighter force */
             const mid = (chars.length - 1) / 2
             const tl = gsap.timeline({
               delay: 0.15,
@@ -1189,6 +1205,25 @@ function Loader({ onDone }) {
                 delay: i * 0.03,
               }, 0)
             })
+
+            if (roleChars.length) {
+              const rMid = (roleChars.length - 1) / 2
+              roleChars.forEach((span, i) => {
+                const rDist = i - rMid
+                tl.to(span, {
+                  x: rDist * 40 + (Math.random() - 0.5) * 40,
+                  y: -40 + (Math.random() - 0.5) * 60,
+                  z: Math.random() * 200 - 100,
+                  rotationX: (Math.random() - 0.5) * 220,
+                  rotationY: (Math.random() - 0.5) * 220,
+                  scale: 0.5 + Math.random() * 0.6,
+                  opacity: 0,
+                  duration: 0.8,
+                  ease: 'power2.out',
+                  delay: i * 0.02,
+                }, 0.02)
+              })
+            }
 
           }, 350)
           return 100
@@ -1227,7 +1262,7 @@ function Loader({ onDone }) {
         </div>
 
         {/* ROLE */}
-        <div className="ld-role">
+        <div className="ld-role ld-role--liquid">
           FULL-STACK DEVELOPER · UI/UX · PRODUCT BUILDER
         </div>
 

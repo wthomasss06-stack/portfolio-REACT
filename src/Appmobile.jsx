@@ -1273,14 +1273,30 @@ const Loader = ({ onDone }) => {
               return span
             })
 
-            /* Fade out percent, rôle, corner */
-            gsap.to(['.mob-ld-percent', '.mob-ld-role', '.mob-ld-corner'], {
+            /* Also split role into chars so it explodes similarly */
+            const roleEl = loaderEl.querySelector('.mob-ld-role')
+            let roleChars = []
+            if (roleEl) {
+              const roleRaw = roleEl.textContent.trim() || ''
+              roleEl.innerHTML = ''
+              roleChars = Array.from(roleRaw).map(letter => {
+                const span = document.createElement('span')
+                span.className = 'mob-ld-char mob-ld-role-char'
+                span.textContent = letter
+                roleEl.appendChild(span)
+                return span
+              })
+            }
+
+            /* Fade out percent and corner, role will be animated via chars */
+            gsap.to(['.mob-ld-percent', '.mob-ld-corner'], {
               opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
             })
 
             /* Perspective 3D */
             gsap.set(nameEl, { perspective: 800, transformStyle: 'preserve-3d' })
             gsap.set(nameTextEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
+            if (roleEl) gsap.set(roleEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
 
             /* Explosion chars */
             const mid = (chars.length - 1) / 2
@@ -1312,6 +1328,25 @@ const Loader = ({ onDone }) => {
                 delay: i * 0.03,
               }, 0)
             })
+
+            if (roleChars.length) {
+              const rMid = (roleChars.length - 1) / 2
+              roleChars.forEach((span, i) => {
+                const rDist = i - rMid
+                tl.to(span, {
+                  x: rDist * 30 + (Math.random() - 0.5) * 20,
+                  y: -30 + (Math.random() - 0.5) * 40,
+                  z: Math.random() * 150 - 75,
+                  rotationX: (Math.random() - 0.5) * 220,
+                  rotationY: (Math.random() - 0.5) * 220,
+                  scale: 0.4 + Math.random() * 0.6,
+                  opacity: 0,
+                  duration: 0.8,
+                  ease: 'power2.out',
+                  delay: i * 0.02,
+                }, 0.02)
+              })
+            }
           }, 350)
           return 100
         }
@@ -1344,7 +1379,7 @@ const Loader = ({ onDone }) => {
             MBOLLO AKA ELVIS
           </div>
         </div>
-        <div className="mob-ld-role">
+        <div className="mob-ld-role mob-ld-role--liquid">
           FULL-STACK · UI/UX · PRODUCT BUILDER
         </div>
       </div>

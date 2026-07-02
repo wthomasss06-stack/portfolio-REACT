@@ -3826,6 +3826,27 @@
      text-shadow: none;
    }
 
+  /* Make role follow same liquid behavior as name when using per-char splitting */
+  .ld-role--liquid, .ld-role {
+    /* ensure filter is present so blobs and blur apply to children */
+    filter: url(#ld-liquid-filter) brightness(0) invert(1);
+    -webkit-filter: url(#ld-liquid-filter) brightness(0) invert(1);
+  }
+
+  body.light-mode .ld-role--liquid, body.light-mode .ld-role {
+    filter: url(#ld-liquid-filter) brightness(0);
+    -webkit-filter: url(#ld-liquid-filter) brightness(0);
+  }
+
+  /* Individual chars for role should be visible and inherit color */
+  .ld-role .ld-char,
+  .ld-role .ld-role-char {
+    display: inline-block;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
+    color: inherit;
+  }
+
    /* ════════════════════════════════════════════
       PERCENT — coin bas-droite, petit
    ════════════════════════════════════════════ */

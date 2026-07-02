@@ -3955,6 +3955,23 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Ensure role follows liquid blur behavior and per-char visibility */
+.mob-ld-role--liquid, .mob-ld-role {
+  filter: url(#mob-ld-liquid-filter) brightness(0) invert(1);
+  -webkit-filter: url(#mob-ld-liquid-filter) brightness(0) invert(1);
+}
+body.light-mode .mob-ld-role--liquid, body.light-mode .mob-ld-role {
+  filter: url(#mob-ld-liquid-filter) brightness(0);
+  -webkit-filter: url(#mob-ld-liquid-filter) brightness(0);
+}
+
+.mob-ld-role .mob-ld-char, .mob-ld-role .mob-ld-role-char {
+  display: inline-block;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  color: inherit;
+}
+
 /* ── Percent — coin bas-droite ── */
 .mob-ld-percent {
   position: absolute;
