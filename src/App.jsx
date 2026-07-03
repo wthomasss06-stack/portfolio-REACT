@@ -1609,110 +1609,121 @@ function Navbar({ theme, onToggleTheme }) {
 const HERO_ROTATING_WORDS = ['Full-Stack', 'React & Python', 'Django & Flask', 'orienté produit', 'Data & Carto']
 
 function Hero() {
-  const scrollTo = id => {
+ const scrollTo = id => {
     const el = document.getElementById(id)
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY
     window.scrollTo({ top, behavior: 'auto' })
   }
 
-  /* Nom — Ghost Particle hover effect */
-  const nameLine1 = "M'BOLLO"
-  const nameLine2 = "AKA ELVIS"
+ /* Nom — cycle plain sur le même texte */
+ const nameLine1 = useSHNameCycle("M'BOLLO")
+ const nameLine2 = useSHNameCycle("AKA ELVIS")
 
-  /* Mots rotatifs — glitch scramble en boucle auto */
-  const rotating = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
+ /* Mots rotatifs — glitch scramble en boucle auto */
+ const rotating  = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
 
-  return (
-    <section id="hero">
-      <div className="hv4-grain" aria-hidden="true" />
-      <div className="hv4-god-rays" id="hv4-rays" aria-hidden="true" />
-      <div className="hv4-bg-layer" id="hv4-bg-layer" aria-hidden="true">
-        <Beams
-          beamWidth={2}
-          beamHeight={15}
-          beamNumber={12}
-          lightColor="#FF5500"
-          speed={2}
-          noiseIntensity={1.75}
-          scale={0.2}
-          rotation={0}
-        />
-      </div>
-      <div className="hv4-scan" aria-hidden="true" />
-      <div className="hero-vignette" />
+ return (
+ <section id="hero">
+ <div className="hv4-grain" aria-hidden="true" />
+ <div className="hv4-god-rays" id="hv4-rays" aria-hidden="true" />
+ <div className="hv4-bg-layer" id="hv4-bg-layer" aria-hidden="true">
+ <Beams
+ beamWidth={2}
+ beamHeight={15}
+ beamNumber={12}
+ lightColor="#FF5500"
+ speed={2}
+ noiseIntensity={1.75}
+ scale={0.2}
+ rotation={0}
+ />
+ </div>
+ <div className="hv4-scan" aria-hidden="true" />
+ <div className="hero-vignette" />
 
-      <div className="hv4-scene-wrap" id="hv4-scene">
-        <div className="hv4-grid">
+ <div className="hv4-scene-wrap" id="hv4-scene">
+ <div className="hv4-grid">
 
-          {/* LEFT */}
-          <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
-            
+ {/* LEFT */}
+ <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
+ {/* Nom — cycle-text plain */}
+ <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
+ <span className="hv4-name-line" style={{ '--d': '.1s' }}>
+   <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
+     <span className="sh-cycle-inner" ref={nameLine1.innerRef}>
+       {nameLine1.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
+     </span>
+   </span>
+ </span>
+ <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '.2s' }}>
+   <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
+     <span className="sh-cycle-inner" ref={nameLine2.innerRef}>
+       {nameLine2.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
+     </span>
+   </span>
+ </span>
+ </h1>
 
-            {/* Photo mobile */}
-            <div className="hv4-photo-mob hv4-rv" style={{ '--d': '.3s' }}>
-              <div className="hv4-photo-mob-inner">
-                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="Portrait du développeur" className="hv4-photo"
-                  onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
-                <div className="hv4-photo-mob-badge"><span className="hero-dot" /><span>disponible</span></div>
-              </div>
-            </div>
+ {/* Photo mobile */}
+ <div className="hv4-photo-mob hv4-rv" style={{ '--d': '.3s' }}>
+ <div className="hv4-photo-mob-inner">
+ <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className="hv4-photo"
+ onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
+ <div className="hv4-photo-mob-badge"><span className="hero-dot" /><span>disponible</span></div>
+ </div>
+ </div>
 
-            {/* Rotating words — cycle-text scramble */}
-            <h3 className="hv4-typed hv4-rv" style={{ '--d': '.42s' }}>
-              Développeur&nbsp;<span className="hero-word" style={{ color: '#ffffff', display: 'inline-block' }}>
-                <span className="sh-cycle-wrap">
-                  <span className="sh-cycle-inner" ref={rotating.innerRef}>
-                    {rotating.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
-                  </span>
-                </span>
-              </span>
-            </h3>
+ {/* Rotating words — cycle-text scramble */}
+ <h3 className="hv4-typed hv4-rv" style={{ '--d': '.42s' }}>
+ Développeur&nbsp;<span className="hero-word" style={{ color: '#ffffff', display: 'inline-block' }}>
+   <span className="sh-cycle-wrap">
+     <span className="sh-cycle-inner" ref={rotating.innerRef}>
+       {rotating.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
+     </span>
+   </span>
+ </span>
+ </h3>
 
-            {/* Texte SEO clair pour Google et les visiteurs (sans répéter le nom) */}
-            <p className="hero-impact-line hv4-rv" style={{ '--d': '.56s' }}>
-              M'Bollo Aka Elvis, Développeur web full stack basé à Abidjan. J'accompagne les entreprises et indépendants pour créer des sites vitrines, portfolios, boutiques e‑commerce et applications React/Django/Flask — intégration d'API, responsive design et optimisation SEO locale.
-            </p>
+ 
 
-            {/* CTA */}
-            <div className="hv4-ctas hv4-rv" style={{ '--d': '.7s' }}>
-              <a
-                href="#contact"
-                className="btn-fill"
-                onClick={e => { e.preventDefault(); scrollTo('contact') }}
-              >
-                Contactez-moi
-                <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></span>
-              </a>
-            </div>
+ {/* CTA */}
+ <div className="hv4-ctas hv4-rv" style={{ '--d': '.7s' }}>
+ <a
+   href="#contact"
+   className="btn-fill"
+   onClick={e => { e.preventDefault(); scrollTo('contact') }}
+ >
+ Contactez-moi
+ <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+ </a>
+ </div>
 
-            {/* Réassurance CRO : disponibilité + délai de réponse, visible sans scroll */}
-            <div className="hero-availability hv4-rv" style={{ '--d': '.82s' }}>
-              <span className="hero-dot" aria-hidden="true" />
-              <span>Disponible maintenant · réponse sous 24h</span>
-            </div>
+ {/* Réassurance CRO : disponibilité + délai de réponse, visible sans scroll */}
+ <div className="hero-availability hv4-rv" style={{ '--d': '.82s' }}>
+ <span className="hero-dot" aria-hidden="true" />
+ <span>Disponible maintenant · réponse sous 24h</span>
+ </div>
 
-          </div>
+ </div>
 
-          {/* RIGHT — Lanyard 3D desktop (lazy : three/r3f/rapier chargés à la volée) */}
-          <div className="hv4-right hv4-rv" style={{ '--d': '.32s' }} id="hv4-right">
-            <Suspense fallback={<div className="lanyard-fallback" aria-hidden="true" />}>
-              <Lanyard
-                position={[0, 0, 30]}
-                gravity={[0, -40, 0]}
-                fov={7}
-                transparent={true}
-                lanyardWidth={1}
-                frontImage="/assets/images/IMG_20250124_124101KK.webp"
-              />
-            </Suspense>
-          </div>
+ {/* RIGHT — Lanyard 3D desktop */}
+ <div className="hv4-right hv4-rv" style={{ '--d': '.32s' }} id="hv4-right">
+ <Lanyard
+ position={[0, 0, 30]}
+ gravity={[0, -40, 0]}
+ fov={7}
+ transparent={true}
+ lanyardWidth={1}
+ frontImage="/assets/images/IMG_20250124_124101KK.webp"
+ />
+ </div>
 
-        </div>
-      </div>
-      <div className="hero-scroll"><span>scroll</span><div className="hsl" /></div>
-    </section>
-  )
+ </div>
+ </div>
+ <div className="hero-scroll"><span>scroll</span><div className="hsl" /></div>
+ </section>
+ )
 }
 
 
@@ -2597,38 +2608,38 @@ function About() {
           <AboutStats />
 
           <div className="about-text-col">
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               Je suis <strong>M'Bollo Aka Elvis</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
               créer des produits utiles, beaux et agréables à utiliser.
-            </h3>
+            </p>
 
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               Mon parcours a commencé dans le <strong>réseau</strong> et la
               <strong> sécurité informatique</strong>, et cette base m’a appris à construire
               avec méthode, à penser la fiabilité et à garder une vision propre de
               l’architecture.
-            </h3>
+            </p>
 
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               Avec le temps, j’ai trouvé ma place dans le développement web. Aujourd’hui,
               j’aime concevoir des interfaces qui respirent, qui bougent, et qui donnent une
               vraie sensation de produit fini.
-            </h3>
+            </p>
 
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               Je travaille surtout avec <strong>React</strong> et <strong>Django</strong>,
               tout en explorant <strong>Next.js</strong>, <strong>GSAP</strong>,
               <strong>Framer Motion</strong> et parfois <strong>Three.js</strong> pour donner
               plus de vie et de profondeur aux expériences.
-            </h3>
+            </p>
 
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               J’aime créer des applications pensées pour de vrais usages : dashboards, outils
               métier, plateformes web, SaaS et sites immersifs. Mon approche reste simple :
               faire quelque chose de clair, solide et agréable à utiliser.
-            </h3>
+            </p>
 
-            <h3 className="about-text-lg">
+            <p className="about-text-lg">
               En grande partie <strong>autodidacte</strong>, j’apprends en construisant, en
               testant et en améliorant chaque projet. C’est aussi dans cet esprit que j’ai
               créé{' '}
@@ -2646,10 +2657,10 @@ function About() {
                 AKATech
               </a>
               , un espace où je donne forme à des idées web modernes et concrètes.
-            </h3>
+            </p>
 
             {/* Bloc identitaire */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', marginTop: '2.5rem' }}>
+            <div itemScope itemType="https://schema.org/Person" style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', marginTop: '2.5rem' }}>
               <div style={{
                 width: '56px', height: '56px', borderRadius: '50%',
                 overflow: 'hidden', flexShrink: 0,
@@ -2657,19 +2668,19 @@ function About() {
               }}>
                 <img
                   src="/assets/images/IMG_20250124_124101KK.webp"
-                  alt="M'Bollo Aka Elvis"
+                  alt="M'Bollo Aka Elvis" itemProp="image"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 10%' }}
                   loading="lazy"
                   onError={e => { e.target.style.display = 'none' }}
                 />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <span style={{
+                <h3 itemProp="name" style={{ margin: 0,
                   fontFamily: 'var(--fd)', fontWeight: 800,
                   fontSize: '1rem', color: 'var(--text)',
                   letterSpacing: '-.01em', lineHeight: 1.2,
-                }}>M'bollo Aka Elvis</span>
-                <span style={{
+                }}>M'bollo Aka Elvis</h3>
+                <span itemProp="jobTitle" style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '.62rem', letterSpacing: '.06em',
                   color: 'var(--muted)', textTransform: 'uppercase', lineHeight: 1.3,
