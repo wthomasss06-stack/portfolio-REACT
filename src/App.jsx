@@ -1647,20 +1647,12 @@ function Hero() {
 
           {/* LEFT */}
           <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
-            {/* Nom — Ghost Particle hover effect */}
-            <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
-              <span className="hv4-name-line" style={{ '--d': '.1s' }}>
-                <GhostParticleText text="M'BOLLO" className="hv4-name-line-text" />
-              </span>
-              <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '.2s' }}>
-                <GhostParticleText text="AKA ELVIS" className="hv4-name-line-text" />
-              </span>
-            </h1>
+            
 
             {/* Photo mobile */}
             <div className="hv4-photo-mob hv4-rv" style={{ '--d': '.3s' }}>
               <div className="hv4-photo-mob-inner">
-                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className="hv4-photo"
+                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="Portrait du développeur" className="hv4-photo"
                   onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
                 <div className="hv4-photo-mob-badge"><span className="hero-dot" /><span>disponible</span></div>
               </div>
@@ -1677,9 +1669,9 @@ function Hero() {
               </span>
             </h3>
 
-            {/* Ligne d'impact — lead avec le résultat business, pas juste le métier */}
+            {/* Texte SEO clair pour Google et les visiteurs (sans répéter le nom) */}
             <p className="hero-impact-line hv4-rv" style={{ '--d': '.56s' }}>
-              Je conçois des solutions — <strong>18 projets livrés</strong>, <strong>100% en production</strong>.
+              M'Bollo Aka Elvis, Développeur web full stack basé à Abidjan. J'accompagne les entreprises et indépendants pour créer des sites vitrines, portfolios, boutiques e‑commerce et applications React/Django/Flask — intégration d'API, responsive design et optimisation SEO locale.
             </p>
 
             {/* CTA */}
