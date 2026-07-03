@@ -51,6 +51,9 @@
      --nb-txt-l:    rgba(0,0,0,0.45);
      --nb-act-d:    rgba(255,255,255,0.90);
      --nb-act-l:    rgba(0,0,0,0.85);
+     /* Loader liquid-blur invert : 1 = force blanc (dark), 0 = force noir (light).
+        Source de vérité unique pour .decrypt-text--xl ET .ld-role — voir body.light-mode plus bas. */
+     --ld-liquid-invert: 1;
    }
    
    /* ══════════ RESET ══════════ */
@@ -3762,12 +3765,12 @@
 
      display: block;
 
-     /* Effet liquid blur fusion — brightness(0)+invert(1) force un blanc pur
-        sur tout le blob (texte + halo), même quand le glow orange du
-        text-shadow se mélange dans le blur/goo (ce qui donnait le rendu
-        rosé/saumon). Même principe que le brightness(0) du light-mode,
-        juste inversé pour aboutir au blanc plutôt qu'au noir. */
-     filter: url(#ld-liquid-filter) brightness(0) invert(1);
+     /* Effet liquid blur fusion — brightness(0)+invert() force un blanc pur (ou
+        noir en light-mode) sur tout le blob (texte + halo), même quand le glow
+        orange du text-shadow se mélange dans le blur/goo (ce qui donnait le
+        rendu rosé/saumon). --ld-liquid-invert bascule blanc/noir en une seule
+        déclaration : plus de règles dupliquées qui se marchent dessus. */
+     filter: url(#ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
 
      text-shadow:
        0 0 30px rgba(255,85,0,.25),
@@ -3782,7 +3785,7 @@
 
    body.light-mode .decrypt-text--xl {
      color: #0A0A0A;
-     filter: url(#ld-liquid-filter) brightness(0);
+     /* filter hérite --ld-liquid-invert:0 depuis body.light-mode plus bas → noir automatique */
    }
 
    /* Chars individuels pour explosion */
@@ -3805,38 +3808,29 @@
       ROLE — monospace sous le nom
    ════════════════════════════════════════════ */
 
-   /* Role text with same liquid blur effect as name */
-   .ld-role {
+   /* Role text — même traitement liquid blur que le nom, piloté par
+      --ld-liquid-invert. Avant : 4 règles séparées (2 pour filter, 2 pour
+      color) se marchaient dessus selon la cascade → le texte restait
+      blanc en light-mode. Maintenant : une seule déclaration de filter,
+      plus aucune ambiguïté possible. */
+   .ld-role, .ld-role--liquid {
      margin-top: 1rem;
      font-family: 'Space Mono', monospace;
      font-size: .68rem;
      letter-spacing: .3em;
      text-transform: uppercase;
      color: rgba(255,255,255,.85);
-     /* Same liquid blur & brightness inversion as .ld-name for cohesive effect */
-     filter: url(#ld-liquid-filter) brightness(0) invert(1);
-     -webkit-filter: url(#ld-liquid-filter) brightness(0) invert(1);
+     filter: url(#ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
+     -webkit-filter: url(#ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
      text-shadow: 0 0 20px rgba(255,85,0,.15), 0 0 50px rgba(255,85,0,.05);
    }
 
-   body.light-mode .ld-role {
+   body.light-mode .ld-role,
+   body.light-mode .ld-role--liquid {
      color: rgba(0,0,0,.75);
-     filter: url(#ld-liquid-filter) brightness(0);
-     -webkit-filter: url(#ld-liquid-filter) brightness(0);
      text-shadow: none;
+     /* filter hérite --ld-liquid-invert:0 depuis body.light-mode plus bas → noir automatique, plus de blanc fantôme */
    }
-
-  /* Make role follow same liquid behavior as name when using per-char splitting */
-  .ld-role--liquid, .ld-role {
-    /* ensure filter is present so blobs and blur apply to children */
-    filter: url(#ld-liquid-filter) brightness(0) invert(1);
-    -webkit-filter: url(#ld-liquid-filter) brightness(0) invert(1);
-  }
-
-  body.light-mode .ld-role--liquid, body.light-mode .ld-role {
-    filter: url(#ld-liquid-filter) brightness(0);
-    -webkit-filter: url(#ld-liquid-filter) brightness(0);
-  }
 
   /* Individual chars for role should be visible and inherit color */
   .ld-role .ld-char,
@@ -3898,6 +3892,10 @@
    /* ════════════════════════════════════════════
       LIGHT MODE
    ════════════════════════════════════════════ */
+
+   body.light-mode {
+     --ld-liquid-invert: 0;
+   }
 
    body.light-mode #loader{
      background:

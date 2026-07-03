@@ -10,6 +10,7 @@ import Beams from './components/Beams.jsx'
 // nulle part dans ce fichier -> pur poids mort dans le bundle. Retiré.
 import { useSoundSystem } from './components/useClickSound.js'
 import SoundToggle from './components/SoundToggle.jsx'
+import { useImmersiveSound } from './hooks/useImmersiveSound.js'
 import { runGridTransition, useGooeyTransition } from './components/GooeyTransition.jsx'
 import ImageTrail from './components/ImageTrail.jsx'
 import CardSwap, { Card } from './components/CardSwap.jsx'
@@ -1175,7 +1176,8 @@ function Loader({ onDone }) {
             gsap.set(nameTextEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
             if (roleEl) gsap.set(roleEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
 
-            /* Explosion chars for name and role — name first, then role with lighter force */
+            /* Explosion chars for name and role — role suit exactement la même
+               logique/physique que name, aucune différence de force entre les deux */
             const mid = (chars.length - 1) / 2
             const tl = gsap.timeline({
               delay: 0.15,
@@ -1211,17 +1213,17 @@ function Loader({ onDone }) {
               roleChars.forEach((span, i) => {
                 const rDist = i - rMid
                 tl.to(span, {
-                  x: rDist * 40 + (Math.random() - 0.5) * 40,
-                  y: -40 + (Math.random() - 0.5) * 60,
-                  z: Math.random() * 200 - 100,
-                  rotationX: (Math.random() - 0.5) * 220,
-                  rotationY: (Math.random() - 0.5) * 220,
-                  scale: 0.5 + Math.random() * 0.6,
+                  x: rDist * 120,
+                  y: (Math.random() - 0.5) * 300,
+                  z: Math.random() * 400 - 200,
+                  rotationX: (Math.random() - 0.5) * 720,
+                  rotationY: (Math.random() - 0.5) * 720,
+                  scale: 0.2 + Math.random() * 0.6,
                   opacity: 0,
-                  duration: 0.8,
+                  duration: 0.9,
                   ease: 'power2.out',
-                  delay: i * 0.02,
-                }, 0.02)
+                  delay: i * 0.03,
+                }, 0)
               })
             }
 
@@ -4391,6 +4393,7 @@ export default function App() {
     return new Date().getHours() >= 6 && new Date().getHours() < 18 ? 'light' : 'dark'
   })
   const [toastVisible, setToastVisible] = useState(false)
+  const [loaderDone, setLoaderDone] = useState(false)
 
   /* nav-loading masque la navbar pendant le loader */
   useEffect(() => {
@@ -4406,6 +4409,7 @@ export default function App() {
     /* Appelé par GSAP onComplete après l'animation scale-slide.
     On ajoute juste la classe CSS — React ne démonte pas le Loader,
     le CSS le cache (opacity:0, visibility:hidden). Pas de removeChild. */
+    setLoaderDone(true) /* déclenche le démarrage du son d'immersion */
     document.body.classList.remove('nav-loading')
     const loaderEl = document.getElementById('loader')
     if (loaderEl) {
@@ -4441,8 +4445,12 @@ export default function App() {
   useScrollAnimations()
   useMagneticButtons()
 
-  /* Son de touche — système oscar */
+  /* Son de touche — système oscar (inchangé) */
   const { muted, toggleMute } = useSoundSystem()
+
+  /* Son d'immersion — piste réelle en boucle, démarrée à la fin du loader,
+     coupée par le même mute/touche S que les sons de clic ci-dessus */
+  useImmersiveSound(muted, loaderDone)
 
   return (
     <>

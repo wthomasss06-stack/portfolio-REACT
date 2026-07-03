@@ -5,6 +5,7 @@ import { useSoundSystem } from './components/useClickSound.js';
 import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx';
 import { gsap } from 'gsap';
 import SoundToggle from './components/SoundToggle.jsx';
+import { useImmersiveSound } from './hooks/useImmersiveSound.js';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
@@ -1329,22 +1330,23 @@ const Loader = ({ onDone }) => {
               }, 0)
             })
 
+            /* Role suit exactement la même physique que name — plus de force allégée */
             if (roleChars.length) {
               const rMid = (roleChars.length - 1) / 2
               roleChars.forEach((span, i) => {
                 const rDist = i - rMid
                 tl.to(span, {
-                  x: rDist * 30 + (Math.random() - 0.5) * 20,
-                  y: -30 + (Math.random() - 0.5) * 40,
-                  z: Math.random() * 150 - 75,
-                  rotationX: (Math.random() - 0.5) * 220,
-                  rotationY: (Math.random() - 0.5) * 220,
-                  scale: 0.4 + Math.random() * 0.6,
+                  x: rDist * 80,
+                  y: (Math.random() - 0.5) * 200,
+                  z: Math.random() * 300 - 150,
+                  rotationX: (Math.random() - 0.5) * 720,
+                  rotationY: (Math.random() - 0.5) * 720,
+                  scale: 0.2 + Math.random() * 0.5,
                   opacity: 0,
-                  duration: 0.8,
+                  duration: 0.85,
                   ease: 'power2.out',
-                  delay: i * 0.02,
-                }, 0.02)
+                  delay: i * 0.03,
+                }, 0)
               })
             }
           }, 350)
@@ -4403,6 +4405,11 @@ export default function App() {
   });
   const dark = !light;
   const { muted, toggleMute } = useSoundSystem();
+
+  /* Son d'immersion — piste réelle en boucle, démarrée dès que le loader a
+     fini (loaded passe à true), coupée par le même mute/touche S que
+     les sons de clic ci-dessus. useClickSound.js non modifié. */
+  useImmersiveSound(muted, loaded);
   return !loaded ? (
     <Loader onDone={() => setLoaded(true)} />
   ) : (

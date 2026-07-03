@@ -36,6 +36,9 @@
   --spring: cubic-bezier(.34,1.56,.64,1);
   --max:    1200px;
   --pad:    clamp(20px, 5vw, 80px);
+  /* Loader liquid-blur invert : 1 = force blanc (dark), 0 = force noir (light).
+     Source de vérité unique pour .mob-ld-name-xl ET .mob-ld-role — voir body.light-mode plus bas. */
+  --ld-liquid-invert: 1;
 }
 
 /* Mode clair : fond blanc, textes noirs */
@@ -3916,10 +3919,11 @@ body {
   color: rgba(255,255,255,.96);
   line-height: 1;
 
-  /* brightness(0)+invert(1) force un blanc pur sur le blob, même quand
-     le glow orange du text-shadow se mélange dans le blur/goo (rendu
-     rosé/saumon sinon). Inverse du brightness(0) utilisé en light-mode. */
-  filter: url(#mob-ld-liquid-filter) brightness(0) invert(1);
+  /* brightness(0)+invert() force un blanc pur sur le blob (ou noir en
+     light-mode), même quand le glow orange du text-shadow se mélange
+     dans le blur/goo (rendu rosé/saumon sinon). --ld-liquid-invert
+     bascule blanc/noir en une seule déclaration. */
+  filter: url(#mob-ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
 
   text-shadow:
     0 0 30px rgba(255,85,0,.25),
@@ -3943,7 +3947,7 @@ body {
 }
 
 /* ── Role ── */
-.mob-ld-role {
+.mob-ld-role, .mob-ld-role--liquid {
   margin-top: .9rem;
   font-size: clamp(.52rem, 2.5vw, .72rem);
   letter-spacing: .22em;
@@ -3953,16 +3957,17 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* color explicite — avant, rien n'était déclaré ici : ça comptait sur
+     l'héritage + le filter pour forcer le noir en light-mode, pas fiable */
+  color: rgba(255,255,255,.85);
+  filter: url(#mob-ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
+  -webkit-filter: url(#mob-ld-liquid-filter) brightness(0) invert(var(--ld-liquid-invert));
 }
 
-/* Ensure role follows liquid blur behavior and per-char visibility */
-.mob-ld-role--liquid, .mob-ld-role {
-  filter: url(#mob-ld-liquid-filter) brightness(0) invert(1);
-  -webkit-filter: url(#mob-ld-liquid-filter) brightness(0) invert(1);
-}
-body.light-mode .mob-ld-role--liquid, body.light-mode .mob-ld-role {
-  filter: url(#mob-ld-liquid-filter) brightness(0);
-  -webkit-filter: url(#mob-ld-liquid-filter) brightness(0);
+body.light-mode .mob-ld-role,
+body.light-mode .mob-ld-role--liquid {
+  color: rgba(0,0,0,.75);
+  /* filter hérite --ld-liquid-invert:0 depuis body.light-mode plus bas → noir automatique */
 }
 
 .mob-ld-role .mob-ld-char, .mob-ld-role .mob-ld-role-char {
@@ -4013,6 +4018,10 @@ body.light-mode .mob-ld-role--liquid, body.light-mode .mob-ld-role {
 }
 
 /* ── Light mode ── */
+body.light-mode {
+  --ld-liquid-invert: 0;
+}
+
 body.light-mode #mob-loader {
   background:
     radial-gradient(circle at top, rgba(255,85,0,.06), transparent 40%),
@@ -4022,7 +4031,7 @@ body.light-mode #mob-loader {
 
 body.light-mode .mob-ld-name-xl {
   color: #0A0A0A;
-  filter: url(#mob-ld-liquid-filter) brightness(0);
+  /* filter hérite --ld-liquid-invert:0 depuis body.light-mode ci-dessus → noir automatique */
 }
 
 body.light-mode .mob-ld-percent {

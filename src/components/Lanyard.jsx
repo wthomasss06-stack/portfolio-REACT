@@ -87,6 +87,12 @@ function Band({
   const j2    = useRef();
   const j3    = useRef();
   const card  = useRef();
+  const ropePoints = useRef([
+    new THREE.Vector3(),
+    new THREE.Vector3(),
+    new THREE.Vector3(),
+    new THREE.Vector3()
+  ]);
 
   const vec = new THREE.Vector3();
   const ang = new THREE.Vector3();
@@ -212,30 +218,32 @@ function Band({
       });
     }
     if (fixed.current) {
-      [j1, j2].forEach(ref => {
+      [j1, j2, j3].forEach(ref => {
         if (!ref.current.lerped)
           ref.current.lerped = new THREE.Vector3().copy(ref.current.translation());
+        const translation = ref.current.translation();
         const clampedDistance = Math.max(0.1, Math.min(1,
-          ref.current.lerped.distanceTo(ref.current.translation())
+          ref.current.lerped.distanceTo(translation)
         ));
         ref.current.lerped.lerp(
-          ref.current.translation(),
+          translation,
           delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed))
         );
       });
       // Rapier initialise sa physique de façon asynchrone.
       // lerped n'existe qu'après le premier tick du lerp ci-dessus.
-      if (!j1.current.lerped || !j2.current.lerped) return;
-      const p0 = j3.current.translation();
+      if (!j1.current.lerped || !j2.current.lerped || !j3.current.lerped) return;
+      const p0 = j3.current.lerped;
       const p1 = j2.current.lerped;
       const p2 = j1.current.lerped;
       const p3 = fixed.current.translation();
       const ok = v => v && isFinite(v.x) && isFinite(v.y) && isFinite(v.z);
       if (!ok(p0) || !ok(p1) || !ok(p2) || !ok(p3)) return;
-      curve.points[0].copy(p0);
-      curve.points[1].copy(p1);
-      curve.points[2].copy(p2);
-      curve.points[3].copy(p3);
+      ropePoints.current[0].copy(p0);
+      ropePoints.current[1].copy(p1);
+      ropePoints.current[2].copy(p2);
+      ropePoints.current[3].copy(p3);
+      curve.points.forEach((point, index) => point.copy(ropePoints.current[index]));
       const pts = curve.getPoints(isMobile ? 16 : 32);
       if (pts.length >= 2 && pts.every(v => isFinite(v.x) && isFinite(v.y) && isFinite(v.z))) {
         band.current.geometry.setPoints(pts);
