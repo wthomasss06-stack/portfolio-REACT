@@ -576,10 +576,42 @@
    .hv4-name-line {
      display: block; font-family: var(--fd); font-weight: 700;
      letter-spacing: -.048em; color: var(--text);
-     font-size: clamp(56px, 10vw, 132px);
+     font-size: clamp(42px, 8vw, 96px);
      white-space: nowrap;
      animation: hv4NameIn .9s cubic-bezier(.22,1,.36,1) both;
      animation-delay: var(--d,.1s);
+   }
+   .hv4-name-line-text {
+     display: inline-block;
+     white-space: pre;
+     font-size: inherit;
+     font-family: inherit;
+     font-weight: inherit;
+     letter-spacing: inherit;
+     color: inherit;
+     transition: color .24s ease, text-shadow .24s ease;
+   }
+   .hv4-name-line-text:hover,
+   .ascii-ripple[data-variant="ghost"]:hover,
+   .sh-title-particle:hover {
+     color: rgba(255,255,255,1);
+     text-shadow: 0 0 10px rgba(255,255,255,.4);
+   }
+   .ascii-ripple {
+     display: inline-block;
+     cursor: pointer;
+     user-select: none;
+     white-space: pre;
+     text-decoration: none;
+     color: var(--text);
+     transition: color .2s ease-in-out, text-shadow .2s ease-in-out;
+   }
+   body.light-mode .sh-title-particle {
+     color: #0A0A0A;
+   }
+   body.light-mode .sh-title-particle:hover {
+     color: #0A0A0A;
+     text-shadow: 0 0 10px rgba(0,0,0,.18);
    }
    /* Shuffle dans .hv4-name-line — hérite tout, reset le font-size du composant */
    .hv4-name-line.shuffle-parent {
@@ -923,6 +955,11 @@
      line-height: .95;
      margin: 0;
      position: relative;
+     z-index: 1;
+   }
+   .sh-title-particle {
+     position: relative;
+     z-index: 1;
    }
    /* ── Ghost cycle sur sh-title — même mécanique que
       .sm-panel-item-ghost du StaggeredMenu : texte en contour
@@ -937,6 +974,9 @@
      align-items: center;
      pointer-events: none;
      overflow: hidden;
+     z-index: 0;
+     opacity: 0.45;
+     transform: scale(0.98);
    }
    .sh-title-ghost .sh-cycle-line {
      -webkit-text-stroke: 1.5px var(--text);
@@ -996,6 +1036,11 @@
    .about-block.vis { opacity: 1; transform: translateY(0); }
    .about-role { font-family: var(--fd); font-size: clamp(1.3rem, 2.6vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: 1.2rem; }
    .about-role em { font-style: normal; color: var(--accent); }
+   :root {
+     --reveal-light-gradient: linear-gradient(90deg, #0A0A0A 50%, rgba(10,10,10,.45) 50%);
+     --reveal-dark-gradient: linear-gradient(90deg, #fff 50%, #333 50%);
+   }
+
    .about-text,
    .about-text-lg {
      font-family: var(--fd);
@@ -1003,12 +1048,39 @@
      font-weight: 700;
      line-height: 1.28;
      letter-spacing: -.01em;
-     color: var(--muted);
+     color: transparent;
+     background-image: var(--reveal-gradient, var(--reveal-dark-gradient));
+     background-size: 200% 100%;
+     background-position: 100% 0;
+     -webkit-background-clip: text;
+     background-clip: text;
+     will-change: background-position, opacity;
+   }
+   body.light-mode .about-text,
+   body.light-mode .about-text-lg {
+     --reveal-gradient: var(--reveal-light-gradient);
+   }
+   body.light-mode .force-dark .about-text,
+   body.light-mode .force-dark .about-text-lg {
+     --reveal-gradient: var(--reveal-dark-gradient);
+   }
+   .about-text *,
+   .about-text-lg * {
+     color: transparent;
+     background-image: inherit;
+     background-size: inherit;
+     background-position: inherit;
+     -webkit-background-clip: text;
+     background-clip: text;
    }
    .about-text strong,
-   .about-text-lg strong { color: var(--text); font-weight: 800; }
+   .about-text-lg strong {
+     font-weight: 800;
+   }
    .about-text a,
-   .about-text-lg a { color: var(--accent); }
+   .about-text-lg a {
+     text-decoration: none;
+   }
 
    /* ── ScrollReveal word spans ── */
    .sr-word {

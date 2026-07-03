@@ -229,19 +229,164 @@ function useSHRotatingCycle(texts, interval = 2500) {
   return { innerRef, lines }
 }
 
+function GhostParticleText({ text = '', className = '' }) {
+  const rootRef = useRef(null)
+  const safeText = text || ''
+  const stateRef = useRef({
+    origTxt: safeText,
+    origChars: safeText.split(''),
+    isAnim: false,
+    isHover: false,
+    waves: [],
+    animId: null,
+    cursorPos: 0,
+    origW: null,
+    dur: 900,
+    chars: '*+;·:. ',
+    preserveSpaces: true,
+    spread: 1.0,
+  })
+
+  useEffect(() => {
+    const el = rootRef.current
+    if (!el || !safeText) return
+
+    const state = stateRef.current
+    state.origTxt = safeText
+    state.origChars = safeText.split('')
+    el.textContent = safeText
+
+    const updateCursorPos = (e) => {
+      const rect = el.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const len = state.origChars.length
+      const pos = Math.round((x / rect.width) * len)
+      state.cursorPos = Math.max(0, Math.min(pos, len - 1))
+    }
+
+    const stop = () => {
+      el.textContent = state.origTxt
+      state.isAnim = false
+      if (state.animId) {
+        cancelAnimationFrame(state.animId)
+        state.animId = null
+      }
+      if (state.origW !== null) {
+        el.style.width = ''
+        state.origW = null
+      }
+    }
+
+    const calcWaveEffect = (charIdx, t) => {
+      let resultChar = state.origChars[charIdx]
+      let shouldAnim = false
+      for (const wave of state.waves) {
+        const age = t - wave.startTime
+        const prog = Math.min(age / state.dur, 1)
+        const dist = Math.abs(charIdx - wave.startPos)
+        const maxDist = Math.max(wave.startPos, state.origChars.length - wave.startPos - 1)
+        const rad = (prog * (maxDist + 5)) / state.spread
+        if (dist <= rad) {
+          shouldAnim = true
+          const intens = Math.max(0, rad - dist)
+          if (intens <= 3 && intens > 0) {
+            const index = (dist * 3 + Math.floor(age / 40)) % state.chars.length
+            resultChar = state.chars[index]
+          }
+        }
+      }
+      return { shouldAnim, char: resultChar }
+    }
+
+    const genScrambledTxt = (t) => state.origChars
+      .map((ch, i) => {
+        if (state.preserveSpaces && ch === ' ') return ' '
+        const { shouldAnim, char } = calcWaveEffect(i, t)
+        return shouldAnim ? char : ch
+      })
+      .join('')
+
+    const animate = () => {
+      const now = Date.now()
+      state.waves = state.waves.filter(w => now - w.startTime < state.dur)
+      if (state.waves.length === 0) {
+        stop()
+        return
+      }
+      el.textContent = genScrambledTxt(now)
+      state.animId = requestAnimationFrame(animate)
+    }
+
+    const start = () => {
+      if (state.isAnim) return
+      if (state.origW === null) {
+        state.origW = el.getBoundingClientRect().width
+        el.style.width = `${state.origW}px`
+      }
+      state.isAnim = true
+      state.animId = requestAnimationFrame(animate)
+    }
+
+    const startWave = () => {
+      state.waves.push({ startPos: state.cursorPos, startTime: Date.now() })
+      if (!state.isAnim) start()
+    }
+
+    const onMouseEnter = (e) => {
+      state.isHover = true
+      updateCursorPos(e)
+      startWave()
+    }
+
+    const onMouseMove = (e) => {
+      if (!state.isHover) return
+      const previous = state.cursorPos
+      updateCursorPos(e)
+      if (state.cursorPos !== previous) startWave()
+    }
+
+    const onMouseLeave = () => {
+      state.isHover = false
+    }
+
+    el.addEventListener('mouseenter', onMouseEnter)
+    el.addEventListener('mousemove', onMouseMove)
+    el.addEventListener('mouseleave', onMouseLeave)
+
+    return () => {
+      el.removeEventListener('mouseenter', onMouseEnter)
+      el.removeEventListener('mousemove', onMouseMove)
+      el.removeEventListener('mouseleave', onMouseLeave)
+      if (state.animId) cancelAnimationFrame(state.animId)
+    }
+  }, [text])
+
+  return (
+    <span
+      ref={rootRef}
+      className={`ascii-ripple ${className}`}
+      data-variant="ghost"
+      data-dur="900"
+      data-spread="1.0"
+      data-chars="*+;·:. "
+      aria-hidden="true"
+    >
+      {text}
+    </span>
+  )
+}
+
 /* ════════════════════════════════════════════
  SECTION HEADING — num + titre + sous-titre
  Miroir visuel du drawer hamburger dans la page
  Titre/sous-titre se "décodent" (cycle-text) à
  chaque entrée de la section dans le viewport
  ════════════════════════════════════════════ */
-function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = {}, kinetic = true }) {
+function SectionHeading({ num, title, sub, subAs = 'h2', className = '', style = {}, kinetic = true }) {
   const Sub = subAs === 'h2' ? 'h2' : 'p'
   const wrapRef = useRef(null)
   const titleElRef = useRef(null)
-  const titleCyc = useSHCycleText(title, false)   // défile avec le même texte, sans glitch chars
   const subCyc = useSHCycleText(sub, true)    // garde le scramble de caractères
-  const ghost = useSHGhostScroll(title)        // ghost text en contour, même cycle entrée/sortie
 
   useEffect(() => {
     const el = wrapRef.current
@@ -251,17 +396,17 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
       entries => entries.forEach(entry => {
         if (entry.isIntersecting) {
           hasEntered = true
-          titleCyc.play(true); subCyc.play(true); ghost.play(true)
+          subCyc.play(true)
         } else if (hasEntered) {
           // sortie de section (scroll monte ou descend) → cycle en sens inverse
-          titleCyc.play(false); subCyc.play(false); ghost.play(false)
+          subCyc.play(false)
         }
       }),
       { threshold: 0.4, rootMargin: '0px 0px -10% 0px' }
     )
     io.observe(el)
     return () => io.disconnect()
-  }, [titleCyc.play, subCyc.play, ghost.play])
+  }, [subCyc.play])
 
   /* ── Effet "LA CINÉTIQUE" — le grand titre glisse de la gauche
      vers la droite en fonction du scroll (GSAP ScrollTrigger scrub,
@@ -306,20 +451,8 @@ function SectionHeading({ num, title, sub, subAs = 'p', className = '', style = 
     <div className={`sh-wrap ${className}`} style={style} ref={wrapRef}>
       <span className="sh-num">{num}</span>
       <div className="sh-body">
-        <h2 className="sh-title" ref={titleElRef}>
-          <span className="sh-cycle-wrap">
-            <span className="sh-cycle-inner" ref={titleCyc.innerRef}>
-              {titleCyc.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
-            </span>
-          </span>
-          {/* Ghost cycle — contour seul, couleur = fond du thème, suit le même cycle entrée/sortie viewport */}
-          <span className="sh-title-ghost" aria-hidden="true">
-            <span className="sh-cycle-wrap">
-              <span className="sh-cycle-inner" ref={ghost.innerRef}>
-                {ghost.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
-              </span>
-            </span>
-          </span>
+        <h2 className="sh-title" ref={titleElRef} aria-label={title}>
+          <GhostParticleText text={title} className="ascii-ripple sh-title-particle" />
         </h2>
         {sub && (
           <Sub className="sh-sub">
@@ -483,10 +616,6 @@ function HorizontalParallax() {
     <section ref={sectionRef} id="hpx-section" className="hpx-section">
       {/* Zone sticky : l'écran reste figé, le carrousel glisse */}
       <div className="hpx-sticky">
-        {/* Heading flottant en absolute DANS le sticky (hors flux) */}
-        <div className="fcx-section-label">
-          <SectionHeading num="02" title="Stack" sub="Meilleures armes" kinetic={false} />
-        </div>
         <ul ref={trackRef} id="hpx-track" className="hpx-track">
           {HPSLIDES.map((s, i) => (
             <li key={i} className="hpx-slide" style={{ '--hpx-color': s.color, '--hpx-color-light': s.lightColor || s.color }}>
@@ -656,55 +785,17 @@ function useScrollAnimations() {
           }
         )
       })
-      /* ── About-text ScrollReveal — opacity + blur word-by-word ── */
+      /* ── About-text ScrollReveal — texte qui s'illumine au scroll ── */
       document.querySelectorAll('.about-text, .about-text-lg').forEach(el => {
-        /* Évite le double-split si déjà traité */
-        if (el.dataset.srSplit) return
-        el.dataset.srSplit = '1'
-
-        /* Découper en mots tout en préservant les balises strong/a/em */
-        function wrapWordsInNode(node) {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent
-            const fragment = document.createDocumentFragment()
-            const parts = text.split(/(\s+)/)
-            parts.forEach(part => {
-              if (/^\s+$/.test(part)) {
-                fragment.appendChild(document.createTextNode(part))
-              } else if (part.length > 0) {
-                const span = document.createElement('span')
-                span.className = 'sr-word'
-                span.textContent = part
-                fragment.appendChild(span)
-              }
-            })
-            node.parentNode.replaceChild(fragment, node)
-          } else if (
-            node.nodeType === Node.ELEMENT_NODE &&
-            ['STRONG', 'A', 'EM', 'B', 'I'].includes(node.tagName)
-          ) {
-            const span = document.createElement('span')
-            span.className = 'sr-word'
-            node.parentNode.insertBefore(span, node)
-            span.appendChild(node)
-          } else if (node.nodeType === Node.ELEMENT_NODE) {
-            Array.from(node.childNodes).forEach(wrapWordsInNode)
-          }
-        }
-        Array.from(el.childNodes).forEach(wrapWordsInNode)
-
-        const words = el.querySelectorAll('.sr-word')
-        if (!words.length) return
+        if (el.dataset.srReveal) return
+        el.dataset.srReveal = '1'
 
         gsap.fromTo(
-          words,
-          { opacity: 0.08, filter: 'blur(5px)', y: 8 },
+          el,
+          { backgroundPosition: '100% 0' },
           {
-            opacity: 1,
-            filter: 'blur(0px)',
-            y: 0,
+            backgroundPosition: '0% 0',
             ease: 'none',
-            stagger: 0.04,
             scrollTrigger: {
               trigger: el,
               start: 'top 90%',
@@ -1525,9 +1616,9 @@ function Hero() {
     window.scrollTo({ top, behavior: 'auto' })
   }
 
-  /* Nom — cycle plain sur le même texte */
-  const nameLine1 = useSHNameCycle("M'BOLLO")
-  const nameLine2 = useSHNameCycle("AKA ELVIS")
+  /* Nom — Ghost Particle hover effect */
+  const nameLine1 = "M'BOLLO"
+  const nameLine2 = "AKA ELVIS"
 
   /* Mots rotatifs — glitch scramble en boucle auto */
   const rotating = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
@@ -1556,21 +1647,13 @@ function Hero() {
 
           {/* LEFT */}
           <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
-            {/* Nom — cycle-text plain */}
+            {/* Nom — Ghost Particle hover effect */}
             <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
               <span className="hv4-name-line" style={{ '--d': '.1s' }}>
-                <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
-                  <span className="sh-cycle-inner" ref={nameLine1.innerRef}>
-                    {nameLine1.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
-                  </span>
-                </span>
+                <GhostParticleText text="M'BOLLO" className="hv4-name-line-text" />
               </span>
               <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '.2s' }}>
-                <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
-                  <span className="sh-cycle-inner" ref={nameLine2.innerRef}>
-                    {nameLine2.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
-                  </span>
-                </span>
+                <GhostParticleText text="AKA ELVIS" className="hv4-name-line-text" />
               </span>
             </h1>
 
