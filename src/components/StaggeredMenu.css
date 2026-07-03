@@ -192,51 +192,33 @@
   padding: .08em 0;
   transition: color .22s;
 }
-.sm-panel-item:hover,
-.sm-panel-item--active { color: #FF5500; }
+..sm-panel-item:hover { color: var(--text); }
+.sm-panel-item--active { color: var(--accent); }
+.sm-panel-item--active .sm-panel-item-ghost-overlay {
+  color: var(--accent);
+  text-shadow: none;
+}
 
-/* Label */
-.sm-panel-itemLabel {
+/* ── GhostParticleText overlay (Ghost Particle 06) ── */
+.sm-panel-item-ghost-overlay {
+  position: relative;
   display: inline-block;
-  will-change: transform;
-  transform-origin: 50% 100%;
-}
-
-/* ── Ghost cycle text hover ── */
-.sm-panel-item-ghost {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity .18s;
-}
-.sm-panel-item:hover .sm-panel-item-ghost { opacity: 1; }
-
-.sm-ghost-cycle-wrap {
-  display: inline-block;
-  height: 0.95em;
-  overflow: hidden;
-  pointer-events: none;
-}
-.sm-ghost-cycle-inner {
-  display: flex;
-  flex-direction: column;
-  will-change: transform;
-}
-.sm-ghost-cycle-line {
-  display: block;
-  height: 0.95em;
-  line-height: 0.95em;
   font-family: var(--fd, 'Bebas Neue', sans-serif);
   font-size: inherit;
   font-weight: 800;
-  letter-spacing: -.025em;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: var(--text);
+  white-space: pre;
   text-transform: uppercase;
-  -webkit-text-stroke: 1.5px #FF5500;
-  color: transparent;
+  user-select: none;
+  pointer-events: auto;
+  transition: color .18s ease, text-shadow .18s ease;
+}
+
+.sm-panel-item:hover .sm-panel-item-ghost-overlay {
+  color: var(--text);
+  text-shadow: 0 0 10px var(--glow);
 }
 
 /* ── Flèche ↗ ── */
@@ -262,9 +244,9 @@
 }
 .sm-panel-item:hover .sm-panel-item-arrow,
 .sm-panel-item--active .sm-panel-item-arrow {
-  border-color: #FF5500;
+  border-color: var(--accent);
   color: var(--bg);
-  background: #FF5500;
+  background: var(--accent);
   opacity: 1;
   box-shadow: 3px 3px 0 rgba(255,85,0,.55);
   transform: rotate(45deg);

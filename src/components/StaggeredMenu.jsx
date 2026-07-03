@@ -1,5 +1,6 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
+import GhostParticleText from './GhostParticleText'
 import './StaggeredMenu.css'
 
 /*
@@ -11,56 +12,8 @@ import './StaggeredMenu.css'
   · onItemClick(id) → appelé au clic sur un lien de nav
 */
 
-/* ── Ghost cycle text chars ── */
-const GHOST_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#+*/=<>'
-
-function ghostScramble(text) {
-  return text.split('').map(ch =>
-    /[a-zA-Z0-9]/.test(ch)
-      ? GHOST_CHARS[Math.floor(Math.random() * GHOST_CHARS.length)]
-      : ch
-  ).join('')
-}
-
-function buildGhostSeq(text, cycles = 3) {
-  const seq = [ghostScramble(text)]
-  for (let i = 0; i < cycles; i++) seq.push(ghostScramble(text))
-  seq.push(text, text)
-  return seq
-}
-
-/* Hook ghost cycle — déclenché au mouseenter */
-function useGhostCycle(text) {
-  const innerRef  = useRef(null)
-  const tweenRef  = useRef(null)
-  const [lines, setLines] = useState([text])
-
-  const play = useCallback(() => {
-    if (!text) return
-    tweenRef.current?.kill()
-    const seq = buildGhostSeq(text, 3)
-    setLines(seq)
-    requestAnimationFrame(() => {
-      const inner = innerRef.current
-      if (!inner) return
-      gsap.set(inner, { yPercent: 0 })
-      const finalShift = ((seq.length - 1) / seq.length) * 100
-      tweenRef.current = gsap.to(inner, {
-        yPercent: -finalShift,
-        duration: 0.42 + seq.length * 0.055,
-        ease: 'power4.out',
-        overwrite: 'auto',
-      })
-    })
-  }, [text])
-
-  return { innerRef, lines, play }
-}
-
-/* Wrapper item avec ghost cycle */
+/* Wrapper item nav */
 function NavItemWithGhost({ it, idx, activeSection, onItemClick, closeMenu }) {
-  const ghost = useGhostCycle(it.label.toUpperCase())
-
   return (
     <li className="sm-panel-itemWrap" key={it.id + idx}>
       <a
@@ -68,26 +21,16 @@ function NavItemWithGhost({ it, idx, activeSection, onItemClick, closeMenu }) {
         href={'#' + it.id}
         aria-label={it.label}
         data-index={idx + 1}
-        onMouseEnter={ghost.play}
         onClick={e => {
           e.preventDefault()
           closeMenu()
           setTimeout(() => onItemClick?.(it.id), 340)
         }}
       >
-        {/* Label principal */}
-        <span className="sm-panel-itemLabel">{it.label}</span>
-
-        {/* Ghost cycle orange au hover */}
-        <span className="sm-panel-item-ghost" aria-hidden="true">
-          <span className="sm-ghost-cycle-wrap">
-            <span className="sm-ghost-cycle-inner" ref={ghost.innerRef}>
-              {ghost.lines.map((l, i) => (
-                <span className="sm-ghost-cycle-line" key={i}>{l}</span>
-              ))}
-            </span>
-          </span>
-        </span>
+        <GhostParticleText
+          text={it.label.toUpperCase()}
+          className="sm-panel-item-ghost-overlay"
+        />
 
         <span className="sm-panel-item-arrow" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
