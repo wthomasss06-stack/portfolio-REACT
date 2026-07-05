@@ -9,138 +9,15 @@ import React, {
   useState, useEffect, useRef, useCallback, useMemo, memo
 } from 'react';
 
+import {
+  CONTACT as ME, PROJECTS, TIMELINE, PRICING_TABS, FAQ_ITEMS as FAQ,
+} from './data/portfolioData.js';
+
 // ═══════════════════════════════════════════════════════════════
 // 0. DONNÉES
 // ═══════════════════════════════════════════════════════════════
 
-const ME = {
-  name: "M'BOLLO Aka Elvis",
-  short: "Elvis K.",
-  title: "Développeur Fullstack",
-  agency: "AKATech",
-  tagline: "Je construis des apps web modernes pour l'Afrique",
-  email: "wthomasss06@gmail.com",
-  phone: "+225 01 42 50 77 50",
-  whatsapp: "+225 01 42 50 77 50",
-  github: "https://github.com/wthomasss06-stack",
-  linkedin: "https://www.linkedin.com/in/m-bollo-aka",
-  site: "https://akatech-agence.vercel.app",
-  facebook: "https://web.facebook.com/profile.php?id=61577494705852",
-  location: "Abidjan, Côte d'Ivoire",
-  photo: "/assets/images/IMG_20250124_124101KK.jpg",
-  cv: "/assets/CV_MBOLLO_AKA_ELVIS.pdf",
-};
 
-const PROJECTS = [
-  {
-    id: 1, title: "ShopCI", subtitle: "Marketplace E-commerce", cat: "en-ligne", progress: 65, year: "2024", isPremium: true,
-    desc: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
-    tech: ["React", "Django", "Bootstrap 5", "Vercel + PythonAnywhere"], url: "https://shop-ci.vercel.app/",
-    image: "/assets/images/projects/monmarket-preview.jpg", color: "#0066cc"
-  },
-  {
-    id: 2, title: "TechFlow", subtitle: "Site Vitrine Professionnel", cat: "en-ligne", progress: 97, year: "2024", isPremium: true,
-    desc: "Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
-    tech: ["HTML", "Tailwind CSS", "JavaScript", "Vercel"], url: "https://techflow-ten.vercel.app/",
-    image: "/assets/images/projects/techflow-preview.jpg", color: "#006644"
-  },
-  {
-    id: 3, title: "TerraSafe", subtitle: "Marketplace Foncière", cat: "en-ligne", progress: 85, year: "2024", isPremium: true,
-    desc: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
-    tech: ["Python/Flask", "MySQL", "JavaScript", "Bootstrap 5"], url: "https://wthomassss06.pythonanywhere.com",
-    image: "/assets/images/projects/terrasafe-preview.jpg", color: "#8B0000"
-  },
-  {
-    id: 4, title: "Chap-chapMAP", subtitle: "Navigation Intelligente", cat: "demo", progress: 100, year: "2023",
-    desc: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
-    tech: ["JavaScript", "Leaflet.js", "OSRM API", "Geolocation API"], url: "/demos/chap-chapMAP.html",
-    image: "/assets/images/projects/chapchapmap-preview.jpg", color: "#005580"
-  },
-  {
-    id: 5, title: "ElvisMarket", subtitle: "Interface E-commerce", cat: "demo", progress: 100, year: "2023",
-    desc: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
-    tech: ["HTML", "JS vanilla", "Tailwind CSS", "LocalStorage"], url: "/demos/projet2.html",
-    image: "/assets/images/projects/elvismarket-preview.jpg", color: "#555500"
-  },
-  {
-    id: 6, title: "MonCashJour", subtitle: "Gestion de Ventes", cat: "demo", progress: 100, year: "2023",
-    desc: "Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
-    tech: ["HTML", "JS vanilla", "Tailwind CSS", "Chart.js"], url: "/demos/projet1.html",
-    image: "/assets/images/projects/moncashjour-preview.jpg", color: "#006633"
-  },
-  {
-    id: 7, title: "LivreurTrack Pro", subtitle: "Suivi Logistique", cat: "demo", progress: 100, year: "2023",
-    desc: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
-    tech: ["JavaScript", "Bootstrap 5", "LocalStorage", "Camera API"], url: "/demos/projet3.html",
-    image: "/assets/images/projects/livreurtrack-preview.jpg", color: "#660066"
-  },
-  {
-    id: 8, title: "LinkedIn Banner Pro", subtitle: "Générateur SaaS", cat: "en-cours", progress: 30, year: "2025",
-    desc: "Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
-    tech: ["JavaScript", "Canvas API", "Tailwind CSS"], url: "/demos/projet7.html",
-    image: "/assets/images/projects/linkedin-banner-preview.jpg", color: "#003366"
-  },
-  {
-    id: 9, title: "Tati", subtitle: "Portfolio & Vitrine Moderne", cat: "en-ligne", progress: 100, year: "2024", isPremium: true,
-    desc: "Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair.",
-    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"], url: "https://tatii.vercel.app/",
-    image: "/assets/images/projects/tati-preview.jpg", color: "#336600"
-  },
-  {
-    id: 10, title: "MK", subtitle: "Portfolio Graphiste Client", cat: "en-ligne", progress: 100, year: "2024", isPremium: true,
-    desc: "Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
-    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"], url: "https://mory01ff.vercel.app/",
-    image: "/assets/images/projects/mk-preview.jpg", color: "#006699"
-  },
-  {
-    id: 11, title: "ManoBeat 777", subtitle: "Portfolio Beatmaker", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
-    desc: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp.",
-    tech: ["React", "Tailwind CSS", "Howler.js", "Vercel"], url: "https://xxx-x.vercel.app/",
-    image: "/assets/images/projects/beatstore-preview.jpg", color: "#660033"
-  },
-  {
-    id: 12, title: "New Horizon", subtitle: "Location de Résidences", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
-    desc: "Plateforme de location de résidences meublées haut de gamme. Interface moderne, backend Flask sécurisé avec API REST.",
-    tech: ["Next.js", "Flask", "Python", "MySQL", "Vercel"], url: "https://new-horizonservice.vercel.app/",
-    image: "/assets/images/projects/newhorizon-preview.jpg", color: "#003355"
-  },
-  {
-    id: 13, title: "AKATech", subtitle: "Agence Digitale Abidjan", cat: "en-ligne", progress: 100, year: "2025", isPremium: true, isAgency: true,
-    desc: "Site officiel de mon agence — Aurora WebGL, animations Framer Motion, design vert/noir premium.",
-    tech: ["Next.js 15", "Framer Motion", "WebGL Aurora", "Vercel"], url: "https://akatech.vercel.app/",
-    image: "/assets/images/projects/akatech-preview.jpg", color: "#002211"
-  },
-  {
-    id: 14, title: "Univ. les Anges", subtitle: "Site Institutionnel", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
-    desc: "Site institutionnel moderne pour l'Université les Anges : formations, actualités, contacts. Interface responsive.",
-    tech: ["HTML", "CSS", "Bulma", "Bootstrap", "Vercel"], url: "https://universitelesanges.vercel.app/",
-    image: "/assets/images/projects/universitelesanges-preview.jpg", color: "#3B006B"
-  },
-  {
-    id: 15, title: "NEXURA", subtitle: "Marketplace Nouvelle Gén.", cat: "en-ligne", progress: 85, year: "2025", isPremium: true,
-    desc: "Marketplace nouvelle génération — évolution de TerraSafe. Résidences meublées, motos & véhicules, bureaux, terrains. Auth sécurisée, KYC, WebSockets.",
-    tech: ["Next.js 14", "Django REST", "PostgreSQL", "WebSockets", "Redis & Celery"], url: "https://nexura-one.vercel.app/",
-    image: "/assets/images/projects/nexura-preview.jpg", color: "#003344"
-  },
-  {
-    id: 16, title: "KokoEat", subtitle: "Livraison Alimentaire", cat: "en-cours", progress: 40, year: "2025",
-    desc: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
-    tech: ["React", "Django REST", "PostgreSQL", "Vercel"], url: "#",
-    image: "/assets/images/projects/kokoeat-preview.jpg", color: "#cc4400"
-  },
-  {
-    id: 17, title: "Jean Edy · Portfolio", subtitle: "Portfolio React UI Avancé", cat: "en-ligne", progress: 100, year: "2026", isPremium: true,
-    desc: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
-    tech: ["React 18", "Vite", "GSAP", "Framer Motion", "TailwindCSS"], url: "https://jean-edy-dev.vercel.app/",
-    image: "/assets/images/projects/jean-edy-preview.jpg", color: "#1a1a66"
-  },
-  {
-    id: 18, title: "MD Laverie Pressing", subtitle: "Site Vitrine Pressing", cat: "en-ligne", progress: 100, year: "2025", isPremium: true,
-    desc: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
-    tech: ["React 18", "Vite", "GSAP", "React Router v6", "EmailJS"], url: "https://laverie-plus.vercel.app/",
-    image: "/assets/images/projects/laverie-preview.jpg", color: "#004466"
-  },
-];
 
 const SKILLS = {
   frontend: [
@@ -182,47 +59,6 @@ const SKILLS = {
   ],
 };
 
-const TIMELINE = [
-  {
-    date: "2025–2026", icon: "fa-rocket", title: "Développeur Freelance Fullstack", company: "AKATech",
-    desc: "Conception et déploiement de 10+ apps web (SaaS, e-commerce, plateformes). APIs REST Django/Flask, dashboards, déploiement cloud.",
-    items: [
-      "Conception et déploiement de plus de 10 applications web (SaaS, e-commerce, plateformes)",
-      "Développement d'API REST avec Django et Flask",
-      "Mise en place de dashboards et systèmes de gestion de données",
-      "Déploiement cloud (Vercel, PythonAnywhere, Netlify)",
-    ],
-    tags: ["Freelance", "Full-Stack", "Django", "React", "SaaS", "Data"]
-  },
-  {
-    date: "Mai–Nov. 2025", icon: "fa-briefcase", title: "Informaticien Stagiaire", company: "Mairie d'Agboville",
-    desc: "Maintenance parc informatique, support technique, numérisation des données et création d'outils numériques internes.",
-    items: [
-      "Maintenance du parc informatique et du réseau",
-      "Support technique aux utilisateurs",
-      "Contribution à la gestion et à la numérisation des données",
-      "Appui à la création d'outils numériques internes",
-    ]
-  },
-  {
-    date: "2023–2024", icon: "fa-graduation-cap", title: "Projet Académique – ARTICI", company: "UVCI",
-    desc: "Plateforme web de promotion de l'artisanat local. Travail collaboratif pluridisciplinaire, optimisation et sécurité.",
-    items: [
-      "Plateforme web de promotion de l'artisanat local",
-      "Travail collaboratif en équipe pluridisciplinaire",
-      "Optimisation des performances et sécurité applicative",
-    ]
-  },
-  {
-    date: "2023–2024", icon: "fa-book", title: "Licence en Réseau & Sécurité Info", company: "UVCI",
-    desc: "Formation complète en développement web, bases de données et sécurité des applications.",
-    tags: ["Certification E-Banking", "Réf: CC/24-002485"]
-  },
-  {
-    date: "2020–2021", icon: "fa-school", title: "Baccalauréat Série D", company: "Lycée Moderne d'Arrah",
-    desc: "Mention : Assez Bien."
-  },
-];
 
 const SERVICES_DATA = [
   {
@@ -251,84 +87,7 @@ const SERVICES_DATA = [
   },
 ];
 
-const PRICING_TABS = [
-  {
-    key: "portfolio", label: "Portfolio", icon: "fa-globe",
-    plans: [
-      {
-        badge: "STARTER", price: "70 000 FCFA", delivery: "3–5 jours",
-        features: ["3 pages", "Design responsive", "Section projets", "Formulaire contact", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
-      },
-      {
-        badge: "STANDARD", price: "120 000 FCFA", delivery: "5–7 jours", isPopular: true,
-        features: ["5 pages", "Animations modernes", "Projets détaillés", "SEO de base", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
-      },
-      {
-        badge: "PREMIUM", price: "180 000 FCFA", delivery: "7–10 jours",
-        features: ["Design personnalisé", "Animations avancées", "Blog intégré", "Optimisation performance", "Nom de domaine offert", "Hébergement inclus", "1 mois support"]
-      },
-    ]
-  },
-  {
-    key: "vitrine", label: "Site Vitrine", icon: "fa-building",
-    plans: [
-      {
-        badge: "STARTER", price: "150 000 FCFA", delivery: "5 jours",
-        features: ["5 pages", "Design responsive", "Formulaire contact", "SEO de base", "Nom de domaine offert (1 an)", "1 mois support"]
-      },
-      {
-        badge: "PRO", price: "270 000 FCFA", delivery: "7–10 jours", isPopular: true,
-        features: ["10 pages", "Design premium", "Blog intégré", "SEO avancé", "Nom de domaine offert", "Hébergement inclus", "3 mois support", "Formation 2h"]
-      },
-      {
-        badge: "ELITE", price: "450 000 FCFA", delivery: "10–14 jours",
-        features: ["15–20 pages", "Design sur mesure", "CMS complet", "SEO + Analytics", "Nom de domaine offert", "Hébergement inclus", "6 mois support", "Formation complète"]
-      },
-    ]
-  },
-  {
-    key: "ecommerce", label: "E-commerce", icon: "fa-shopping-cart",
-    plans: [
-      {
-        badge: "STARTER", price: "400 000 FCFA", delivery: "14 jours",
-        features: ["Jusqu'à 50 produits", "Paiement Mobile Money", "Gestion commandes", "Tableau de bord", "Hébergement inclus", "1 mois support"]
-      },
-      {
-        badge: "PRO", price: "650 000 FCFA", delivery: "21 jours", isPopular: true,
-        features: ["200–500 produits", "Multi-paiement", "Gestion stock temps réel", "Analytics", "Hébergement inclus", "3 mois support", "Formation admin"]
-      },
-      {
-        badge: "ELITE", price: "1 000 000 FCFA", delivery: "30 jours",
-        features: ["Produits illimités", "API paiement personnalisée", "Automatisations", "Rapports avancés", "Hébergement inclus", "6 mois support", "Formation équipe"]
-      },
-    ]
-  },
-  {
-    key: "saas", label: "App SaaS", icon: "fa-cog",
-    plans: [
-      {
-        badge: "MVP", price: "700 000 FCFA", delivery: "3–4 semaines",
-        features: ["Authentification + rôles", "Dashboard basique", "API REST", "Déploiement cloud", "1 mois support", "Hébergement 1–3 mois"]
-      },
-      {
-        badge: "SCALE", price: "1 200 000 – 2 000 000", delivery: "4–6 semaines", isPopular: true,
-        features: ["Multi-tenant", "Analytics temps réel", "Intégrations paiement/email", "Support prioritaire"]
-      },
-      {
-        badge: "ENTERPRISE", price: "À partir de 2 500 000", delivery: "6–10 semaines",
-        features: ["Architecture microservices", "Sécurité renforcée", "SLA 99.9%", "Formation équipe"]
-      },
-    ]
-  },
-];
 
-const FAQ = [
-  { q: "Combien coûte un site web ?", a: "Les projets commencent à 60 000 FCFA pour un site vitrine. Le prix dépend des fonctionnalités demandées." },
-  { q: "Combien de temps prend la création ?", a: "Un site vitrine : 5–10 jours. Un projet complexe (e-commerce, SaaS) : plusieurs semaines selon la complexité." },
-  { q: "Puis-je modifier mon site moi-même ?", a: "Oui. Une formation rapide est incluse dans la plupart des offres pour gérer votre site facilement." },
-  { q: "Proposez-vous un support après livraison ?", a: "Oui. Support technique disponible après la livraison selon la formule choisie." },
-  { q: "Les prix sont-ils fixes ?", a: "Chaque projet étant unique, les tarifs varient. Un devis gratuit est établi après discussion." },
-];
 
 // ═══════════════════════════════════════════════════════════════
 // 1. CSS GLOBAL
@@ -2129,7 +1888,7 @@ function WelcomeContent({ onOpen }) {
   const art =
     `╔═════════════════════════════════╗
 ║   AKAFOLIO v3 — Win95/WinXP OS  ║
-║   by M'BOLLO Aka Elvis           ║
+║   by M'BOLLO aka           ║
 ║   AKATech · Abidjan, CI          ║
 ╚═════════════════════════════════╝`;
   return (

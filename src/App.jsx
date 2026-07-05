@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo, Suspense, lazy } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import './style.css'
 import Shuffle from './components/Shuffle.jsx'
 import AnimatedCounter from './components/AnimatedCounter.jsx'
@@ -12,7 +12,10 @@ import { useSoundSystem } from './components/useClickSound.js'
 import SoundToggle from './components/SoundToggle.jsx'
 import { useImmersiveSound } from './hooks/useImmersiveSound.js'
 import { runGridTransition, useGooeyTransition } from './components/GooeyTransition.jsx'
-import ImageTrail from './components/ImageTrail.jsx'
+// ImageTrail (marquee logos) remplacé par PixelSliceTrail dans SkillsSection —
+// import retiré, le fichier components/ImageTrail.jsx reste disponible si besoin.
+import DissolveTransition, { VERTEX_SHADER, FRONT_FRAGMENT_SHADER, BACK_FRAGMENT_SHADER } from './components/DissolveTransition.jsx'
+import PixelSliceTrail from './components/PixelSliceTrail.jsx'
 import CardSwap, { Card } from './components/CardSwap.jsx'
 import Stack from './components/Stack.jsx'
 import FlowingMenu from './components/FlowingMenu.jsx'
@@ -23,11 +26,6 @@ import StaggeredMenu from './components/StaggeredMenu.jsx'
 import * as THREE from 'three'
 gsap.registerPlugin(ScrollTrigger)
 
-// Lanyard = three + @react-three/fiber + @react-three/drei + @react-three/rapier + meshline.
-// C'est de loin le chunk le plus lourd du hero -> lazy-load pour ne pas bloquer le
-// premier paint pendant que le reste du hero (nom, CTA, disponibilité) s'affiche.
-const Lanyard = lazy(() => import('./components/Lanyard.jsx'))
-
 /* ════════════════════════════════════════════
  NAV_LINKS — source unique des liens de navigation.
  Utilisé par le drawer hamburger (Navbar) ET par le
@@ -36,7 +34,7 @@ const Lanyard = lazy(() => import('./components/Lanyard.jsx'))
  dupliquer cette liste ailleurs dans le fichier.
  ════════════════════════════════════════════ */
 const NAV_LINKS = [
-  { id: 'hero', label: 'Accueil', num: '00', sub: 'M\'Bollo Aka Elvis' },
+  { id: 'hero', label: 'Accueil', num: '00', sub: 'M\'Bollo aka' },
   { id: 'projets-section', label: 'Projets', num: '01', sub: '18 réalisations' },
   { id: 'about-section', label: 'À propos', num: '02', sub: 'Parcours & stack' },
   { id: 'process-section', label: 'Process', num: '03', sub: 'De l\'acompte à la livraison' },
@@ -1232,7 +1230,7 @@ function Loader({ onDone }) {
             if (blurEl2) blurEl2.setAttribute('stdDeviation', '0')
 
             /* Split en chars pour l'explosion — lit les 2 spans ligne par ligne */
-            const raw = "M'BOLLO AKA ELVIS"
+            const raw = "M'BOLLO ELVIS"
             nameTextEl.innerHTML = ''
             const chars = Array.from(raw).map(letter => {
               const span = document.createElement('span')
@@ -1350,7 +1348,7 @@ function Loader({ onDone }) {
         <div className="ld-name ld-name--liquid" ref={nameRef}>
           <div className="ld-name-text decrypt-text--xl">
             <span className="ld-name-line">M'BOLLO</span>
-            <span className="ld-name-line">AKA ELVIS</span>
+            <span className="ld-name-line">aka</span>
           </div>
         </div>
 
@@ -1391,6 +1389,7 @@ function Navbar({ theme, onToggleTheme }) {
     'hero': 'hero',
     'projets-section': 'projets-section',
     'hscroll-section': 'projets-section',
+    'hero-dissolve': 'about-section',
     'about-section': 'about-section',
     'timeline-section': 'about-section',
     'hpx-section': 'about-section',
@@ -1401,6 +1400,7 @@ function Navbar({ theme, onToggleTheme }) {
     'pricing-section': 'process-section',
     'testimonials-section': 'process-section',
     'faq-section': 'faq-section',
+    'cta-dissolve': 'contact',
     'contact': 'contact',
   }
 
@@ -1524,7 +1524,7 @@ function Navbar({ theme, onToggleTheme }) {
   /* SM_ITEMS : transforme NAV_LINKS en format attendu par StaggeredMenu */
   const SM_ITEMS = navLinks.map(l => ({ label: l.label, id: l.id }))
 
-  /* ── Animated theme toggler ── */
+  /* ── Toggle thème clair / sombre ── */
   const AnimatedThemeToggler = ({ theme: t, onClick }) => (
     <button
       className="nb-theme-btn att-btn"
@@ -1533,16 +1533,14 @@ function Navbar({ theme, onToggleTheme }) {
       aria-label={t === 'light' ? 'Passer en mode sombre' : 'Passer en mode clair'}
     >
       <span className="att-track" data-theme={t}>
-        <span className="att-icon att-sun">
+        <span className="att-icon att-sun" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
             <circle cx="12" cy="12" r="4" />
             <line x1="12" y1="2" x2="12" y2="4" /><line x1="12" y1="20" x2="12" y2="22" />
             <line x1="2" y1="12" x2="4" y2="12" /><line x1="20" y1="12" x2="22" y2="12" />
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34" /><line x1="17.66" y1="17.66" x2="19.07" y2="19.07" />
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66" /><line x1="17.66" y1="6.34" x2="19.07" y2="4.93" />
           </svg>
         </span>
-        <span className="att-icon att-moon">
+        <span className="att-icon att-moon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="15" height="15">
             <path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" />
           </svg>
@@ -1609,146 +1607,289 @@ function Navbar({ theme, onToggleTheme }) {
 const HERO_ROTATING_WORDS = ['Full-Stack', 'React & Python', 'Django & Flask', 'orienté produit', 'Data & Carto']
 
 function Hero() {
- const scrollTo = id => {
+  const scrollTo = id => {
     const el = document.getElementById(id)
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY
     window.scrollTo({ top, behavior: 'auto' })
   }
 
- /* Nom — cycle plain sur le même texte */
- const nameLine1 = useSHNameCycle("M'BOLLO")
- const nameLine2 = useSHNameCycle("AKA ELVIS")
+  /* Nom — cycle plain sur le même texte, réutilisé pour le calque
+     contour (avant-plan) du portrait sandwich ci-dessous */
+  const nameLine1 = useSHNameCycle("M'BOLLO")
+  const nameLine2 = useSHNameCycle("aka")
 
- /* Mots rotatifs — glitch scramble en boucle auto */
- const rotating  = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
+  /* Mots rotatifs — glitch scramble en boucle auto */
+  const rotating = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
 
- return (
- <section id="hero">
- <div className="hv4-grain" aria-hidden="true" />
- <div className="hv4-god-rays" id="hv4-rays" aria-hidden="true" />
- <div className="hv4-bg-layer" id="hv4-bg-layer" aria-hidden="true">
- <Beams
- beamWidth={2}
- beamHeight={15}
- beamNumber={12}
- lightColor="#FF5500"
- speed={2}
- noiseIntensity={1.75}
- scale={0.2}
- rotation={0}
- />
- </div>
- <div className="hv4-scan" aria-hidden="true" />
- <div className="hero-vignette" />
+  const heroRef = useRef(null)
+  const photoRef = useRef(null)
 
- <div className="hv4-scene-wrap" id="hv4-scene">
- <div className="hv4-grid">
+  /* ── Parallaxe souris sur la photo centrale — reprise et adaptée
+     du prototype de référence (setupParallax), en gsap.quickTo()
+     pour rester fluide à 60fps (cf. skill gsap-performance). La
+     bordure/ombre du cadre reste fixe, seule l'image glisse dedans
+     (overflow:hidden côté CSS). Désactivée au tactile et si
+     prefers-reduced-motion, pour l'accessibilité. ── */
+  useEffect(() => {
+    const section = heroRef.current
+    const photo = photoRef.current
+    if (!section || !photo) return
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!canHover || reduceMotion) return
 
- {/* LEFT */}
- <div className="hv4-left hv4-rv" style={{ '--d': '0s' }} id="hv4-left">
- {/* Nom — cycle-text plain */}
- <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
- <span className="hv4-name-line" style={{ '--d': '.1s' }}>
-   <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
-     <span className="sh-cycle-inner" ref={nameLine1.innerRef}>
-       {nameLine1.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
-     </span>
-   </span>
- </span>
- <span className="hv4-name-line hv4-name-line--u" style={{ '--d': '.2s' }}>
-   <span className="sh-cycle-wrap" style={{ height: '0.88em', verticalAlign: 'bottom' }}>
-     <span className="sh-cycle-inner" ref={nameLine2.innerRef}>
-       {nameLine2.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.88em', lineHeight: '0.88em' }} key={i}>{l}</span>)}
-     </span>
-   </span>
- </span>
- </h1>
+    const xTo = gsap.quickTo(photo, 'x', { duration: 0.5, ease: 'power2.out' })
+    const yTo = gsap.quickTo(photo, 'y', { duration: 0.5, ease: 'power2.out' })
 
- {/* Photo mobile */}
- <div className="hv4-photo-mob hv4-rv" style={{ '--d': '.3s' }}>
- <div className="hv4-photo-mob-inner">
- <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className="hv4-photo"
- onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }} />
- <div className="hv4-photo-mob-badge"><span className="hero-dot" /><span>disponible</span></div>
- </div>
- </div>
+    const onMove = e => {
+      const r = section.getBoundingClientRect()
+      xTo(((e.clientX - r.left) / r.width - 0.5) * 26)
+      yTo(((e.clientY - r.top) / r.height - 0.5) * 16)
+    }
+    const onLeave = () => { xTo(0); yTo(0) }
 
- {/* Rotating words — cycle-text scramble */}
- <h3 className="hv4-typed hv4-rv" style={{ '--d': '.42s' }}>
- Développeur&nbsp;<span className="hero-word" style={{ color: '#ffffff', display: 'inline-block' }}>
-   <span className="sh-cycle-wrap">
-     <span className="sh-cycle-inner" ref={rotating.innerRef}>
-       {rotating.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
-     </span>
-   </span>
- </span>
- </h3>
+    section.addEventListener('pointermove', onMove)
+    section.addEventListener('pointerleave', onLeave)
+    return () => {
+      section.removeEventListener('pointermove', onMove)
+      section.removeEventListener('pointerleave', onLeave)
+    }
+  }, [])
 
- 
+  return (
+    <section id="hero" ref={heroRef}>
+      <div className="hv4-grain" aria-hidden="true" />
+      <div className="hv4-god-rays" id="hv4-rays" aria-hidden="true" />
+      <div className="hv4-bg-layer" id="hv4-bg-layer" aria-hidden="true">
+        <Beams
+          beamWidth={2}
+          beamHeight={15}
+          beamNumber={12}
+          lightColor="#FF5500"
+          speed={2}
+          noiseIntensity={1.75}
+          scale={0.2}
+          rotation={0}
+        />
+      </div>
+      <div className="hv4-scan" aria-hidden="true" />
+      <div className="hero-vignette" />
 
- {/* CTA */}
- <div className="hv4-ctas hv4-rv" style={{ '--d': '.7s' }}>
- <a
-   href="#contact"
-   className="btn-fill"
-   onClick={e => { e.preventDefault(); scrollTo('contact') }}
- >
- Contactez-moi
- <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
- </a>
- </div>
+      <div className="hv4-scene-wrap" id="hv4-scene">
 
- {/* Réassurance CRO : disponibilité + délai de réponse, visible sans scroll */}
- <div className="hero-availability hv4-rv" style={{ '--d': '.82s' }}>
- <span className="hero-dot" aria-hidden="true" />
- <span>Disponible maintenant · réponse sous 24h</span>
- </div>
+        {/* ── Portrait central — nom en sandwich (fond plein + contour)
+           avec la photo carrée qui vient "trancher" les deux lignes,
+           repris du prototype de référence (variante Double Stack) ── */}
+        <div className="hv4-portrait">
+          <h1 className="hv4-portrait-name" aria-label="M'Bollo aka">
+            <span className="hv4-portrait-row hv4-portrait-row--top">
+              <span className="hv4-portrait-bg hv4-rv" style={{ '--d': '.1s' }} aria-hidden="true">M'BOLLO</span>
+              <span className="hv4-portrait-fg" aria-hidden="true">
+                <span className="sh-cycle-wrap" style={{ height: '0.86em', verticalAlign: 'bottom' }}>
+                  <span className="sh-cycle-inner" ref={nameLine1.innerRef}>
+                    {nameLine1.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.86em', lineHeight: '0.86em' }} key={i}>{l}</span>)}
+                  </span>
+                </span>
+              </span>
+            </span>
+            <span className="hv4-portrait-row hv4-portrait-row--bottom">
+              <span className="hv4-portrait-bg hv4-rv" style={{ '--d': '.16s' }} aria-hidden="true">aka</span>
+              <span className="hv4-portrait-fg" aria-hidden="true">
+                <span className="sh-cycle-wrap" style={{ height: '0.86em', verticalAlign: 'bottom' }}>
+                  <span className="sh-cycle-inner" ref={nameLine2.innerRef}>
+                    {nameLine2.lines.map((l, i) => <span className="sh-cycle-line" style={{ height: '0.86em', lineHeight: '0.86em' }} key={i}>{l}</span>)}
+                  </span>
+                </span>
+              </span>
+            </span>
+          </h1>
 
- </div>
+          <div className="hv4-portrait-photo">
+            <img
+              ref={photoRef}
+              className="hv4-rv"
+              style={{ '--d': '.26s' }}
+              src="/assets/images/IMG_20250124_124101KK.webp"
+              alt="M'Bollo aka"
+              onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }}
+            />
+          </div>
+        </div>
 
- {/* RIGHT — Lanyard 3D desktop */}
- <div className="hv4-right hv4-rv" style={{ '--d': '.32s' }} id="hv4-right">
- <Lanyard
- position={[0, 0, 30]}
- gravity={[0, -40, 0]}
- fov={7}
- transparent={true}
- lanyardWidth={1}
- frontImage="/assets/images/IMG_20250124_124101KK.webp"
- />
- </div>
+        {/* ── Coin gauche — mot rotatif, CTA, disponibilité
+           (centré verticalement à gauche via CSS) ── */}
+        <div className="hv4-corner hv4-corner--left">
 
- </div>
- </div>
- <div className="hero-scroll"><span>scroll</span><div className="hsl" /></div>
- </section>
- )
+          {/* Rotating words — cycle-text scramble */}
+          <h3 className="hv4-typed hv4-rv" style={{ '--d': '.48s' }}>
+            Développeur&nbsp;<span className="hero-word" style={{ color: '#ffffff', display: 'inline-block' }}>
+              <span className="sh-cycle-wrap">
+                <span className="sh-cycle-inner" ref={rotating.innerRef}>
+                  {rotating.lines.map((l, i) => <span className="sh-cycle-line" key={i}>{l}</span>)}
+                </span>
+              </span>
+            </span>
+          </h3>
+
+          {/* CTA */}
+          <div className="hv4-ctas hv4-rv" style={{ '--d': '.6s' }}>
+            <a
+              href="#contact"
+              className="btn-fill"
+              onClick={e => { e.preventDefault(); scrollTo('contact') }}
+            >
+              Contactez-moi
+              <span className="btn-arr" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></span>
+            </a>
+          </div>
+
+          {/* Réassurance CRO — sous le bouton */}
+          <div className="hero-availability hv4-rv" style={{ '--d': '.7s' }}>
+            <span className="hero-dot" aria-hidden="true" />
+            <span>Disponible maintenant · réponse sous 24h</span>
+          </div>
+        </div>
+
+      </div>
+      <div className="hero-scroll"><span>scroll</span><div className="hsl" /></div>
+    </section>
+  )
 }
 
 
 /* ════════════════════════════════════════════
- HERO ZOOM — expansion fullscreen au scroll
- Repris du prototype 9.html (effet "30 / EXPANSION
- FULLSCREEN") : l'image démarre cadrée au centre
- (clip-path resserré + scale 1.3), puis s'ouvre en
- plein écran pendant que l'image dézoome — scrubé
- au scroll via une zone sticky (même pattern que
- .svc-pin/.svc-sticky, sans pin:true GSAP).
+ HERO ZOOM + DISSOLVE — 3 phases fusionnées dans un seul
+ pin/canvas, pour un passage petit-cadre → plein écran →
+ dissolve vers l'image suivante SANS rupture visuelle :
+   1. clip-path resserré (30/35) + scale 1.3 → plein écran
+   2. léger palier — l'image tient à pleine résolution
+   3. dissolve WebGL (shaders repris de DissolveTransition.jsx,
+      exportés depuis ce fichier) : hero-bg.webp → about-1.webp
+ Le canvas Three.js est monté dès le départ (au lieu d'un
+ <img> qui basculerait vers un <canvas> séparé au moment du
+ dissolve) : c'est le zoom CSS (clip-path + scale) qui joue
+ sur ce même canvas, donc aucune bascule DOM ni flash quand
+ le dissolve prend le relais — juste la suite du même scrub.
+ Absorbe l'ex-<DissolveTransition id="hero-dissolve" /> qui
+ suivait directement dans le rendu (voir plus bas).
  ════════════════════════════════════════════ */
 function HeroZoomSection() {
   const pinRef = useRef(null)
   const containerRef = useRef(null)
-  const imgRef = useRef(null)
+  const canvasRef = useRef(null)
 
   useEffect(() => {
     const pin = pinRef.current
     const container = containerRef.current
-    const img = imgRef.current
-    if (!pin || !container || !img) return
+    const canvas = canvasRef.current
+    if (!pin || !container || !canvas) return
 
+    let destroyed = false
+    let frontTexture = null
+    let backTexture = null
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace
+
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10)
+    camera.position.z = 1
+    const scene = new THREE.Scene()
+    const geometry = new THREE.PlaneGeometry(2, 2)
+
+    const uniformsFront = {
+      uTexture: { value: null },
+      uResolution: { value: new THREE.Vector2() },
+      uImageResolution: { value: new THREE.Vector2(1, 1) },
+      uDissolve: { value: 0 },
+      uCenter: { value: new THREE.Vector2(0.5, 0.5) },
+      uGrayscale: { value: 0 },
+      uEdgeIntensity: { value: 0 },
+      uEdgeBrightness: { value: 1 },
+    }
+    const uniformsBack = {
+      uTexture: { value: null },
+      uResolution: { value: new THREE.Vector2() },
+      uImageResolution: { value: new THREE.Vector2(1, 1) },
+      uEdgeIntensity: { value: 0.6 },
+      uDarkness: { value: 1 },
+      uGrayscale: { value: 1 },
+    }
+
+    const materialFront = new THREE.ShaderMaterial({
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRONT_FRAGMENT_SHADER,
+      uniforms: uniformsFront,
+      transparent: true,
+    })
+    const materialBack = new THREE.ShaderMaterial({
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: BACK_FRAGMENT_SHADER,
+      uniforms: uniformsBack,
+      transparent: true,
+    })
+
+    const meshBack = new THREE.Mesh(geometry, materialBack)
+    meshBack.position.z = -0.1
+    scene.add(meshBack)
+    const meshFront = new THREE.Mesh(geometry, materialFront)
+    scene.add(meshFront)
+
+    function render() {
+      if (destroyed) return
+      renderer.render(scene, camera)
+    }
+
+    function resize() {
+      const w = window.innerWidth
+      const h = window.innerHeight
+      renderer.setSize(w, h, false)
+      uniformsFront.uResolution.value.set(w, h)
+      uniformsBack.uResolution.value.set(w, h)
+      render()
+    }
+
+    const loader = new THREE.TextureLoader()
+    loader.load('/assets/images/hero-bg.webp', tex => {
+      if (destroyed) { tex.dispose(); return }
+      if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace
+      frontTexture = tex
+      uniformsFront.uTexture.value = tex
+      uniformsFront.uImageResolution.value.set(tex.image.width, tex.image.height)
+      render()
+    })
+    loader.load('/assets/images/about-1.webp', tex => {
+      if (destroyed) { tex.dispose(); return }
+      if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace
+      backTexture = tex
+      uniformsBack.uTexture.value = tex
+      uniformsBack.uImageResolution.value.set(tex.image.width, tex.image.height)
+      render()
+    })
+
+    resize()
+    window.addEventListener('resize', resize)
+
+    /* État initial — identique à l'ancien HeroZoomSection */
     gsap.set(container, { clipPath: 'inset(30% 35% 30% 35%)' })
-    gsap.set(img, { scale: 1.3 })
+    gsap.set(canvas, { scale: 1.3 })
+
+    /* Uniformes dérivés du dissolve — même calcul que setProgress()
+       dans DissolveTransition.jsx, rejoué ici via onUpdate GSAP */
+    function syncDissolve() {
+      const p = uniformsFront.uDissolve.value
+      uniformsFront.uGrayscale.value = Math.min(1, p / 0.4)
+      uniformsFront.uEdgeIntensity.value = p * 0.5
+      uniformsFront.uEdgeBrightness.value = 1 - p
+
+      const acc = Math.min(1, p * 1.1)
+      uniformsBack.uEdgeIntensity.value = 0.6 * (1 - acc)
+      uniformsBack.uDarkness.value = 1 - acc
+      uniformsBack.uGrayscale.value = 1 - acc
+
+      render()
+    }
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -1758,10 +1899,26 @@ function HeroZoomSection() {
         scrub: 1,
       },
     })
-    tl.to(container, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none' }, 0)
-      .to(img, { scale: 1, ease: 'none' }, 0)
+      /* Phase 1 → 2 : petit cadre vers plein écran */
+      .to(container, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none', duration: 1 }, 0)
+      .to(canvas, { scale: 1, ease: 'none', duration: 1 }, 0)
+      /* Phase 3 : dissolve plein écran vers l'image suivante — léger
+         palier (1 → 1.1) pour laisser l'image respirer avant qu'elle
+         ne commence à se dissoudre */
+      .to(uniformsFront.uDissolve, { value: 1, ease: 'none', duration: 0.75, onUpdate: syncDissolve }, 1.1)
 
-    return () => { tl.scrollTrigger?.kill(); tl.kill() }
+    return () => {
+      destroyed = true
+      window.removeEventListener('resize', resize)
+      tl.scrollTrigger?.kill()
+      tl.kill()
+      geometry.dispose()
+      materialFront.dispose()
+      materialBack.dispose()
+      frontTexture?.dispose()
+      backTexture?.dispose()
+      renderer.dispose()
+    }
   }, [])
 
   return (
@@ -1769,11 +1926,11 @@ function HeroZoomSection() {
       <div ref={pinRef} className="hzx-pin">
         <div className="hzx-sticky">
           <div ref={containerRef} className="hzx-container">
-            <img
-              ref={imgRef}
-              src="/assets/images/hero-bg.webp"
-              alt="M'Bollo Aka Elvis au travail, de nuit, face à la ville"
-              className="hzx-img"
+            <canvas
+              ref={canvasRef}
+              className="hzx-canvas"
+              role="img"
+              aria-label="M'Bollo aka au travail, de nuit, face à la ville"
             />
           </div>
         </div>
@@ -2609,7 +2766,7 @@ function About() {
 
           <div className="about-text-col">
             <p className="about-text-lg">
-              Je suis <strong>M'Bollo Aka Elvis</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
+              Je suis <strong>M'Bollo aka</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
               créer des produits utiles, beaux et agréables à utiliser.
             </p>
 
@@ -2668,7 +2825,7 @@ function About() {
               }}>
                 <img
                   src="/assets/images/IMG_20250124_124101KK.webp"
-                  alt="M'Bollo Aka Elvis" itemProp="image"
+                  alt="M'Bollo aka" itemProp="image"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 10%' }}
                   loading="lazy"
                   onError={e => { e.target.style.display = 'none' }}
@@ -2679,7 +2836,7 @@ function About() {
                   fontFamily: 'var(--fd)', fontWeight: 800,
                   fontSize: '1rem', color: 'var(--text)',
                   letterSpacing: '-.01em', lineHeight: 1.2,
-                }}>M'bollo Aka Elvis</h3>
+                }}>M'bollo aka</h3>
                 <span itemProp="jobTitle" style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '.62rem', letterSpacing: '.06em',
@@ -2884,18 +3041,24 @@ function SkillsSection() {
     ...SKILLS.backend,
     ...SKILLS.tools,
   ]
+  const skillIcons = allSkills.map(sk => sk.icon)
 
   return (
     <section id="skills-section" className="sec">
-      
+
       <h3 className="about-text" style={{ maxWidth: '640px', marginBottom: '2rem' }}>
         Un ensemble d'<strong>outils maîtrisés</strong> au fil des projets, du frontend
         au backend, pour livrer du code fiable.
       </h3>
 
-      <div style={{ position: 'relative', width: '100%', height: '220px', borderRadius: '16px', border: '1px solid rgba(255,85,0,.1)', overflow: 'hidden', background: 'rgba(255,85,0,.02)' }}>
-        <ImageTrail items={allSkills} />
+      {/* Zone interactive : occupe toute la section (du parallaxe précédent
+          jusqu'au début de Process). Les logos suivent le curseur, révélés
+          en tranches — cf. components/PixelSliceTrail.jsx */}
+      <div className="skl-trail-zone">
+        <PixelSliceTrail images={skillIcons} imageSize={130} slices={6} smoothing={0.26} spawnThreshold={55} />
+        <span className="skl-trail-hint">Bougez le curseur ici</span>
       </div>
+
       <h3 style={{ fontFamily: "'Space Mono',monospace", fontSize: '.6rem', color: 'var(--muted)', letterSpacing: '.15em', textAlign: 'center', marginTop: '1rem' }}>
         React · JavaScript · Next.js · Python · Django · Flask · MySQL · Git · VS Code · GitHub · Vercel · Tailwind
       </h3>
@@ -4474,9 +4637,11 @@ function CursorAndScrollBar() {
  ════════════════════════════════════════════ */
 export default function App() {
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('aka-html-theme')
-    if (saved) return saved
-    return new Date().getHours() >= 6 && new Date().getHours() < 18 ? 'light' : 'dark'
+    try {
+      const saved = localStorage.getItem('aka-html-theme')
+      if (saved === 'light' || saved === 'dark') return saved
+    } catch {}
+    return 'dark'
   })
   const [toastVisible, setToastVisible] = useState(false)
   const [loaderDone, setLoaderDone] = useState(false)
@@ -4522,7 +4687,10 @@ export default function App() {
 
   const toggleTheme = () => {
     const next = theme === 'light' ? 'dark' : 'light'
-    setTheme(next); localStorage.setItem('aka-html-theme', next)
+    setTheme(next)
+    try {
+      localStorage.setItem('aka-html-theme', next)
+    } catch {}
   }
 
   const showToast = () => { setToastVisible(true); setTimeout(() => setToastVisible(false), 3000) }
@@ -4563,6 +4731,19 @@ export default function App() {
         <PricingSection />
         <TestimonialsSection />
         <FAQSection />
+        <DissolveTransition
+          id="cta-dissolve"
+          frontSrc="/assets/images/about-1.webp"
+          backSrc="/assets/images/hero-bg.webp"
+          heightVh={220}
+          cta={{
+            eyebrow: 'Une idée ? Un projet ?',
+            title: 'Parlons de votre prochain site',
+            subtitle: 'Disponible pour un projet freelance ou une opportunité de collaboration.',
+            buttonLabel: 'Me contacter',
+            href: '#contact',
+          }}
+        />
         <div className="full-beams-zone force-dark">
           <div className="full-beams-zone__bg" aria-hidden="true">
             <BeamsInteractive />

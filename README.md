@@ -85,17 +85,19 @@ flowchart TD
 
 ### Desktop moderne (`App.jsx`)
 
-Esthétique neo-brutalism sur fond sombre (`#0A0A0A` / accent `#FF5500`), bascule vers thème clair possible. Sections dans l'ordre : Loader → Navbar (horloge live, toggle thème) → Hero (`Iridescence` WebGL + `TextPressure`) → Marquee → Dernières réalisations (carousel 2 slides avec crossfade) → Projets (scroll horizontal GSAP) → About (stats animées, `ScrambleText`) → Timeline → Skew section → Skills (bandes défilantes) → Process (stepper scroll vertical, 7 étapes) → Services (sticky + crossfade image GSAP) → Pricing → Galerie OGL → Carte GitHub (API réelle + fallback) → Testimonials → FAQ (accordion CSS) → Contact → Footer.
+Esthétique neo-brutalism sur fond sombre (`#0A0A0A` / accent `#FF5500`), bascule vers thème clair possible. Sections dans l'ordre : Loader → Navbar (horloge live, toggle thème) → Hero (`Beams` WebGL + `TextPressure`, transition de sortie `DissolveTransition` en shader vers About) → Marquee → Dernières réalisations (carousel 2 slides avec crossfade) → Projets (scroll horizontal GSAP) → About (stats animées, `ScrambleText`) → Timeline → Skew section → Skills (`PixelSliceTrail` — logos qui suivent le curseur, révélés par tranches) → Process (stepper scroll vertical, 7 étapes) → Services (sticky + crossfade image GSAP) → Pricing → Galerie OGL → Carte GitHub (API réelle + fallback) → Testimonials → FAQ (accordion CSS) → Contact (transition d'entrée `DissolveTransition` + CTA) → Footer.
 
 Transitions de section via `GooeyTransition` (effet staircase, 8 colonnes en stagger GSAP). Navigation sticky avec `SECTION_NAV_GROUPS` pour le surlignage actif. `hardJumpTo` (8 frames, ~130ms) pour les sauts vers grandes sections sticky.
 
 ### Mobile (`Appmobile.jsx`)
 
-R�écriture mobile-first complète, pas un reflow du desktop. Son propre Hero, ses propres fonds animés (`PlasmaCanvasBg`, `AuroraCanvas`), ses propres variantes de cartes (`FanDeck`, `SpotlightProjects`, `TiltCard`, `StackedCard`), navigation tactile. Menu hamburger `StaggeredMenu` avec animation GSAP (panneaux en cascade, items en stagger, icône plus ↔ X). Pricing par onglets (Portfolio / Vitrine / E-commerce / SaaS / Fiche Google), carte GitHub adaptée.
+Réécriture mobile-first complète, pas un reflow du desktop. Son propre Hero, ses propres fonds animés (`PlasmaCanvasBg`, `AuroraCanvas`), ses propres variantes de cartes (`FanDeck`, `SpotlightProjects`, `TiltCard`, `StackedCard`), navigation tactile. Menu hamburger `StaggeredMenu` avec animation GSAP (panneaux en cascade, items en stagger, icône plus ↔ X). Pricing par onglets (Portfolio / Vitrine / E-commerce / SaaS / Fiche Google), carte GitHub adaptée.
 
 ### Win95 (`Win95Portfolio.jsx`)
 
-Easter egg complet : bureau Windows 95/XP avec curseur custom, horloge, boot screen WebGL, icônes de bureau draggables, fenêtres redimensionnables et déplaçables avec z-index management, menu Démarrer, taskbar. Chaque section du portfolio est une **fenêtre** ouverte depuis le bureau ou le menu Démarrer. Les données portfolio centralisées ici (`PROJECTS`, `SKILLS`, `TIMELINE`, `SERVICES_DATA`, `PRICING_TABS`, `FAQ`) constituent la source de vérité la plus complète.
+Easter egg complet : bureau Windows 95/XP avec curseur custom, horloge, boot screen WebGL, icônes de bureau draggables, fenêtres redimensionnables et déplaçables avec z-index management, menu Démarrer, taskbar. Chaque section du portfolio est une **fenêtre** ouverte depuis le bureau ou le menu Démarrer.
+
+`PROJECTS`, `PRICING_TABS`, `TIMELINE` et `FAQ` sont importés depuis `src/data/portfolioData.js` (les tarifs y étaient désynchronisés par rapport à App.jsx — corrigé au passage). `SKILLS` et `SERVICES_DATA` restent locaux au fichier.
 
 ---
 
@@ -125,15 +127,17 @@ Easter egg complet : bureau Windows 95/XP avec curseur custom, horloge, boot scr
 |---|---|
 | `Beams.jsx` | Fond de faisceaux lumineux 3D (R3F) |
 | `CardSwap.jsx` | Pile de cartes échangeables en boucle |
+| `DissolveTransition.jsx` | Transition shader (dissolve) entre deux images/sections, avec CTA intégré |
 | `FireAkatech.jsx` / `FireBackground.jsx` | Effets de flammes GSAP |
 | `FlowingMenu.jsx` | Menu marquee au survol (Process section) |
 | `GooeyTransition.jsx` | Transition staircase entre sections (8 colonnes GSAP) — exporte aussi `hardJumpTo` |
 | `GridScan.jsx` | Scan facial temps réel (`face-api.js` + bloom/aberration chromatique) |
 | `HorizontalSections.jsx` / `SectionSlider.jsx` | Scroll horizontal piloté par `Observer` GSAP |
-| `ImageTrail.jsx` | Traînée d'images suivant le curseur |
+| `ImageTrail.jsx` | Traînée d'images suivant le curseur — encore utilisé par `Appv4.jsx`, retiré d'`App.jsx` (remplacé par `PixelSliceTrail`) |
 | `InfiniteMenu.jsx` | Menu sphérique 3D (WebGL, `gl-matrix`) |
-| `Iridescence.jsx` | Fond shader irisé OGL — Hero desktop |
-| `Lanyard.jsx` | Badge 3D avec physique réaliste (`@react-three/rapier`) |
+| `Iridescence.jsx` | Fond shader irisé OGL — plus utilisé par le Hero desktop actuel (`Beams`), gardé pour compat |
+| `Lanyard.jsx` | Badge 3D avec physique réaliste (`@react-three/rapier`) — retiré du Hero d'`App.jsx` |
+| `PixelSliceTrail.jsx` | Logos qui suivent le curseur, révélés par tranches (`clip-path`) — section Skills |
 | `RotatingText.jsx` | Rotation de mots (Framer Motion) |
 | `ScrambleText.jsx` / `Shuffle.jsx` / `ShuffleText.jsx` | Effets texte "décodage" |
 | `ScrollFloat.jsx` / `ScrollReveal.jsx` | Révélations animées au scroll |
@@ -161,8 +165,12 @@ elvis-portfolio/
 │   ├── useSEO.jsx              # react-helmet-async — title, meta, OG, JSON-LD
 │   ├── App.jsx                 # Desktop moderne
 │   ├── Appmobile.jsx           # Mobile
-│   ├── Win95Portfolio.jsx      # Easter egg Win95 (source de vérité du contenu)
+│   ├── Win95Portfolio.jsx      # Easter egg Win95
 │   ├── Appv4.jsx               # Refonte V4 (non montée)
+│   ├── data/
+│   │   └── portfolioData.js    # Source de vérité : PROJECTS, PRICING_TABS, TIMELINE,
+│   │                           # FAQ_ITEMS, CONTACT. Importé par App/Appmobile/Win95/
+│   │                           # Appv4. SKILLS reste local (formats trop différents).
 │   ├── style.css               # Thème desktop
 │   ├── stylemobile.css         # Thème mobile
 │   ├── stylev4.css             # Thème V4
@@ -341,7 +349,7 @@ Le Hero reste verrouillé en thème sombre quelle que soit la sélection globale
 - Animations scroll-driven : mutation DOM directe sur refs, pas de React state (perf)
 - `overflow: hidden` sur un parent casse `position: sticky` — utiliser `overflow-x: clip`
 - Indentation JSX : 1 espace · CSS : 3 espaces
-- Dual codebase : `App.jsx` / `style.css` (desktop) et `Appmobile.jsx` / `stylemobile.css` (mobile) maintenus en parallèle
+- Dual codebase : `App.jsx` / `style.css` (desktop) et `Appmobile.jsx` / `stylemobile.css` (mobile) maintenus en parallèle pour le rendu/l'UI — mais le **contenu** (projets, tarifs, FAQ, parcours) est centralisé dans `src/data/portfolioData.js` pour éviter la désynchronisation entre variantes. `App.jsx`, `Appmobile.jsx`, `Win95Portfolio.jsx` et `Appv4.jsx` importent tous ce fichier pour `PROJECTS`/`PRICING_TABS` ; `TIMELINE` et `FAQ_ITEMS` sont branchés là où les formats coïncident déjà. `SKILLS` reste local à chaque fichier : les 4 versions utilisent des systèmes d'icônes différents (chemins locaux vs CDN vs pourcentages) et une catégorie "autres" qui n'existe que dans certaines — à trancher avant de fusionner.
 
 ---
 

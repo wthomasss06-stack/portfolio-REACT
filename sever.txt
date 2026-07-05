@@ -3,7 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m "VERISION OPTIMISER "
+git commit -m " portofolio en mode Silkscreen"
 git push
 
 

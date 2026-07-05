@@ -6,6 +6,7 @@ import { useGooeyTransition, runGridTransition } from './components/GooeyTransit
 import { gsap } from 'gsap';
 import SoundToggle from './components/SoundToggle.jsx';
 import { useImmersiveSound } from './hooks/useImmersiveSound.js';
+import { PROJECTS, PRICING_TABS, FAQ_ITEMS } from './data/portfolioData.js';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
@@ -368,164 +369,6 @@ const WindowChrome = ({ title, dark, inner = false }) => (
 
 const FACEBOOK_URL = "https://web.facebook.com/profile.php?id=61577494705852";
 
-const PROJECTS = [
-  {
-    id: 1, title: "ShopCI", subtitle: "Marketplace E-commerce", cat: "en-ligne", progress: 65,
-    description: "Marketplace multi-vendeurs conçue pour répondre aux problèmes de fiabilité, de visibilité et de gestion des ventes dans le e-commerce local ivoirien.",
-    image: "/assets/images/projects/monmarket-preview.webp",
-    images: ["/assets/images/projects/monmarket-preview.webp", "/assets/images/projects/monmarket-preview2.webp", "/assets/images/projects/monmarket-preview3.webp"],
-    tech: ["React", "Django", "Bootstrap 5", "Vercel + PythonAnywhere"],
-    stats: [{ icon: "users", label: "Multi-vendeurs" }, { icon: "shopping-cart", label: "Panier temps réel" }, { icon: "shield-alt", label: "Paiement sécurisé" }],
-    url: "https://shop-ci.vercel.app/", year: "2024", isPremium: true
-  },
-  {
-    id: 2, title: "TechFlow", subtitle: "Site Vitrine Professionnel", cat: "en-ligne", progress: 97,
-    description: "Site vitrine moderne destiné à présenter une activité technologique de manière claire et professionnelle.",
-    image: "/assets/images/projects/techflow-preview.webp",
-    images: ["/assets/images/projects/techflow-preview.webp", "/assets/images/projects/techflow-preview2.webp", "/assets/images/projects/techflow-preview3.webp"],
-    tech: ["HTML / Tailwind CSS", "JavaScript", "Vercel"],
-    stats: [{ icon: "users", label: "Tailwind CSS" }, { icon: "shopping-cart", label: "UI propre & responsive" }, { icon: "shield-alt", label: "Déployé en production" }],
-    url: "https://techflow-ten.vercel.app/", year: "2024", isPremium: true
-  },
-  {
-    id: 3, title: "TerraSafe", subtitle: "Marketplace Foncière", cat: "en-ligne", progress: 85,
-    description: "Plateforme foncière visant à réduire les risques d'arnaques liées à la vente de terrains. Backend sécurisé avec recherche avancée.",
-    image: "/assets/images/projects/terrasafe-preview.webp",
-    images: ["/assets/images/projects/terrasafe-preview.webp", "/assets/images/projects/terrasafe-preview2.webp", "/assets/images/projects/terrasafe-preview3.webp"],
-    tech: ["Python/Flask", "MySQL", "JavaScript", "Bootstrap 5"],
-    stats: [{ icon: "database", label: "MySQL + Flask" }, { icon: "lock", label: "Auth sécurisée" }, { icon: "search", label: "Recherche avancée" }],
-    url: "https://wthomassss06.pythonanywhere.com", year: "2024", isPremium: true
-  },
-  {
-    id: 4, title: "Chap-chapMAP", subtitle: "Navigation Intelligente", cat: "demo", progress: 100,
-    description: "Application de cartographie intelligente permettant de localiser un utilisateur en temps réel et de calculer des itinéraires optimisés.",
-    image: "/assets/images/projects/chapchapmap-preview.webp",
-    tech: ["JavaScript", "Leaflet.js", "OSRM API", "Geolocation API"],
-    stats: [{ icon: "map-marked-alt", label: "API Leaflet" }, { icon: "route", label: "Calcul itinéraires" }, { icon: "location-arrow", label: "GPS temps réel" }],
-    url: "/demos/chap-chapMAP.html", year: "2023"
-  },
-  {
-    id: 5, title: "ElvisMarket", subtitle: "Interface E-commerce", cat: "demo", progress: 100,
-    description: "Interface e-commerce développée pour expérimenter la gestion d'état, le panier dynamique et l'optimisation de l'UX.",
-    image: "/assets/images/projects/elvismarket-preview.webp",
-    tech: ["HTML + JS vanilla", "Tailwind CSS", "LocalStorage"],
-    stats: [{ icon: "shopping-bag", label: "Panier dynamique" }, { icon: "filter", label: "Filtres avancés" }, { icon: "mobile-alt", label: "Responsive" }],
-    url: "/demos/projet2.html", year: "2023"
-  },
-  {
-    id: 6, title: "MonCashJour", subtitle: "Gestion de Ventes", cat: "demo", progress: 100,
-    description: "Application de gestion de ventes quotidiennes destinée aux petits commerçants, avec visualisation des performances et export des données.",
-    image: "/assets/images/projects/moncashjour-preview.webp",
-    tech: ["HTML + JS vanilla", "Tailwind CSS", "Chart.js"],
-    stats: [{ icon: "chart-line", label: "Analytiques" }, { icon: "file-export", label: "Export CSV" }, { icon: "history", label: "Historique" }],
-    url: "/demos/projet1.html", year: "2023"
-  },
-  {
-    id: 7, title: "LivreurTrack Pro", subtitle: "Suivi Logistique", cat: "demo", progress: 100,
-    description: "Système de suivi logistique simulant un workflow réel de livraison, avec validation par photo et suivi d'étapes.",
-    image: "/assets/images/projects/livreurtrack-preview.webp",
-    tech: ["JavaScript", "Bootstrap 5", "LocalStorage", "Camera API"],
-    stats: [{ icon: "tasks", label: "Workflow 5 étapes" }, { icon: "camera", label: "Validation photo" }, { icon: "history", label: "Historique complet" }],
-    url: "/demos/projet3.html", year: "2023"
-  },
-  {
-    id: 8, title: "LinkedIn Banner Pro", subtitle: "Générateur SaaS", cat: "en-cours", progress: 30,
-    description: "Outil SaaS en cours de développement permettant de générer des bannières LinkedIn professionnelles via un éditeur visuel.",
-    image: "/assets/images/projects/linkedin-banner-preview.webp",
-    tech: ["JavaScript", "Canvas API", "Tailwind CSS"],
-    stats: [{ icon: "paint-brush", label: "Éditeur visuel" }, { icon: "eye", label: "Preview temps réel" }, { icon: "download", label: "Export PNG" }],
-    url: "/demos/projet7.html", year: "2025"
-  },
-  {
-    id: 9, title: "Tati", subtitle: "Portfolio & Vitrine Moderne", cat: "en-ligne", progress: 100,
-    description: "Portfolio personnel double fonction : vitrine professionnelle et page de présentation. Animations fluides, thème sombre/clair, design 100% responsive.",
-    image: "/assets/images/projects/tati-preview.webp",
-    images: ["/assets/images/projects/tati-preview.webp", "/assets/images/projects/tati-preview2.webp", "/assets/images/projects/tati-preview3.webp"],
-    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"],
-    stats: [{ icon: "user", label: "Portfolio & Vitrine" }, { icon: "adjust", label: "Thème sombre/clair" }, { icon: "mobile-alt", label: "100% Responsive" }],
-    url: "https://tatii.vercel.app/", year: "2024", isPremium: true
-  },
-  {
-    id: 10, title: "MK", subtitle: "Portfolio Graphiste Client", cat: "en-ligne", progress: 100,
-    description: "Portfolio professionnel sur-mesure pour un client graphiste. Galerie immersive, animations soignées et thème sombre élégant.",
-    image: "/assets/images/projects/mk-preview.webp",
-    images: ["/assets/images/projects/mk-preview.webp", "/assets/images/projects/mk-preview2.webp", "/assets/images/projects/mk-preview3.webp"],
-    tech: ["React", "Tailwind CSS", "Framer Motion", "Vercel"],
-    stats: [{ icon: "paint-brush", label: "Galerie créative" }, { icon: "star", label: "Design sur-mesure" }, { icon: "globe", label: "En production" }],
-    url: "https://mory01ff.vercel.app/", year: "2024", isPremium: true
-  },
-  {
-    id: 11, title: "ManoBeat 777", subtitle: "Portfolio Beatmaker", cat: "en-ligne", progress: 100,
-    description: "Portfolio d'un beatmaker ivoirien : découvrez et écoutez ses créations directement en ligne, puis achetez vos beats préférés via WhatsApp en quelques clics.",
-    image: "/assets/images/projects/beatstore-preview.webp",
-    images: ["/assets/images/projects/beatstore-preview.webp", "/assets/images/projects/beatstore-preview2.webp", "/assets/images/projects/beatstore-preview3.webp"],
-    tech: ["React", "Tailwind CSS", "Howler.js", "Vercel"],
-    stats: [{ icon: "headphones", label: "Écoute en ligne" }, { icon: "whatsapp", label: "Achat via WhatsApp" }, { icon: "music", label: "Catalogue beats" }],
-    url: "https://xxx-x.vercel.app/", year: "2025", isPremium: true
-  },
-  {
-    id: 12, title: "New Horizon Service", subtitle: "Location de Résidences", cat: "en-ligne", progress: 100,
-    description: "Plateforme de location de résidences meublées haut de gamme. Interface moderne côté client, backend Flask sécurisé avec API REST, recherche avancée et gestion des disponibilités.",
-    image: "/assets/images/projects/newhorizon-preview.webp",
-    images: ["/assets/images/projects/newhorizon-preview.webp", "/assets/images/projects/newhorizon-preview2.webp", "/assets/images/projects/newhorizon-preview3.webp"],
-    tech: ["Next.js", "Flask", "Python", "MySQL", "Vercel"],
-    stats: [{ icon: "home", label: "Résidences meublées" }, { icon: "search", label: "Recherche avancée" }, { icon: "calendar-check", label: "Réservation en ligne" }],
-    url: "https://new-horizonservice.vercel.app/", year: "2025", isPremium: true
-  },
-  {
-    id: 13, title: "AKATech", subtitle: "Agence Digitale Abidjan", cat: "en-ligne", progress: 100,
-    description: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions web modernes : sites vitrines, e-commerce, SaaS. Aurora WebGL, animations Framer Motion, design vert/noir premium.",
-    image: "/assets/images/projects/akatech-preview.webp",
-    images: ["/assets/images/projects/akatech-preview.webp", "/assets/images/projects/akatech-preview2.webp", "/assets/images/projects/akatech-preview3.webp"],
-    tech: ["Next.js 15", "Framer Motion", "WebGL Aurora", "Vercel"],
-    stats: [{ icon: "rocket", label: "Agence officielle" }, { icon: "palette", label: "Design premium" }, { icon: "globe", label: "En production" }],
-    url: "https://akatech.vercel.app/", year: "2025", isPremium: true, isAgency: true
-  },
-  {
-    id: 14, title: "Université les Anges", subtitle: "Site Institutionnel", cat: "en-ligne", progress: 100,
-    description: "Site institutionnel moderne pour l'Université les Anges : présentation de l'établissement, des formations, des actualités et des contacts. Interface responsive, design soigné.",
-    image: "/assets/images/projects/universitelesanges-preview.webp",
-    images: ["/assets/images/projects/universitelesanges-preview.webp", "/assets/images/projects/universitelesanges-preview2.webp", "/assets/images/projects/universitelesanges-preview3.webp"],
-    tech: ["HTML", "CSS", "Bulma", "Bootstrap", "Vercel"],
-    stats: [{ icon: "university", label: "Site institutionnel" }, { icon: "mobile-alt", label: "Responsive" }, { icon: "globe", label: "En production" }],
-    url: "https://universitelesanges.vercel.app/", year: "2025", isPremium: true
-  },
-  {
-    id: 15, title: "NEXURA", subtitle: "Marketplace Nouvelle Génération", cat: "en-ligne", progress: 85,
-    description: "Marketplace nouvelle génération — évolution de TerraSafe. Location de résidences meublées, motos & véhicules, bureaux & salles de conférence, terrains & immobilier. Auth sécurisée, KYC intégré, temps réel.",
-    image: "/assets/images/projects/nexura-preview.webp",
-    images: ["/assets/images/projects/nexura-preview.webp", "/assets/images/projects/nexura-responsive.webp", "/assets/images/projects/nexura-responsive2.webp"],
-    tech: ["Next.js 14", "Django REST", "PostgreSQL", "WebSockets", "Redis & Celery"],
-    stats: [{ icon: "home", label: "Multi-catégories" }, { icon: "shield-alt", label: "Auth & KYC" }, { icon: "bolt", label: "Temps réel" }],
-    url: "https://nexura-one.vercel.app/", year: "2025", isPremium: true
-  },
-  {
-    id: 16, title: "KokoEat", subtitle: "Livraison Alimentaire", cat: "en-cours", progress: 40,
-    description: "Application de livraison de repas pensée pour le marché ivoirien. Commande en ligne, suivi en temps réel et paiement Mobile Money.",
-    image: "/assets/images/projects/kokoeat-preview.webp",
-    tech: ["React", "Django REST", "PostgreSQL", "Vercel"],
-    stats: [{ icon: "utensils", label: "Food Delivery" }, { icon: "mobile-alt", label: "Mobile Money" }, { icon: "clock", label: "Temps réel" }],
-    url: "#", year: "2025"
-  },
-  {
-    id: 17, title: "Jean Edy · Portfolio", subtitle: "Portfolio React UI Avancé", cat: "en-ligne", progress: 100,
-    description: "Portfolio personnel de Jean Edy — Software Developer basé à Abidjan. Splash screen gooey, animations UI avancées, système son Web Audio API et skeuomorphisme complet.",
-    image: "/assets/images/projects/jean-edy-preview.webp",
-    images: ["/assets/images/projects/jean-edy-preview.webp", "/assets/images/projects/jean-edy-preview2.webp", "/assets/images/projects/jean-edy-preview3.webp"],
-    tech: ["React 18", "Vite", "GSAP", "Framer Motion", "TailwindCSS"],
-    stats: [{ icon: "magic", label: "UI Avancé" }, { icon: "volume-up", label: "Web Audio API" }, { icon: "layer-group", label: "Skeuomorphisme" }],
-    url: "https://jean-edy-dev.vercel.app/", year: "2026", isPremium: true
-  },
-  {
-    id: 18, title: "MD Laverie Pressing", subtitle: "Site Vitrine Pressing", cat: "en-ligne", progress: 100,
-    description: "Site vitrine complet pour MD Laverie Pressing, Abidjan. Hero slider GSAP sticky, grille packs pricing, section services et formulaire de contact.",
-    image: "/assets/images/projects/laverie-preview.webp",
-    images: ["/assets/images/projects/laverie-preview.webp", "/assets/images/projects/laverie-preview2.webp", "/assets/images/projects/laverie-preview3.webp"],
-    tech: ["React 18", "Vite", "GSAP", "React Router v6", "EmailJS"],
-    stats: [{ icon: "tshirt", label: "Pressing Abidjan" }, { icon: "star", label: "GSAP Slider" }, { icon: "envelope", label: "EmailJS Contact" }],
-    url: "https://laverie-plus.vercel.app/", year: "2025", isPremium: true
-  },
-];
 
 const SERVICES = [
   { n: "01", icon: "globe", title: "Conception de Site Web", sub: "Votre présence en ligne professionnelle", desc: "Création de sites web modernes, responsive et optimisés pour convertir vos visiteurs en clients.", img: "/assets/images/service/creation de site web.webp", features: ["Sites responsive & modernes", "Optimisés pour la conversion", "Du portfolio à l'e-commerce"] },
@@ -547,107 +390,7 @@ const PROCESS_STEPS = [
 ];
 
 /* ─── Questions fréquentes ─── */
-const FAQ_ITEMS = [
-  { q: "Comment se déroule le paiement de mon site ?", a: "Le paiement se fait en deux fois : 50% à la commande pour démarrer le projet, et les 50% restants à la livraison, juste avant de recevoir les fichiers finaux et les accès." },
-  { q: "Pourquoi un acompte est-il demandé avant de commencer ?", a: "L'acompte confirme votre commande et me permet de démarrer le développement immédiatement, de récupérer vos contenus (logo, textes, photos) et de vous garantir le délai annoncé. Sans acompte, le projet n'est pas priorisé dans mon planning." },
-  { q: "Quels moyens de paiement acceptez-vous ?", a: "Orange Money, MTN Mobile Money, Wave ou virement bancaire. Vous précisez votre moyen préféré au moment de la commande et je vous envoie les coordonnées correspondantes." },
-  { q: "Quel est le délai pour recevoir mon site ?", a: "Cela dépend du pack choisi : 3 à 5 jours pour un portfolio simple, davantage pour une vitrine, une boutique e-commerce ou une application plus complexe. Le délai exact est précisé dans le devis et démarre dès réception de l'acompte et de vos contenus." },
-  { q: "Quand mon site est-il mis en ligne ?", a: "Une fois le solde réglé. Avant cela, je vous partage un lien de prévisualisation pour valider le design et le contenu." },
-  { q: "Puis-je voir mon site avant qu'il soit en ligne ?", a: "Oui, toujours. Vous recevez un lien de prévisualisation pour tester le site, faire vos retours et demander des ajustements avant la mise en ligne officielle." },
-  { q: "Combien de modifications sont incluses ?", a: "Les petites corrections — textes, couleurs, ajustements visuels — sont incluses pendant la phase de validation. Les modifications majeures, comme un changement de structure ou l'ajout de pages, font l'objet d'un devis complémentaire." },
-  { q: "Quel pack choisir pour mon projet ?", a: "Tout dépend de vos besoins : portfolio, vitrine, boutique e-commerce ou application plus complexe type SaaS. Je vous conseille gratuitement lors du brief initial pour identifier le pack le plus adapté." },
-  { q: "Le nom de domaine et l'hébergement sont-ils vraiment gratuits ?", a: "Oui, la première année est offerte sur tous les packs. Après cette période, vous payez simplement le renouvellement — environ 15 000 à 30 000 FCFA par an selon le domaine — et je vous envoie un rappel avant l'expiration." },
-  { q: "Quels contenus dois-je fournir ?", a: "Votre logo, vos photos, vos textes de présentation et vos informations de contact. Plus ces éléments arrivent vite, plus le développement avance rapidement." },
-  { q: "Je n'ai pas de logo ni de textes, pouvez-vous m'aider ?", a: "Oui. Je peux proposer un logo simple, utiliser des visuels libres de droits adaptés à votre activité, ou rédiger une trame de textes professionnels que vous ajustez ensuite. Ces services s'ajoutent au devis initial." },
-  { q: "Qui gère mon site après la livraison ?", a: "Vous. Je vous transmets tous les accès — administration, hébergement, nom de domaine — ainsi qu'un tutoriel simple pour modifier vos textes et images sans dépendre de moi." },
-  { q: "Que se passe-t-il si le délai annoncé n'est pas respecté ?", a: "C'est rare, mais si cela arrive de mon fait, une pénalité s'applique sur le montant total et vous pouvez demander l'annulation du projet avec un remboursement partiel. Ces conditions figurent dans le devis signé." },
-  { q: "Mon site a un bug après la livraison, que faites-vous ?", a: "Je corrige gratuitement tout bug lié à mon développement pendant le mois suivant la livraison — inclus dans le pack Premium, possible en option sur les autres packs." },
-  { q: "Comment commander mon site ?", a: "Trois étapes : on échange sur votre projet et le pack adapté, je vous envoie un devis avec l'acompte de 50%, puis dès réception du paiement je démarre le développement." },
-];
 
-const PRICING_TABS = [
-  {
-    key: "portfolio", label: "Portfolio", icon: "Star",
-    plans: [
-      {
-        badge: "STARTER", price: "100 000 FCFA", title: "Starter", delivery: "3 à 5 jours",
-        features: ["3 pages", "Design responsive", "Section projets", "Formulaire contact", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
-      },
-      {
-        badge: "STANDARD", price: "175 000 FCFA", title: "Standard", delivery: "5 à 7 jours", isPopular: true,
-        features: ["5 pages", "Animations modernes", "Projets détaillés", "SEO de base", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)"]
-      },
-      {
-        badge: "PREMIUM", price: "275 000 FCFA", title: "Premium", delivery: "7 à 10 jours",
-        features: ["Design personnalisé", "Animations avancées", "Blog intégré", "SEO + AEO/GEO", "Optimisation performance (SXO)", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "1 mois support", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-    ]
-  },
-  {
-    key: "vitrine", label: "Site Vitrine", icon: "Globe",
-    plans: [
-      {
-        badge: "STARTER", price: "220 000 FCFA", title: "Starter", delivery: "5 à 7 jours",
-        features: ["5 pages", "Design responsive", "Formulaire contact", "SEO de base", "Nom de domaine offert (1 an)", "Hébergement non inclus", "1 mois support", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-      {
-        badge: "PRO", price: "350 000 FCFA", title: "Pro", delivery: "7 à 10 jours", isPopular: true,
-        features: ["10 pages", "Design premium", "Blog intégré", "SEO + AEO", "CRO (CTA + preuve sociale)", "Optimisation SXO", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "3 mois support", "Formation 2h", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-      {
-        badge: "ELITE", price: "550 000 FCFA", title: "Elite", delivery: "10 à 14 jours",
-        features: ["15 à 20 pages", "Design sur mesure", "CMS complet", "SEO + AEO + GEO + Analytics", "CRO (CTA + preuve sociale)", "Optimisation SXO", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "6 mois support", "Formation complète", "Maintenance dès 20 000 à 40 000 FCFA/mois", "Page supp. : 15 000 à 25 000 FCFA"]
-      },
-    ]
-  },
-  {
-    key: "ecommerce", label: "E-commerce", icon: "ShoppingCart",
-    plans: [
-      {
-        badge: "STARTER", price: "450 000 FCFA", title: "Starter", delivery: "14 jours",
-        features: ["Jusqu'à 50 produits", "Paiement Mobile Money", "Gestion commandes", "Tableau de bord", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "1 mois support", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-      {
-        badge: "PRO", price: "750 000 FCFA", title: "Pro", delivery: "21 jours", isPopular: true,
-        features: ["200 à 500 produits", "Multi-paiement", "Gestion stock temps réel", "SEO produits (SEO/AEO)", "CRO (tunnel d'achat optimisé)", "Analytics", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "3 mois support", "Formation admin", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-      {
-        badge: "ELITE", price: "1 200 000 FCFA", title: "Elite", delivery: "30 jours",
-        features: ["Produits illimités", "API paiement personnalisée", "Automatisations (emails, factures)", "Optimisation IA (GEO)", "CRO (tunnel d'achat optimisé)", "Rapports avancés", "Nom de domaine offert (1 an)", "Hébergement inclus (1 an)", "6 mois support", "Formation équipe", "Maintenance dès 20 000 à 40 000 FCFA/mois"]
-      },
-    ]
-  },
-  {
-    key: "saas", label: "App SaaS", icon: "Cpu",
-    plans: [
-      {
-        badge: "SUR DEVIS", price: "Étude personnalisée", title: "Sur devis", delivery: "Après diagnostic gratuit",
-        desc: "Chaque projet SaaS est unique. J'étudie la complexité réelle (architecture, intégrations, sécurité, volume) avant de donner un prix juste et engageant.",
-        features: ["Diagnostic gratuit de votre besoin", "Authentification + rôles", "API REST", "Dashboard sur mesure", "Intégrations tierces (paiement, email…)", "Multi-tenant (si besoin)", "Onboarding optimisé (CRO)", "Déploiement cloud", "Devis détaillé sous 48h", "Accompagnement post-lancement"]
-      },
-    ]
-  },
-  {
-    key: "gbp", label: "Fiche Google", icon: "GMap",
-    plans: [
-      {
-        badge: "CRÉATION", price: "20 000 FCFA", title: "Création", delivery: "1 à 2 jours", isPopular: true,
-        desc: "Vous n'avez pas encore de fiche Google ? Création complète de zéro.",
-        features: ["Vérification infos (NAP)", "Horaires + zone de service", "Catégorie + attributs", "Lien vers le site web", "Photos (logo, local, produits)", "Description optimisée SEO local", "Mots-clés locaux ciblés", "Intégration carte sur le site"]
-      },
-      {
-        badge: "OPTIMISATION", price: "12 000 FCFA", title: "Optimisation", delivery: "1 jour",
-        desc: "Fiche déjà existante ? On corrige et améliore ce qui est en place.",
-        features: ["Vérification infos (NAP)", "Horaires + zone de service", "Catégorie + attributs", "Lien vers le site web", "Photos (logo, local, produits)", "Description optimisée SEO local", "Mots-clés locaux ciblés"]
-      },
-      {
-        badge: "SUIVI MENSUEL", price: "10 000 FCFA/mois", title: "Suivi mensuel", delivery: "Continu",
-        desc: "Gestion continue : avis, publications et statistiques chaque mois.",
-        features: ["Réponse aux avis clients", "Posts Google réguliers", "Suivi statistiques de fiche"]
-      },
-    ]
-  },
-];
 
 const SKILLS = {
   frontend: [
@@ -1264,7 +1007,7 @@ const Loader = ({ onDone }) => {
             if (blurEl2) blurEl2.setAttribute('stdDeviation', '0')
 
             /* Split en chars pour explosion */
-            const raw = 'MBOLLO AKA ELVIS'
+            const raw = 'MBOLLO aka'
             nameTextEl.innerHTML = ''
             const chars = Array.from(raw).map(letter => {
               const span = document.createElement('span')
@@ -1378,7 +1121,7 @@ const Loader = ({ onDone }) => {
       <div className="mob-ld-center">
         <div className="mob-ld-name mob-ld-name--liquid" ref={nameRef}>
           <div className="mob-ld-name-text mob-ld-name-xl">
-            MBOLLO AKA ELVIS
+            MBOLLO aka
           </div>
         </div>
         <div className="mob-ld-role mob-ld-role--liquid">
@@ -2061,14 +1804,14 @@ const Hero = ({ dark }) => {
           <div className="hv4-left" ref={leftRef}>
 
 
-            <h1 className="hv4-name" aria-label="M'Bollo Aka Elvis">
+            <h1 className="hv4-name" aria-label="M'Bollo aka">
               <ScrambleText text="M'BOLLO" tag="span" className="hv4-name-line" style={{ '--d': '0.12s' }} speed={30} step={0.6} threshold={0.15} once={true} />
-              <ScrambleText text="AKA ELVIS" tag="span" className="hv4-name-line hv4-name-line--u" style={{ "--d": "0.26s" }} speed={28} step={0.5} threshold={0.15} once={true} />
+              <ScrambleText text="aka" tag="span" className="hv4-name-line hv4-name-line--u" style={{ "--d": "0.26s" }} speed={28} step={0.5} threshold={0.15} once={true} />
             </h1>
 
             <div className="hv4-photo-mob hv4-rv" style={{ '--d': '0.3s' }}>
               <div className="hv4-photo-mob-inner">
-                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className={`hv4-photo photo-bw ${heroPhotoColor ? 'photo-bw--on' : ''}`} />
+                <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo aka" className={`hv4-photo photo-bw ${heroPhotoColor ? 'photo-bw--on' : ''}`} />
                 <div className="hv4-photo-mob-badge"><span className="hero-dot" /><span>disponible</span></div>
               </div>
             </div>
@@ -2111,7 +1854,7 @@ const Hero = ({ dark }) => {
           {/* ════ RIGHT ════ */}
           <div className="hv4-right hv4-rv" style={{ '--d': '0.32s' }} ref={rightRef}>
             <div className="hv4-photo-wrap hv4-photo-wrap--full">
-              <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo Aka Elvis" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor ? 'photo-bw--on' : ''}`} />
+              <img src="/assets/images/IMG_20250124_124101KK.webp" alt="M'Bollo aka" className={`hv4-photo hv4-photo--portrait photo-bw ${heroPhotoColor ? 'photo-bw--on' : ''}`} />
               <div className="hv4-photo-overlay">
                 <span><LI name="map-marker-alt" color={dark ? "#aaa" : "#666"} size={12} /> Abidjan, CI</span>
                 <span><LI name="code" color="#ff5500" size={12} /> Full-Stack Dev</span>
@@ -4371,7 +4114,7 @@ const Footer = ({ dark }) => (
     <div className="footer-inner">
       <div className="footer-logo"><AkafolioLogo size={58} dark={dark} animate={false} /></div>
       <div className="footer-mid">
-        <p>© 2026 — M'Bollo Aka Elvis — Développeur Full-Stack</p>
+        <p>© 2026 — M'Bollo aka — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>
       </div>
       <div className="footer-links">

@@ -17,9 +17,9 @@ import { Helmet } from 'react-helmet-async'
 // Miroir exact de ce qu'AKATech fait dans ses page.js respectifs.
 export const SEO_CONFIG = {
   default: {
-    title: "M'Bollo Aka Elvis — Développeur Web Full Stack à Abidjan | AKATech",
+    title: "M'Bollo aka — Développeur Web Full Stack à Abidjan | AKATech",
     description:
-      "M'Bollo Aka Elvis, développeur web full stack à Abidjan (Côte d'Ivoire) : sites vitrines, e-commerce, applications React/Django/Flask. Devis rapide, livraison sous 3 à 14 jours, nom de domaine et hébergement offerts 1 an.",
+      "M'Bollo aka, développeur web full stack à Abidjan (Côte d'Ivoire) : sites vitrines, e-commerce, applications React/Django/Flask. Devis rapide, livraison sous 3 à 14 jours, nom de domaine et hébergement offerts 1 an.",
     keywords:
       "développeur web Abidjan, développeur full stack Côte d'Ivoire, créer un site web Abidjan, développeur React Django, AKATech, agence web Abidjan, création site e-commerce Côte d'Ivoire",
     url: 'https://mbolloaka-dev.vercel.app/',
@@ -33,8 +33,8 @@ export const STRUCTURED_DATA = {
   person: {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: "M'Bollo Aka Elvis",
-    alternateName: 'Aka Elvis',
+    name: "M'Bollo aka",
+    alternateName: 'aka',
     url: 'https://mbolloaka-dev.vercel.app/',
     image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     jobTitle: 'Développeur Web Full Stack',
@@ -83,7 +83,7 @@ export const STRUCTURED_DATA = {
     name: 'AKATech',
     founder: {
       '@type': 'Person',
-      name: "M'Bollo Aka Elvis",
+      name: "M'Bollo aka",
     },
     url: 'https://akatech.vercel.app/',
     logo: 'https://akatech.vercel.app/favicon.png',
@@ -157,7 +157,7 @@ export function SEOHead({ config = SEO_CONFIG.default }) {
       <title>{config.title}</title>
       <meta name="description" content={config.description} />
       {config.keywords && <meta name="keywords" content={config.keywords} />}
-      <meta name="author" content="M'Bollo Aka Elvis" />
+      <meta name="author" content="M'Bollo aka" />
       <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
       <meta name="language" content="French" />
       <meta name="geo.region" content="CI" />
@@ -175,7 +175,7 @@ export function SEOHead({ config = SEO_CONFIG.default }) {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
       <meta property="og:locale" content="fr_CI" />
-      <meta property="og:site_name" content="M'Bollo Aka Elvis — AKATech" />
+      <meta property="og:site_name" content="M'Bollo aka — AKATech" />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
