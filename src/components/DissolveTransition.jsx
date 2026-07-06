@@ -205,6 +205,7 @@ export default function DissolveTransition({
   frontSrc,
   backSrc,
   heightVh = 240,
+  revealVh = 0,
   cta = null,
 }) {
   const pinRef = useRef(null)
@@ -327,7 +328,13 @@ export default function DissolveTransition({
     const st = ScrollTrigger.create({
       trigger: pinEl,
       start: 'top top',
-      end: 'bottom bottom',
+      // Par défaut (revealVh=0) : identique à 'bottom bottom'.
+      // Avec revealVh>0 : le scrub se termine plus tôt, laissant
+      // 'revealVh' de scroll figé (uDissolve déjà à 1) avant que
+      // le pin ne se libère vraiment — le temps qu'une section
+      // suivante vienne le recouvrir sans le surprendre en pleine
+      // animation (cf. .full-beams-zone / --stk-reveal).
+      end: () => `+=${pinEl.offsetHeight - window.innerHeight - (revealVh / 100) * window.innerHeight}`,
       scrub: 1,
       onUpdate: self => setProgress(self.progress),
     })

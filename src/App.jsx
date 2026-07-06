@@ -888,7 +888,7 @@ const PROJECTS = [
     problem: "Les résidences meublées haut de gamme manquaient d'une plateforme de location fiable et sécurisée.",
     solution: "Plateforme Next.js/Flask avec backend sécurisé pour la gestion des annonces et des réservations.",
     result: "En production — a servi de base validée avant l'évolution vers NEXURA." },
-  { id: 13, title: 'akaTech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — akaTech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025',
+  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025',
     github: 'https://github.com/wthomasss06-stack/akatech-agencenext',
     problem: "Mon agence n'avait pas de site propre capable de convertir les prospects en clients.",
     solution: "Site agence Next.js 15 avec WebGL Aurora, animations Framer Motion et structure orientée conversion (process, pricing, projets).",
@@ -1095,7 +1095,7 @@ const SKILLS = {
 }
 
 const TIMELINE = [
-  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'akaTech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
+  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
   { date: 'Mai–Nov. 2025', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
   { date: '2023–2024', title: 'Projet Académique – ARTICI', company: 'UVCI', items: ["Plateforme web de promotion de l'artisanat local", "Travail collaboratif en équipe pluridisciplinaire", "Intégration de bonnes pratiques de sécurité"], tags: ['Frontend', 'Backend', 'Sécurité'] },
   { date: '2023–2024', title: 'Licence Réseau et Sécurité Informatique', company: 'UVCI', items: ['Formation complète en développement web, bases de données et sécurité', 'Certification E-Banking — Réf: CC/24-002485'], tags: ['Diplôme', 'Certification'] },
@@ -1517,8 +1517,8 @@ function Navbar({ theme, onToggleTheme }) {
     { label: 'LinkedIn', link: 'https://www.linkedin.com/in/m-bollo-aka' },
     { label: 'GitHub', link: 'https://github.com/wthomasss06-stack' },
     { label: 'Facebook', link: 'https://web.facebook.com/profile.php?id=61577494705852' },
-    { label: 'akaTech', link: 'https://akatech.vercel.app/' },
-    { label: 'Mon CV', link: '/assets/CV_MBOLLO_aka_ELVIS.pdf' },
+    { label: 'AKATech', link: 'https://akatech.vercel.app/' },
+    { label: 'Mon CV', link: '/assets/CV_MBOLLO_AKA_ELVIS.pdf' },
   ]
 
   /* SM_ITEMS : transforme NAV_LINKS en format attendu par StaggeredMenu */
@@ -1551,10 +1551,10 @@ function Navbar({ theme, onToggleTheme }) {
 
   const logoBlock = (
     <>
-      <img src="/assets/images/logo-akatech.webp" alt="akaTech" className="nb-logo-img"
+      <img src="/assets/images/logo-akatech.webp" alt="AKATech" className="nb-logo-img"
         onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline' }}
       />
-      <span className="nb-logo-text" style={{ display: 'none' }}>aka<span className="nb-logo-acc">TECH</span></span>
+      <span className="nb-logo-text" style={{ display: 'none' }}>AKA<span className="nb-logo-acc">TECH</span></span>
     </>
   )
 
@@ -2811,7 +2811,7 @@ function About() {
                   borderBottom: '1.5px solid var(--accent)'
                 }}
               >
-                akaTech
+                AKATech
               </a>
               , un espace où je donne forme à des idées web modernes et concrètes.
             </p>
@@ -2841,7 +2841,7 @@ function About() {
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '.62rem', letterSpacing: '.06em',
                   color: 'var(--muted)', textTransform: 'uppercase', lineHeight: 1.3,
-                }}>Développeur Web Full Stack · Fondateur, akaTech</span>
+                }}>Développeur Web Full Stack · Fondateur, AKATech</span>
               </div>
             </div>
           </div>
@@ -3180,6 +3180,13 @@ function HoverRevealList({ items, eyebrowSuffix = '' }) {
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         )}
+        <span
+          className="hvr-view-badge"
+          aria-hidden="true"
+          style={{ transform: `translate(-50%, -50%) scale(${hovered !== null ? 1 : 0})` }}
+        >
+          View
+        </span>
       </div>
     </div>
   )
@@ -4082,7 +4089,7 @@ function GitHubInteractiveCard() {
             ) : (ghRepos.length > 0 ? ghRepos : [
               { name: 'ShopCI', description: 'Marketplace E-commerce locale avec intégration mobile money.', stargazers_count: 14, forks_count: 4, language: 'JavaScript' },
               { name: 'TerraSafe', description: "Plateforme foncière de prévention des risques d'arnaque.", stargazers_count: 8, forks_count: 2, language: 'Python' },
-              { name: 'akaTech', description: 'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
+              { name: 'AKATech', description: 'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
               { name: 'chap-chapMAP', description: "Cartographie interactive pour l'itinéraire et la livraison.", stargazers_count: 5, forks_count: 1, language: 'JavaScript' },
             ]).map((repo, i) => {
               const langColor = { JavaScript: '#f1e05a', Python: '#3572A5', TypeScript: '#2b7489', HTML: '#e34c26', CSS: '#563d7c' }
@@ -4204,10 +4211,10 @@ function ContactSection({ onToast }) {
     { id: 'cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
     { id: 'cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg> },
     { id: 'cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg> },
-    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'akaTech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
+    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
     { id: 'cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 7 10-7" /></svg> },
     { id: 'cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg> },
-    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_aka_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
+    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
   ]
 
   return (
@@ -4314,7 +4321,7 @@ function ContactSection({ onToast }) {
 }
 
 /* ════════════════════════════════════════════
- FOOTER — simplifié v7 : QR centré + akaTECH MASSIF
+ FOOTER — simplifié v7 : QR centré + AKATECH MASSIF
  ════════════════════════════════════════════ */
 
 /* BeamsInteractive — fond statique orange, sans réactivité curseur */
@@ -4343,10 +4350,10 @@ function Footer() {
   return (
     <footer id="main-footer">
 
-      {/* Barre de bas — style "verteal" : nav gauche / logo centré / CTA+email droite, filigrane akaTECH en fond.
+      {/* Barre de bas — style "verteal" : nav gauche / logo centré / CTA+email droite, filigrane AKATECH en fond.
      Fond transparent : laisse apparaître le Beams animé de full-beams-zone derrière. */}
       <div className="ft-bottom-band">
-        <span className="ft-aka-watermark" aria-hidden="true">akaTECH</span>
+        <span className="ft-aka-watermark" aria-hidden="true">AKATECH</span>
 
         <div className="ft-bb-inner">
           <div className="ft-bb-top">
@@ -4359,11 +4366,11 @@ function Footer() {
             </nav>
 
             <div className="ft-bb-logo">
-              <img src="/assets/images/logo-akatech.webp" alt="akaTech" loading="lazy" onError={e => { e.target.style.display = 'none' }} />
+              <img src="/assets/images/logo-akatech.webp" alt="AKATech" loading="lazy" onError={e => { e.target.style.display = 'none' }} />
             </div>
 
             <div className="ft-bb-right">
-              <span className="ft-bb-copyright">© 2026 akaTech</span>
+              <span className="ft-bb-copyright">© 2026 AKATech</span>
               <a href="#contact" className="ft-bb-cta" onClick={e => { e.preventDefault(); const el = document.getElementById('contact'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }) }}>
                 Réserver un appel
                 <span className="ft-bb-cta-arrow" aria-hidden="true">
@@ -4718,7 +4725,11 @@ export default function App() {
       <SoundToggle muted={muted} onToggle={toggleMute} />
       <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <main>
-        <Hero />
+        <div className="stk-hero-pin">
+          <div className="stk-hero-sticky">
+            <Hero />
+          </div>
+        </div>
         <FeaturedCreationDesktop />
         <ProjectsTunnel />
         <HeroZoomSection />
@@ -4735,7 +4746,8 @@ export default function App() {
           id="cta-dissolve"
           frontSrc="/assets/images/about-1.webp"
           backSrc="/assets/images/hero-bg.webp"
-          heightVh={220}
+          heightVh={320}
+          revealVh={100}
           cta={{
             eyebrow: 'Une idée ? Un projet ?',
             title: 'Parlons de votre prochain site',

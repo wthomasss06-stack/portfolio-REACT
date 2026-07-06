@@ -1,5 +1,5 @@
 ﻿/* ════════════════════════════════════════════════
-   akafolio — style.css
+   AKAfolio — style.css
    Variables CSS · Animations · Thèmes dark/light
    Neo-brutalism minimal palette : #0A0A0A · #FF5500
    ════════════════════════════════════════════════ */
@@ -2405,7 +2405,8 @@
       pour éviter des faisceaux disproportionnés/"trop gros". */
    .full-beams-zone {
      position: relative;
-     z-index: 1;
+     z-index: 6; /* > .dsv-cta (z-index:5) pour couvrir tout le CTA, pas que son fond */
+     margin-top: calc(var(--stk-reveal, 100vh) * -1);
      background: #1a1208; /* fond zone footer — éclairci */
    }
    .full-beams-zone__bg {
@@ -3252,7 +3253,7 @@
      padding: 3.4rem 6vw 0;
    }
 
-   /* Filigrane "akaTECH" massif en fond — teinte claire sur fond sombre + Beams */
+   /* Filigrane "AKATECH" massif en fond — teinte claire sur fond sombre + Beams */
    .ft-aka-watermark {
      position: absolute;
      left: 50%;
@@ -3715,6 +3716,61 @@
       importe le thème actif — comme .full-beams-zone.
    ════════════════════════════════════════════ */
 
+   /* ════════════════════════════════════════════
+      STACKED SCROLL — hero / tunnel-projet / cta restent
+      fixes pendant que projet / hero-zoom / contact leur
+      passent dessus (effet cartes empilées).
+      Recette : wrapper haut (pin) > enfant position:sticky
+      100vh, puis l'élément suivant est remonté de --stk-reveal
+      (margin-top négatif) + z-index supérieur pour créer le
+      chevauchement visible pendant la remontée.
+      ════════════════════════════════════════════ */
+   :root { --stk-hold: 100vh; --stk-reveal: 100vh; }
+
+   /* Paire 1 : Hero (fixe) → #projets-section (passe dessus) */
+   .stk-hero-pin {
+     position: relative;
+     height: calc(100vh + var(--stk-hold) + var(--stk-reveal));
+   }
+   .stk-hero-sticky {
+     position: sticky;
+     top: 0;
+     height: 100vh;
+     overflow: hidden;
+     z-index: 1;
+   }
+   .featured-creation {
+     margin-top: calc(var(--stk-reveal) * -1);
+     z-index: 2;
+   }
+
+   /* Paire 2 : ProjectsTunnel (fixe, pin GSAP existant) → HeroZoomSection
+      (passe dessus). Le tunnel se pin déjà lui-même (GSAP ScrollTrigger
+      pin:true) ; on remonte juste hzx-section dans sa dernière fenêtre
+      de scroll et on le fait peindre par-dessus. */
+   .hzx-section {
+     margin-top: calc(var(--stk-reveal) * -1);
+   }
+
+   /* Paire 3 : cta-dissolve (fixe, pin interne DissolveTransition) →
+      ContactSection (passe dessus). Voir règle .full-beams-zone existante
+      plus bas (z-index relevé à 6, margin-top ajouté). IMPORTANT : la prop
+      revealVh du <DissolveTransition id="cta-dissolve"> (App.jsx) doit
+      rester égale à --stk-reveal ci-dessus (100vh chacun) — c'est ce qui
+      garantit que le dissolve est déjà à 100% pile quand Contact commence
+      à le recouvrir. Si tu changes --stk-reveal, change revealVh pareil. */
+
+   @media (max-width: 768px) {
+     /* Scroll-jacking désactivé sous 768px — cf. minimalism-mode skill,
+        checklist mobile/tactile : ces effets pointer/scroll lourds se
+        neutralisent plutôt que de dégrader mal sur tactile. */
+     .stk-hero-pin { height: auto; }
+     .stk-hero-sticky { position: relative; height: auto; }
+     .featured-creation { margin-top: 0; }
+     .hzx-section { margin-top: 0; }
+     .full-beams-zone { margin-top: 0; }
+   }
+
    .hzx-section {
      position: relative;
    }
@@ -3734,6 +3790,7 @@
      align-items: center;
      justify-content: center;
      background: #050505;
+     z-index: 2;
    }
 
    .hzx-container {
