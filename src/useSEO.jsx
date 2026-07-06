@@ -1,7 +1,7 @@
 // ════════════════════════════════════════════════════════════════
 // useSEO.jsx — Hook de méta-données dynamiques
 //
-// Équivalent de ce que fait next/head + generateMetadata dans AKATech.
+// Équivalent de ce que fait next/head + generateMetadata dans akaTech.
 // Utilise react-helmet-async (SSR-safe, pas de race condition).
 //
 // USAGE :
@@ -14,21 +14,21 @@
 import { Helmet } from 'react-helmet-async'
 
 // ─── Données SEO par "section" du portfolio ───────────────────
-// Miroir exact de ce qu'AKATech fait dans ses page.js respectifs.
+// Miroir exact de ce qu'akaTech fait dans ses page.js respectifs.
 export const SEO_CONFIG = {
   default: {
-    title: "M'Bollo aka — Développeur Web Full Stack à Abidjan | AKATech",
+    title: "M'Bollo aka — Développeur Web Full Stack à Abidjan | akaTech",
     description:
       "M'Bollo aka, développeur web full stack à Abidjan (Côte d'Ivoire) : sites vitrines, e-commerce, applications React/Django/Flask. Devis rapide, livraison sous 3 à 14 jours, nom de domaine et hébergement offerts 1 an.",
     keywords:
-      "développeur web Abidjan, développeur full stack Côte d'Ivoire, créer un site web Abidjan, développeur React Django, AKATech, agence web Abidjan, création site e-commerce Côte d'Ivoire",
+      "développeur web Abidjan, développeur full stack Côte d'Ivoire, créer un site web Abidjan, développeur React Django, akaTech, agence web Abidjan, création site e-commerce Côte d'Ivoire",
     url: 'https://mbolloaka-dev.vercel.app/',
     image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
   },
 }
 
 // ─── Structured Data — Person + ProfessionalService ───────────
-// Même logique que layout.js d'AKATech, adapté à un portfolio perso.
+// Même logique que layout.js d'akaTech, adapté à un portfolio perso.
 export const STRUCTURED_DATA = {
   person: {
     '@context': 'https://schema.org',
@@ -39,7 +39,7 @@ export const STRUCTURED_DATA = {
     image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     jobTitle: 'Développeur Web Full Stack',
     description:
-      "Développeur web full stack basé à Abidjan, Côte d'Ivoire, spécialisé en React, Django et Flask. Fondateur de AKATech.",
+      "Développeur web full stack basé à Abidjan, Côte d'Ivoire, spécialisé en React, Django et Flask. Fondateur de akaTech.",
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Abidjan',
@@ -49,7 +49,7 @@ export const STRUCTURED_DATA = {
     telephone: '+225-01-42-50-77-50',
     worksFor: {
       '@type': 'Organization',
-      name: 'AKATech',
+      name: 'akaTech',
       url: 'https://akatech.vercel.app/',
     },
     alumniOf: {
@@ -80,7 +80,7 @@ export const STRUCTURED_DATA = {
   localBusiness: {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: 'AKATech',
+    name: 'akaTech',
     founder: {
       '@type': 'Person',
       name: "M'Bollo aka",
@@ -89,7 +89,7 @@ export const STRUCTURED_DATA = {
     logo: 'https://akatech.vercel.app/favicon.png',
     image: 'https://mbolloaka-dev.vercel.app/assets/images/IMG_20250124_124101KK.webp',
     description:
-      "AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions digitales sur-mesure : sites vitrines, e-commerce, applications SaaS et portfolios modernes.",
+      "akaTech accompagne les entrepreneurs et PME en Côte d'Ivoire avec des solutions digitales sur-mesure : sites vitrines, e-commerce, applications SaaS et portfolios modernes.",
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Abidjan',
@@ -110,7 +110,7 @@ export const STRUCTURED_DATA = {
     },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Services Web AKATech',
+      name: 'Services Web akaTech',
       itemListElement: [
         {
           '@type': 'Offer',
@@ -175,7 +175,7 @@ export function SEOHead({ config = SEO_CONFIG.default }) {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
       <meta property="og:locale" content="fr_CI" />
-      <meta property="og:site_name" content="M'Bollo aka — AKATech" />
+      <meta property="og:site_name" content="M'Bollo aka — akaTech" />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

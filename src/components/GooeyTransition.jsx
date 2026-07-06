@@ -28,7 +28,7 @@ const LEAVE_DUR    = 1.0
 const LEAVE_STAG   = 0.7
 const ENTER_DUR    = 0.8
 const ENTER_STAG   = 0.7
-const STAIR_COLOR  = '#FF5500'   /* couleur des colonnes — orange AKAFOLIO (référence, la couleur réelle vient de GooeyTransition.css / .mobile.css) */
+const STAIR_COLOR  = '#FF5500'   /* couleur des colonnes — orange akaFOLIO (référence, la couleur réelle vient de GooeyTransition.css / .mobile.css) */
 const EASE_LEAVE   = 'power3.inOut'
 const EASE_ENTER   = 'power3.inOut'
 

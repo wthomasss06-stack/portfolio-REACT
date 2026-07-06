@@ -37,4 +37,4 @@ npm run build
 SSR (Server-Side Rendering) = un serveur Node tourne en permanence pour générer le HTML à chaque requête.
 SSG (Static Site Generation) = le HTML est généré UNE FOIS au build, servi comme fichier statique → Vercel gratuit, aucun serveur, même perf qu'avant.
 
-AKATech (Next.js) utilise SSG via `generateStaticParams` — c'est exactement la même chose ici.
+akaTech (Next.js) utilise SSG via `generateStaticParams` — c'est exactement la même chose ici.

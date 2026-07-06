@@ -1,13 +1,13 @@
 <div align="center">
-<img src="public/assets/images/logo-akatech.png" alt="AKATech Logo" width="200" />
+<img src="public/assets/images/logo-akatech.png" alt="akaTech Logo" width="200" />
 
 <br /><br />
-# AKAFOLIO — Elvis M'BOLLO
+# akaFOLIO — Elvis M'BOLLO
 
 **Portfolio interactif full-stack** · React 18 · WebGL · GSAP · Neo-Brutalism
 
 [![Live Demo](https://img.shields.io/badge/Démo_live-akafolio160502.vercel.app-FF5500?style=for-the-badge)](https://mbolloaka-dev.vercel.app/)
-[![AKATech](https://img.shields.io/badge/AKATech-akatech.vercel.app-0A0A0A?style=for-the-badge)](https://akatech.vercel.app/)
+[![akaTech](https://img.shields.io/badge/akaTech-akatech.vercel.app-0A0A0A?style=for-the-badge)](https://akatech.vercel.app/)
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)
@@ -44,7 +44,7 @@
 
 ## À propos
 
-**AKAFOLIO** est le portfolio personnel d'Elvis M'BOLLO (AKATech) — développeur web full-stack basé à Abidjan, Côte d'Ivoire. SPA React conçue comme vitrine technique : animations au scroll pilotées par GSAP, fonds WebGL (OGL / Three.js via React Three Fiber), carte GitHub en temps réel, formulaire de contact avec envoi d'email réel via Resend, et bascule entre une interface **neo-brutalism** moderne et un **easter egg Windows 95** entièrement reconstitué.
+**akaFOLIO** est le portfolio personnel d'Elvis M'BOLLO (akaTech) — développeur web full-stack basé à Abidjan, Côte d'Ivoire. SPA React conçue comme vitrine technique : animations au scroll pilotées par GSAP, fonds WebGL (OGL / Three.js via React Three Fiber), carte GitHub en temps réel, formulaire de contact avec envoi d'email réel via Resend, et bascule entre une interface **neo-brutalism** moderne et un **easter egg Windows 95** entièrement reconstitué.
 
 Tout est codé sur mesure, sans librairie UI (pas de MUI/Chakra). Le projet regroupe trois expériences front dans le même dépôt — orchestrées par `RootApp.jsx` — plus une quatrième en chantier (`Appv4.jsx`).
 
@@ -128,7 +128,7 @@ Easter egg complet : bureau Windows 95/XP avec curseur custom, horloge, boot scr
 | `Beams.jsx` | Fond de faisceaux lumineux 3D (R3F) |
 | `CardSwap.jsx` | Pile de cartes échangeables en boucle |
 | `DissolveTransition.jsx` | Transition shader (dissolve) entre deux images/sections, avec CTA intégré |
-| `FireAkatech.jsx` / `FireBackground.jsx` | Effets de flammes GSAP |
+| `Fireakatech.jsx` / `FireBackground.jsx` | Effets de flammes GSAP |
 | `FlowingMenu.jsx` | Menu marquee au survol (Process section) |
 | `GooeyTransition.jsx` | Transition staircase entre sections (8 colonnes GSAP) — exporte aussi `hardJumpTo` |
 | `GridScan.jsx` | Scan facial temps réel (`face-api.js` + bloom/aberration chromatique) |
@@ -248,7 +248,7 @@ Pensé pour **Vercel** :
 
 | Projet | Description | Stack | Lien |
 |---|---|---|---|
-| **AKATech** | Agence digitale — site officiel | Next.js 15, Framer Motion, WebGL | [akatech.vercel.app](https://akatech.vercel.app/) |
+| **akaTech** | Agence digitale — site officiel | Next.js 15, Framer Motion, WebGL | [akatech.vercel.app](https://akatech.vercel.app/) |
 | **NEXURA** | Marketplace nouvelle génération | Next.js 14, Django REST, PostgreSQL, Redis | [nexura-one.vercel.app](https://nexura-one.vercel.app/) |
 | **KokoEat** | Livraison alimentaire, Mobile Money | React, Django REST, PostgreSQL | *en cours* |
 | **ShopCI** | Marketplace multi-vendeurs CI | React, Django, Bootstrap 5 | [shop-ci.vercel.app](https://shop-ci.vercel.app/) |
@@ -361,7 +361,7 @@ Le Hero reste verrouillé en thème sombre quelle que soit la sélection globale
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-m--bollo--aka-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/m-bollo-aka-60a1b1340/)
 [![GitHub](https://img.shields.io/badge/GitHub-wthomasss06--stack-181717?style=flat-square&logo=github)](https://github.com/wthomasss06-stack)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-%2B225_01_42_50_77_50-25D366?style=flat-square&logo=whatsapp)](https://wa.me/2250142507750)
-[![AKATech](https://img.shields.io/badge/AKATech-akatech.vercel.app-FF5500?style=flat-square)](https://akatech.vercel.app/)
+[![akaTech](https://img.shields.io/badge/akaTech-akatech.vercel.app-FF5500?style=flat-square)](https://akatech.vercel.app/)
 
 ---
 

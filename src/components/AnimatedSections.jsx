@@ -15,7 +15,7 @@ gsap.registerPlugin(Observer)
   • Transition : outer (yPercent 100→0) + inner (yPercent -100→0)
     + parallax de l'image de fond + chars SplitText stagger
 
-  Design : adapté au portfolio AKATech (couleurs ss-01…ss-dark3,
+  Design : adapté au portfolio akaTech (couleurs ss-01…ss-dark3,
   bg-dots, fonts var(--fd), accent #FF5500)
   ─────────────────────────────────────────────────────────────────
 */
@@ -48,7 +48,7 @@ const SLIDES = [
   {
     num: '04 — Autodidacte',
     title: 'CURIEUX\n& AUTODIDACTE',
-    body: "Je suis en grande partie autodidacte. J'apprends vite, j'expérimente beaucoup et je progresse projet après projet. AKATech est devenu mon terrain d'expression pour transformer mes idées en expériences web concrètes.",
+    body: "Je suis en grande partie autodidacte. J'apprends vite, j'expérimente beaucoup et je progresse projet après projet. akaTech est devenu mon terrain d'expression pour transformer mes idées en expériences web concrètes.",
     cls: 'as-s4',
     bg: 'var(--bg)',
     dotsClass: 'bg-dots',

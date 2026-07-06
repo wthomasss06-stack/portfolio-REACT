@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // ════════════════════════════════════════════════════════════════
-// VITE CONFIG — AKAFOLIO (React + Vite + SSG)
+// VITE CONFIG — akaFOLIO (React + Vite + SSG)
 //
 // Stratégie SEO : vite-ssg génère un index.html PRÉ-RENDU
 // au build pour chaque route → Google lit le HTML complet,

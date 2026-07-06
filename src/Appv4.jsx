@@ -689,7 +689,7 @@ function Loader({ onDone }) {
 
       {/* CORNER */}
       <div className="ld-corner">
-        AKATech Experience System v2.6
+        akaTech Experience System v2.6
       </div>
 
     </div>
@@ -790,10 +790,10 @@ function Navbar({ theme, onToggleTheme }) {
       {/* TOPBAR */}
       <header className="nb-topbar">
         <div className="nb-topbar-left" onClick={() => scrollTo('hero')}>
-          <img src="/assets/images/logo-akatech.webp" alt="AKATech" className="nb-logo-img"
+          <img src="/assets/images/logo-akatech.webp" alt="akaTech" className="nb-logo-img"
             onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline' }}
           />
-          <span className="nb-logo-text" style={{ display: 'none' }}>AKA<span className="nb-logo-acc">TECH</span></span>
+          <span className="nb-logo-text" style={{ display: 'none' }}>aka<span className="nb-logo-acc">TECH</span></span>
         </div>
         <div className="nb-topbar-center">
           <span>{clock.date}</span><span className="nb-sep">·</span><span>{clock.time}</span>
@@ -827,10 +827,10 @@ function Navbar({ theme, onToggleTheme }) {
       <div className={`nb-drawer${drawerOpen ? ' open' : ''}`} aria-hidden={!drawerOpen}>
         <div className="nb-drawer-header">
           <span className="nb-drawer-logo">
-            <img src="/assets/images/logo-akatech.webp" alt="AKATech" className="nb-drawer-logo-img"
+            <img src="/assets/images/logo-akatech.webp" alt="akaTech" className="nb-drawer-logo-img"
               onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline' }}
             />
-            <span style={{ display: 'none' }}>AKA<span style={{ color: '#FF5500' }}>TECH</span></span>
+            <span style={{ display: 'none' }}>aka<span style={{ color: '#FF5500' }}>TECH</span></span>
           </span>
           <button className="nb-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Fermer">✕</button>
         </div>
@@ -855,7 +855,7 @@ function Navbar({ theme, onToggleTheme }) {
             { href: 'https://github.com/wthomasss06-stack', title: 'GitHub', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg> },
             { href: 'https://www.linkedin.com/in/m-bollo-aka', title: 'LinkedIn', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
             { href: 'mailto:wthomasss06@gmail.com', title: 'Email', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="15" rx="3" /><path d="M2 8l10 7 10-7" /></svg> },
-            { href: 'https://akatech.vercel.app/', title: 'AKATech', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.5" ry="9.5" /><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".5" /></svg> },
+            { href: 'https://akatech.vercel.app/', title: 'akaTech', d: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9.5" /><ellipse cx="12" cy="12" rx="4.5" ry="9.5" /><line x1="2.5" y1="12" x2="21.5" y2="12" opacity=".5" /></svg> },
           ].map(({ href, title, d }) => (
             <a key={title} href={href} target="_blank" rel="noreferrer" title={title}>{d}</a>
           ))}
@@ -933,7 +933,7 @@ function Hero() {
               <button className="btn-fill" onClick={() => scrollTo('gallery-section')}>
                 Voir mes projets ↗
               </button>
-              <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download className="btn-fill" style={{ gap: '.5rem', display: 'inline-flex', alignItems: 'center' }}>
+              <a href="/assets/CV_MBOLLO_aka_ELVIS.pdf" download className="btn-fill" style={{ gap: '.5rem', display: 'inline-flex', alignItems: 'center' }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
@@ -1012,7 +1012,7 @@ function StickyStack() {
       num: '04 — Autodidacte',
       title: 'CURIEUX\n& AUTODIDACTE ',
       body:
-        "Je suis en grande partie autodidacte. J’apprends vite, j’expérimente beaucoup et je progresse projet après projet. AKATech est devenu mon terrain d’expression pour transformer mes idées en expériences web concrètes.",
+        "Je suis en grande partie autodidacte. J’apprends vite, j’expérimente beaucoup et je progresse projet après projet. akaTech est devenu mon terrain d’expression pour transformer mes idées en expériences web concrètes.",
       cls: 'ss-dark3',
     },
   ]
@@ -1288,7 +1288,7 @@ function About() {
               Et pour transformer cette évolution en quelque chose de concret, j'ai créé{' '}
               <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer"
                 style={{ color: 'var(--accent)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--accent)' }}>
-                AKATech
+                akaTech
               </a>{' '}: un espace où je conçois des produits web modernes, des portfolios immersifs
               et des solutions digitales pensées pour de vrais usages.
             </p>
@@ -1740,7 +1740,7 @@ function ShowcaseSection() {
                       <img
                         ref={logoRef}
                         src="/assets/images/logo-akatech.webp"
-                        alt="AKATech"
+                        alt="akaTech"
                         className="sc-logo-img"
                         onError={e => { e.target.style.opacity = '0.9' }}
                         onMouseMove={handleLogoMove}
@@ -2521,7 +2521,7 @@ function GitHubInteractiveCard() {
             ) : (ghRepos.length > 0 ? ghRepos : [
               { name: 'ShopCI', description: 'Marketplace E-commerce locale avec intégration mobile money.', stargazers_count: 14, forks_count: 4, language: 'JavaScript' },
               { name: 'TerraSafe', description: "Plateforme foncière de prévention des risques d'arnaque.", stargazers_count: 8, forks_count: 2, language: 'Python' },
-              { name: 'AKATech', description: 'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
+              { name: 'akaTech', description: 'Site officiel de mon agence digitale. Responsive + animations.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
               { name: 'chap-chapMAP', description: "Cartographie interactive pour l'itinéraire et la livraison.", stargazers_count: 5, forks_count: 1, language: 'JavaScript' },
             ]).map((repo, i) => {
               const langColor = { JavaScript: '#f1e05a', Python: '#3572A5', TypeScript: '#2b7489', HTML: '#e34c26', CSS: '#563d7c' }
@@ -2681,10 +2681,10 @@ function ContactSection({ onToast }) {
     { id: 'cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
     { id: 'cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg> },
     { id: 'cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg> },
-    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
+    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'akaTech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
     { id: 'cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 7 10-7" /></svg> },
     { id: 'cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg> },
-    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
+    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_aka_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
   ]
 
   return (
@@ -2797,11 +2797,11 @@ function ContactSection({ onToast }) {
               <div className="coj-beam-row" style={{ justifyContent: 'center' }}>
                 <div id="cojn-center" className="coj-node-center-wrap coj-node-link" style={{ pointerEvents: 'none' }}>
                   <div className="coj-node-circle coj-node-main">
-                    <img src="/assets/images/logo-akatech.webp" alt="AKATech" className="coj-center-logo"
+                    <img src="/assets/images/logo-akatech.webp" alt="akaTech" className="coj-center-logo"
                       style={{ width: '70px', height: '70px', objectFit: 'contain', borderRadius: '50%' }}
                       onError={e => { e.target.style.display = 'none' }} />
                   </div>
-                  <span className="coj-node-label">AKATech</span>
+                  <span className="coj-node-label">akaTech</span>
                 </div>
               </div>
               <div className="coj-beam-row">
@@ -2821,13 +2821,13 @@ function ContactSection({ onToast }) {
 }
 
 /* ════════════════════════════════════════════
-   FOOTER — simplifié v7 : QR centré + AKATECH MASSIF
+   FOOTER — simplifié v7 : QR centré + akaTECH MASSIF
    ════════════════════════════════════════════ */
 
 
 function Footer() {
 
-  /* AKATECH massif — observer pour fade-in du wrapper iridescent */
+  /* akaTECH massif — observer pour fade-in du wrapper iridescent */
   useEffect(() => {
     const wrap = document.querySelector('.ft-aka-wrap')
     if (!wrap) return
@@ -2868,7 +2868,7 @@ function Footer() {
               <span className="ft-cv-eyebrow">// document</span>
               <h4 className="ft-cv-title">Télécharger<br />mon CV</h4>
               <p className="ft-cv-sub">Scannez le QR code ou cliquez ci-dessous</p>
-              <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download className="btn-fill ft-dl-btn">
+              <a href="/assets/CV_MBOLLO_aka_ELVIS.pdf" download className="btn-fill ft-dl-btn">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
@@ -2885,7 +2885,7 @@ function Footer() {
         <div style={{ height: '1px', background: 'rgba(255,85,0,.1)', margin: '3rem 0 0' }} />
       </div>
 
-      {/* AKATECH massif — Iridescence clippée dans les lettres via CSS mask */}
+      {/* akaTECH massif — Iridescence clippée dans les lettres via CSS mask */}
       <div className="ft-aka-wrap">
         {/* Canvas iridescent en fond — même config que le hero */}
         <div className="ft-aka-canvas">
@@ -2896,7 +2896,7 @@ function Footer() {
 
       {/* Barre de bas */}
       <div className="ft-bottom">
-        <span>© 2026 — M'Bollo aka · <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">AKATech</a> · Abidjan</span>
+        <span>© 2026 — M'Bollo aka · <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">akaTech</a> · Abidjan</span>
         <span style={{ color: 'rgba(255,255,255,.15)' }}>·</span>
         <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer">akatech-agence.vercel.app</a>
       </div>

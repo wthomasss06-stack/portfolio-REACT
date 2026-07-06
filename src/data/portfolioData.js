@@ -19,7 +19,7 @@
 
 // ─── Identité / contact ────────────────────────────────────────
 // Reconcilié entre useSEO.jsx (JSON-LD) et le README — Win95Portfolio.jsx
-// avait 2 erreurs corrigées ici : l'URL AKATech ("akatech-agence.vercel.app"
+// avait 2 erreurs corrigées ici : l'URL akaTech ("akatech-agence.vercel.app"
 // au lieu de "akatech.vercel.app") et un LinkedIn tronqué.
 export const CONTACT = {
   name: "M'Bollo aka",
@@ -27,7 +27,7 @@ export const CONTACT = {
   short: 'Elvis K.', // alias attendu par Win95Portfolio.jsx
   title: 'Développeur Web Full Stack',
   tagline: "Je construis des apps web modernes pour l'Afrique",
-  agency: 'AKATech',
+  agency: 'akaTech',
   agencyUrl: 'https://akatech.vercel.app/',
   site: 'https://akatech.vercel.app/', // alias attendu par Win95Portfolio.jsx
   location: "Abidjan, Côte d'Ivoire",
@@ -42,7 +42,7 @@ export const CONTACT = {
   linkedin: 'https://www.linkedin.com/in/m-bollo-aka',
   facebook: 'https://web.facebook.com/profile.php?id=61577494705852',
   photo: '/assets/images/IMG_20250124_124101KK.webp',
-  cv: '/assets/CV_MBOLLO_AKA_ELVIS.pdf',
+  cv: '/assets/CV_MBOLLO_aka_ELVIS.pdf',
 }
 
 // ─── Projets ────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ export const PROJECTS = [
     problem: "Les résidences meublées haut de gamme manquaient d'une plateforme de location fiable et sécurisée.",
     solution: "Plateforme Next.js/Flask avec backend sécurisé pour la gestion des annonces et des réservations.",
     result: "En production — a servi de base validée avant l'évolution vers NEXURA." },
-  { id: 13, title: 'AKATech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — AKATech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025',
+  { id: 13, title: 'akaTech', sub: 'Agence Digitale Abidjan', cat: 'en-ligne', img: '/assets/images/projects/akatech-preview.webp', responsive: '/assets/images/projects/akatech.webp', imgFb: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600', tech: ['Next.js 15', 'Framer Motion', 'WebGL Aurora', 'Vercel'], url: 'https://akatech.vercel.app/', desc: "Site officiel de mon agence — akaTech accompagne les entrepreneurs et PME en Côte d'Ivoire.", year: '2025',
     github: 'https://github.com/wthomasss06-stack/akatech-agencenext',
     problem: "Mon agence n'avait pas de site propre capable de convertir les prospects en clients.",
     solution: "Site agence Next.js 15 avec WebGL Aurora, animations Framer Motion et structure orientée conversion (process, pricing, projets).",
@@ -294,7 +294,7 @@ export const SKILLS = {
 
 // ─── Parcours ───────────────────────────────────────────────────
 export const TIMELINE = [
-  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
+  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'akaTech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
   { date: 'Mai–Nov. 2025', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
   { date: '2023–2024', title: 'Projet Académique – ARTICI', company: 'UVCI', items: ["Plateforme web de promotion de l'artisanat local", "Travail collaboratif en équipe pluridisciplinaire", "Intégration de bonnes pratiques de sécurité"], tags: ['Frontend', 'Backend', 'Sécurité'] },
   { date: '2023–2024', title: 'Licence Réseau et Sécurité Informatique', company: 'UVCI', items: ['Formation complète en développement web, bases de données et sécurité', 'Certification E-Banking — Réf: CC/24-002485'], tags: ['Diplôme', 'Certification'] },

@@ -1,5 +1,5 @@
 ﻿/* ════════════════════════════════════════════════
-   AKAfolio — style.css
+   akafolio — style.css
    Variables CSS · Animations · Thèmes dark/light
    Neo-brutalism minimal palette : #0A0A0A · #FF5500
    ════════════════════════════════════════════════ */
@@ -3252,7 +3252,7 @@
      padding: 3.4rem 6vw 0;
    }
 
-   /* Filigrane "AKATECH" massif en fond — teinte claire sur fond sombre + Beams */
+   /* Filigrane "akaTECH" massif en fond — teinte claire sur fond sombre + Beams */
    .ft-aka-watermark {
      position: absolute;
      left: 50%;

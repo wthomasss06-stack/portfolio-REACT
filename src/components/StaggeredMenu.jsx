@@ -4,7 +4,7 @@ import GhostParticleText from './GhostParticleText'
 import './StaggeredMenu.css'
 
 /*
-  StaggeredMenu — adapté AKAFOLIO
+  StaggeredMenu — adapté akaFOLIO
   · Panel à droite, fond #0A0A0A (toujours dark)
   · Accent #FF5500
   · items  = NAV_LINKS  { label, id (ancre) }
@@ -303,10 +303,10 @@ export function StaggeredMenu({
 
           {/* Logo panel */}
           <div className="sm-panel-logo">
-            <img src="/assets/images/logo-akatech.webp" alt="AKATech" className="sm-panel-logo-img"
+            <img src="/assets/images/logo-akatech.webp" alt="akaTech" className="sm-panel-logo-img"
               onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
             <span className="sm-panel-logo-text" style={{ display:'none' }}>
-              AKA<span style={{ color:'#FF5500' }}>TECH</span>
+              aka<span style={{ color:'#FF5500' }}>TECH</span>
             </span>
           </div>
 

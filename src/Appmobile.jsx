@@ -334,12 +334,12 @@ const SvgCpu = ({ size = 14 }) => (
   </svg>
 );
 
-// ─── Logo AKATech — PNG sans fond ───────────────────
-const AkafolioLogo = ({ size = 58, dark = true, onClick, animate = true }) => {
+// ─── Logo akaTech — PNG sans fond ───────────────────
+const akafolioLogo = ({ size = 58, dark = true, onClick, animate = true }) => {
   return (
     <img
       src="/assets/images/logo-akatech.webp"
-      alt="AKATech Logo"
+      alt="akaTech Logo"
       onClick={onClick}
       style={{
         width: size,
@@ -437,7 +437,7 @@ const SKILLS = {
 
 const TIMELINE = [
   {
-    date: "2025 – 2026", icon: "rocket", title: "Développeur Freelance Fullstack", company: "AKATech",
+    date: "2025 – 2026", icon: "rocket", title: "Développeur Freelance Fullstack", company: "akaTech",
     items: [
       "Conception et déploiement de plus de 10 applications web (SaaS, e-commerce, plateformes)",
       "Développement d'API REST avec Django et Flask",
@@ -477,7 +477,7 @@ const GRAD = [
   "linear-gradient(135deg,#1a0a28,#3a1a58)",
   "linear-gradient(135deg,#0a2a1a,#1a5a3a)",
   "linear-gradient(135deg,#2a1a0a,#5a3a1a)",
-  "linear-gradient(135deg,#060e09,#0a2a12)",  // AKATech — vert forêt profond
+  "linear-gradient(135deg,#060e09,#0a2a12)",  // akaTech — vert forêt profond
 ];
 
 const BADGE_LIGHT = { "en-ligne": "#C94B2A", "demo": "#A0522D", "en-cours": "#E06B2A" };
@@ -674,6 +674,66 @@ const SpotlightCard = ({ children, className = '', style = {} }) => {
 };
 
 function useStagger(thr = 0.08) { const [r, v] = useInView(thr); return [r, v]; }
+
+/* ── ACCORDION générique mobile — un seul panneau ouvert à la fois ──
+   Remplace le swipe StackedCard pour Services & Process en version mobile.
+   `renderHeader(item, isOpen)` remplit la ligne cliquable (chevron géré ici).
+   `renderBody(item)` remplit le contenu déplié, animé en hauteur via ref. */
+function AccordionPanel({ item, isOpen, onToggle, renderHeader, renderBody, dark }) {
+  const bodyRef = useRef(null);
+  const [maxH, setMaxH] = useState(0);
+
+  useEffect(() => {
+    if (!bodyRef.current) return;
+    if (isOpen) {
+      setMaxH(bodyRef.current.scrollHeight);
+    } else {
+      setMaxH(0);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !bodyRef.current) return;
+    const ro = new ResizeObserver(() => setMaxH(bodyRef.current.scrollHeight));
+    ro.observe(bodyRef.current);
+    return () => ro.disconnect();
+  }, [isOpen]);
+
+  return (
+    <div className={`acc-item${dark ? ' acc-item--dark' : ''}${isOpen ? ' acc-item--open' : ''}`}>
+      <button className="acc-head" onClick={onToggle} aria-expanded={isOpen}>
+        {renderHeader(item, isOpen)}
+        <span className={`acc-chev${isOpen ? ' acc-chev--open' : ''}`}>
+          <LI name="chevron-right" size={14} color={isOpen ? 'var(--acc)' : 'var(--muted)'} />
+        </span>
+      </button>
+      <div className="acc-body-wrap" style={{ maxHeight: maxH ? `${maxH}px` : '0px' }}>
+        <div className="acc-body" ref={bodyRef}>
+          {renderBody(item)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Accordion({ items, defaultOpen = 0, renderHeader, renderBody, dark }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className={`acc-wrap${dark ? ' acc-wrap--dark' : ''}`}>
+      {items.map((item, i) => (
+        <AccordionPanel
+          key={item.n || i}
+          item={item}
+          isOpen={open === i}
+          onToggle={() => setOpen(open === i ? -1 : i)}
+          renderHeader={renderHeader}
+          renderBody={renderBody}
+          dark={dark}
+        />
+      ))}
+    </div>
+  );
+}
 
 /* ── usePhotoColor : couleur si la section est active (scroll à son niveau) ── */
 function usePhotoColor() {
@@ -1218,7 +1278,7 @@ const Navbar = ({ dark, onToggle }) => {
       <header className={`nb-topbar ${scrolled ? 'nb-topbar--scrolled' : ''} ${dark ? 'nb-topbar--dark' : ''}`}>
         {/* Gauche : logo + nom */}
         <div className="nb-topbar-left" onClick={() => go('home')} style={{ cursor: 'pointer' }}>
-          <AkafolioLogo size={52} dark={dark} animate={false} />
+          <akafolioLogo size={52} dark={dark} animate={false} />
         </div>
 
         {/* Centre : date + heure */}
@@ -1255,7 +1315,7 @@ const Navbar = ({ dark, onToggle }) => {
       {/* ── MOBILE DRAWER ── */}
       <div className={`mob-drawer ${open ? 'mob-drawer--open' : ''} ${dark ? 'mob-drawer--dark' : ''}`} aria-hidden={!open}>
         <div className="mob-drawer-header">
-          <AkafolioLogo size={48} dark={dark} animate={false} />
+          <akafolioLogo size={48} dark={dark} animate={false} />
           <button className="mob-drawer-close" onClick={() => setOpen(false)} aria-label="Fermer le menu"><LI name="times" color={dark ? "#fff" : "#1a1a1a"} /></button>
         </div>
         <nav className="mob-drawer-nav">
@@ -1276,7 +1336,7 @@ const Navbar = ({ dark, onToggle }) => {
           <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
           <a href="https://www.linkedin.com/in/m-bollo-aka" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
           <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
-          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark ? "#fff" : "#1a1a1a"} /></a>
+          <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="akaTech"><LI name="globe" color={dark ? "#fff" : "#1a1a1a"} /></a>
           <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16} /></a>
         </div>
       </div>
@@ -1517,7 +1577,7 @@ const PlasmaCanvasBg = ({ intensity = 1.0 }) => {
 
 /* ══════════════════════════════════════════════
    PLASMA CANVAS — WebGL background hero
-   Shader plasma AKAfolio : noir profond → orange #FF5500 → ambre
+   Shader plasma akafolio : noir profond → orange #FF5500 → ambre
    ══════════════════════════════════════════════ */
 const AuroraCanvas = ({ dark }) => {
   const cvRef = useRef(null);
@@ -1555,7 +1615,7 @@ const AuroraCanvas = ({ dark }) => {
 
     const vert = `attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.,1.);}`;
 
-    /* ── Plasma shader — palette AKAfolio : noir #0A0A0A → orange #FF5500 → ambre #FF8C00 ── */
+    /* ── Plasma shader — palette akafolio : noir #0A0A0A → orange #FF5500 → ambre #FF8C00 ── */
     const frag = `
       precision highp float;
       uniform vec2  u_res;
@@ -1582,7 +1642,7 @@ const AuroraCanvas = ({ dark }) => {
         v += sin((p.x - p.y) * 2.8 + t * 0.6) * 0.5;
         v = v * 0.5 + 0.5; /* normalise 0..1 */
 
-        /* AKAfolio palette :
+        /* akafolio palette :
            a = noir profond   #0A0A0A  (0.04, 0.04, 0.04)
            b = gris chaud     #1C1008  (0.11, 0.063, 0.031)
            c = orange vif     #FF5500  (1.0,  0.333, 0.0)
@@ -1831,7 +1891,7 @@ const Hero = ({ dark }) => {
                 Voir mes projets <span>↗</span>
               </MagBtn>
               <a className={`btn ${dark ? 'btn--ghost-neon' : 'btn--ghost'} mi-glint`}
-                href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download>
+                href="/assets/CV_MBOLLO_aka_ELVIS.pdf" download>
                 <LI name="download" color={dark ? "#ffffff" : "#1a1a1a"} /> Télécharger CV
               </a>
             </div>
@@ -2476,18 +2536,26 @@ const Services = ({ dark }) => {
         </div>
       ) : (
         <div className="svc-mob">
-          <StackedCard
+          <Accordion
             items={SERVICES}
-            renderCard={(s, idx) => (
-              <TiltCard intensity={6} perspective={900} className="svc-mob-tilt">
-                <div className="pricing-card">
-                  <div className="svc-top" style={{ marginBottom: '8px' }}><span className="svc-n">{s.n}</span><div className="svc-ico"><LI name={s.icon} color="#ffffff" size={20} /></div></div>
-                  <h3 className="svc-title">{s.title}</h3>
-                  {s.sub && <p className="svc-sub">{s.sub}</p>}
-                  <p className="svc-desc">{s.desc}</p>
-                  <ul className="svc-feat">{s.features.map((f, fi) => <li key={fi}><span>→</span>{f}</li>)}</ul>
+            dark={dark}
+            renderHeader={(s, isOpen) => (
+              <div className="acc-hd-row">
+                <div className={`acc-ico${isOpen ? ' acc-ico--open' : ''}`}>
+                  <LI name={s.icon} color={isOpen ? '#ffffff' : 'var(--ink)'} size={18} />
                 </div>
-              </TiltCard>
+                <div className="acc-hd-txt">
+                  <span className="acc-n">{s.n}</span>
+                  <h3 className="acc-title">{s.title}</h3>
+                  {s.sub && <span className="acc-sub">{s.sub}</span>}
+                </div>
+              </div>
+            )}
+            renderBody={s => (
+              <div className="acc-body-inner">
+                <p className="svc-desc">{s.desc}</p>
+                <ul className="svc-feat">{s.features.map((f, fi) => <li key={fi}><span>→</span>{f}</li>)}</ul>
+              </div>
             )}
           />
         </div>
@@ -2606,16 +2674,23 @@ const Process = ({ dark }) => {
           </div>
         </div>
       ) : (
-        <div className="proc-mob-swipe">
-          <StackedCard
+        <div className="proc-mob-acc">
+          <Accordion
             items={PROCESS_STEPS}
-            renderCard={(s, idx) => (
-              <TiltCard intensity={6} perspective={900} className="proc-mob-tilt">
-                <div className="proc-mob-img-card">
-                  <img src={s.img} alt={s.imgAlt} className="proc-mob-img-only" loading="lazy" />
-                  <span className="proc-row-n">{s.n}</span>
+            dark={dark}
+            renderHeader={(s, isOpen) => (
+              <div className="acc-hd-col">
+                <div className="acc-hd-top">
+                  <span className={`acc-n${isOpen ? ' acc-n--open' : ''}`}>{s.n}</span>
+                  <h3 className="acc-title">{s.title}</h3>
                 </div>
-              </TiltCard>
+                <span className="acc-tag">{s.tag}</span>
+              </div>
+            )}
+            renderBody={s => (
+              <div className="acc-body-inner">
+                <p className="proc-acc-desc">{s.desc}</p>
+              </div>
             )}
           />
         </div>
@@ -2729,7 +2804,7 @@ const About = ({ dark }) => {
             <p>Mon parcours a commencé dans le <strong>réseau</strong> et la <strong>sécurité informatique</strong>, et cette base m'a appris à construire avec méthode, à penser la fiabilité et à garder une vision propre de l'architecture.</p>
             <p>Avec le temps, j'ai trouvé ma place dans le développement web. Aujourd'hui, j'aime concevoir des interfaces qui respirent, qui bougent, et qui donnent une vraie sensation de produit fini.</p>
             <p>Je travaille surtout avec <strong>React</strong> et <strong>Django</strong>, tout en explorant <strong>Next.js</strong>, <strong>GSAP</strong>, <strong>Framer Motion</strong> et parfois <strong>Three.js</strong> pour donner plus de vie et de profondeur aux expériences.</p>
-            <p>En grande partie <strong>autodidacte</strong>, j'apprends en construisant, en testant et en améliorant chaque projet. C'est aussi dans cet esprit que j'ai créé <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" style={{ color: 'var(--acc)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--acc)' }}>AKATech</a>, un espace où je donne forme à des idées web modernes et concrètes.</p>
+            <p>En grande partie <strong>autodidacte</strong>, j'apprends en construisant, en testant et en améliorant chaque projet. C'est aussi dans cet esprit que j'ai créé <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" style={{ color: 'var(--acc)', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid var(--acc)' }}>akaTech</a>, un espace où je donne forme à des idées web modernes et concrètes.</p>
             <div className={`about-tags ${dark ? 'about-tags--dark' : ''}`}>{["Esprit d'équipe", "Créativité", "Rigueur", "Adaptabilité", "Innovation"].map(t => <span key={t}>{t}</span>)}</div>
             <MagBtn className={`btn ${dark ? 'btn--neon' : 'btn--primary'} mi-glint`} onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>Disponible pour opportunités →</MagBtn>
           </div>
@@ -2937,7 +3012,7 @@ const About = ({ dark }) => {
             <p>N'hésitez pas à me contacter pour discuter de vos projets ou opportunités.</p>
             <div className="cta-btns">
               <MagBtn className={`btn ${dark ? 'btn--neon' : 'btn--cta-light'} mi-glint`} onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}><LI name="paper-plane" color="#ff5500" /> Me contacter</MagBtn>
-              <a className={`btn ${dark ? 'btn--ghost-neon' : 'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" download><LI name="download" color={dark ? "#ffffff" : "#1a1a1a"} /> Télécharger CV</a>
+              <a className={`btn ${dark ? 'btn--ghost-neon' : 'btn--cta-ghost-light'} mi-glint`} href="/assets/CV_MBOLLO_aka_ELVIS.pdf" download><LI name="download" color={dark ? "#ffffff" : "#1a1a1a"} /> Télécharger CV</a>
             </div>
           </div>
         </div>
@@ -3232,7 +3307,7 @@ const FanDeck = ({ items, dark }) => {
                   if (phase === 'focus' && isActive) handleFocusCardClick(e, item);
                 }}
               >
-                {/* ── Carte spéciale AKATech ── */}
+                {/* ── Carte spéciale akaTech ── */}
                 {isAgency ? (
                   <div className="fd-agency-card">
                     {/* Grille animée en arrière-plan */}
@@ -3244,7 +3319,7 @@ const FanDeck = ({ items, dark }) => {
                     <div className="fd-agency-scan" aria-hidden />
                     {/* Logo text */}
                     <div className="fd-agency-logo">
-                      <span className="fd-agency-aka">AKA</span><span className="fd-agency-tech">Tech</span>
+                      <span className="fd-agency-aka">aka</span><span className="fd-agency-tech">Tech</span>
                     </div>
                     <div className="fd-agency-tagline">Agence Digitale · Abidjan</div>
                     {/* Tech pills */}
@@ -3610,7 +3685,7 @@ const Testimonials = ({ dark }) => {
 };
 
 /* ════════════════════════════════════════════
-   ANIMATED BEAM — nœuds connectés au logo AKATech
+   ANIMATED BEAM — nœuds connectés au logo akaTech
    (portée depuis App.jsx, version mobile avec IDs uniques)
    ════════════════════════════════════════════ */
 function AnimatedBeamMobile({ dark }) {
@@ -3623,10 +3698,10 @@ function AnimatedBeamMobile({ dark }) {
     { id: 'mob-cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
     { id: 'mob-cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg> },
     { id: 'mob-cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg> },
-    { id: 'mob-cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
+    { id: 'mob-cojn-akatech', href: 'https://akatech.vercel.app/', label: 'akaTech', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
     { id: 'mob-cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 7 10-7" /></svg> },
     { id: 'mob-cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI', icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg> },
-    { id: 'mob-cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV', download: true, icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
+    { id: 'mob-cojn-cv', href: '/assets/CV_MBOLLO_aka_ELVIS.pdf', label: 'Mon CV', download: true, icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
   ]
 
   useEffect(() => {
@@ -3718,12 +3793,12 @@ function AnimatedBeamMobile({ dark }) {
               <div className="mob-node-circle mob-node-main">
                 <img
                   src="/assets/images/logo-akatech.webp"
-                  alt="AKATech"
+                  alt="akaTech"
                   style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%' }}
                   onError={e => { e.target.style.display = 'none' }}
                 />
               </div>
-              <span className="mob-node-label" style={{ color: 'rgba(255,85,0,.8)' }}>AKATech</span>
+              <span className="mob-node-label" style={{ color: 'rgba(255,85,0,.8)' }}>akaTech</span>
             </div>
           </div>
           {/* Rangée basse */}
@@ -3901,7 +3976,7 @@ function GitHubInteractiveCard({ dark }) {
               (ghRepos.length > 0 ? ghRepos : [
                 { name: 'ShopCI', description: 'Marketplace E-commerce avec mobile money.', stargazers_count: 14, forks_count: 4, language: 'JavaScript' },
                 { name: 'TerraSafe', description: "Plateforme foncière anti-arnaque.", stargazers_count: 8, forks_count: 2, language: 'Python' },
-                { name: 'AKATech', description: 'Site officiel de mon agence digitale.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
+                { name: 'akaTech', description: 'Site officiel de mon agence digitale.', stargazers_count: 21, forks_count: 5, language: 'TypeScript' },
                 { name: 'chap-chapMAP', description: "Cartographie interactive de livraison.", stargazers_count: 5, forks_count: 1, language: 'JavaScript' },
               ]).map((repo, i) => {
                 const langColor = { JavaScript: '#f1e05a', Python: '#3572A5', TypeScript: '#2b7489', HTML: '#e34c26', CSS: '#563d7c' }
@@ -4095,7 +4170,7 @@ const Contact = ({ dark }) => {
                     <span className="cv-v2-eyebrow">// document</span>
                     <h4 className="cv-v2-title">Télécharger<br />mon CV</h4>
                     <p className="cv-v2-sub">Scannez le QR code ou cliquez ci-dessous</p>
-                    <a href="/assets/CV_MBOLLO_AKA_ELVIS.pdf" className={`btn ${dark ? 'btn--neon' : 'btn--primary'} mi-glint cv-v2-btn`} download>
+                    <a href="/assets/CV_MBOLLO_aka_ELVIS.pdf" className={`btn ${dark ? 'btn--neon' : 'btn--primary'} mi-glint cv-v2-btn`} download>
                       <LI name="download" color={dark ? "#ffffff" : "#1a1a1a"} /> Télécharger CV
                     </a>
                   </div>
@@ -4112,7 +4187,7 @@ const Contact = ({ dark }) => {
 const Footer = ({ dark }) => (
   <footer className={`footer ${dark ? 'footer--dark' : 'footer--light'}`}>
     <div className="footer-inner">
-      <div className="footer-logo"><AkafolioLogo size={58} dark={dark} animate={false} /></div>
+      <div className="footer-logo"><akafolioLogo size={58} dark={dark} animate={false} /></div>
       <div className="footer-mid">
         <p>© 2026 — M'Bollo aka — Développeur Full-Stack</p>
         <p>Abidjan, Côte d'Ivoire</p>
@@ -4121,7 +4196,7 @@ const Footer = ({ dark }) => (
         <a href="https://github.com/wthomasss06-stack" target="_blank" rel="noreferrer"><LI name="github" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
         <a href="https://www.linkedin.com/in/m-bollo-aka" target="_blank" rel="noreferrer"><LI name="linkedin" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
         <a href={FACEBOOK_URL} target="_blank" rel="noreferrer"><LI name="facebook" color={dark ? "#ffffff" : "#1a1a1a"} /></a>
-        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="AKATech"><LI name="globe" color={dark ? "#fff" : "#1a1a1a"} /></a>
+        <a href="https://akatech.vercel.app/" target="_blank" rel="noreferrer" title="akaTech"><LI name="globe" color={dark ? "#fff" : "#1a1a1a"} /></a>
         <a href="mailto:wthomasss06@gmail.com"><LI name="envelope" color="#ff5500" size={16} /></a>
       </div>
     </div>

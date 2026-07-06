@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 
 /* ═══════════════════════════════════════════════════════
-   FireAkatech.jsx
+   Fireakatech.jsx
    Remplace le bloc iridescent du footer (.ft-aka-wrap)
    Animation feu GSAP — 60 layers + embers canvas
 
    Usage dans Footer() de App.jsx :
-     import FireAkatech from './components/FireAkatech.jsx'
+     import Fireakatech from './components/Fireakatech.jsx'
      ...
-     <FireAkatech />   ← remplace la div .ft-aka-wrap
+     <Fireakatech />   ← remplace la div .ft-aka-wrap
 ═══════════════════════════════════════════════════════ */
 
 const NUM_LAYERS = 60
@@ -30,7 +30,7 @@ function getFireColor(p) {
   }
 }
 
-export default function FireAkatech({ className = '' }) {
+export default function Fireakatech({ className = '' }) {
   const wrapRef    = useRef(null)
   const canvasRef  = useRef(null)
   const tweensRef  = useRef([])
@@ -47,7 +47,7 @@ export default function FireAkatech({ className = '' }) {
     for (let i = 0; i < NUM_LAYERS; i++) {
       const el = document.createElement('div')
       el.className = 'fak-layer'
-      el.textContent = 'AKATECH'
+      el.textContent = 'akaTECH'
 
       const p = i / NUM_LAYERS
       const { r, g, b } = getFireColor(p)
@@ -282,7 +282,7 @@ export default function FireAkatech({ className = '' }) {
           pointerEvents: 'none',
         }}
       >
-        AKATECH
+        akaTECH
       </div>
 
       {/* Canvas pour les braises */}

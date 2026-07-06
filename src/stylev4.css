@@ -1,5 +1,5 @@
 ﻿/* ════════════════════════════════════════════════
-   AKAfolio — style.css
+   akafolio — style.css
    Variables CSS · Animations · Thèmes dark/light
    Neo-brutalism minimal palette : #0A0A0A · #FF5500
    ════════════════════════════════════════════════ */
@@ -2064,7 +2064,7 @@
    .ft-dl-btn:hover { transform: translate(-2px,-2px) !important; box-shadow: 5px 5px 0 #CC3300 !important; }
    .ft-svg-wrap { overflow: hidden; padding: 2rem 4rem 0; border-top: 1px solid rgba(255,85,0,.12); text-align: center; }
    
-   /* ── AKATECH massif — Iridescence masquée dans les lettres ── */
+   /* ── akaTECH massif — Iridescence masquée dans les lettres ── */
    .ft-aka-wrap {
      position: relative;
      width: 100vw;

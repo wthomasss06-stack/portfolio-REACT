@@ -1,5 +1,5 @@
 /* ============================================================
-   AKAFOLIO v3
+   akaFOLIO v3
    LIGHT  : Blanc · Orange · Noir  — Neo Brutalism window chrome
    DARK   : Noir violet · Liquid Ultra Glass · Violet neon
    ============================================================ */
@@ -2272,7 +2272,7 @@ section { max-width:var(--max); margin:0 auto; padding:80px var(--pad) }
 .app--light .hero.hv4 .hero-scroll { color: rgba(0,0,0,.45); }
 
 /* ═══════════════════════════════════════════════════════════
-   CARTE SPÉCIALE AKATECH — fd-card--agency
+   CARTE SPÉCIALE akaTECH — fd-card--agency
    ═══════════════════════════════════════════════════════════ */
 
 .fd-card--agency { border: 1px solid rgba(34,200,100,.35) !important; }
@@ -4041,3 +4041,102 @@ body.light-mode .mob-ld-percent {
 body.light-mode .mob-ld-corner {
   color: rgba(0,0,0,.35);
 }
+/* ═══════════════════════════════════════════════════════
+   ACCORDION mobile — remplace le swipe StackedCard pour
+   "Ce que je sais faire" (Services) & "Process"
+   ═══════════════════════════════════════════════════════ */
+.acc-wrap { border-top: 2px solid var(--border); }
+.acc-item { border-bottom: 2px solid var(--border); }
+.acc-item--open { background: var(--paper-2); }
+.app--light .acc-item--open { background: var(--paper-3); }
+
+.acc-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  color: inherit;
+}
+
+.acc-chev {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.acc-chev--open { transform: rotate(90deg); }
+
+.acc-body-wrap {
+  overflow: hidden;
+  max-height: 0px;
+  transition: max-height .35s cubic-bezier(.22,1,.36,1);
+}
+.acc-body { padding: 0 4px 22px; }
+.acc-body-inner { padding-left: 0; }
+
+/* ── Header Services (icône + titre + sous-titre) ── */
+.acc-hd-row { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+.acc-ico {
+  width: 40px; height: 40px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  background: var(--acc-light);
+  transition: background .25s, border-color .25s;
+}
+.acc-ico--open { background: var(--acc); border-color: var(--acc); }
+.acc-hd-txt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.acc-n {
+  font-family: var(--fd); font-size: 10px; font-weight: 700;
+  letter-spacing: .15em; color: var(--acc); opacity: .8;
+}
+.acc-title {
+  font-family: var(--fd); font-size: 15px; font-weight: 800;
+  color: var(--ink); letter-spacing: -.01em; line-height: 1.25;
+}
+.acc-sub {
+  font-family: var(--fb); font-size: 10.5px; letter-spacing: .04em;
+  color: var(--muted); line-height: 1.4;
+}
+
+/* ── Header Process (numéro + titre + badge tag) ── */
+.acc-hd-col { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.acc-hd-top { display: flex; align-items: baseline; gap: 10px; }
+.acc-n--open { color: var(--acc); }
+.acc-tag {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  background: var(--acc-light);
+  font-family: var(--fd); font-size: 9px; font-weight: 700;
+  letter-spacing: .05em; color: var(--acc); white-space: nowrap;
+}
+
+/* ── Body commun ── */
+.acc-body-inner .svc-desc { margin-bottom: 14px; }
+.acc-body-inner .svc-feat { margin-top: 4px; }
+
+.proc-acc-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 14px;
+  display: block;
+}
+.proc-acc-desc {
+  font-family: var(--fb); font-size: 12.5px; line-height: 1.75;
+  color: var(--muted);
+}
+
+/* Masque les anciens conteneurs swipe désormais inutilisés sur mobile */
+.svc-mob-tilt, .proc-mob-tilt { display: none; }
