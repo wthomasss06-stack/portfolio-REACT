@@ -7,3 +7,4 @@ git commit -m " s envolement1"
 git push
 
 
+ ensuite la formulaire contact force la en blanc meme en mode sombre il reste toujour blanc comme le mode claire ensuite les liens retire les icon met juste les nom et fleche des liens

@@ -17,7 +17,6 @@ import { runGridTransition, useGooeyTransition } from './components/GooeyTransit
 import DissolveTransition, { VERTEX_SHADER, FRONT_FRAGMENT_SHADER, BACK_FRAGMENT_SHADER } from './components/DissolveTransition.jsx'
 import PixelSliceTrail from './components/PixelSliceTrail.jsx'
 import CardSwap, { Card } from './components/CardSwap.jsx'
-import Stack from './components/Stack.jsx'
 import FlowingMenu from './components/FlowingMenu.jsx'
 
 import { gsap } from 'gsap'
@@ -1139,23 +1138,14 @@ const TESTIMONIALS = [
   { name: 'Manobeat 777', role: 'Beatmaker · ManoBeat', avatar: 'B', proj: 'Beat Store', text: "La boutique de beats marche très bien. Les clients achètent facilement via WhatsApp. Interface propre et professionnelle." },
 ]
 
-/* ─── FAQ — 15 questions les plus posées avant/pendant une commande ─── */
+/* ─── FAQ — 6 questions les plus pertinentes avant/pendant une commande ─── */
 const FAQ_ITEMS = [
   { q: 'Comment se déroule le paiement de mon site ?', a: "Le paiement se fait en deux fois : 50% à la commande pour démarrer le projet, et les 50% restants à la livraison, juste avant de recevoir les fichiers finaux et les accès." },
-  { q: 'Pourquoi un acompte est-il demandé avant de commencer ?', a: "L'acompte confirme votre commande et me permet de démarrer le développement immédiatement, de récupérer vos contenus (logo, textes, photos) et de vous garantir le délai annoncé. Sans acompte, le projet n'est pas priorisé dans mon planning." },
-  { q: 'Quels moyens de paiement acceptez-vous ?', a: "Orange Money, MTN Mobile Money, Wave ou virement bancaire. Vous précisez votre moyen préféré au moment de la commande et je vous envoie les coordonnées correspondantes." },
   { q: 'Quel est le délai pour recevoir mon site ?', a: "Cela dépend du pack choisi : 3 à 5 jours pour un portfolio simple, davantage pour une vitrine, une boutique e-commerce ou une application plus complexe. Le délai exact est précisé dans le devis et démarre dès réception de l'acompte et de vos contenus." },
-  { q: 'Quand mon site est-il mis en ligne ?', a: "Une fois le solde réglé. Avant cela, je vous partage un lien de prévisualisation pour valider le design et le contenu." },
   { q: "Puis-je voir mon site avant qu'il soit en ligne ?", a: "Oui, toujours. Vous recevez un lien de prévisualisation pour tester le site, faire vos retours et demander des ajustements avant la mise en ligne officielle." },
-  { q: 'Combien de modifications sont incluses ?', a: "Les petites corrections — textes, couleurs, ajustements visuels — sont incluses pendant la phase de validation. Les modifications majeures, comme un changement de structure ou l'ajout de pages, font l'objet d'un devis complémentaire." },
-  { q: 'Quel pack choisir pour mon projet ?', a: "Tout dépend de vos besoins : portfolio, vitrine, boutique e-commerce ou application plus complexe type SaaS. Je vous conseille gratuitement lors du brief initial pour identifier le pack le plus adapté." },
   { q: "Le nom de domaine et l'hébergement sont-ils vraiment gratuits ?", a: "Oui, la première année est offerte sur tous les packs. Après cette période, vous payez simplement le renouvellement — environ 15 000 à 30 000 FCFA par an selon le domaine — et je vous envoie un rappel avant l'expiration." },
   { q: 'Quels contenus dois-je fournir ?', a: "Votre logo, vos photos, vos textes de présentation et vos informations de contact. Plus ces éléments arrivent vite, plus le développement avance rapidement." },
-  { q: "Je n'ai pas de logo ni de textes, pouvez-vous m'aider ?", a: "Oui. Je peux proposer un logo simple, utiliser des visuels libres de droits adaptés à votre activité, ou rédiger une trame de textes professionnels que vous ajustez ensuite. Ces services s'ajoutent au devis initial." },
   { q: 'Qui gère mon site après la livraison ?', a: "Vous. Je vous transmets tous les accès — administration, hébergement, nom de domaine — ainsi qu'un tutoriel simple pour modifier vos textes et images sans dépendre de moi." },
-  { q: "Que se passe-t-il si le délai annoncé n'est pas respecté ?", a: "C'est rare, mais si cela arrive de mon fait, une pénalité s'applique sur le montant total et vous pouvez demander l'annulation du projet avec un remboursement partiel. Ces conditions figurent dans le devis signé." },
-  { q: 'Mon site a un bug après la livraison, que faites-vous ?', a: "Je corrige gratuitement tout bug lié à mon développement pendant le mois suivant la livraison — inclus dans le pack Premium, possible en option sur les autres packs." },
-  { q: 'Comment commander mon site ?', a: "Trois étapes : on échange sur votre projet et le pack adapté, je vous envoie un devis avec l'acompte de 50%, puis dès réception du paiement je démarre le développement." },
 ]
 
 function Loader({ onDone }) {
@@ -2866,15 +2856,227 @@ function About() {
   )
 }
 /* ════════════════════════════════════════════
- TIMELINE — Stack cards (Stack.jsx)
- Drag-to-send-back + autoplay cycling
+ TIMELINE — Board interactif (repris de super.html) :
+ spotlight qui suit le curseur (color-dodge sur le texte
+ géant en fond) + cartes punaisées en tilt 3D au survol,
+ librement déplaçables par drag. Remplace l'ancien Stack
+ (grid gris) par la même animation / expérience UI-UX que
+ le prototype de référence, en GSAP quickTo/quickSetter
+ (fluide, cf. skill gsap-performance) plutôt que le
+ left/top + WebKitCSSMatrix (déprécié) du prototype d'origine.
+ Drag borné dans la surface du board — le prototype laissait
+ les cartes sortir complètement de l'écran.
+ Sur tactile / sans hover fin : rangée horizontale scroll-
+ snap, sans spotlight ni tilt (même garde-fou `canHover`
+ que la parallaxe souris du Hero ci-dessus).
  ════════════════════════════════════════════ */
+const TL_BOARD_LAYOUT = [
+  { left: '0%',  top: '6%',  rot: -7 },
+  { left: '19%', top: '34%', rot: 5 },
+  { left: '38%', top: '4%',  rot: -4 },
+  { left: '57%', top: '32%', rot: 8 },
+  { left: '74%', top: '10%', rot: -6 },
+]
 
+function TimelineCard({ item, index, layout, setCardRef }) {
+  return (
+    <div
+      ref={(el) => setCardRef(index, el)}
+      className="tl-card"
+      style={{ left: layout.left, top: layout.top, zIndex: 10 + (TIMELINE.length - index) }}
+    >
+      <svg className="tl-pin" viewBox="0 0 100 100" aria-hidden="true">
+        <ellipse cx="60" cy="85" rx="15" ry="5" fill="rgba(0,0,0,.35)" />
+        <polygon points="50,45 48,85 52,85" fill="#777" />
+        <path d="M30,45 L70,45 L60,25 L40,25 Z" fill="var(--accent)" />
+        <ellipse cx="50" cy="25" rx="15" ry="8" fill="#ff8a3d" />
+      </svg>
+      <div className="tl-sc-header">
+        <span className="tl-sc-idx">0{index + 1} / 0{TIMELINE.length}</span>
+        <span className="tl-sc-date">{item.date}</span>
+      </div>
+      <div className="tl-sc-title">{item.title}</div>
+      <div className="tl-sc-company">
+        <span className="tl-sc-company-icon">◈</span>
+        {item.company}
+      </div>
+      <ul className="tl-sc-items">
+        {item.items.map((li, j) => <li key={j}>→ {li}</li>)}
+      </ul>
+      <div className="tl-sc-tags">
+        {item.tags.map(tag => <span key={tag} className="tl-sc-tag">{tag}</span>)}
+      </div>
+    </div>
+  )
+}
+
+function TimelineBoard() {
+  const boardRef = useRef(null)
+  const spotlightRef = useRef(null)
+  const cardsRef = useRef([])
+  const highestZRef = useRef(30)
+  const draggingRef = useRef(null)
+
+  const setCardRef = useCallback((i, el) => { cardsRef.current[i] = el }, [])
+
+  useEffect(() => {
+    const board = boardRef.current
+    const spotlight = spotlightRef.current
+    const cards = cardsRef.current.filter(Boolean)
+    if (!board || !spotlight || !cards.length) return
+
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!canHover || reduceMotion) return /* le CSS prend le relais : rangée horizontale, cf. style.css */
+
+    /* ── Spotlight — suit le curseur en x/y (transform GSAP), jamais en
+       left/top comme le prototype de référence : reste sur le
+       compositeur, zéro reflow à chaque mousemove. ── */
+    gsap.set(spotlight, { xPercent: -50, yPercent: -50, x: -9999, y: -9999 })
+    const spotX = gsap.quickTo(spotlight, 'x', { duration: 0.35, ease: 'power3.out' })
+    const spotY = gsap.quickTo(spotlight, 'y', { duration: 0.35, ease: 'power3.out' })
+
+    const onBoardEnter = () => gsap.to(spotlight, { opacity: 1, duration: 0.25, overwrite: 'auto' })
+    const onBoardMove = (e) => {
+      const rect = board.getBoundingClientRect()
+      spotX(e.clientX - rect.left)
+      spotY(e.clientY - rect.top)
+    }
+    const onBoardLeave = () => gsap.to(spotlight, { opacity: 0, duration: 0.3, overwrite: 'auto' })
+    board.addEventListener('pointerenter', onBoardEnter)
+    board.addEventListener('pointermove', onBoardMove)
+    board.addEventListener('pointerleave', onBoardLeave)
+
+    /* ── Par carte : position de repos + tilt 3D au survol + drag borné ── */
+    const perCardCleanups = cards.map((card, i) => {
+      gsap.set(card, { x: 0, y: 0, rotation: TL_BOARD_LAYOUT[i]?.rot || 0 })
+
+      const rxTo = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power2.out' })
+      const ryTo = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power2.out' })
+      let xSet = null, ySet = null
+      let originX = 0, originY = 0, startX = 0, startY = 0
+      let boundsX = [0, 0], boundsY = [0, 0]
+
+      const bringToFront = () => { highestZRef.current += 1; card.style.zIndex = highestZRef.current }
+
+      const onEnter = () => {
+        if (draggingRef.current !== null) return
+        bringToFront()
+        card.classList.add('tl-card--active')
+      }
+      const onMove = (e) => {
+        if (draggingRef.current !== null) return
+        const rect = card.getBoundingClientRect()
+        ryTo(gsap.utils.mapRange(0, rect.width, -14, 14, e.clientX - rect.left))
+        rxTo(gsap.utils.mapRange(0, rect.height, 14, -14, e.clientY - rect.top))
+      }
+      const onLeave = () => {
+        if (draggingRef.current !== null) return
+        rxTo(0); ryTo(0)
+        card.classList.remove('tl-card--active')
+      }
+
+      const onPointerMove = (e) => {
+        e.preventDefault()
+        xSet(gsap.utils.clamp(boundsX[0], boundsX[1], originX + (e.clientX - startX)))
+        ySet(gsap.utils.clamp(boundsY[0], boundsY[1], originY + (e.clientY - startY)))
+      }
+      const onPointerUp = () => {
+        draggingRef.current = null
+        card.classList.remove('tl-card--dragging')
+        gsap.to(card, { scale: 1, duration: 0.35, ease: 'back.out(2.6)' })
+        window.removeEventListener('pointermove', onPointerMove)
+        window.removeEventListener('pointerup', onPointerUp)
+      }
+      const onPointerDown = (e) => {
+        if (e.button > 0) return
+        draggingRef.current = i
+        bringToFront()
+        card.classList.add('tl-card--dragging')
+        rxTo(0); ryTo(0)
+        gsap.to(card, { scale: 1.03, duration: 0.2 })
+
+        xSet = gsap.quickSetter(card, 'x', 'px')
+        ySet = gsap.quickSetter(card, 'y', 'px')
+        originX = gsap.getProperty(card, 'x')
+        originY = gsap.getProperty(card, 'y')
+        startX = e.clientX
+        startY = e.clientY
+
+        /* Bornes calculées à la volée depuis la position actuelle —
+           tolère un léger débordement (comme un vrai post-it), mais
+           empêche de perdre une carte hors de l'écran (limite du
+           prototype HTML de référence, qui ne bornait rien). */
+        const boardRect = board.getBoundingClientRect()
+        const cardRect = card.getBoundingClientRect()
+        const margin = 50
+        boundsX = [-(cardRect.left - boardRect.left) - margin, (boardRect.right - cardRect.right) + margin]
+        boundsY = [-(cardRect.top - boardRect.top) - margin, (boardRect.bottom - cardRect.bottom) + margin]
+
+        window.addEventListener('pointermove', onPointerMove)
+        window.addEventListener('pointerup', onPointerUp)
+      }
+
+      card.addEventListener('pointerenter', onEnter)
+      card.addEventListener('pointermove', onMove)
+      card.addEventListener('pointerleave', onLeave)
+      card.addEventListener('pointerdown', onPointerDown)
+
+      return () => {
+        card.removeEventListener('pointerenter', onEnter)
+        card.removeEventListener('pointermove', onMove)
+        card.removeEventListener('pointerleave', onLeave)
+        card.removeEventListener('pointerdown', onPointerDown)
+        window.removeEventListener('pointermove', onPointerMove)
+        window.removeEventListener('pointerup', onPointerUp)
+      }
+    })
+
+    /* ── Entrée au scroll : les cartes "tombent" en place, en cascade ── */
+    const introTween = gsap.fromTo(
+      cards,
+      { opacity: 0, y: 46, scale: 0.92 },
+      {
+        opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power3.out', stagger: 0.09,
+        scrollTrigger: { trigger: board, start: 'top 85%', toggleActions: 'play none none reverse' },
+      }
+    )
+
+    return () => {
+      board.removeEventListener('pointerenter', onBoardEnter)
+      board.removeEventListener('pointermove', onBoardMove)
+      board.removeEventListener('pointerleave', onBoardLeave)
+      perCardCleanups.forEach(fn => fn())
+      introTween.scrollTrigger?.kill()
+      introTween.kill()
+    }
+  }, [])
+
+  return (
+    <div className="tl-board" ref={boardRef}>
+      <div className="tl-board-spotlight" ref={spotlightRef} aria-hidden="true" />
+      <div className="tl-board-bgtext" aria-hidden="true">
+        <span>SÉCURITÉ</span>
+        <span>RÉSEAU</span>
+        <span>DÉVELOPPEMENT</span>
+        <span>WEB</span>
+      </div>
+      <div className="tl-board-cards">
+        {TIMELINE.map((item, i) => (
+          <TimelineCard
+            key={i}
+            item={item}
+            index={i}
+            layout={TL_BOARD_LAYOUT[i] || TL_BOARD_LAYOUT[TL_BOARD_LAYOUT.length - 1]}
+            setCardRef={setCardRef}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function Timeline() {
-  const [activeIdx, setActiveIdx] = useState(0)
-  const t = TIMELINE[activeIdx]
-
   return (
     <section id="timeline-section" className="sec">
       <SectionHeading num="02" title="Parcours" sub="Expérience & Formation" style={{ marginBottom: '1.5rem' }} />
@@ -2882,45 +3084,8 @@ function Timeline() {
         De la <strong>sécurité informatique</strong> au développement web : chaque étape
         a renforcé ma méthode et ma rigueur technique.
       </h3>
-
-      {/* ── Stack cards — drag to shuffle, click cycles detail ── */}
-      <div className="tl-stack-wrap">
-        <Stack
-          cards={TIMELINE.map((t, i) => (
-            <div
-              key={i}
-              className="tl-stack-card tl-stack-card--info"
-              onClick={() => setActiveIdx(i)}
-            >
-              <div className="tl-sc-header">
-                <span className="tl-sc-idx">0{i + 1} / 0{TIMELINE.length}</span>
-                <span className="tl-sc-date">{t.date}</span>
-              </div>
-              <div className="tl-sc-title">{t.title}</div>
-              <div className="tl-sc-company">
-                <span className="tl-sc-company-icon">◈</span>
-                {t.company}
-              </div>
-              <ul className="tl-sc-items">
-                {t.items.map((li, j) => <li key={j}>→ {li}</li>)}
-              </ul>
-              <div className="tl-sc-tags">
-                {t.tags.map(tag => <span key={tag} className="tl-sc-tag">{tag}</span>)}
-              </div>
-            </div>
-          ))}
-          autoplay
-          autoplayDelay={3200}
-          pauseOnHover
-          sendToBackOnClick
-          sensitivity={120}
-          randomRotation
-          animationConfig={{ stiffness: 220, damping: 22 }}
-        />
-      </div>
-
-
-
+      <p className="tl-board-hint">Glisse les cartes pour explorer</p>
+      <TimelineBoard />
     </section>
   )
 }
@@ -3099,54 +3264,79 @@ const CrossIcon = () => (
  ════════════════════════════════════════════ */
 function HoverRevealList({ items, eyebrowSuffix = '' }) {
   const [hovered, setHovered] = useState(null)
-  const [pos, setPos]         = useState({ x: 0, y: 0 })
-  const [rot, setRot]         = useState(0)
-  const containerRef          = useRef(null)
-  const rafRef                = useRef(null)
+  const containerRef = useRef(null)
+  const wrapRef       = useRef(null) /* boîte flottante : position + rotation + scale/opacity */
+  const imgRef        = useRef(null) /* <img> interne : petit "punch" au changement d'item */
+  const xTo           = useRef(null)
+  const yTo           = useRef(null)
+
+  /* ── Suivi du curseur en continu via quickTo — jamais de setState
+     ici, donc jamais de re-render de la liste à chaque mousemove.
+     C'était la cause principale du manque de fluidité : l'ancienne
+     version faisait un setState (via rAF) sur CHAQUE mouvement, avec
+     en plus une transition CSS qui doublait l'easing. ── */
+  useEffect(() => {
+    const wrap = wrapRef.current
+    if (!wrap) return
+    gsap.set(wrap, { opacity: 0, scale: 0.8 })
+    xTo.current = gsap.quickTo(wrap, 'x', { duration: 0.5, ease: 'power3.out' })
+    yTo.current = gsap.quickTo(wrap, 'y', { duration: 0.5, ease: 'power3.out' })
+  }, [])
+
+  /* Petit "punch" (scale + fade) à chaque changement d'item survolé,
+     pour que l'image se sente vivante même quand on glisse d'une
+     ligne à l'autre sans jamais quitter la liste. */
+  useEffect(() => {
+    if (hovered === null || !imgRef.current) return
+    gsap.fromTo(imgRef.current, { opacity: 0, scale: 1.08, y: 22 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'power3.out' })
+  }, [hovered])
 
   const onMouseMove = (e) => {
-    cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(() => {
-      const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect) return
-      setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-    })
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect || !xTo.current) return
+    xTo.current(e.clientX - rect.left + 16)
+    yTo.current(e.clientY - rect.top - 34)
   }
 
-  const onEnter = (i) => { setHovered(i); setRot((Math.random() - 0.5) * 8) }
-  const onLeave = () => setHovered(null)
+  const onEnter = (i, e) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (rect && wrapRef.current && hovered === null) {
+      /* Premier survol : on cale la boîte directement sur le curseur
+         sans easing, pour éviter qu'elle n'arrive "en volant" depuis
+         le coin (0,0) — ensuite le quickTo prend le relais en continu. */
+      gsap.set(wrapRef.current, { x: e.clientX - rect.left + 16, y: e.clientY - rect.top - 34 })
+    }
+    gsap.to(wrapRef.current, {
+      opacity: 1, scale: 1,
+      rotation: (Math.random() - 0.5) * 8,
+      duration: 0.5, ease: 'power3.out',
+    })
+    setHovered(i)
+  }
+
+  /* Déclenché en quittant TOUTE la liste (pas ligne par ligne) : passer
+     d'une ligne à la suivante ne masque jamais la boîte, elle glisse
+     simplement vers la nouvelle position — plus de clignotement. */
+  const onLeaveList = () => {
+    gsap.to(wrapRef.current, { opacity: 0, scale: 0.8, duration: 0.35, ease: 'power2.inOut' })
+    setHovered(null)
+  }
 
   return (
     <div
       ref={containerRef}
       className="hvr-list"
       onMouseMove={onMouseMove}
+      onMouseLeave={onLeaveList}
     >
       {items.map((item, i) => (
         <div key={i} className="hvr-row-wrap">
           <div
             className={`hvr-row${hovered === i ? ' hvr-row--active' : ''}`}
-            onMouseEnter={() => onEnter(i)}
-            onMouseLeave={onLeave}
+            onMouseEnter={(e) => onEnter(i, e)}
           >
-            {/* Flèche ↗ */}
-            <div className="hvr-arrow">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 12L12 2M12 2H5M12 2V9"
-                  stroke="var(--accent)" strokeWidth="1.8"
-                  strokeLinecap="round" strokeLinejoin="round"
-                  style={{ opacity: hovered === i ? 1 : 0.3, transition: 'opacity .22s' }}
-                />
-              </svg>
-            </div>
-
-            {/* Numéro */}
-            <span className="hvr-num">{item.n}</span>
-
-            {/* Titre */}
             <span className="hvr-title">{item.title}</span>
 
-            {/* Tag */}
             {item.tag && (
               <span className="hvr-tag" style={{
                 opacity: hovered === i ? 1 : 0,
@@ -3165,28 +3355,11 @@ function HoverRevealList({ items, eyebrowSuffix = '' }) {
         </div>
       ))}
 
-      {/* Image curseur 260×260 */}
-      <div
-        className="hvr-cursor-img"
-        style={{
-          transform: `translate(${pos.x + 24}px,${pos.y - 130}px) rotate(${rot}deg) scale(${hovered !== null ? 1 : 0.75})`,
-          opacity: hovered !== null ? 1 : 0,
-        }}
-      >
+      {/* Image curseur 260×260 — position/rotation/scale/opacity 100% GSAP */}
+      <div ref={wrapRef} className="hvr-cursor-img">
         {hovered !== null && items[hovered]?.img && (
-          <img
-            src={items[hovered].img}
-            alt={items[hovered].title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
+          <img ref={imgRef} src={items[hovered].img} alt={items[hovered].title} />
         )}
-        <span
-          className="hvr-view-badge"
-          aria-hidden="true"
-          style={{ transform: `translate(-50%, -50%) scale(${hovered !== null ? 1 : 0})` }}
-        >
-          View
-        </span>
       </div>
     </div>
   )
@@ -4207,14 +4380,14 @@ function ContactSection({ onToast }) {
   }
 
   const nodeLinks = [
-    { id: 'cojn-github', href: 'https://github.com/wthomasss06-stack', label: 'GitHub', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg> },
-    { id: 'cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7H10V9h4v2a6 6 0 0 1 6-3z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg> },
-    { id: 'cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg> },
-    { id: 'cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" /></svg> },
-    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20" /></svg> },
-    { id: 'cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 7 10-7" /></svg> },
-    { id: 'cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M2 10l10-7 10 7v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg> },
-    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF5500" strokeWidth="1.8" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> },
+    { id: 'cojn-github', href: 'https://github.com/wthomasss06-stack', label: 'GitHub' },
+    { id: 'cojn-linkedin', href: 'https://www.linkedin.com/in/m-bollo-aka', label: 'LinkedIn' },
+    { id: 'cojn-facebook', href: 'https://web.facebook.com/profile.php?id=61577494705852', label: 'Facebook' },
+    { id: 'cojn-whatsapp', href: 'https://wa.me/2250142507750', label: 'WhatsApp' },
+    { id: 'cojn-akatech', href: 'https://akatech.vercel.app/', label: 'AKATech' },
+    { id: 'cojn-gmail', href: 'mailto:wthomasss06@gmail.com', label: 'Gmail' },
+    { id: 'cojn-uvci', href: 'https://uvci.edu.ci/', label: 'UVCI' },
+    { id: 'cojn-cv', href: '/assets/CV_MBOLLO_AKA_ELVIS.pdf', label: 'Mon CV' },
   ]
 
   return (
@@ -4224,11 +4397,6 @@ function ContactSection({ onToast }) {
         Une idée, un projet, une question ? Je suis <strong>disponible</strong> pour en
         discuter et la transformer en quelque chose de concret.
       </h3>
-
-      {/* GitHub Large Interactive Card */}
-      <div className="github-card-large-wrapper">
-        <GitHubInteractiveCard />
-      </div>
 
       <div className="contact-grid">
         {/* ── Colonne gauche : liste compacte "Où me joindre" ── */}
@@ -4244,7 +4412,6 @@ function ContactSection({ onToast }) {
                   rel="noreferrer"
                   className="clk-link"
                 >
-                  <span className="clk-icon">{n.icon}</span>
                   <span className="clk-label">{n.label}</span>
                   <span className="clk-arrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -4260,6 +4427,7 @@ function ContactSection({ onToast }) {
         <div>
           <h3 className="about-text" style={{ marginBottom: '.5rem' }}>Envoyez-moi un message</h3>
           <h3 style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '1.5rem' }}>Remplissez le formulaire et je vous réponds rapidement.</h3>
+          <div className="cf-card">
           {sent ? (
             <div style={{ textAlign: 'center', padding: '3rem 2rem' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(255,85,0,.12)', border: '1.5px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem' }}>
@@ -4311,6 +4479,7 @@ function ContactSection({ onToast }) {
               </div>
             </form>
           )}
+          </div>
         </div>
       </div>
 
@@ -4735,6 +4904,11 @@ export default function App() {
         <HeroZoomSection />
         <About />
         <Timeline />
+        <section id="github-section" className="sec">
+          <div className="github-card-large-wrapper">
+            <GitHubInteractiveCard />
+          </div>
+        </section>
         <HorizontalParallax />
         <SkillsSection />
         <ProcessSection />

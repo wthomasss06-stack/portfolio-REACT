@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "vercel dev --listen 3001",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -40,6 +41,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.24",
     "tailwindcss": "^4.1.18",
+    "vercel": "^54.21.1",
     "vite": "^5.0.8"
   },
   "engines": {

@@ -1260,44 +1260,128 @@
      .skew-heading { text-align: center; }
    }
    
-   /* ══════════ TIMELINE — BOUNCE CARDS (carte.html) ══════════ */
+   /* ══════════ TIMELINE — BOARD INTERACTIF (super.html) ══════════
+      Spotlight qui suit le curseur (color-dodge sur le texte géant
+      en fond) + cartes punaisées en tilt 3D au survol, librement
+      déplaçables. Remplace l'ancien Stack (grid gris) par la même
+      animation / expérience UI-UX que le prototype de référence.
+      Fallback tactile/sans-hover : rangée horizontale scroll-snap,
+      voir media query tout en bas de ce bloc. ══════════ */
    #timeline-section { background: var(--bg); border-top: 1px solid rgba(255,85,0,.08); }
 
-   /* ── Stack cards container ── */
-   .tl-stack-wrap {
-     position: relative;
-     width: 520px;
-     height: 340px;
-     margin: 0 auto 3.5rem;
+   .tl-board-hint {
+     font-family: 'Space Mono', monospace;
+     font-size: .68rem;
+     letter-spacing: .16em;
+     text-transform: uppercase;
+     color: var(--muted);
+     margin: 0 0 1.4rem;
    }
+   .tl-board-hint::before { content: '↔ '; color: var(--accent); }
 
-   /* ── Stack individual card content ── */
-   .tl-stack-card {
+   .tl-board {
      position: relative;
      width: 100%;
-     height: 100%;
-     border-radius: 14px;
-     overflow: hidden;
-     border: 1.5px solid rgba(255,255,255,.10);
-     box-shadow: 0 10px 30px rgba(0,0,0,.55);
-     cursor: grab;
+     max-width: 1180px;
+     height: clamp(640px, 74vh, 800px);
+     margin: 0 auto;
+     perspective: 1200px;
+     user-select: none;
    }
 
-   /* ── Info card (full content, matches detail panel design) ── */
-   .tl-stack-card--info {
-     background: #180f07;
-     border-color: rgba(255,85,0,.22);
-     padding: 1.6rem 1.8rem;
+   /* ── Spotlight — positionné en x/y (GSAP quickTo), pas left/top
+      comme le prototype HTML de référence : reste sur le compositeur,
+      zéro reflow au mousemove (cf. skill gsap-performance). ── */
+   .tl-board-spotlight {
+     position: absolute;
+     top: 0; left: 0;
+     width: 640px; height: 640px;
+     border-radius: 50%;
+     background: radial-gradient(circle, rgba(255,255,255,.75) 0%, rgba(255,255,255,.08) 42%, transparent 70%);
+     filter: blur(40px);
+     mix-blend-mode: color-dodge;
+     pointer-events: none;
+     opacity: 0;
+     z-index: 2;
+     will-change: transform, opacity;
+   }
+
+   /* ── Texte géant en fond, illuminé par le spotlight ── */
+   .tl-board-bgtext {
+     position: absolute;
+     inset: 0;
+     z-index: 1;
      display: flex;
      flex-direction: column;
-     gap: .65rem;
-     overflow: hidden;
+     align-items: center;
+     justify-content: center;
+     text-align: center;
+     pointer-events: none;
    }
-   body.light-mode .tl-stack-card--info {
-     background: #fff8f4;
-     border-color: rgba(255,85,0,.25);
+   .tl-board-bgtext span {
+     font-family: var(--fd);
+     font-weight: 900;
+     font-size: clamp(2.2rem, 6.6vw, 5.6rem);
+     line-height: .95;
+     letter-spacing: -.02em;
+     text-transform: uppercase;
+     color: rgba(255,255,255,.05);
+   }
+   /* Le fond passe en blanc forcé en light mode (cf. plus bas) : l'effet
+      spotlight/color-dodge n'a plus de sens dessus, on le masque proprement. */
+   body.light-mode .tl-board-spotlight,
+   body.light-mode .tl-board-bgtext { display: none; }
+
+   .tl-board-cards { position: absolute; inset: 0; z-index: 10; }
+
+   /* ── Carte punaisée — mêmes proportions/contenu que l'ancienne
+      .tl-stack-card--info, mais SANS overflow:hidden : la punaise
+      doit pouvoir dépasser du bord supérieur. ── */
+   .tl-card {
+     position: absolute;
+     width: min(300px, 78vw);
+     min-height: 250px;
+     opacity: 0; /* état initial repris par l'entrée GSAP au scroll */
+     background: #180f07;
+     border: 1.5px solid rgba(255,85,0,.25);
+     border-radius: 16px;
+     backdrop-filter: blur(10px);
+     -webkit-backdrop-filter: blur(10px);
+     padding: 1.5rem 1.6rem;
+     display: flex;
+     flex-direction: column;
+     gap: .6rem;
+     cursor: grab;
+     box-shadow: 0 18px 40px rgba(0,0,0,.4);
+     transform-style: preserve-3d;
+     transition: box-shadow .3s ease, border-color .3s ease;
+     touch-action: none;
+     will-change: transform;
+   }
+   .tl-card--active,
+   .tl-card--dragging {
+     box-shadow: 0 35px 60px rgba(0,0,0,.6);
+     border-color: rgba(255,85,0,.45);
+   }
+   .tl-card--dragging { cursor: grabbing; }
+
+   /* ── Punaise (SVG), inspirée de super.html, recolorée en accent ── */
+   .tl-pin {
+     position: absolute;
+     top: -14px;
+     right: 20px;
+     width: 24px;
+     height: 32px;
+     filter: drop-shadow(0 5px 5px rgba(0,0,0,.5));
+     pointer-events: none;
+     transform: translateZ(24px);
    }
 
+   body.light-mode .tl-card { background: #fff8f4; border-color: rgba(255,85,0,.28); box-shadow: 0 14px 30px rgba(0,0,0,.10); }
+   body.light-mode .tl-card--active,
+   body.light-mode .tl-card--dragging { box-shadow: 0 22px 40px rgba(0,0,0,.16); }
+
+   /* ── Contenu de carte (inchangé, réutilisé tel quel) ── */
    .tl-sc-header {
      display: flex;
      align-items: center;
@@ -1362,63 +1446,32 @@
      font-family: 'Space Mono', monospace;
    }
 
-   /* ── Detail panel below cards ── */
-   .tl-detail {
-     max-width: 680px;
-     margin: 0 auto;
-     padding: 1.8rem 2rem;
-     border: 1px solid rgba(255,85,0,.15);
-     border-radius: 16px;
-     background: rgba(255,85,0,.04);
-     transition: opacity .35s ease, transform .4s cubic-bezier(.22,1,.36,1);
-   }
-   .tl-detail-head {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     margin-bottom: .6rem;
-   }
-   .tl-detail-idx {
-     font-family: 'Space Mono', monospace;
-     font-size: .6rem;
-     color: var(--accent);
-     opacity: .6;
-   }
-   .tl-detail-date {
-     font-family: 'Space Mono', monospace;
-     font-size: .6rem;
-     color: var(--muted);
-   }
-   .tl-detail-title {
-     font-family: var(--fd);
-     font-size: clamp(1.1rem, 2.2vw, 1.4rem);
-     font-weight: 700;
-     color: var(--text);
-     margin-bottom: .3rem;
-     line-height: 1.25;
-   }
-   .tl-detail-company {
-     font-size: clamp(.78rem, 1.2vw, .9rem);
-     color: var(--accent);
-     font-family: 'Space Mono', monospace;
-     margin-bottom: .9rem;
-   }
-
-   /* ── Shared list + tags (reused by detail panel) ── */
-   .tl-items { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
-   .tl-items li { font-size: clamp(.88rem, 1.4vw, 1rem); color: var(--muted); padding-left: 1.2rem; position: relative; line-height: 1.65; }
-   .tl-items li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
-   .tl-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-   .tl-tag { padding: 4px 12px; border-radius: 999px; background: rgba(255,85,0,.07); border: 1px solid rgba(255,85,0,.18); color: #ff8844; font-size: clamp(.62rem, 1vw, .72rem); font-family: 'Space Mono', monospace; }
-
-   /* Light mode */
-   body.light-mode .tl-detail { background: rgba(255,85,0,.03); border-color: rgba(255,85,0,.15); }
-
-   /* Mobile */
-   @media (max-width: 640px) {
-     .tl-stack-wrap { width: 300px; height: 260px; }
-     .tl-bc-label { font-size: .62rem; }
-     .tl-detail { padding: 1.2rem 1rem; }
+   /* ── Fallback tactile / sans hover fin : rangée horizontale
+      scroll-snap, sans spotlight ni tilt (le drag-scatter n'a de
+      sens qu'avec un curseur persistant — même logique que la
+      parallaxe souris du Hero, garde-fou `canHover` côté JS). ── */
+   @media (hover: none), (pointer: coarse), (max-width: 640px) {
+     .tl-board { height: auto; perspective: none; }
+     .tl-board-spotlight, .tl-board-bgtext { display: none; }
+     .tl-board-cards {
+       position: static;
+       display: flex;
+       gap: 1rem;
+       overflow-x: auto;
+       scroll-snap-type: x mandatory;
+       padding: .5rem .5rem 1.5rem;
+       -webkit-overflow-scrolling: touch;
+     }
+     .tl-card {
+       position: static;
+       flex: 0 0 auto;
+       width: min(280px, 82vw);
+       opacity: 1 !important;
+       transform: none !important;
+       scroll-snap-align: start;
+       cursor: default;
+     }
+     .tl-pin { display: none; }
    }
 
    /* ══════════ SKILLS ══════════ */
@@ -2322,7 +2375,7 @@
    
    /* ══════════ FAQ — Accordéon ══════════ */
    #faq-section { background: var(--bg); border-top: 1px solid rgba(255,85,0,.08); padding: 12vh 8vw; }
-   .faq-list { max-width: 980px; border-top: 1px solid rgba(255,85,0,.15); }
+   .faq-list { max-width: 980px; margin: 0 auto; border-top: 1px solid rgba(255,85,0,.15); }
    .faq-item { border-bottom: 1px solid rgba(255,85,0,.15); }
    .faq-q {
      width: 100%;
@@ -2451,17 +2504,24 @@
    .force-dark input,
    .force-dark textarea,
    .force-dark select {
-     background: #0A0A0A !important;
-     border-color: #FF5500 !important;
+     background: transparent !important;
+     border: none !important;
+     border-bottom: 2px solid #F2EDE8 !important;
+     border-radius: 0 !important;
      color: #F2EDE8 !important;
    }
+   .force-dark input:focus,
+   .force-dark textarea:focus,
+   .force-dark select:focus { border-bottom-color: #FF5500 !important; }
    .force-dark input::placeholder,
    .force-dark textarea::placeholder { color: rgba(242,237,232,0.35) !important; }
    body.light-mode .force-dark input,
    body.light-mode .force-dark textarea,
    body.light-mode .force-dark select {
-     background: #FFFFFF !important;
-     border-color: #FF5500 !important;
+     background: transparent !important;
+     border: none !important;
+     border-bottom: 2px solid #0A0A0A !important;
+     border-radius: 0 !important;
      color: #0A0A0A !important;
    }
    body.light-mode .force-dark input::placeholder,
@@ -2561,8 +2621,6 @@
    /* Hover reste orange dans tous les cas */
    .contact-links-col .clk-link:hover,
    .force-dark .contact-links-col .clk-link:hover { color: #FF5500 !important; }
-   .clk-icon { display: inline-flex; flex-shrink: 0; opacity: .8; transition: opacity .2s; }
-   .clk-link:hover .clk-icon { opacity: 1; }
    .clk-label {
      font-family: var(--fd); font-size: clamp(.85rem,1.6vw,1.05rem); font-weight: 700;
      letter-spacing: -.01em; flex: 1;
@@ -2583,15 +2641,48 @@
    .cd { background: #ff5f57; } .cy { background: #febc2e; } .cg { background: #28c840; }
    .code-body { padding: 1rem 1.2rem; font-family: 'Space Mono', monospace; font-size: .72rem; line-height: 1.9; display: flex; flex-direction: column; gap: .1rem; }
    .ck { color: #c678dd; } .cv { color: #61afef; } .cs { color: #98c379; } .cc { color: #5c6370; font-style: italic; }
-   .form-field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
-   .form-field label { font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .1em; color: var(--muted); }
-   .form-field input,.form-field textarea,.form-field select { background: var(--bg); border: var(--border); color: var(--text); padding: 12px 16px; border-radius: 12px; font-size: .88rem; font-family: var(--fb); transition: border-color .3s, box-shadow .3s; width: 100%; }
-   body.light-mode .form-field input, body.light-mode .form-field textarea, body.light-mode .form-field select { background: var(--bg); border-color: var(--text); color: var(--text); }
-   .form-field input:focus,.form-field textarea:focus,.form-field select:focus { outline: none; border-color: var(--accent); box-shadow: 4px 4px 0 var(--text); }
+   .form-field { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.8rem; }
+   .form-field label { font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+   .form-field input,.form-field textarea,.form-field select { background: transparent; border: none; border-bottom: 2px solid var(--text); border-radius: 0; color: var(--text); padding: 10px 2px; font-size: .95rem; font-family: var(--fb); transition: border-color .3s; width: 100%; }
+   body.light-mode .form-field input, body.light-mode .form-field textarea, body.light-mode .form-field select { background: transparent; border-bottom-color: var(--text); color: var(--text); }
+   .form-field input:focus,.form-field textarea:focus,.form-field select:focus { outline: none; border-bottom-color: var(--accent); }
    .form-field textarea { resize: vertical; min-height: 130px; }
-   .form-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FF5500' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
-   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-   .form-note { text-align: center; font-size: .7rem; color: var(--muted); margin-top: .8rem; font-family: 'Space Mono', monospace; }
+   .form-field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23FF5500' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 24px; }
+   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+   .form-note { text-align: center; font-size: .7rem; color: var(--muted); margin-top: 1.4rem; font-family: 'Space Mono', monospace; }
+
+   /* ── cf-card : le bloc formulaire est forcé en clair en permanence,
+      indépendamment du thème actif (contrairement à .force-dark qui
+      l'entoure). Même logique de "force" que .force-dark, mais inversée
+      et scopée au formulaire uniquement — le reste de la zone (liens
+      "Où me joindre", footer) continue de suivre .force-dark normalement. */
+   .cf-card {
+     background: #FFFFFF;
+     border: 2.5px solid #0A0A0A;
+     border-radius: 20px;
+     padding: 2.2rem 2rem;
+     box-shadow: 6px 6px 0 #FF5500;
+   }
+   .cf-card, .cf-card h3 { color: #0A0A0A !important; }
+   #contact-form .form-field label { color: rgba(10,10,10,.55) !important; }
+   #contact-form .form-field input,
+   #contact-form .form-field textarea,
+   #contact-form .form-field select {
+     background: transparent !important;
+     border: none !important;
+     border-bottom: 2px solid #0A0A0A !important;
+     border-radius: 0 !important;
+     color: #0A0A0A !important;
+   }
+   #contact-form .form-field input:focus,
+   #contact-form .form-field textarea:focus,
+   #contact-form .form-field select:focus { border-bottom-color: #FF5500 !important; }
+   #contact-form .form-field input::placeholder,
+   #contact-form .form-field textarea::placeholder { color: rgba(10,10,10,.35) !important; }
+   #contact-form .form-field select option { background: #FFFFFF !important; color: #0A0A0A !important; }
+   #contact-form .form-note { color: rgba(10,10,10,.45) !important; }
+   .cf-card .btn-fill { box-shadow: 5px 5px 0 #0A0A0A !important; }
+   .cf-card .btn-fill:hover { box-shadow: 7px 7px 0 #0A0A0A !important; }
    /* ── GitHub Interactive Card Large ── */
    .github-card-large-wrapper {
      max-width: 1050px;
@@ -3167,7 +3258,7 @@
    @keyframes blink {
      50% { opacity: 0; }
    }
-   @media(max-width:900px){ .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+   @media(max-width:900px){ .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .cf-card { padding: 1.6rem 1.4rem; border-radius: 16px; box-shadow: 4px 4px 0 #FF5500; } }
    
    /* ══════════ LISTE DE LIENS — Où me joindre ══════════ */
    .coj-wrap { margin-top: 7rem; border-top: 1px solid rgba(255,85,0,.1); padding-top: 5rem; overflow: hidden; }
@@ -3530,11 +3621,6 @@
      .about-photo-wrap { width: 260px; }
      .stack-pill { padding: 8px 14px; font-size: .74rem; }
    
-     /* ─ Timeline ─ */
-     .tl-acc-title { font-size: 1rem; }
-     .tl-acc-tags-inline { display: none; }
-     .tl-acc-date { min-width: 64px; }
-   
      /* ─ Pricing ─ */
      #pricing-section { padding: 8vh 0 6vh; }
      .ptabs { flex-wrap: wrap; justify-content: center; gap: .4rem; padding: 0 4vw; }
@@ -3589,16 +3675,6 @@
      .about-badges { gap: .35rem; }
      .about-badge { font-size: .62rem; padding: 5px 10px; }
      .skew-item img { width: 180px; }
-   
-     /* ─ Timeline ─ */
-     .tl-accordion { border-radius: 12px; }
-     .tl-acc-header { padding: .9rem .85rem; gap: .5rem; }
-     .tl-acc-date { min-width: 52px; font-size: .56rem; }
-     .tl-acc-index { font-size: .65rem; }
-     .tl-acc-title { font-size: .9rem; }
-     .tl-acc-company { font-size: .7rem; }
-     .tl-tags { gap: .3rem; }
-     .tl-tag  { font-size: .58rem; }
    
      /* ─ Skills ─ */
      .skills-mastery { grid-template-columns: repeat(auto-fit,minmax(70px,1fr)); gap: .5rem; }
@@ -4168,41 +4244,10 @@
    .hvr-row {
      display: flex;
      align-items: center;
-     gap: 1.2rem;
-     padding: 1rem 0;
-     padding-left: 0;
+     gap: 1rem;
+     padding: 1.1rem 0;
      cursor: default;
-     transition: padding-left .22s ease;
    }
-
-   .hvr-row--active {
-     padding-left: .5rem;
-   }
-
-   .hvr-arrow {
-     width: 36px;
-     height: 36px;
-     flex-shrink: 0;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-   }
-
-   .hvr-row--active .hvr-arrow svg path {
-     transition: transform .25s cubic-bezier(.22,1,.36,1);
-     transform: rotate(45deg);
-   }
-
-   .hvr-num {
-     font-family: 'Space Mono', monospace;
-     font-size: .55rem;
-     font-weight: 700;
-     min-width: 2rem;
-     letter-spacing: .3em;
-     color: rgba(255,85,0,.3);
-     transition: color .22s;
-   }
-   .hvr-row--active .hvr-num { color: var(--accent); }
 
    .hvr-title {
      font-family: var(--fd);
@@ -4212,10 +4257,10 @@
      letter-spacing: -.03em;
      line-height: 1;
      color: var(--muted);
-     transition: color .25s ease;
+     transition: color .3s ease, transform .35s cubic-bezier(.22,1,.36,1);
      white-space: pre-line;
    }
-   .hvr-row--active .hvr-title { color: var(--text); }
+   .hvr-row--active .hvr-title { color: var(--text); transform: translateX(10px); }
 
    .hvr-tag {
      padding: .2rem .7rem;
@@ -4235,7 +4280,11 @@
      transition: background .28s ease;
    }
 
-   /* Image curseur */
+   /* Image curseur — position/rotation/scale/opacity entièrement
+      pilotées par GSAP (quickTo au mousemove, gsap.to aux entrées/
+      sorties) : plus de transition CSS ici, sinon on double l'easing
+      et la trajectoire devient molle/en retard — c'était la cause
+      principale du manque de fluidité. */
    .hvr-cursor-img {
      position: absolute;
      top: 0;
@@ -4246,10 +4295,16 @@
      overflow: hidden;
      pointer-events: none;
      z-index: 20;
-     transition: opacity .22s ease, transform .16s cubic-bezier(.22,1,.36,1);
+     opacity: 0;
      box-shadow: 0 24px 70px rgba(0,0,0,.55);
      border: 1.5px solid rgba(255,85,0,.35);
      will-change: transform, opacity;
+   }
+   .hvr-cursor-img img {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     display: block;
    }
 
    /* ── Process section hover wrapper — colonne unique centrée ── */
