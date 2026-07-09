@@ -34,7 +34,7 @@ gsap.registerPlugin(ScrollTrigger)
  ════════════════════════════════════════════ */
 const NAV_LINKS = [
   { id: 'hero', label: 'Accueil', num: '00', sub: 'M\'Bollo aka' },
-  { id: 'projets-section', label: 'Projets', num: '01', sub: '18 réalisations' },
+  { id: 'projets-section', label: 'Projets', num: '01', sub: null },  // sub calculé dynamiquement juste après PROJECTS ↓
   { id: 'about-section', label: 'À propos', num: '02', sub: 'Parcours & stack' },
   { id: 'process-section', label: 'Process', num: '03', sub: 'De l\'acompte à la livraison' },
   { id: 'faq-section', label: 'FAQ', num: '04', sub: 'Questions fréquentes' },
@@ -921,6 +921,7 @@ const PROJECTS = [
     solution: "App Next.js/Express avec fiches détaillées par race, réservation en ligne (quantité, stock auto-décrémenté) et double notification — email admin et WhatsApp pré-rempli.",
     result: "PWA installable avec tableau de bord admin (stock, réservations, stats de vente) — livré et en production." },
 ]
+NAV_LINKS.find(l => l.id === 'projets-section').sub = `${PROJECTS.length} réalisations`
 
 const SERVICES = [
   { n: '01', title: 'Applications Web', desc: 'Apps CRUD complètes, dashboards de gestion, solutions sur-mesure.' },
@@ -1075,6 +1076,7 @@ const SKILLS = {
   frontend: [
     { name: 'React', icon: '/assets/icons/devicon/react/react-original.svg', color: '#61DAFB' },
     { name: 'JavaScript', icon: '/assets/icons/devicon/javascript/javascript-original.svg', color: '#F7DF1E' },
+    { name: 'TypeScript', icon: '/assets/icons/devicon/typescript/typescript-original.svg', color: '#3178C6' },
     { name: 'Next.js', icon: '/assets/icons/devicon/nextjs/nextjs-original.svg', color: '#ffffff' },
     { name: 'Tailwind', icon: '/assets/icons/devicon/tailwindcss/tailwindcss-original.svg', color: '#38BDF8' },
     { name: 'HTML5', icon: '/assets/icons/devicon/html5/html5-original.svg', color: '#E34F26' },
@@ -1098,8 +1100,8 @@ const SKILLS = {
 }
 
 const TIMELINE = [
-  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
-  { date: 'Mai–Nov. 2025', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
+  { date: '2026–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
+  { date: 'Mai–Nov. 2026', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
   { date: '2023–2024', title: 'Projet Académique – ARTICI', company: 'UVCI', items: ["Plateforme web de promotion de l'artisanat local", "Travail collaboratif en équipe pluridisciplinaire", "Intégration de bonnes pratiques de sécurité"], tags: ['Frontend', 'Backend', 'Sécurité'] },
   { date: '2023–2024', title: 'Licence Réseau et Sécurité Informatique', company: 'UVCI', items: ['Formation complète en développement web, bases de données et sécurité', 'Certification E-Banking — Réf: CC/24-002485'], tags: ['Diplôme', 'Certification'] },
   { date: '2020–2021', title: 'Baccalauréat Série D', company: "Lycée Moderne d'Arrah", items: ['Mention : Assez Bien'], tags: ['Diplôme'] },
@@ -2649,7 +2651,7 @@ function ProjectsTunnel() {
  chiffre en count-up + label, façon "30+ awards"
  ════════════════════════════════════════════ */
 const ABOUT_STATS = [
-  { target: 19, suffix: '', label: 'Projets', sub: 'Livrés sur mesure, du concept au déploiement' },
+  { target: PROJECTS.length, suffix: '', label: 'Projets', sub: 'Livrés sur mesure, du concept au déploiement' },
   { target: 3, suffix: '+', label: 'Années', sub: 'D’expérience en développement web' },
   { target: 12, suffix: '', label: 'En prod.', sub: 'Applications actuellement en ligne' },
   { target: 15, suffix: '', label: 'Outils', sub: 'Technologies maîtrisées au quotidien' },

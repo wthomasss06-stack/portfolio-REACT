@@ -916,7 +916,7 @@ const ICON_SVGS = {
 // ═══════════════════════════════════════════════════════════════
 
 const BOOT_LINES = [
-  { t: 300, cls: 'white', txt: 'akaFOLIO BIOS v3.0 — Copyright akaTech 2025' },
+  { t: 300, cls: 'white', txt: 'akaFOLIO BIOS v3.0 — Copyright akaTech 2026' },
   { t: 600, cls: 'white', txt: 'CPU: Elvis K. Fullstack Dev @ 3.6GHz' },
   { t: 900, cls: 'ok', txt: '[OK] RAM Check ............. 14 Projets détectés' },
   { t: 1100, cls: 'ok', txt: '[OK] Frontend drivers ....... React 18 ✓' },
