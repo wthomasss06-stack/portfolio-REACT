@@ -502,6 +502,8 @@ const TECH_ICON_RULES = [
   ['next.js', '/assets/icons/devicon/nextjs/nextjs-original.svg'],
   ['nodejs', '/assets/icons/devicon/nodejs/nodejs-original.svg'],
   ['node.js', '/assets/icons/devicon/nodejs/nodejs-original.svg'],
+  ['express', '/assets/icons/devicon/express/express-original.svg'],
+  ['chart.js', '/assets/icons/devicon/chartjs/chartjs-original.svg'],
   ['django rest', '/assets/icons/devicon/django/django-plain.svg'],
   ['django', '/assets/icons/devicon/django/django-plain.svg'],
   ['flask', '/assets/icons/devicon/flask/flask-original.svg'],
@@ -523,6 +525,11 @@ const TECH_ICON_RULES = [
   ['css', '/assets/icons/devicon/css3/css3-original.svg'],
   ['javascript', '/assets/icons/devicon/javascript/javascript-original.svg'],
   ['git', '/assets/icons/devicon/git/git-original.svg'],
+  // Set Simple Icons (logo officiel injecté en fill, devicon ne les propose pas)
+  ['cloudinary', '/assets/icons/simple-icons/cloudinary.svg'],
+  ['gsap', '/assets/icons/simple-icons/gsap.svg'],
+  ['leaflet', '/assets/icons/simple-icons/leaflet.svg'],
+  ['webgl', '/assets/icons/simple-icons/webgl.svg'],
 ]
 
 function resolveTechIcon(label) {
@@ -1100,8 +1107,8 @@ const SKILLS = {
 }
 
 const TIMELINE = [
-  { date: '2026–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
-  { date: 'Mai–Nov. 2026', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
+  { date: '2025–2026', title: 'Développeur Freelance Fullstack', company: 'AKATech', items: ["Conception et déploiement de +10 Projets web (SaaS, e-commerce, plateformes)", "Développement d'API REST avec Django et Flask", "Mise en place de dashboards et systèmes de gestion de données"], tags: ['Freelance', 'Full-Stack', 'Django', 'React', 'SaaS'] },
+  { date: 'Mai–Nov. 2025', title: 'Informaticien Stagiaire', company: "Mairie d'Agboville", items: ['Maintenance du parc informatique et du réseau', 'Support technique aux utilisateurs', 'Contribution à la gestion et numérisation des données'], tags: ['Maintenance', 'Réseau', 'Support'] },
   { date: '2023–2024', title: 'Projet Académique – ARTICI', company: 'UVCI', items: ["Plateforme web de promotion de l'artisanat local", "Travail collaboratif en équipe pluridisciplinaire", "Intégration de bonnes pratiques de sécurité"], tags: ['Frontend', 'Backend', 'Sécurité'] },
   { date: '2023–2024', title: 'Licence Réseau et Sécurité Informatique', company: 'UVCI', items: ['Formation complète en développement web, bases de données et sécurité', 'Certification E-Banking — Réf: CC/24-002485'], tags: ['Diplôme', 'Certification'] },
   { date: '2020–2021', title: 'Baccalauréat Série D', company: "Lycée Moderne d'Arrah", items: ['Mention : Assez Bien'], tags: ['Diplôme'] },

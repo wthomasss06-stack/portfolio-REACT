@@ -3,7 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m " s envolement2"
+git commit -m " s envolement3"
 git push
 
 
