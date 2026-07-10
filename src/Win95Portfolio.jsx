@@ -29,12 +29,17 @@ const SKILLS = {
     { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg", pct: 95 },
     { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg", pct: 90 },
     { name: "Bootstrap", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg", pct: 85 },
+    { name: "GSAP", icon: "/assets/icons/simple-icons/gsap.svg", pct: 95 },
+    { name: "WebGL", icon: "/assets/icons/simple-icons/webgl.svg", pct: 80 },
+    { name: "Chart.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/chartjs/chartjs-original.svg", pct: 70 },
+    { name: "Leaflet.js", icon: "/assets/icons/simple-icons/leaflet.svg", pct: 65 },
   ],
   backend: [
     { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", pct: 85 },
     { name: "Flask", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg", pct: 82 },
     { name: "Django", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg", pct: 75 },
     { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", pct: 70 },
+    { name: "Express.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", pct: 78 },
     { name: "MySQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg", pct: 80 },
   ],
   tools: [
@@ -46,6 +51,7 @@ const SKILLS = {
     { name: "ChatGPT", icon: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg", pct: 80 },
     { name: "PythonAnywhere", icon: "https://www.pythonanywhere.com/static/anywhere/images/PA-logo.svg", pct: 75 },
     { name: "Netlify", icon: "https://logo.svgcdn.com/logos/netlify.svg", pct: 78 },
+    { name: "Cloudinary", icon: "/assets/icons/simple-icons/cloudinary.svg", pct: 75 },
   ],
   autres: [
     { name: "Windows", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg", pct: 95 },
@@ -916,7 +922,7 @@ const ICON_SVGS = {
 // ═══════════════════════════════════════════════════════════════
 
 const BOOT_LINES = [
-  { t: 300, cls: 'white', txt: 'akaFOLIO BIOS v3.0 — Copyright akaTech 2026' },
+  { t: 300, cls: 'white', txt: 'akaFOLIO BIOS v3.0 — Copyright akaTech 2025' },
   { t: 600, cls: 'white', txt: 'CPU: Elvis K. Fullstack Dev @ 3.6GHz' },
   { t: 900, cls: 'ok', txt: '[OK] RAM Check ............. 14 Projets détectés' },
   { t: 1100, cls: 'ok', txt: '[OK] Frontend drivers ....... React 18 ✓' },
