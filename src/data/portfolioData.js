@@ -403,3 +403,33 @@ export const FAQ_ITEMS = [
   { q: 'Mon site a un bug après la livraison, que faites-vous ?', a: "Je corrige gratuitement tout bug lié à mon développement pendant le mois suivant la livraison — inclus dans le pack Premium, possible en option sur les autres packs." },
   { q: 'Comment commander mon site ?', a: "Trois étapes : on échange sur votre projet et le pack adapté, je vous envoie un devis avec l'acompte de 50%, puis dès réception du paiement je démarre le développement." },
 ]
+
+// ─── BLOG / LinkedIn ──────────────────────────────────────────
+// 3 posts LinkedIn parmi les plus engageants, mis en avant tels
+// quels sur le portfolio. Pour tout le reste : renvoi vers le
+// profil LinkedIn complet (CONTACT.linkedin) plutôt que de dupliquer
+// chaque post ici — évite le contenu dupliqué (SEO) et évite de
+// devoir revenir modifier ce fichier à chaque nouveau post.
+export const WRITING_POSTS = [
+  {
+    id: 1,
+    tag: 'Opinion',
+    hook: "Le vibe coding dérange certaines personnes parce qu'il touche à leur ego.",
+    excerpt: "À une époque, un compilateur, puis un framework, étaient aussi mal vus. Chaque nouvelle abstraction suscite de la méfiance avant d'être adoptée — ce qui compte, c'est la valeur qu'on crée avec l'outil, pas l'outil lui-même.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_pour-dire-vrai-le-vibe-coding-d%C3%A9range-certaines-activity-7479806249555968000-wJWL',
+  },
+  {
+    id: 2,
+    tag: "Retour d'expérience",
+    hook: "Mes erreurs d'avant 😭",
+    excerpt: "Variables inutilisées, console.log oubliés, secrets en dur, any partout... Le rôle d'un senior n'est pas de se moquer, mais d'expliquer pourquoi c'est dangereux et comment progresser vers du code plus propre et plus sûr.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_mes-erreurs-davant-le-premier-pull-activity-7479465548054142976-3pog',
+  },
+  {
+    id: 3,
+    tag: 'Opinion',
+    hook: 'Un outil ne dépassera jamais une compétence technique.',
+    excerpt: "L'IA est puissante, mais entre les mains de quelqu'un qui ne comprend pas le code, ça reste du copier-coller. Refaire mon site de Vite/React à Next.js avec l'IA me l'a confirmé : la différence, ce sont les choix techniques, pas l'outil.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_faut-arr%C3%AAter-de-confondre-les-choses-un-activity-7450893414918746112-bWWb',
+  },
+]

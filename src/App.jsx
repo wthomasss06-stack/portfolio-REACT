@@ -18,6 +18,7 @@ import DissolveTransition, { VERTEX_SHADER, FRONT_FRAGMENT_SHADER, BACK_FRAGMENT
 import PixelSliceTrail from './components/PixelSliceTrail.jsx'
 import CardSwap, { Card } from './components/CardSwap.jsx'
 import FlowingMenu from './components/FlowingMenu.jsx'
+import { WRITING_POSTS, CONTACT } from './data/portfolioData.js'
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -1195,6 +1196,11 @@ function Loader({ onDone }) {
   /* ── Entrance animations ── */
   useEffect(() => {
     const ctx = gsap.context(() => {
+      /* Logo — coin haut-gauche, entre avec le compteur */
+      gsap.fromTo('.ld-logo-wrap',
+        { y: -14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.08 }
+      )
       /* Compteur % — slide depuis le haut */
       gsap.fromTo('.ld-percent',
         { y: -20, opacity: 0 },
@@ -1207,10 +1213,16 @@ function Loader({ onDone }) {
         { y: 14, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 }
       )
-      /* Coin bas-gauche — fade in à 0.35 */
+      /* Coin bas-gauche — fade in pleine opacité (texte identité, pas
+         un watermark discret : doit rester bien lisible dans les 2 thèmes) */
       gsap.fromTo('.ld-corner',
         { opacity: 0 },
-        { opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+      )
+      /* Ville, coin haut-droite — même timing que le corner */
+      gsap.fromTo('.ld-place',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
       )
     }, loaderRef)
     return () => ctx.revert()
@@ -1220,8 +1232,10 @@ function Loader({ onDone }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
-        /* Step petit au début (blur bien visible) — s'accélère vers la fin */
-        const eased = 1.5 + (prev / 100) * 4.5
+        /* Step plus généreux qu'avant + tick plus rapide (90ms au lieu de
+           210ms) → loader nettement moins long, tout en gardant le blur
+           bien visible au tout début */
+        const eased = 3 + (prev / 100) * 7
         const next = prev + Math.random() * eased
 
         /* Sync blur SVG avec progress (28 → 0) */
@@ -1275,9 +1289,10 @@ function Loader({ onDone }) {
               })
             }
 
-            /* Fade out percent and corner immediately; role will be animated by chars */
-            gsap.to(['.ld-percent', '.ld-corner'], {
-              opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
+            /* Fade out percent, corner, logo et ville immédiatement ; le rôle
+               est déjà animé par ses propres chars */
+            gsap.to(['.ld-percent', '.ld-corner', '.ld-logo-wrap', '.ld-place'], {
+              opacity: 0, y: -10, duration: 0.25, ease: 'power2.in',
             })
 
             /* Perspective 3D */
@@ -1289,10 +1304,10 @@ function Loader({ onDone }) {
                logique/physique que name, aucune différence de force entre les deux */
             const mid = (chars.length - 1) / 2
             const tl = gsap.timeline({
-              delay: 0.15,
+              delay: 0.1,
               onComplete: () => {
                 gsap.to(loader, {
-                  opacity: 0, duration: 0.45, ease: 'power2.inOut',
+                  opacity: 0, duration: 0.4, ease: 'power2.inOut',
                   onComplete: () => {
                     loader.style.visibility = 'hidden'
                     loader.style.pointerEvents = 'none'
@@ -1311,9 +1326,9 @@ function Loader({ onDone }) {
                 rotationY: (Math.random() - 0.5) * 720,
                 scale: 0.2 + Math.random() * 0.6,
                 opacity: 0,
-                duration: 0.9,
+                duration: 0.7,
                 ease: 'power2.out',
-                delay: i * 0.03,
+                delay: i * 0.022,
               }, 0)
             })
 
@@ -1329,19 +1344,19 @@ function Loader({ onDone }) {
                   rotationY: (Math.random() - 0.5) * 720,
                   scale: 0.2 + Math.random() * 0.6,
                   opacity: 0,
-                  duration: 0.9,
+                  duration: 0.7,
                   ease: 'power2.out',
-                  delay: i * 0.03,
+                  delay: i * 0.022,
                 }, 0)
               })
             }
 
-          }, 350)
+          }, 180)
           return 100
         }
         return next
       })
-    }, 210)
+    }, 90)
     return () => clearInterval(interval)
   }, []) /* eslint-disable-line react-hooks/exhaustive-deps */
 
@@ -1361,6 +1376,19 @@ function Loader({ onDone }) {
         </defs>
       </svg>
 
+      {/* LOGO — coin haut-gauche */}
+      <div className="ld-logo-wrap">
+        <img
+          src="/assets/images/logo-akatech.webp"
+          alt="AKATech"
+          className="ld-logo"
+          onError={e => { e.target.style.display = 'none' }}
+        />
+      </div>
+
+      {/* VILLE — coin haut-droite */}
+      <div className="ld-place">Abidjan</div>
+
       {/* CENTER */}
       <div className="ld-center">
 
@@ -1379,15 +1407,15 @@ function Loader({ onDone }) {
 
       </div>
 
-      {/* COMPTEUR % — coin bas-droite */}
+      {/* COMPTEUR % — coin bas-droite, agrandi */}
       <div className="ld-percent ld-percent--small">
         {Math.floor(progress)}
         <span>%</span>
       </div>
 
-      {/* CORNER — bas-gauche, version */}
+      {/* CORNER — bas-gauche */}
       <div className="ld-corner">
-        v2.6
+        AKATECH 2026
       </div>
 
     </div>
@@ -1460,18 +1488,33 @@ function Navbar({ theme, onToggleTheme }) {
   const leftRef = useRef(null)
   const centerRef = useRef(null)
 
-  /* Navbar transparent → solid au scroll + micro-animation GSAP */
+  /* Navbar transparent → solid au scroll + micro-animation GSAP.
+     Phase 2 se déclenche quand #projets-section a suffisamment avancé
+     dans le viewport (son haut passe sous les 55% hauts de l'écran,
+     donc le hero est entièrement recouvert) — et RESTE en phase 2 pour
+     tout le reste du scroll, jusqu'au footer inclus.
+     Volontairement PAS une IntersectionObserver sur 'is-currently-
+     visible' : ça redeviendrait faux dès qu'on scrolle plus loin que
+     #projets-section (about/process/faq/contact...), et la navbar
+     repartirait à tort en phase 1 en pleine page contact. Ici on compare
+     juste rect.top au seuil à chaque scroll : une fois #projets-section
+     dépassée, rect.top est négatif et reste 'sous' le seuil pour de bon.
+     Seul un retour scroll au-dessus du seuil repasse en phase 1. */
   useEffect(() => {
-    const heroEl = document.getElementById('hero')
-    if (!heroEl) { setScrolled(window.scrollY > 60); return }
-    const headerEl = document.querySelector('.nb-topbar')
-    const headerH = headerEl ? Math.ceil(headerEl.getBoundingClientRect().height) || 60 : 60
-    const io = new IntersectionObserver(
-      ([entry]) => setScrolled(!entry.isIntersecting),
-      { root: null, threshold: 0, rootMargin: `-${headerH}px 0px 0px 0px` }
-    )
-    io.observe(heroEl)
-    return () => io.disconnect()
+    const projetsEl = document.getElementById('projets-section')
+    if (!projetsEl) {
+      const onScroll = () => setScrolled(window.scrollY > 60)
+      onScroll()
+      window.addEventListener('scroll', onScroll, { passive: true })
+      return () => window.removeEventListener('scroll', onScroll)
+    }
+    const onScroll = () => {
+      const top = projetsEl.getBoundingClientRect().top
+      setScrolled(top <= window.innerHeight * 0.55)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   /* ── GSAP micro-animation au changement de phase ── */
@@ -2563,9 +2606,7 @@ function ProjectsTunnel() {
 
   return (
     <section ref={sectionRef} id="hscroll-section" className="tunnel-section">
-      <div className="tunnel-section-label">
-        <SectionHeading sub={`${PROJECTS.length} réalisations — tunnel × 2 boucles`} />
-      </div>
+      
 
       <div ref={containerRef} id="webgl-tunnel-container" />
 
@@ -3772,6 +3813,99 @@ function TestiCard({ t }) {
   )
 }
 
+/* ════════════════════════════════════════════
+ BLOG — 3 posts LinkedIn mis en avant + renvoi
+ vers le profil complet pour le reste. Cartes
+ statiques (pas de CardSwap ici) : contenu éditorial
+ court, pas besoin d'un cycle automatique.
+ ════════════════════════════════════════════ */
+function WritingSection() {
+  return (
+    <section id="writing-section" style={{ padding: '10vh 0 4vh' }}>
+      <div style={{ padding: '0 4vw' }}>
+        <SectionHeading num="02" title="BLOG" sub="Ce que je partage sur LinkedIn" style={{ marginBottom: '2.2rem' }} />
+
+        <div style={{ display: 'flex', gap: '1.4rem', flexWrap: 'wrap' }}>
+          {WRITING_POSTS.map((post) => (
+            <a
+              key={post.id}
+              href={post.url}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                flex: '1 1 300px',
+                minWidth: 260,
+                maxWidth: 400,
+                display: 'block',
+                textDecoration: 'none',
+                color: 'inherit',
+                border: '1px solid rgba(255,85,0,.18)',
+                borderRadius: 18,
+                padding: '1.5rem',
+                boxSizing: 'border-box',
+                background: 'rgba(255,85,0,.03)',
+                transition: 'border-color .2s, transform .2s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,85,0,.5)'; e.currentTarget.style.transform = 'translateY(-4px)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,85,0,.18)'; e.currentTarget.style.transform = 'translateY(0)' }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontFamily: "'Space Mono',monospace",
+                  fontSize: '.58rem',
+                  letterSpacing: '.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--accent)',
+                  border: '1px solid rgba(255,85,0,.3)',
+                  borderRadius: '999px',
+                  padding: '3px 10px',
+                  marginBottom: '1rem',
+                }}
+              >
+                {post.tag}
+              </span>
+
+              <h3 style={{ fontFamily: 'var(--fd)', fontSize: '1rem', lineHeight: 1.4, color: 'var(--text)', marginBottom: '.7rem' }}>
+                {post.hook}
+              </h3>
+
+              <p style={{ fontFamily: 'var(--fb)', fontSize: '.82rem', lineHeight: 1.65, color: 'var(--muted)', marginBottom: '1.1rem' }}>
+                {post.excerpt}
+              </p>
+
+              <span style={{ fontFamily: 'var(--fb)', fontSize: '.76rem', fontWeight: 700, color: 'var(--accent)', display: 'inline-flex', alignItems: 'center', gap: '.35rem' }}>
+                Lire sur LinkedIn ↗
+              </span>
+            </a>
+          ))}
+        </div>
+
+        <a
+          href={CONTACT.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '.5rem',
+            marginTop: '1.8rem',
+            fontFamily: 'var(--fb)',
+            fontSize: '.85rem',
+            fontWeight: 600,
+            color: 'var(--text)',
+            textDecoration: 'none',
+            borderBottom: '1px solid var(--text)',
+            paddingBottom: '2px',
+          }}
+        >
+          Voir tous mes posts sur LinkedIn →
+        </a>
+      </div>
+    </section>
+  )
+}
+
 function TestimonialsSection() {
   return (
     <section
@@ -4939,6 +5073,7 @@ export default function App() {
             <GitHubInteractiveCard />
           </div>
         </section>
+        <WritingSection />
         <HorizontalParallax />
         <SkillsSection />
         <ProcessSection />

@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════
    GooeyTransition.mobile.css — variante MOBILE
-   Transition "Staircase" (8 colonnes) — version Appmobile.jsx
-   Couleur des colonnes : orange akaFOLIO (#FF5500)
+   Transition "Volets Lignes Fines" (effet 10, 30 lignes) — version Appmobile.jsx
+   Couleur des lignes : orange akaFOLIO (#FF5500)
    ════════════════════════════════════════════════ */
 
 .gooey-layer--mobile {
@@ -14,9 +14,11 @@
   touch-action: none;
 }
 
-.gooey-stair--mobile {
+.gooey-line--mobile {
+  position: relative;
   flex: 1;
-  height: 110vh;
+  height: 100%;
   background: #FF5500;
+  transform: scaleY(0);
   will-change: transform;
 }

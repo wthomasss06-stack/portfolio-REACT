@@ -4025,6 +4025,7 @@
      width: min(760px, 88%);
      position: relative;
      z-index: 5;
+     text-align: center;
 
      transition:
        transform 1s cubic-bezier(.85,0,.15,1),
@@ -4145,7 +4146,7 @@
      align-items: flex-end;
      gap: .2rem;
 
-     font-size: clamp(1.1rem, 2.8vw, 2rem);
+     font-size: clamp(1.35rem, 3.3vw, 2.4rem);
      font-weight: 700;
      letter-spacing: -.04em;
 
@@ -4180,6 +4181,37 @@
    }
 
    /* ════════════════════════════════════════════
+      LOGO — coin haut-gauche
+   ════════════════════════════════════════════ */
+
+   .ld-logo-wrap{
+     position: absolute;
+     top: 28px;
+     left: 28px;
+     z-index: 10;
+   }
+
+   /* .ld-logo est défini plus haut, partagé header / drawer / loader */
+
+   /* ════════════════════════════════════════════
+      PLACE — coin haut-droite
+   ════════════════════════════════════════════ */
+
+   .ld-place{
+     position: absolute;
+     top: 28px;
+     right: 28px;
+     z-index: 10;
+
+     font-size: .68rem;
+     font-family: 'Space Mono', monospace;
+     letter-spacing: .22em;
+     text-transform: uppercase;
+
+     color: rgba(255,255,255,.35);
+   }
+
+   /* ════════════════════════════════════════════
       LIGHT MODE
    ════════════════════════════════════════════ */
 
@@ -4203,6 +4235,10 @@
      color: rgba(0,0,0,.35);
    }
 
+   body.light-mode .ld-place{
+     color: rgba(0,0,0,.35);
+   }
+
    /* ════════════════════════════════════════════
       RESPONSIVE
    ════════════════════════════════════════════ */
@@ -4217,12 +4253,27 @@
      .ld-percent {
        bottom: 20px;
        right: 20px;
-       font-size: clamp(.9rem, 2.4vw, 1.4rem);
+       font-size: clamp(1.05rem, 2.8vw, 1.7rem);
      }
 
      .ld-corner{
        bottom: 20px;
        left: 20px;
+       font-size: .55rem;
+     }
+
+     .ld-logo-wrap{
+       top: 20px;
+       left: 20px;
+     }
+
+     .ld-logo{
+       height: clamp(44px, 12vw, 70px);
+     }
+
+     .ld-place{
+       top: 20px;
+       right: 20px;
        font-size: .55rem;
      }
    }

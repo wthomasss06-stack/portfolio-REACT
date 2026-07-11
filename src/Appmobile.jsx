@@ -6,7 +6,7 @@ import { useGooeyTransition, runGridTransition } from './components/GooeyTransit
 import { gsap } from 'gsap';
 import SoundToggle from './components/SoundToggle.jsx';
 import { useImmersiveSound } from './hooks/useImmersiveSound.js';
-import { PROJECTS, PRICING_TABS, FAQ_ITEMS } from './data/portfolioData.js';
+import { PROJECTS, PRICING_TABS, FAQ_ITEMS, WRITING_POSTS, CONTACT } from './data/portfolioData.js';
 
 
 /* ── SVG icon replacements (pas de dépendance lucide-react) ── */
@@ -3637,6 +3637,90 @@ const TESTIMONIALS = [
   },
 ];
 
+/* ════════════════════════════════════════════
+   BLOG — 3 posts LinkedIn mis en avant + renvoi
+   vers le profil complet. Styles inline (var(--ink)/
+   --paper/--acc/--muted/--border) plutôt que des
+   classes dédiées : s'adapte automatiquement au
+   thème via .app--light, sans logique dark/light
+   séparée à maintenir ici.
+   ════════════════════════════════════════════ */
+const WritingSection = ({ dark }) => {
+  return (
+    <section id="writing" className={dark ? 'section--dark' : ''} style={{ padding: '0 5vw 4vh' }}>
+      <div className="s-hd">
+        <span className="s-lbl">// BLOG</span>
+        <h2 className="s-ttl">Ce que je<br />partage.</h2>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
+        {WRITING_POSTS.map((post) => (
+          <a
+            key={post.id}
+            href={post.url}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'block',
+              textDecoration: 'none',
+              color: 'var(--ink)',
+              background: 'var(--paper-2)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--r)',
+              boxShadow: 'var(--shadow-sm)',
+              padding: '1.1rem',
+              boxSizing: 'border-box',
+            }}
+          >
+            <span
+              style={{
+                display: 'inline-block',
+                fontFamily: 'var(--fb)',
+                fontSize: '.6rem',
+                letterSpacing: '.06em',
+                textTransform: 'uppercase',
+                color: 'var(--acc)',
+                border: '1px solid var(--acc-dim)',
+                borderRadius: '999px',
+                padding: '3px 9px',
+                marginBottom: '.7rem',
+              }}
+            >
+              {post.tag}
+            </span>
+            <h3 style={{ fontFamily: 'var(--fd)', fontSize: '.95rem', lineHeight: 1.4, color: 'var(--ink)', marginBottom: '.5rem' }}>
+              {post.hook}
+            </h3>
+            <p style={{ fontFamily: 'var(--fb)', fontSize: '.76rem', lineHeight: 1.6, color: 'var(--muted)', marginBottom: '.8rem' }}>
+              {post.excerpt}
+            </p>
+            <span style={{ fontFamily: 'var(--fb)', fontSize: '.72rem', fontWeight: 700, color: 'var(--acc)' }}>
+              Lire sur LinkedIn ↗
+            </span>
+          </a>
+        ))}
+      </div>
+      <a
+        href={CONTACT.linkedin}
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          display: 'inline-flex',
+          marginTop: '1.3rem',
+          fontFamily: 'var(--fb)',
+          fontSize: '.8rem',
+          fontWeight: 700,
+          color: 'var(--ink)',
+          textDecoration: 'none',
+          borderBottom: '1px solid var(--ink)',
+          paddingBottom: '2px',
+        }}
+      >
+        Voir tous mes posts sur LinkedIn →
+      </a>
+    </section>
+  );
+};
+
 const Testimonials = ({ dark }) => {
   const [ref, vis] = useInView(0.08);
   const [active, setActive] = useState(0);
@@ -4252,6 +4336,7 @@ export default function App() {
           <Projects dark={dark} />
           <Skills dark={dark} />
           <Testimonials dark={dark} />
+          <WritingSection dark={dark} />
           <FAQSection dark={dark} />
           <Contact dark={dark} />
         </ScrollDepthScene>
