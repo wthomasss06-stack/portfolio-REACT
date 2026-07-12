@@ -22,6 +22,7 @@
 
 import { useCallback, useRef } from 'react'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './GooeyTransition.css'
 import './GooeyTransition.mobile.css'
 
@@ -87,6 +88,15 @@ function hardJumpTo(sectionId) {
   const top = el.getBoundingClientRect().top + window.scrollY
 
   window.scrollTo({ top, left: 0, behavior: 'instant' })
+
+  /* Sections pinnées (tunnel WebGL des projets, etc.) : ScrollTrigger ne
+     recalcule son état de pin qu'à son propre prochain tick de scroll.
+     Un saut programmatique instantané peut arriver "entre deux" — le
+     pin-spacer garde alors la section pinnée collée en position:fixed
+     par-dessus la destination (le hero, par ex.) jusqu'au scroll suivant
+     de l'utilisateur. On force la resync tout de suite pour éviter ce
+     flash où la destination ne s'affiche pas. */
+  ScrollTrigger.update()
 }
 
 /* ── Core runner ── */

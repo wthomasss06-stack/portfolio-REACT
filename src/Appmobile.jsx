@@ -1022,6 +1022,11 @@ const Loader = ({ onDone }) => {
   /* ── Entrance animations ── */
   useEffect(() => {
     const ctx = gsap.context(() => {
+      /* Logo — coin haut-gauche, entre avec le compteur */
+      gsap.fromTo('.mob-ld-logo-wrap',
+        { y: -12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.08 }
+      )
       gsap.fromTo('.mob-ld-percent',
         { y: -20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 }
@@ -1033,7 +1038,12 @@ const Loader = ({ onDone }) => {
       )
       gsap.fromTo('.mob-ld-corner',
         { opacity: 0 },
-        { opacity: 0.35, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
+      )
+      /* Ville, coin haut-droite — même timing que le corner */
+      gsap.fromTo('.mob-ld-place',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
       )
     }, loaderRef)
     return () => ctx.revert()
@@ -1043,8 +1053,9 @@ const Loader = ({ onDone }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
-        /* Step petit au début (blur bien visible) — s'accélère vers la fin */
-        const eased = 1.5 + (prev / 100) * 4.5
+        /* Step plus généreux + tick plus rapide (90ms au lieu de 210ms)
+           → loader nettement moins long, même réglage que desktop */
+        const eased = 3 + (prev / 100) * 7
         const next = prev + Math.random() * eased
 
         /* Sync blur SVG avec progress (28 → 0) */
@@ -1073,7 +1084,7 @@ const Loader = ({ onDone }) => {
             if (blurEl2) blurEl2.setAttribute('stdDeviation', '0')
 
             /* Split en chars pour explosion */
-            const raw = 'MBOLLO aka'
+            const raw = "M'BOLLO ELVIS"
             nameTextEl.innerHTML = ''
             const chars = Array.from(raw).map(letter => {
               const span = document.createElement('span')
@@ -1098,9 +1109,10 @@ const Loader = ({ onDone }) => {
               })
             }
 
-            /* Fade out percent and corner, role will be animated via chars */
-            gsap.to(['.mob-ld-percent', '.mob-ld-corner'], {
-              opacity: 0, y: -10, duration: 0.3, ease: 'power2.in',
+            /* Fade out percent, corner, logo et ville ; le rôle est déjà
+               animé par ses propres chars */
+            gsap.to(['.mob-ld-percent', '.mob-ld-corner', '.mob-ld-logo-wrap', '.mob-ld-place'], {
+              opacity: 0, y: -10, duration: 0.25, ease: 'power2.in',
             })
 
             /* Perspective 3D */
@@ -1111,10 +1123,10 @@ const Loader = ({ onDone }) => {
             /* Explosion chars */
             const mid = (chars.length - 1) / 2
             const tl = gsap.timeline({
-              delay: 0.15,
+              delay: 0.1,
               onComplete: () => {
                 gsap.to(loaderEl, {
-                  opacity: 0, duration: 0.45, ease: 'power2.inOut',
+                  opacity: 0, duration: 0.4, ease: 'power2.inOut',
                   onComplete: () => {
                     loaderEl.style.visibility = 'hidden'
                     loaderEl.style.pointerEvents = 'none'
@@ -1133,13 +1145,13 @@ const Loader = ({ onDone }) => {
                 rotationY: (Math.random() - 0.5) * 720,
                 scale: 0.2 + Math.random() * 0.5,
                 opacity: 0,
-                duration: 0.85,
+                duration: 0.7,
                 ease: 'power2.out',
-                delay: i * 0.03,
+                delay: i * 0.022,
               }, 0)
             })
 
-            /* Role suit exactement la même physique que name — plus de force allégée */
+            /* Role suit exactement la même physique que name */
             if (roleChars.length) {
               const rMid = (roleChars.length - 1) / 2
               roleChars.forEach((span, i) => {
@@ -1152,18 +1164,18 @@ const Loader = ({ onDone }) => {
                   rotationY: (Math.random() - 0.5) * 720,
                   scale: 0.2 + Math.random() * 0.5,
                   opacity: 0,
-                  duration: 0.85,
+                  duration: 0.7,
                   ease: 'power2.out',
-                  delay: i * 0.03,
+                  delay: i * 0.022,
                 }, 0)
               })
             }
-          }, 350)
+          }, 180)
           return 100
         }
         return next
       })
-    }, 210)
+    }, 90)
     return () => clearInterval(interval)
   }, [])
 
@@ -1183,11 +1195,25 @@ const Loader = ({ onDone }) => {
         </defs>
       </svg>
 
+      {/* LOGO — coin haut-gauche */}
+      <div className="mob-ld-logo-wrap">
+        <img
+          src="/assets/images/logo-akatech.webp"
+          alt="AKATech"
+          className="mob-ld-logo"
+          onError={e => { e.target.style.display = 'none' }}
+        />
+      </div>
+
+      {/* VILLE — coin haut-droite */}
+      <div className="mob-ld-place">Abidjan</div>
+
       {/* CENTER — nom + rôle */}
       <div className="mob-ld-center">
         <div className="mob-ld-name mob-ld-name--liquid" ref={nameRef}>
           <div className="mob-ld-name-text mob-ld-name-xl">
-            MBOLLO aka
+            <span className="mob-ld-name-line">M'BOLLO</span>
+            <span className="mob-ld-name-line">aka</span>
           </div>
         </div>
         <div className="mob-ld-role mob-ld-role--liquid">
@@ -1195,13 +1221,13 @@ const Loader = ({ onDone }) => {
         </div>
       </div>
 
-      {/* COMPTEUR % — coin bas-droite */}
+      {/* COMPTEUR % — coin bas-droite, agrandi */}
       <div className="mob-ld-percent">
         {Math.floor(progress)}<span>%</span>
       </div>
 
       {/* CORNER — coin bas-gauche */}
-      <div className="mob-ld-corner">v2.6</div>
+      <div className="mob-ld-corner">AKATECH 2026</div>
     </div>
   )
 }
@@ -3569,19 +3595,50 @@ const Projects = ({ dark }) => {
 };
 
 const SkillBand = ({ title, icon, items, dir, dark }) => {
-  /* Durée proportionnelle au nombre d'items — avant, les 4 bandes
-     partageaient la même durée fixe (12s / 7s en dessous de 480px),
-     donc une bandes avec plus d'items (ex: Outils & IA, 10) défilait
-     à la même VITESSE DE CYCLE que Backend (6 items) mais devait couvrir
-     une distance plus grande dans le même temps → chaque logo passait
-     plus vite, moins de temps pour le voir avant que ça reboucle.
-     Ici la vitesse (px/s) est constante, donc la durée du cycle s'adapte
-     et chaque logo reste visible le même temps quelle que soit la bande. */
-  const duration = Math.max(6, items.length * 1.2);
+  const bandRef = useRef(null);
+
+  /* Défilement piloté par la position réelle, pas par une durée CSS.
+     Avant : `animation: X s linear infinite` avec un -33.33% supposé
+     correspondre à un jeu d'items complet — mais une durée fixe (ou même
+     scalée par le nombre d'items) reste une ESTIMATION en secondes, pas
+     un vrai bouclage sur le contenu. Ici on mesure la largeur réelle
+     d'un jeu (items.length premiers enfants sur les 3 dupliqués), et un
+     ticker GSAP avance le translateX à VITESSE CONSTANTE (px/s) frame
+     par frame, avec un modulo sur cette largeur mesurée : le bouclage
+     est garanti pile au bord du contenu, jamais avant, jamais après —
+     un vrai défilement infini, pas une approximation temporelle. */
+  useEffect(() => {
+    const band = bandRef.current;
+    if (!band) return;
+
+    const children = Array.from(band.children);
+    const setCount = items.length;
+    let oneSetWidth = 0;
+    for (let i = 0; i < setCount && i < children.length; i++) {
+      oneSetWidth += children[i].getBoundingClientRect().width;
+    }
+    if (!oneSetWidth) return;
+
+    const PX_PER_SECOND = 40;
+    const sign = dir === 'left' ? -1 : 1;
+    let pos = dir === 'left' ? 0 : -oneSetWidth;
+    gsap.set(band, { x: pos });
+
+    const tick = (time, deltaMs) => {
+      pos += sign * PX_PER_SECOND * (deltaMs / 1000);
+      if (dir === 'left' && pos <= -oneSetWidth) pos += oneSetWidth;
+      if (dir === 'right' && pos >= 0) pos -= oneSetWidth;
+      gsap.set(band, { x: pos });
+    };
+
+    gsap.ticker.add(tick);
+    return () => gsap.ticker.remove(tick);
+  }, [items, dir]);
+
   return (
     <div className="sk-row">
       <div className="sk-row-lbl"><LI name={icon} color="#ff5500" size={14} />{title}</div>
-      <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`} style={{ animationDuration: `${duration}s` }}>
+      <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`} ref={bandRef}>
         {[...items, ...items, ...items].map((sk, i) => (<div key={i} className="sk-item"><img src={sk.icon} alt={sk.name} style={dark && (sk.icon.includes('flask') || sk.icon.includes('django') || sk.icon.includes('github') || sk.icon.includes('vercel')) ? { filter: 'brightness(0) invert(1)' } : {}} /><span>{sk.name}</span></div>))}
       </div></div>
     </div>
@@ -3666,7 +3723,7 @@ const WritingSection = ({ dark }) => {
 
   /* ── Auto-slide toutes les 4s ── */
   useEffect(() => {
-    const id = setInterval(() => setActive(a => (a + 1) % total), 4000);
+    const id = setInterval(() => setActive(a => (a + 1) % total), 7000);
     return () => clearInterval(id);
   }, [total]);
 

@@ -1572,6 +1572,10 @@ function Navbar({ theme, onToggleTheme }) {
     const el = document.getElementById(id)
     if (!el) return
     window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'auto' })
+    /* Même correctif que hardJumpTo (GooeyTransition.jsx) : force
+       ScrollTrigger à relâcher tout de suite un pin actif (tunnel
+       WebGL des projets) au lieu d'attendre son prochain tick. */
+    ScrollTrigger.update()
   }
 
   /* Socials pour StaggeredMenu */
@@ -1675,6 +1679,9 @@ function Hero() {
     if (!el) return
     const top = el.getBoundingClientRect().top + window.scrollY
     window.scrollTo({ top, behavior: 'auto' })
+    /* Idem Navbar/GooeyTransition : force ScrollTrigger à relâcher tout
+       de suite un pin actif au lieu d'attendre son prochain tick. */
+    ScrollTrigger.update()
   }
 
   /* Nom — cycle plain sur le même texte, réutilisé pour le calque
@@ -3871,7 +3878,7 @@ function WritingSection() {
             height={420}
             cardDistance={48}
             verticalDistance={54}
-            delay={5000}
+            delay={7000}
             pauseOnHover={true}
             skewAmount={4}
             easing="elastic.out(1, 0.8)"

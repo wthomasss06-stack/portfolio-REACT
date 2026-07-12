@@ -6,5 +6,4 @@ git add .
 git commit -m "DERNIERE MISE A JOUR2"
 git push
 
-
- ensuite la formulaire contact force la en blanc meme en mode sombre il reste toujour blanc comme le mode claire ensuite les liens retire les icon met juste les nom et fleche des liens
+Bug "Mes outils de travail" — trouvé : les 4 bandes (Frontend 12 items, Backend 6, Outils 10, Autres 10) chauque  items de chaques bandes doit tous defiler dorenavant
