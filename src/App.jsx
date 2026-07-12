@@ -3814,93 +3814,144 @@ function TestiCard({ t }) {
 }
 
 /* ════════════════════════════════════════════
- BLOG — 3 posts LinkedIn mis en avant + renvoi
- vers le profil complet pour le reste. Cartes
- statiques (pas de CardSwap ici) : contenu éditorial
- court, pas besoin d'un cycle automatique.
+ BLOG — 6 posts LinkedIn, carrousel auto-défilant
+ (CardSwap, même mécanique que TESTIMONIALS) +
+ renvoi vers le profil complet.
  ════════════════════════════════════════════ */
 function WritingSection() {
   return (
-    <section id="writing-section" style={{ padding: '10vh 0 4vh' }}>
-      <div style={{ padding: '0 4vw' }}>
-        <SectionHeading num="02" title="BLOG" sub="Ce que je partage sur LinkedIn" style={{ marginBottom: '2.2rem' }} />
+    <section id="writing-section" style={{ padding: '10vh 0 4vh', overflow: 'hidden' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '2.5rem',
+          flexWrap: 'wrap',
+          padding: '0 4vw',
+        }}
+      >
+        <div style={{ maxWidth: 360, flexShrink: 0 }}>
+          <SectionHeading num="02" title="BLOG" sub="Ce que je partage sur LinkedIn" style={{ marginBottom: '1.2rem' }} />
 
-        <div style={{ display: 'flex', gap: '1.4rem', flexWrap: 'wrap' }}>
-          {WRITING_POSTS.map((post) => (
-            <a
-              key={post.id}
-              href={post.url}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                flex: '1 1 300px',
-                minWidth: 260,
-                maxWidth: 400,
-                display: 'block',
-                textDecoration: 'none',
-                color: 'inherit',
-                border: '1px solid rgba(255,85,0,.18)',
-                borderRadius: 18,
-                padding: '1.5rem',
-                boxSizing: 'border-box',
-                background: 'rgba(255,85,0,.03)',
-                transition: 'border-color .2s, transform .2s',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,85,0,.5)'; e.currentTarget.style.transform = 'translateY(-4px)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,85,0,.18)'; e.currentTarget.style.transform = 'translateY(0)' }}
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  fontFamily: "'Space Mono',monospace",
-                  fontSize: '.58rem',
-                  letterSpacing: '.08em',
-                  textTransform: 'uppercase',
-                  color: 'var(--accent)',
-                  border: '1px solid rgba(255,85,0,.3)',
-                  borderRadius: '999px',
-                  padding: '3px 10px',
-                  marginBottom: '1rem',
-                }}
-              >
-                {post.tag}
-              </span>
+          <h3 style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.7 }}>
+            Clique dessus pour lire le post complet sur LinkedIn.
+          </h3>
 
-              <h3 style={{ fontFamily: 'var(--fd)', fontSize: '1rem', lineHeight: 1.4, color: 'var(--text)', marginBottom: '.7rem' }}>
-                {post.hook}
-              </h3>
-
-              <p style={{ fontFamily: 'var(--fb)', fontSize: '.82rem', lineHeight: 1.65, color: 'var(--muted)', marginBottom: '1.1rem' }}>
-                {post.excerpt}
-              </p>
-
-              <span style={{ fontFamily: 'var(--fb)', fontSize: '.76rem', fontWeight: 700, color: 'var(--accent)', display: 'inline-flex', alignItems: 'center', gap: '.35rem' }}>
-                Lire sur LinkedIn ↗
-              </span>
-            </a>
-          ))}
+          <a
+            href={CONTACT.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              marginTop: '1.5rem',
+              fontSize: '.85rem',
+              fontWeight: 600,
+              color: 'var(--text)',
+              textDecoration: 'none',
+              borderBottom: '1px solid var(--text)',
+              paddingBottom: '2px',
+            }}
+          >
+            Voir tous mes posts sur LinkedIn →
+          </a>
         </div>
 
-        <a
-          href={CONTACT.linkedin}
-          target="_blank"
-          rel="noreferrer"
+        <div
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '.5rem',
-            marginTop: '1.8rem',
-            fontFamily: 'var(--fb)',
-            fontSize: '.85rem',
-            fontWeight: 600,
-            color: 'var(--text)',
-            textDecoration: 'none',
-            borderBottom: '1px solid var(--text)',
-            paddingBottom: '2px',
+            position: 'relative',
+            width: 440,
+            height: 420,
+            flexShrink: 0,
+            marginLeft: 'clamp(0rem, 1vw, .5rem)'
           }}
         >
-          Voir tous mes posts sur LinkedIn →
-        </a>
+          <CardSwap
+            width={440}
+            height={420}
+            cardDistance={48}
+            verticalDistance={54}
+            delay={5000}
+            pauseOnHover={true}
+            skewAmount={4}
+            easing="elastic.out(1, 0.8)"
+          >
+            {WRITING_POSTS.map((post) => (
+              <Card key={post.id} customClass="writing-card">
+                <a
+                  href={post.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
+                    padding: '1.5rem',
+                    boxSizing: 'border-box',
+                    textDecoration: 'none',
+                    color: 'inherit',
+                  }}
+                >
+                  <div>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        fontFamily: "'Space Mono',monospace",
+                        fontSize: '.58rem',
+                        letterSpacing: '.1em',
+                        textTransform: 'uppercase',
+                        color: 'var(--accent)',
+                        border: '1px solid rgba(255,85,0,.3)',
+                        borderRadius: '999px',
+                        padding: '3px 10px',
+                        marginBottom: '1rem',
+                      }}
+                    >
+                      {post.tag}
+                    </span>
+                    <h3
+                      style={{
+                        fontFamily: 'var(--fd)',
+                        fontSize: '1.05rem',
+                        lineHeight: 1.4,
+                        color: 'var(--text)',
+                        marginBottom: '.7rem',
+                      }}
+                    >
+                      {post.hook}
+                    </h3>
+                    <p
+                      style={{
+                        fontFamily: 'var(--fb)',
+                        fontSize: '.82rem',
+                        lineHeight: 1.6,
+                        color: 'var(--muted)',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {post.excerpt}
+                    </p>
+                  </div>
+                  <span
+                    style={{
+                      fontFamily: 'var(--fb)',
+                      fontSize: '.76rem',
+                      fontWeight: 700,
+                      color: 'var(--accent)',
+                      marginTop: '1rem',
+                    }}
+                  >
+                    Lire sur LinkedIn ↗
+                  </span>
+                </a>
+              </Card>
+            ))}
+          </CardSwap>
+        </div>
       </div>
     </section>
   )

@@ -3568,14 +3568,25 @@ const Projects = ({ dark }) => {
   );
 };
 
-const SkillBand = ({ title, icon, items, dir, dark }) => (
-  <div className="sk-row">
-    <div className="sk-row-lbl"><LI name={icon} color="#ff5500" size={14} />{title}</div>
-    <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`}>
-      {[...items, ...items, ...items].map((sk, i) => (<div key={i} className="sk-item"><img src={sk.icon} alt={sk.name} style={dark && (sk.icon.includes('flask') || sk.icon.includes('django') || sk.icon.includes('github') || sk.icon.includes('vercel')) ? { filter: 'brightness(0) invert(1)' } : {}} /><span>{sk.name}</span></div>))}
-    </div></div>
-  </div>
-);
+const SkillBand = ({ title, icon, items, dir, dark }) => {
+  /* Durée proportionnelle au nombre d'items — avant, les 4 bandes
+     partageaient la même durée fixe (12s / 7s en dessous de 480px),
+     donc une bandes avec plus d'items (ex: Outils & IA, 10) défilait
+     à la même VITESSE DE CYCLE que Backend (6 items) mais devait couvrir
+     une distance plus grande dans le même temps → chaque logo passait
+     plus vite, moins de temps pour le voir avant que ça reboucle.
+     Ici la vitesse (px/s) est constante, donc la durée du cycle s'adapte
+     et chaque logo reste visible le même temps quelle que soit la bande. */
+  const duration = Math.max(6, items.length * 1.2);
+  return (
+    <div className="sk-row">
+      <div className="sk-row-lbl"><LI name={icon} color="#ff5500" size={14} />{title}</div>
+      <div className="sk-wrap"><div className={`sk-band sk-band--${dir}`} style={{ animationDuration: `${duration}s` }}>
+        {[...items, ...items, ...items].map((sk, i) => (<div key={i} className="sk-item"><img src={sk.icon} alt={sk.name} style={dark && (sk.icon.includes('flask') || sk.icon.includes('django') || sk.icon.includes('github') || sk.icon.includes('vercel')) ? { filter: 'brightness(0) invert(1)' } : {}} /><span>{sk.name}</span></div>))}
+      </div></div>
+    </div>
+  );
+};
 
 const Skills = ({ dark }) => {
   const [ref, vis] = useInView();
@@ -3638,67 +3649,67 @@ const TESTIMONIALS = [
 ];
 
 /* ════════════════════════════════════════════
-   BLOG — 3 posts LinkedIn mis en avant + renvoi
-   vers le profil complet. Styles inline (var(--ink)/
-   --paper/--acc/--muted/--border) plutôt que des
-   classes dédiées : s'adapte automatiquement au
+   BLOG — 6 posts LinkedIn, carrousel auto-défilant
+   toutes les 4s (même mécanique que Testimonials
+   juste en dessous : 1 card affichée à la fois,
+   barre de progression, dots cliquables). Classes
+   dédiées wr-* dans stylemobile.css, mêmes variables
+   thème que le reste (var(--ink)/--paper/--acc/
+   --muted/--border) : s'adapte automatiquement au
    thème via .app--light, sans logique dark/light
    séparée à maintenir ici.
    ════════════════════════════════════════════ */
 const WritingSection = ({ dark }) => {
+  const [active, setActive] = useState(0);
+  const total = WRITING_POSTS.length;
+  const post = WRITING_POSTS[active];
+
+  /* ── Auto-slide toutes les 4s ── */
+  useEffect(() => {
+    const id = setInterval(() => setActive(a => (a + 1) % total), 4000);
+    return () => clearInterval(id);
+  }, [total]);
+
   return (
     <section id="writing" className={dark ? 'section--dark' : ''} style={{ padding: '0 5vw 4vh' }}>
       <div className="s-hd">
         <span className="s-lbl">// BLOG</span>
         <h2 className="s-ttl">Ce que je<br />partage.</h2>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-        {WRITING_POSTS.map((post) => (
-          <a
-            key={post.id}
-            href={post.url}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: 'block',
-              textDecoration: 'none',
-              color: 'var(--ink)',
-              background: 'var(--paper-2)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--r)',
-              boxShadow: 'var(--shadow-sm)',
-              padding: '1.1rem',
-              boxSizing: 'border-box',
-            }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                fontFamily: 'var(--fb)',
-                fontSize: '.6rem',
-                letterSpacing: '.06em',
-                textTransform: 'uppercase',
-                color: 'var(--acc)',
-                border: '1px solid var(--acc-dim)',
-                borderRadius: '999px',
-                padding: '3px 9px',
-                marginBottom: '.7rem',
-              }}
-            >
-              {post.tag}
-            </span>
-            <h3 style={{ fontFamily: 'var(--fd)', fontSize: '.95rem', lineHeight: 1.4, color: 'var(--ink)', marginBottom: '.5rem' }}>
-              {post.hook}
-            </h3>
-            <p style={{ fontFamily: 'var(--fb)', fontSize: '.76rem', lineHeight: 1.6, color: 'var(--muted)', marginBottom: '.8rem' }}>
-              {post.excerpt}
-            </p>
-            <span style={{ fontFamily: 'var(--fb)', fontSize: '.72rem', fontWeight: 700, color: 'var(--acc)' }}>
-              Lire sur LinkedIn ↗
-            </span>
-          </a>
-        ))}
+
+      <div className="wr-wrap">
+        <div className={`wr-counter ${dark ? 'wr-counter--dark' : ''}`}>
+          <span className="wr-count-cur">{String(active + 1).padStart(2, '0')}</span>
+          <span className="wr-count-sep"> / </span>
+          <span>{String(total).padStart(2, '0')}</span>
+        </div>
+
+        <a
+          key={active}
+          href={post.url}
+          target="_blank"
+          rel="noreferrer"
+          className={`wr-card ${dark ? 'wr-card--dark' : ''}`}
+        >
+          <span className="wr-tag">{post.tag}</span>
+          <h3 className="wr-hook">{post.hook}</h3>
+          <p className="wr-excerpt">{post.excerpt}</p>
+          <span className="wr-link">Lire sur LinkedIn ↗</span>
+          <div className="wr-progress"><div className="wr-progress-fill" /></div>
+        </a>
+
+        <div className="wr-dots-only">
+          {WRITING_POSTS.map((_, i) => (
+            <button
+              key={i}
+              className={`wr-dot ${i === active ? 'wr-dot--on' : ''} ${dark ? 'wr-dot--dark' : ''}`}
+              onClick={() => setActive(i)}
+              aria-label={`Post ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
+
       <a
         href={CONTACT.linkedin}
         target="_blank"

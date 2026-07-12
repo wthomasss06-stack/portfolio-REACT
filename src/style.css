@@ -4177,7 +4177,7 @@
      letter-spacing: .22em;
      text-transform: uppercase;
 
-     color: rgba(255,255,255,.35);
+     color: var(--text);
    }
 
    /* ════════════════════════════════════════════
@@ -4208,7 +4208,7 @@
      letter-spacing: .22em;
      text-transform: uppercase;
 
-     color: rgba(255,255,255,.35);
+     color: var(--text);
    }
 
    /* ════════════════════════════════════════════
@@ -4231,13 +4231,8 @@
      color: rgba(200,60,0,.75);
    }
 
-   body.light-mode .ld-corner{
-     color: rgba(0,0,0,.35);
-   }
-
-   body.light-mode .ld-place{
-     color: rgba(0,0,0,.35);
-   }
+   /* .ld-corner / .ld-place utilisent var(--text) — s'adapte déjà tout
+      seul en mode clair, plus besoin d'override ici */
 
    /* ════════════════════════════════════════════
       RESPONSIVE
@@ -5268,6 +5263,22 @@ body.light-mode {
 }
 
 /* ─────────────────────────────────────────
+   5b. BLOG CARDS — même CardSwap, même
+   traitement que les Testimonial Cards
+   juste au-dessus : uniforme à dessein.
+   ───────────────────────────────────────── */
+.writing-card {
+  border: var(--nb-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--nb-shadow);
+  transition: transform .22s, box-shadow .22s !important;
+}
+.writing-card:hover {
+  transform: translate(-4px,-4px);
+  box-shadow: var(--nb-shadow-h) !important;
+}
+
+/* ─────────────────────────────────────────
    6. FAQ ITEMS
    ───────────────────────────────────────── */
 .faq-list {
@@ -5378,11 +5389,13 @@ body.light-mode .faq-list {
 body.light-mode .prc-card:not(.prc-card--pop) { background: #f7f5f2 !important; }
 body.light-mode .skill-card      { background: #f7f5f2 !important; }
 body.light-mode .testi-card      { background: #f7f5f2 !important; }
+body.light-mode .writing-card    { background: #f7f5f2 !important; }
 
 /* Réduit les ombres sur mobile pour éviter le clipping */
 @media (max-width: 768px) {
   .prc-card          { box-shadow: 3px 3px 0 var(--text) !important; }
   .testi-card        { box-shadow: 3px 3px 0 var(--text) !important; }
+  .writing-card      { box-shadow: 3px 3px 0 var(--text) !important; }
   .skill-card        { box-shadow: 2px 2px 0 var(--text) !important; }
   .faq-icon          { box-shadow: 2px 2px 0 var(--text) !important; }
   .about-stats-col   { box-shadow: 2px 2px 0 var(--text) !important; }

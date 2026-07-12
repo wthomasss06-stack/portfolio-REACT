@@ -428,6 +428,27 @@ export const WRITING_POSTS = [
   {
     id: 3,
     tag: 'Opinion',
+    hook: "Le plus grand cimetière de projets se trouve dans l'esprit des développeurs.",
+    excerpt: "La toute première page Facebook ne paierait probablement même pas un designer aujourd'hui — elle est pourtant devenue une des plus grandes plateformes au monde. Mieux vaut lancer une version imparfaite que garder une idée parfaite bloquée dans sa tête.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_cette-ancienne-page-facebook-ne-paierait-activity-7474370460831580161-0ypl',
+  },
+  {
+    id: 4,
+    tag: 'Opinion',
+    hook: "Copier du code ≠ comprendre un système.",
+    excerpt: "Générer une UI, une API, une app entière avec l'IA, c'est facile — le vrai test arrive quand ça casse en production à 3h du matin. Le vibe coding donne de la vitesse, mais seule la compréhension donne le contrôle.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_le-plus-gros-mensonge-quon-a-vendu-aux-d%C3%A9veloppeurs-activity-7460711653911842816-TFlf',
+  },
+  {
+    id: 5,
+    tag: 'Sécurité',
+    hook: "Le frontend affiche. Le backend autorise.",
+    excerpt: "Cacher \"ADMIN\" dans un select frontend ne protège rien : si le backend ne vérifie pas les permissions, n'importe qui peut se construire un rôle avec Postman. La sécurité d'une app ne vit jamais dans l'UI.",
+    url: 'https://www.linkedin.com/posts/m-bollo-aka_les-vibes-vont-d%C3%A9truire-ce-monde-activity-7458516630524850177-TEB1',
+  },
+  {
+    id: 6,
+    tag: 'Opinion',
     hook: 'Un outil ne dépassera jamais une compétence technique.',
     excerpt: "L'IA est puissante, mais entre les mains de quelqu'un qui ne comprend pas le code, ça reste du copier-coller. Refaire mon site de Vite/React à Next.js avec l'IA me l'a confirmé : la différence, ce sont les choix techniques, pas l'outil.",
     url: 'https://www.linkedin.com/posts/m-bollo-aka_faut-arr%C3%AAter-de-confondre-les-choses-un-activity-7450893414918746112-bWWb',

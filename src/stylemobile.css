@@ -3125,6 +3125,90 @@ body {
   gap: 8px;
   margin-top: 20px;
 }
+
+/* ── BLOG AUTO-CAROUSEL (même mécanique que TESTIMONIALS ci-dessus,
+   1 card à la fois + barre de progression 4s + dots cliquables) ── */
+.wr-wrap { max-width: 680px; margin: 0 auto; }
+.wr-counter { display:flex; align-items:center; gap:6px; font-family:var(--fb,'Space Mono',monospace); font-size:13px; color:var(--muted); margin-bottom:16px; }
+.wr-counter--dark { color:rgba(255,255,255,.4); }
+.wr-count-cur { font-size:22px; font-weight:700; color:var(--acc,#ff5500); font-family:var(--fd,'Unbounded',sans-serif); }
+
+.wr-card {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+  padding: 28px 26px 24px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  animation: wrSlideIn 0.45s cubic-bezier(.25,.46,.45,.94) both;
+}
+.wr-card--dark { background: var(--paper-2); border-color: rgba(255,85,0,.18); }
+
+.wr-tag {
+  display: inline-block;
+  font-family: var(--fb,'Space Mono',monospace);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--acc,#ff5500);
+  border: 1px solid rgba(255,85,0,.35);
+  border-radius: 100px;
+  padding: 3px 10px;
+  margin-bottom: 14px;
+}
+.wr-hook {
+  font-family: var(--fd,'Unbounded',sans-serif);
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.wr-excerpt {
+  font-family: var(--fb,'Space Mono',monospace);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--fb,'Space Mono',monospace);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--acc,#ff5500);
+}
+
+@keyframes wrSlideIn {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes wrProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+.wr-progress { position:absolute; bottom:0; left:0; right:0; height:2px; background:rgba(255,85,0,0.12); }
+.wr-progress-fill { height:100%; background:var(--acc); width:0%; animation:wrProgress 4s linear forwards; box-shadow:0 0 6px rgba(255,85,0,0.5); }
+
+.wr-dots-only { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:20px; }
+.wr-dot { width:8px; height:8px; border-radius:50%; border:2px solid var(--muted); background:transparent; cursor:pointer; padding:0; transition:all .2s; }
+.wr-dot--on { background:var(--acc); border-color:var(--acc); width:24px; border-radius:10px; }
+.wr-dot--dark { border-color:rgba(255,255,255,.3); }
+.wr-dot--dark.wr-dot--on { background:var(--acc); border-color:var(--acc); }
+
+@media (max-width:480px) {
+  .wr-card { padding:20px 18px 18px; }
+  .wr-hook { font-size:15px; }
+  .wr-excerpt { font-size:12.5px; }
+}
 /* ═══════════════════════════════════════════════════════════════════════
    COJ-WRAP v2 — Section "Où me joindre" redesignée
    ═══════════════════════════════════════════════════════════════════════ */
