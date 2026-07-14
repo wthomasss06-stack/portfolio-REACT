@@ -3,7 +3,7 @@ npm run dev
 
 
 git add .
-git commit -m "DERNIERE MISE A JOUR2"
+git commit -m "DERNIERE MISE A JOUR3"
 git push
 
 Bug "Mes outils de travail" — trouvé : les 4 bandes (Frontend 12 items, Backend 6, Outils 10, Autres 10) chauque  items de chaques bandes doit tous defiler dorenavant

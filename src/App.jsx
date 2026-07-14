@@ -34,7 +34,7 @@ gsap.registerPlugin(ScrollTrigger)
  dupliquer cette liste ailleurs dans le fichier.
  ════════════════════════════════════════════ */
 const NAV_LINKS = [
-  { id: 'hero', label: 'Accueil', num: '00', sub: 'M\'Bollo aka' },
+  { id: 'hero', label: 'Accueil', num: '00', sub: 'M\'Bollo Aka' },
   { id: 'projets-section', label: 'Projets', num: '01', sub: null },  // sub calculé dynamiquement juste après PROJECTS ↓
   { id: 'about-section', label: 'À propos', num: '02', sub: 'Parcours & stack' },
   { id: 'process-section', label: 'Process', num: '03', sub: 'De l\'acompte à la livraison' },
@@ -1396,7 +1396,7 @@ function Loader({ onDone }) {
         <div className="ld-name ld-name--liquid" ref={nameRef}>
           <div className="ld-name-text decrypt-text--xl">
             <span className="ld-name-line">M'BOLLO</span>
-            <span className="ld-name-line">aka</span>
+            <span className="ld-name-line">Aka</span>
           </div>
         </div>
 
@@ -1687,7 +1687,7 @@ function Hero() {
   /* Nom — cycle plain sur le même texte, réutilisé pour le calque
      contour (avant-plan) du portrait sandwich ci-dessous */
   const nameLine1 = useSHNameCycle("M'BOLLO")
-  const nameLine2 = useSHNameCycle("aka")
+  const nameLine2 = useSHNameCycle("Aka")
 
   /* Mots rotatifs — glitch scramble en boucle auto */
   const rotating = useSHRotatingCycle(HERO_ROTATING_WORDS, 2500)
@@ -1752,7 +1752,7 @@ function Hero() {
            avec la photo carrée qui vient "trancher" les deux lignes,
            repris du prototype de référence (variante Double Stack) ── */}
         <div className="hv4-portrait">
-          <h1 className="hv4-portrait-name" aria-label="M'Bollo aka">
+          <h1 className="hv4-portrait-name" aria-label="M'Bollo Aka">
             <span className="hv4-portrait-row hv4-portrait-row--top">
               <span className="hv4-portrait-bg hv4-rv" style={{ '--d': '.1s' }} aria-hidden="true">M'BOLLO</span>
               <span className="hv4-portrait-fg" aria-hidden="true">
@@ -1764,7 +1764,7 @@ function Hero() {
               </span>
             </span>
             <span className="hv4-portrait-row hv4-portrait-row--bottom">
-              <span className="hv4-portrait-bg hv4-rv" style={{ '--d': '.16s' }} aria-hidden="true">aka</span>
+              <span className="hv4-portrait-bg hv4-rv" style={{ '--d': '.16s' }} aria-hidden="true">Aka</span>
               <span className="hv4-portrait-fg" aria-hidden="true">
                 <span className="sh-cycle-wrap" style={{ height: '0.86em', verticalAlign: 'bottom' }}>
                   <span className="sh-cycle-inner" ref={nameLine2.innerRef}>
@@ -1780,8 +1780,8 @@ function Hero() {
               ref={photoRef}
               className="hv4-rv"
               style={{ '--d': '.26s' }}
-              src="/assets/images/IMG_20250124_124101KK.webp"
-              alt="M'Bollo aka"
+              src="/assets/images/MBA.webp"
+              alt="M'Bollo Aka"
               onError={e => { e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600' }}
             />
           </div>
@@ -2000,7 +2000,7 @@ function HeroZoomSection() {
               ref={canvasRef}
               className="hzx-canvas"
               role="img"
-              aria-label="M'Bollo aka au travail, de nuit, face à la ville"
+              aria-label="M'Bollo Aka au travail, de nuit, face à la ville"
             />
           </div>
         </div>
@@ -2834,7 +2834,7 @@ function About() {
 
           <div className="about-text-col">
             <p className="about-text-lg">
-              Je suis <strong>M'Bollo aka</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
+              Je suis <strong>M'Bollo Aka</strong> ,développeur web basé à <strong>Abidjan</strong>, avec une vraie envie de
               créer des produits utiles, beaux et agréables à utiliser.
             </p>
 
@@ -2893,7 +2893,7 @@ function About() {
               }}>
                 <img
                   src="/assets/images/IMG_20250124_124101KK.webp"
-                  alt="M'Bollo aka" itemProp="image"
+                  alt="M'Bollo Aka" itemProp="image"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 10%' }}
                   loading="lazy"
                   onError={e => { e.target.style.display = 'none' }}
@@ -2904,7 +2904,7 @@ function About() {
                   fontFamily: 'var(--fd)', fontWeight: 800,
                   fontSize: '1rem', color: 'var(--text)',
                   letterSpacing: '-.01em', lineHeight: 1.2,
-                }}>M'bollo aka</h3>
+                }}>M'bollo Aka</h3>
                 <span itemProp="jobTitle" style={{
                   fontFamily: "'Space Mono', monospace",
                   fontSize: '.62rem', letterSpacing: '.06em',
