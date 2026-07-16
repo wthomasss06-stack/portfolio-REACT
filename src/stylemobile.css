@@ -3973,6 +3973,18 @@
        visibility 1s;
    }
    
+   /* Canvas WebGL de sortie (dissolve) — même principe que côté
+      desktop : 1er enfant DOM de #mob-loader, peint sous le reste
+      tant qu'aucun z-index n'intervient (voir Loader.jsx / runExit). */
+   .mob-ld-dissolve-canvas {
+     position: absolute;
+     inset: 0;
+     width: 100%;
+     height: 100%;
+     display: block;
+     pointer-events: none;
+   }
+
    #mob-loader.hide {
      opacity: 0;
      visibility: hidden;

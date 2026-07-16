@@ -4004,6 +4004,20 @@
        visibility 1s;
    }
 
+   /* Canvas WebGL de sortie (dissolve) — 1er enfant DOM de #loader,
+      donc peint sous logo/nom/rôle/compteur/corner tant qu'aucun
+      z-index n'intervient. Invisible pendant le compteur puisque
+      #loader garde son propre fond CSS opaque par-dessus jusqu'à
+      l'explosion des lettres (voir Loader.jsx / runExit). */
+   .ld-dissolve-canvas{
+     position: absolute;
+     inset: 0;
+     width: 100%;
+     height: 100%;
+     display: block;
+     pointer-events: none;
+   }
+
    /* EXIT */
    #loader.hide{
      opacity: 0;

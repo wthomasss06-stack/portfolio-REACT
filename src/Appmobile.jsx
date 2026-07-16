@@ -3,6 +3,7 @@ import ScrollDepthScene from './components/ScrollDepthScene';
 import ScrambleText from './components/ScrambleText';
 import { useSoundSystem } from './components/useClickSound.js';
 import { useGooeyTransition, runGridTransition } from './components/GooeyTransition.jsx';
+import Loader from './components/Loader.jsx';
 import { gsap } from 'gsap';
 import SoundToggle from './components/SoundToggle.jsx';
 import { useImmersiveSound } from './hooks/useImmersiveSound.js';
@@ -1001,237 +1002,6 @@ const Noise = () => (
     <rect width="100%" height="100%" filter="url(#nf)" />
   </svg>
 );
-
-// ═══════════════════════════════════════════════════════════════
-// LOADER v5 — liquid blur, no fx divs, counter bas-droite, corner bas-gauche
-// ═══════════════════════════════════════════════════════════════
-const Loader = ({ onDone }) => {
-  const [progress, setProgress] = useState(0)
-  const loaderRef = useRef(null)
-  const nameRef   = useRef(null)
-  const explodedRef = useRef(false)
-  const onDoneRef   = useRef(onDone)
-  useEffect(() => { onDoneRef.current = onDone }, [onDone])
-
-  /* ── Liquid blur init ── */
-  useEffect(() => {
-    const blurEl = document.getElementById('mob-ld-liquid-blur')
-    if (blurEl) blurEl.setAttribute('stdDeviation', '28')
-  }, [])
-
-  /* ── Entrance animations ── */
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      /* Logo — coin haut-gauche, entre avec le compteur */
-      gsap.fromTo('.mob-ld-logo-wrap',
-        { y: -12, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', delay: 0.08 }
-      )
-      gsap.fromTo('.mob-ld-percent',
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 }
-      )
-      gsap.fromTo('.mob-ld-name', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.28 })
-      gsap.fromTo('.mob-ld-role',
-        { y: 14, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.5 }
-      )
-      gsap.fromTo('.mob-ld-corner',
-        { opacity: 0 },
-        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
-      )
-      /* Ville, coin haut-droite — même timing que le corner */
-      gsap.fromTo('.mob-ld-place',
-        { opacity: 0 },
-        { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.55 }
-      )
-    }, loaderRef)
-    return () => ctx.revert()
-  }, [])
-
-  /* ── Progress counter + liquid blur sync + explosion ── */
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        /* Step plus généreux + tick plus rapide (90ms au lieu de 210ms)
-           → loader nettement moins long, même réglage que desktop */
-        const eased = 3 + (prev / 100) * 7
-        const next = prev + Math.random() * eased
-
-        /* Sync blur SVG avec progress (28 → 0) */
-        const blurEl = document.getElementById('mob-ld-liquid-blur')
-        if (blurEl) {
-          const blurVal = Math.max(0, 28 * (1 - next / 100))
-          blurEl.setAttribute('stdDeviation', String(blurVal.toFixed(2)))
-        }
-
-        if (next >= 100) {
-          clearInterval(interval)
-          setTimeout(() => {
-            if (explodedRef.current) return
-            explodedRef.current = true
-
-            const loaderEl = loaderRef.current
-            if (!loaderEl) { onDoneRef.current(); return }
-
-            const nameEl = nameRef.current
-            if (!nameEl) { onDoneRef.current(); return }
-            const nameTextEl = nameEl.querySelector('.mob-ld-name-text')
-            if (!nameTextEl) { onDoneRef.current(); return }
-
-            /* Blur à zéro — nom net */
-            const blurEl2 = document.getElementById('mob-ld-liquid-blur')
-            if (blurEl2) blurEl2.setAttribute('stdDeviation', '0')
-
-            /* Split en chars pour explosion */
-            const raw = "M'BOLLO ELVIS"
-            nameTextEl.innerHTML = ''
-            const chars = Array.from(raw).map(letter => {
-              const span = document.createElement('span')
-              span.className = 'mob-ld-char'
-              span.textContent = letter
-              nameTextEl.appendChild(span)
-              return span
-            })
-
-            /* Also split role into chars so it explodes similarly */
-            const roleEl = loaderEl.querySelector('.mob-ld-role')
-            let roleChars = []
-            if (roleEl) {
-              const roleRaw = roleEl.textContent.trim() || ''
-              roleEl.innerHTML = ''
-              roleChars = Array.from(roleRaw).map(letter => {
-                const span = document.createElement('span')
-                span.className = 'mob-ld-char mob-ld-role-char'
-                span.textContent = letter
-                roleEl.appendChild(span)
-                return span
-              })
-            }
-
-            /* Fade out percent, corner, logo et ville ; le rôle est déjà
-               animé par ses propres chars */
-            gsap.to(['.mob-ld-percent', '.mob-ld-corner', '.mob-ld-logo-wrap', '.mob-ld-place'], {
-              opacity: 0, y: -10, duration: 0.25, ease: 'power2.in',
-            })
-
-            /* Perspective 3D */
-            gsap.set(nameEl, { perspective: 800, transformStyle: 'preserve-3d' })
-            gsap.set(nameTextEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
-            if (roleEl) gsap.set(roleEl, { transformStyle: 'preserve-3d', display: 'inline-block' })
-
-            /* Explosion chars */
-            const mid = (chars.length - 1) / 2
-            const tl = gsap.timeline({
-              delay: 0.1,
-              onComplete: () => {
-                gsap.to(loaderEl, {
-                  opacity: 0, duration: 0.4, ease: 'power2.inOut',
-                  onComplete: () => {
-                    loaderEl.style.visibility = 'hidden'
-                    loaderEl.style.pointerEvents = 'none'
-                    onDoneRef.current()
-                  }
-                })
-              }
-            })
-            chars.forEach((span, i) => {
-              const dist = i - mid
-              tl.to(span, {
-                x: dist * 80,
-                y: (Math.random() - 0.5) * 200,
-                z: Math.random() * 300 - 150,
-                rotationX: (Math.random() - 0.5) * 720,
-                rotationY: (Math.random() - 0.5) * 720,
-                scale: 0.2 + Math.random() * 0.5,
-                opacity: 0,
-                duration: 0.7,
-                ease: 'power2.out',
-                delay: i * 0.022,
-              }, 0)
-            })
-
-            /* Role suit exactement la même physique que name */
-            if (roleChars.length) {
-              const rMid = (roleChars.length - 1) / 2
-              roleChars.forEach((span, i) => {
-                const rDist = i - rMid
-                tl.to(span, {
-                  x: rDist * 80,
-                  y: (Math.random() - 0.5) * 200,
-                  z: Math.random() * 300 - 150,
-                  rotationX: (Math.random() - 0.5) * 720,
-                  rotationY: (Math.random() - 0.5) * 720,
-                  scale: 0.2 + Math.random() * 0.5,
-                  opacity: 0,
-                  duration: 0.7,
-                  ease: 'power2.out',
-                  delay: i * 0.022,
-                }, 0)
-              })
-            }
-          }, 180)
-          return 100
-        }
-        return next
-      })
-    }, 90)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div id="mob-loader" ref={loaderRef}>
-
-      {/* SVG filter liquid blur */}
-      <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
-        <defs>
-          <filter id="mob-ld-liquid-filter">
-            <feGaussianBlur id="mob-ld-liquid-blur" in="SourceGraphic" stdDeviation="28" result="blur" />
-            <feColorMatrix in="blur" mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 28 -10"
-              result="goo" />
-            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* LOGO — coin haut-gauche */}
-      <div className="mob-ld-logo-wrap">
-        <img
-          src="/assets/images/logo-akatech.webp"
-          alt="AKATech"
-          className="mob-ld-logo"
-          onError={e => { e.target.style.display = 'none' }}
-        />
-      </div>
-
-      {/* VILLE — coin haut-droite */}
-      <div className="mob-ld-place">Abidjan</div>
-
-      {/* CENTER — nom + rôle */}
-      <div className="mob-ld-center">
-        <div className="mob-ld-name mob-ld-name--liquid" ref={nameRef}>
-          <div className="mob-ld-name-text mob-ld-name-xl">
-            <span className="mob-ld-name-line">M'BOLLO</span>
-            <span className="mob-ld-name-line">aka</span>
-          </div>
-        </div>
-        <div className="mob-ld-role mob-ld-role--liquid">
-          FULL-STACK · UI/UX · PRODUCT BUILDER
-        </div>
-      </div>
-
-      {/* COMPTEUR % — coin bas-droite, agrandi */}
-      <div className="mob-ld-percent">
-        {Math.floor(progress)}<span>%</span>
-      </div>
-
-      {/* CORNER — coin bas-gauche */}
-      <div className="mob-ld-corner">AKATECH 2026</div>
-    </div>
-  )
-}
-
 
 const ThemeToggle = ({ dark, onToggle }) => (
   <button className={`theme-toggle ${dark ? 'theme-toggle--dark' : ''}`} onClick={onToggle} title={dark ? "Passer en mode clair" : "Passer en mode sombre"}>
@@ -4386,30 +4156,37 @@ export default function App() {
      fini (loaded passe à true), coupée par le même mute/touche S que
      les sons de clic ci-dessus. useClickSound.js non modifié. */
   useImmersiveSound(muted, loaded);
-  return !loaded ? (
-    <Loader onDone={() => setLoaded(true)} />
-  ) : (
-    <div className={`app ${light ? 'app--light' : ''}`}>
-      <CustomCursor />
-      <SoundToggle muted={muted} onToggle={toggleMute} />
-      <Navbar dark={dark} onToggle={toggleDark} />
-      <ScrollTop dark={dark} />
-      <main>
-        <ScrollDepthScene dark={dark}>
-          <Hero dark={dark} />
-          <FeaturedCreation dark={dark} />
-          <Services dark={dark} sdzSkip />
-          <Process dark={dark} sdzSkip />
-          <About dark={dark} />
-          <Projects dark={dark} />
-          <Skills dark={dark} />
-          <Testimonials dark={dark} />
-          <WritingSection dark={dark} />
-          <FAQSection dark={dark} />
-          <Contact dark={dark} />
-        </ScrollDepthScene>
-      </main>
-      <Footer dark={dark} />
-    </div>
+  /* NOTE — anciennement rendu conditionnel (!loaded ? Loader : page).
+     Le loader monte maintenant EN MÊME TEMPS que la page (overlay fixed
+     par-dessus, comme sur desktop) : c'est nécessaire pour le dissolve
+     WebGL de sortie du Loader, qui révèle la page en la laissant
+     transparaître à travers son alpha — il lui faut donc un vrai
+     contenu déjà monté en dessous, pas un écran vide. */
+  return (
+    <>
+      <Loader onDone={() => setLoaded(true)} isMobile dark={dark} />
+      <div className={`app ${light ? 'app--light' : ''}`}>
+        <CustomCursor />
+        <SoundToggle muted={muted} onToggle={toggleMute} />
+        <Navbar dark={dark} onToggle={toggleDark} />
+        <ScrollTop dark={dark} />
+        <main>
+          <ScrollDepthScene dark={dark}>
+            <Hero dark={dark} />
+            <FeaturedCreation dark={dark} />
+            <Services dark={dark} sdzSkip />
+            <Process dark={dark} sdzSkip />
+            <About dark={dark} />
+            <Projects dark={dark} />
+            <Skills dark={dark} />
+            <Testimonials dark={dark} />
+            <WritingSection dark={dark} />
+            <FAQSection dark={dark} />
+            <Contact dark={dark} />
+          </ScrollDepthScene>
+        </main>
+        <Footer dark={dark} />
+      </div>
+    </>
   );
 }
